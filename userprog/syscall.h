@@ -30,8 +30,9 @@
 #define SC_Fork		9
 #define SC_Yield	10
 #ifdef CHANGED
-#define SC_PutChar	11
+#define SC_PutChar	 11
 #define SC_PutString 12
+#define SC_GetChar	 13
 #endif //CHANGED
 
 #ifdef IN_USER_MODE
@@ -143,6 +144,11 @@ void PutChar(char c);
  * PutString writes in console the given string at the adress
  */
 void PutString(char* s);
+
+/**
+ * GetChar returns a character which was entered
+ */
+char getChar();
 
 #endif //CHANGED
 
