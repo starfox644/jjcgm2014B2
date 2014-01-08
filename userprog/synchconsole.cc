@@ -63,7 +63,7 @@ void SynchConsole::SynchGetString(char *s, int n)
 
 /**
 *	from : MIPS string adress in its memory
-*	to : nachOs string adress where it will be saved
+*	to : nachOs string adress where it will be saved, must have size+1 chars
 *          size : maximum number of characters
 */
 void copyStringFromMachine(int from, char *to, unsigned size)
@@ -75,6 +75,7 @@ void copyStringFromMachine(int from, char *to, unsigned size)
 		to[i] = (char) result;
 		i++;
 	}
+	to[i] = '\0';
 }
 
 #endif // CHANGED
