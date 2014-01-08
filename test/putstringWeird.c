@@ -3,7 +3,7 @@
 int main()
 {
 	// Test with some weird string
-	PutString("!@#([])=+}{~ŷÿ$£");
-	PutString("%ê€§^¨%");
+	PutString("!@#([])=+}{~ŷÿ$\n");
+	PutString("£%ê€§^¨%\n");
     Halt();
 }
