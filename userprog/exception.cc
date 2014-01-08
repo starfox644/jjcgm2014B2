@@ -131,8 +131,8 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Exit:
-				codeRetour = machine->ReadRegister(4); // on recupere le code retour contenu dans le registre r4
-				printf("Arret du programme avec le code retour : %d\n", codeRetour); // on affiche le code retour
+				codeErreur = machine->ReadRegister(4); // on recupere le code retour contenu dans le registre r4
+				printf("Arret du programme avec le code retour : %d\n", codeErreur); // on affiche le code retour
 				DEBUG('a',"Program exit");
 				interrupt->Halt ();	// on arrete proprement avec une interruption.
 				break;
