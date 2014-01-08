@@ -147,6 +147,14 @@ PutString:
 	j	$31
 	.end PutString
 
+	.globl PutInt
+	.ent	PutInt
+PutInt:
+	addiu $2,$0,SC_PutInt
+	syscall
+	j	$31
+	.end PutInt
+
 	.globl GetChar
 	.ent	GetChar
 GetChar:
