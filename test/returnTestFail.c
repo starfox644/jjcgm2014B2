@@ -14,5 +14,5 @@ int main()
 {
     print('a', 4);
 
-    return -1;
+    return 2;
 }

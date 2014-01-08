@@ -148,7 +148,7 @@ void PutString(char* s);
 /**
  * GetChar returns a character which was entered
  */
-char getChar();
+char GetChar();
 
 #endif //CHANGED
 

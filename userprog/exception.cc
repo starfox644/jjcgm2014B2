@@ -94,7 +94,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Exit:
-				codeErreur = machine->ReadRegister(2);
+				codeErreur = machine->ReadRegister(4);
 				printf("Arret du programme avec le code : %d\n", codeErreur);
 				DEBUG('a',"Program exit");
 				interrupt->Halt ();
