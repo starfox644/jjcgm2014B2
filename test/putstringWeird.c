@@ -3,6 +3,6 @@
 int main()
 {
 	// Test with some weird string
-	PutString("â!@#([])=+}{~~ŷÿ$£ê€§");
+	PutString("!@#([])=+}{~ŷÿ$£ê€§");
     Halt();
 }
