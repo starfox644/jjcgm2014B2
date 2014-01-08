@@ -78,7 +78,7 @@ void SynchConsole::SynchGetString(char *s, int n)
 	int i = 0;
 	char ch;
 
-	while (i < n && ch != '\n' && ch != EOF) {
+	while (i < n-1 && ch != '\n' && ch != EOF) {
 		// wait for character to arrive
 		readAvail->P ();
 		ch = console->GetChar ();
