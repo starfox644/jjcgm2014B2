@@ -92,6 +92,12 @@ ExceptionHandler (ExceptionType which)
 				copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1) ;
 				synchconsole->SynchPutString(buffer);
 				break;
+
+			case SC_Exit:
+				adr = machine->ReadRegister(2);
+				DEBUG('a',"Program exit");
+				interrupt->Halt ();
+				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
 				ASSERT(FALSE);
