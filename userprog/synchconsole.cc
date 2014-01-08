@@ -123,4 +123,16 @@ void copyStringToMachine(char* from, int to)
 	}
 }
 
+/**
+ *	Print the interger given in parameter
+ *	return nb characters write
+ */
+int SynchPutInt(int n)
+{
+	int nb = 0;
+	char str[MAX_STRING_SIZE];
+	nb = snprintf(str, MAX_STRING_SIZE, "%d", n);
+	synchconsole->SynchPutString(str);
+	return nb;
+}
 #endif // CHANGED

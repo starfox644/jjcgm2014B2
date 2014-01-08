@@ -72,7 +72,7 @@ ExceptionHandler (ExceptionType which)
 	char ch;
 	char buffer[MAX_STRING_SIZE];
 	char* dynBuffer;
-	int adr,codeErreur;
+	int adr,codeErreur, n;
 	int maxSize;
 	if (which == SyscallException)
 	{
@@ -124,13 +124,18 @@ ExceptionHandler (ExceptionType which)
 				}
 				break;
 
+			case SC_PutInt:
+				n = machine->ReadRegister(4);
+				n = synchconsole->SynchPutInt(n);
+				machine->WriteRegister(2, n);
+				break;
+
 			case SC_Exit:
 				codeErreur = machine->ReadRegister(4);
 				printf("Arret du programme avec le code : %d\n", codeErreur);
 				DEBUG('a',"Program exit");
 				interrupt->Halt ();
 				break;
-
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
 				ASSERT(FALSE);
