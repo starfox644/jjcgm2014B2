@@ -43,7 +43,17 @@ return  ch;
 
 void SynchConsole::SynchPutString(const char s[])
 {
-	// ...
+	int i = 0;
+
+	// on traite chaque caractere jusqu'au caractere '\0'
+	while (s[i] != '\0') {
+		console->PutChar (s[i]);
+		writeDone->P ();
+		i++;
+	}
+	// on traite le '\0' restant
+	console->PutChar (s[i]);
+	writeDone->P ();
 }
 
 void SynchConsole::SynchGetString(char *s, int n)
