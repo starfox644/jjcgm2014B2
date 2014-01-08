@@ -50,7 +50,8 @@ char SynchConsole::SynchGetChar()
 	char ch;
 	readAvail->P ();		// wait for character to arrive
 	ch = console->GetChar ();
-return  ch;
+
+	return  ch;
 }
 
 /**
@@ -74,14 +75,28 @@ void SynchConsole::SynchPutString(const char s[])
  */
 void SynchConsole::SynchGetString(char *s, int n)
 {
-	// ...
+	int i = 0;
+	char ch = 0;
+
+	while (i < n-1 && ch != '\n' && ch != EOF) {
+		// wait for character to arrive
+		readAvail->P ();
+		ch = console->GetChar ();
+
+		if (ch != EOF) {
+			s[i] = ch;
+			i++;
+		}
+	}
+
+	s[i] = '\0';
 }
 
 /**
-*	from : MIPS string adress in its memory
-*	to : nachOs string adress where it will be saved, must have size+1 chars
-*          size : maximum number of characters
-*/
+ *	from : MIPS string adress in its memory
+ *	to : nachOs string adress where it will be saved, must have size+1 chars
+ *          size : maximum number of characters
+ */
 void copyStringFromMachine(int from, char *to, unsigned size)
 {
 	unsigned int i = 0;
@@ -92,6 +107,20 @@ void copyStringFromMachine(int from, char *to, unsigned size)
 		i++;
 	}
 	to[i] = '\0';
+}
+
+/**
+ *  from : string adress in memory where the string read was saved
+ *  to : buffer adress in MIPS
+ */
+void copyStringToMachine(char* from, int to)
+{
+	int i = 0;
+	while(from[i] != '\0')
+	{
+		machine->WriteMem(to+i, 1, (int)from[i]);
+		i++;
+	}
 }
 
 #endif // CHANGED

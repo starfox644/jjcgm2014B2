@@ -33,6 +33,12 @@ private:
  */
  void copyStringFromMachine(int from, char *to, unsigned size);
 
+ /**
+  *  from : string adress in memory where the string read was saved
+  *  to : buffer adress in MIPS
+  */
+ void copyStringToMachine(char* from, int to);
+
 #endif // SYNCHCONSOLE_H
 
 #endif // CHANGED
