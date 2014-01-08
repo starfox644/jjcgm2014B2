@@ -3,6 +3,6 @@
 int main()
 {
 	// System call PutString test
-	PutString("Hello World !");
+	PutString("Hello World !\n");
     Halt();
 }
