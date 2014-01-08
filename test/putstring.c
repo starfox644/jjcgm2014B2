@@ -2,6 +2,7 @@
 
 int main()
 {
+	// System call PutString test
 	PutString("Hello World !");
     Halt();
 }

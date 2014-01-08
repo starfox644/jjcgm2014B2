@@ -2,7 +2,7 @@
 
 int main()
 {
-	char *s;
-	PutString(s);
+	// Test with a NULL pointer to ensure robustness
+	PutString(0);
     Halt();
 }
