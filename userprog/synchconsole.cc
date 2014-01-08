@@ -70,7 +70,7 @@ void copyStringFromMachine(int from, char *to, unsigned size)
 {
 	unsigned int i = 0;
 	int result;
-	// While there’s char to read, we read byte by byte and put it in to
+	// While there’s char to read, we read byte by byte and put it in array to
 	while (i < size && machine->ReadMem(from+i, 1, &result)) {
 		to[i] = (char) result;
 		i++;
