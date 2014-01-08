@@ -51,4 +51,20 @@ void SynchConsole::SynchGetString(char *s, int n)
 	// ...
 }
 
+/**
+*	from : MIPS string adress in its memory
+*	to : nachOs string adress where it will be saved
+*          size : maximum number of characters
+*/
+void copyStringFromMachine(int from, char *to, unsigned size)
+{
+	unsigned int i = 0;
+	int result;
+	// While there’s char to read, we read byte by byte and put it in to
+	while (i < size && machine->ReadMem(from+i, 1, &result)) {
+		to[i] = (char) result;
+		i++;
+	}
+}
+
 #endif // CHANGED
