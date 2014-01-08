@@ -82,27 +82,32 @@ ExceptionHandler (ExceptionType which)
 				DEBUG ('a', "Shutdown, initiated by user program.\n");
 				interrupt->Halt ();
 				break;
+
 			case SC_PutChar:
 				// reads R4 (argument) into a character
 				ch = (char)machine->ReadRegister(4);
 				// writes the character
 				synchconsole->SynchPutChar(ch);
 				break;
+
 			case SC_GetChar:
 				ch = synchconsole->SynchGetChar();
 				// writes the character into R2
 				machine->WriteRegister(2, (int)ch);
 				break;
+
 			case SC_PutString:
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1) ;
 				synchconsole->SynchPutString(buffer);
 				break;
+
 			case SC_GetString:
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				dynBuffer = new char[maxSize];
+				printf("alloc : %d", maxSize);
 				if(dynBuffer != NULL)
 				{
 					// allocation successfull
@@ -118,12 +123,14 @@ ExceptionHandler (ExceptionType which)
 					machine->WriteRegister(2, -1);
 				}
 				break;
+
 			case SC_Exit:
 				codeErreur = machine->ReadRegister(4);
 				printf("Arret du programme avec le code : %d\n", codeErreur);
 				DEBUG('a',"Program exit");
 				interrupt->Halt ();
 				break;
+
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
 				ASSERT(FALSE);

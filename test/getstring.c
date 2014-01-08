@@ -4,9 +4,10 @@ int main()
 {
 	char s[5];
 
-
-	GetString(s, 5);
-	PutString(s);
+	if(GetString(s, 5) != -1)
+		PutString(s);
+	else
+		PutString("Erreur de GetString");
 
 	return 0;
 }

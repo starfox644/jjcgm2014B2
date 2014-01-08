@@ -76,14 +76,14 @@ void SynchConsole::SynchPutString(const char s[])
 void SynchConsole::SynchGetString(char *s, int n)
 {
 	int i = 0;
-	char ch;
+	char ch = 0;
 
 	while (i < n-1 && ch != '\n' && ch != EOF) {
 		// wait for character to arrive
 		readAvail->P ();
 		ch = console->GetChar ();
 
-		if (ch != '\n' && ch != EOF) {
+		if (ch != EOF) {
 			s[i] = ch;
 			i++;
 		}
@@ -118,7 +118,8 @@ void copyStringToMachine(char* from, int to)
 	int i = 0;
 	while(from[i] != '\0')
 	{
-		machine->WriteMem(to, 1, (int)from[i]);
+		machine->WriteMem(to+i, 1, (int)from[i]);
+		i++;
 	}
 }
 
