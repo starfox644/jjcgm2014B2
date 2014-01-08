@@ -8,6 +8,8 @@
 #include "copyright.h"
 #include "system.h"
 
+
+
 // This defines *all* of the global data structures used by Nachos.
 // These are all initialized and de-allocated by this file.
 
@@ -16,8 +18,9 @@ Thread *threadToBeDestroyed;	// the thread that just finished
 Scheduler *scheduler;		// the ready list
 Interrupt *interrupt;		// interrupt status
 Statistics *stats;		// performance metrics
-Timer *timer;			// the hardware timer device,
-					// for invoking context switches
+Timer *timer;			// the hardware timer device, for invoking context switches
+
+
 
 #ifdef FILESYS_NEEDED
 FileSystem *fileSystem;
@@ -29,6 +32,9 @@ SynchDisk *synchDisk;
 
 #ifdef USER_PROGRAM		// requires either FILESYS or FILESYS_STUB
 Machine *machine;		// user program memory and registers
+#ifdef CHANGED
+SynchConsole *synchconsole;
+#endif // CHANGED
 #endif
 
 #ifdef NETWORK
@@ -83,6 +89,9 @@ Initialize (int argc, char **argv)
 
 #ifdef USER_PROGRAM
     bool debugUserProg = FALSE;	// single step user program
+#ifdef CHANGED
+    synchconsole = new SynchConsole(NULL, NULL);
+#endif // CHANGED
 #endif
 #ifdef FILESYS_NEEDED
     bool format = FALSE;	// format disk
@@ -186,6 +195,9 @@ Cleanup ()
 
 #ifdef USER_PROGRAM
     delete machine;
+#ifdef CHANGED
+    delete synchconsole;
+#endif // CHANGED
 #endif
 
 #ifdef FILESYS_NEEDED
