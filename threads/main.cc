@@ -59,6 +59,9 @@
 extern void ThreadTest (void), Copy (const char *unixFile, const char *nachosFile);
 extern void Print (char *file), PerformanceTest (void);
 extern void StartProcess (char *file), ConsoleTest (char *in, char *out);
+#ifdef CHANGED
+	extern void SynchConsoleTest (char *in, char *out);
+#endif
 extern void MailTest (int networkID);
 
 //----------------------------------------------------------------------
@@ -116,7 +119,7 @@ main (int argc, char **argv)
 #ifdef CHANGED
 		else if (!strcmp (*argv, "-sc")) {
 			if (argc == 1)
-				ConsoleTest (NULL, NULL);
+				SynchConsoleTest (NULL, NULL);
 			else
 			{
 				ASSERT (argc > 2);
