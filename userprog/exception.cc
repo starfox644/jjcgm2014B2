@@ -71,7 +71,9 @@ ExceptionHandler (ExceptionType which)
 #ifdef CHANGED
 	char ch;
 	char buffer[MAX_STRING_SIZE];
+	char* dynBuffer;
 	int adr,codeErreur;
+	int maxSize;
 	if (which == SyscallException)
 	{
 		switch (type)
@@ -96,6 +98,25 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1) ;
 				synchconsole->SynchPutString(buffer);
+				break;
+			case SC_GetString:
+				adr = machine->ReadRegister(4);
+				maxSize = machine->ReadRegister(5);
+				dynBuffer = new char[maxSize];
+				if(dynBuffer != NULL)
+				{
+					// allocation successfull
+					synchconsole->SynchGetString(buffer, maxSize);
+					copyStringToMachine(buffer, adr);
+					// return 0 for success
+					machine->WriteRegister(2, 0);
+					delete dynBuffer;
+				}
+				else
+				{
+					// allocation error : returns -1
+					machine->WriteRegister(2, -1);
+				}
 				break;
 			case SC_Exit:
 				codeErreur = machine->ReadRegister(4);

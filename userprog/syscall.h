@@ -148,8 +148,9 @@ void PutString(char* s);
 
 /*
  * GetString writes in s less than n characters read on entry. Stop on new line or EOF.
+ * Returns -1 on error
  */
-void GetString(char* s, int n);
+int GetString(char* s, int n);
 
 /**
  * GetChar returns a character which was entered

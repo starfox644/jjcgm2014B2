@@ -109,4 +109,17 @@ void copyStringFromMachine(int from, char *to, unsigned size)
 	to[i] = '\0';
 }
 
+/**
+ *  from : string adress in memory where the string read was saved
+ *  to : buffer adress in MIPS
+ */
+void copyStringToMachine(char* from, int to)
+{
+	int i = 0;
+	while(from[i] != '\0')
+	{
+		machine->WriteMem(to, 1, (int)from[i]);
+	}
+}
+
 #endif // CHANGED
