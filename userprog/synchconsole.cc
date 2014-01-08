@@ -13,6 +13,9 @@ static void ReadAvail(int arg) { readAvail->V(); }
 
 static void WriteDone(int arg) { writeDone->V(); }
 
+/**
+ * SynchConsole constructor
+ */
 SynchConsole::SynchConsole(char *readFile, char *writeFile)
 {
 	readAvail = new Semaphore("read avail", 0);
@@ -20,6 +23,9 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile)
 	console = new Console (readFile, writeFile, ReadAvail, WriteDone, 0);
 }
 
+/**
+ * SynchConsole destructor
+ */
 SynchConsole::~SynchConsole()
 {
 	delete console;
@@ -27,12 +33,18 @@ SynchConsole::~SynchConsole()
 	delete readAvail;
 }
 
+/**
+ * Print the character given in parameter
+ */
 void SynchConsole::SynchPutChar(const char ch)
 {
 	console->PutChar (ch);
 	writeDone->P ();		// wait for write to finish
 }
 
+/**
+ * Ask a character in the console
+ */
 char SynchConsole::SynchGetChar()
 {
 	char ch;
@@ -41,6 +53,10 @@ char SynchConsole::SynchGetChar()
 return  ch;
 }
 
+/**
+ * Print the string given in parameter
+ * This function suppose that 's' is a valid string adress
+ */
 void SynchConsole::SynchPutString(const char s[])
 {
 	int i = 0;
@@ -53,6 +69,9 @@ void SynchConsole::SynchPutString(const char s[])
 	}
 }
 
+/**
+ * Ask for a string in the console
+ */
 void SynchConsole::SynchGetString(char *s, int n)
 {
 	// ...

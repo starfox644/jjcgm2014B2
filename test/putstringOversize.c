@@ -3,6 +3,6 @@
 int main()
 {
 	// Test with oversize string
-	PutString("abcdefghijklmnopqrstuvwxyz");
+	PutString("abcdefghijklmnopqrstuvwxyz\n");
     Halt();
 }
