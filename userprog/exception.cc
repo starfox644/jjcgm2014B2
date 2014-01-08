@@ -68,8 +68,8 @@ void
 ExceptionHandler (ExceptionType which)
 {
 	int type = machine->ReadRegister (2);
-
 #ifdef CHANGED
+	char ch;
 	if (which == SyscallException)
 	{
 		switch (type)
@@ -79,7 +79,10 @@ ExceptionHandler (ExceptionType which)
 				interrupt->Halt ();
 				break;
 			case SC_PutChar:
-				// putchar to do
+				// reads R4 (argument) into a character
+				ch = (char)machine->ReadRegister(4);
+				// writes the character
+				synchconsole->SynchPutChar(ch);
 				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);

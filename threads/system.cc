@@ -89,9 +89,6 @@ Initialize (int argc, char **argv)
 
 #ifdef USER_PROGRAM
     bool debugUserProg = FALSE;	// single step user program
-#ifdef CHANGED
-    synchconsole = new SynchConsole(NULL, NULL);
-#endif // CHANGED
 #endif
 #ifdef FILESYS_NEEDED
     bool format = FALSE;	// format disk
@@ -166,6 +163,9 @@ Initialize (int argc, char **argv)
 
 #ifdef USER_PROGRAM
     machine = new Machine (debugUserProg);	// this must come first
+#ifdef CHANGED
+    synchconsole = new SynchConsole(NULL, NULL);
+#endif // CHANGED
 #endif
 
 #ifdef FILESYS
