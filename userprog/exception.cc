@@ -71,7 +71,7 @@ ExceptionHandler (ExceptionType which)
 #ifdef CHANGED
 	char ch;
 	char buffer[MAX_STRING_SIZE];
-	int adr;
+	int adr,codeErreur;
 	if (which == SyscallException)
 	{
 		switch (type)
@@ -94,7 +94,8 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Exit:
-				adr = machine->ReadRegister(2);
+				codeErreur = machine->ReadRegister(2);
+				printf("Arret du programme avec le code : %d\n", codeErreur);
 				DEBUG('a',"Program exit");
 				interrupt->Halt ();
 				break;
