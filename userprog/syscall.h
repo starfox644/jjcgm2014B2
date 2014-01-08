@@ -33,6 +33,7 @@
 #define SC_PutChar	 11
 #define SC_PutString 12
 #define SC_GetChar	 13
+#define SC_GetString 14
 #endif //CHANGED
 
 #ifdef IN_USER_MODE
@@ -144,6 +145,11 @@ void PutChar(char c);
  * PutString writes in console the given string at the adress
  */
 void PutString(char* s);
+
+/*
+ * GetString writes in s less than n characters read on entry. Stop on new line or EOF.
+ */
+void GetString(char* s, int n);
 
 /**
  * GetChar returns a character which was entered
