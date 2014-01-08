@@ -161,7 +161,7 @@ int GetString(char* s, int n);
 /**
  * GetChar returns a character which was entered
  */
-char GetChar();
+int GetChar();
 
 #endif //CHANGED
 
