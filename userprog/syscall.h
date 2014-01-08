@@ -29,7 +29,10 @@
 #define SC_Close	8
 #define SC_Fork		9
 #define SC_Yield	10
+#ifdef CHANGED
 #define SC_PutChar	11
+#define SC_PutString 12
+#endif //CHANGED
 
 #ifdef IN_USER_MODE
 
@@ -129,10 +132,20 @@ void Fork (void (*func) ());
  */
 void Yield ();
 
+#ifdef CHANGED
+
 /*
- * PutChar affiche en console le caractere passe en parametre
+ * PutChar writes in console the given character
  */
 void PutChar(char c);
+
+/*
+ * PutString writes in console the given string at the adress
+ */
+void PutString(char* s);
+
+#endif //CHANGED
+
 #endif // IN_USER_MODE
 
 #endif /* SYSCALL_H */
