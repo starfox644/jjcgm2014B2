@@ -17,7 +17,7 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile)
 {
 	readAvail = new Semaphore("read avail", 0);
 	writeDone = new Semaphore("write done", 0);
-	console = ...
+	console = new Console (readFile, writeFile, ReadAvail, WriteDone, 0);
 }
 
 SynchConsole::~SynchConsole()
@@ -29,12 +29,16 @@ SynchConsole::~SynchConsole()
 
 void SynchConsole::SynchPutChar(const char ch)
 {
-	// ...
+	console->PutChar (ch);
+	writeDone->P ();		// wait for write to finish
 }
 
 char SynchConsole::SynchGetChar()
 {
-	// ...
+	char ch;
+	readAvail->P ();		// wait for character to arrive
+	ch = console->GetChar ();
+return  ch;
 }
 
 void SynchConsole::SynchPutString(const char s[])
