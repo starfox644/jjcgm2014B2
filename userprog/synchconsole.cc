@@ -67,9 +67,6 @@ void SynchConsole::SynchPutString(const char s[])
 		writeDone->P ();
 		i++;
 	}
-	// on traite le '\0' restant
-	console->PutChar (s[i]);
-	writeDone->P ();
 }
 
 /**
