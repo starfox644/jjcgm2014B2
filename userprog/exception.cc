@@ -131,10 +131,10 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Exit:
-				codeErreur = machine->ReadRegister(4);
-				printf("Arret du programme avec le code : %d\n", codeErreur);
+				codeRetour = machine->ReadRegister(4); // on recupere le code retour contenu dans le registre r4
+				printf("Arret du programme avec le code retour : %d\n", codeRetour); // on affiche le code retour
 				DEBUG('a',"Program exit");
-				interrupt->Halt ();
+				interrupt->Halt ();	// on arrete proprement avec une interruption.
 				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
