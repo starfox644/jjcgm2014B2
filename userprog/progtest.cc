@@ -127,7 +127,16 @@ SynchConsoleTest (char *in, char *out)
 	char ch;
 	SynchConsole *synchconsole = new SynchConsole(in, out);
 	while ((ch = synchconsole->SynchGetChar()) != EOF)
-		synchconsole->SynchPutChar(ch);
+	{
+		if (ch == 'c')
+		{
+			synchconsole->SynchPutChar('<');
+			synchconsole->SynchPutChar(ch);
+			synchconsole->SynchPutChar('>');
+		}
+		else
+			synchconsole->SynchPutChar(ch);
+	}
 	fprintf(stderr, "Solaris: EOF detected in SynchConsole!\n");
 }
 #endif //CHANGED
