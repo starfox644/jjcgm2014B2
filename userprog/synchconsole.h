@@ -26,6 +26,13 @@ private:
 	Console *console;
 };
 
+/**
+ *	from : MIPS string adress in its memory
+ *	to : nachOs string adress where it will be saved, must have size+1 chars
+ *          size : maximum number of characters
+ */
+ void copyStringFromMachine(int from, char *to, unsigned size);
+
 #endif // SYNCHCONSOLE_H
 
 #endif // CHANGED

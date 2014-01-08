@@ -70,6 +70,8 @@ ExceptionHandler (ExceptionType which)
 	int type = machine->ReadRegister (2);
 #ifdef CHANGED
 	char ch;
+	char buffer[MAX_STRING_SIZE];
+	int adr;
 	if (which == SyscallException)
 	{
 		switch (type)
@@ -85,8 +87,11 @@ ExceptionHandler (ExceptionType which)
 				synchconsole->SynchPutChar(ch);
 				break;
 			case SC_PutString:
-
-			break;
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1) ;
+				synchconsole->SynchPutString(buffer);
+				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
 				ASSERT(FALSE);
