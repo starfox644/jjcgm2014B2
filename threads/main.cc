@@ -115,7 +115,15 @@ main (int argc, char **argv)
 		}
 #ifdef CHANGED
 		else if (!strcmp (*argv, "-sc")) {
-			SynchConsoleTest (*(argv + 1), *(argv + 2));
+			if (argc == 1)
+				ConsoleTest (NULL, NULL);
+			else
+			{
+				ASSERT (argc > 2);
+				SynchConsoleTest (*(argv + 1), *(argv + 2));
+				argCount = 3;
+			}
+			interrupt->Halt ();
 		}
 #endif
 
