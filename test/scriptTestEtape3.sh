@@ -33,6 +33,11 @@ do
                 ./nachos-step3 -rs 0 -x  $files > /tmp/resultat_test_Partie3_etape2
                 cat /tmp/resultat_test_Partie3_etape2
                 echo ''
+		read -p "Passer au test suivant ? [O/N]" rep
+		case $rep in
+			[Oo\n]* );;
+			[Nn]* ) echo 'Au revoir!'; exit;;
+		esac
         fi
 done
 
@@ -60,6 +65,12 @@ do
                 ./nachos-step3 -rs 0 -x  $files > /tmp/resultat_test_Partie3_etape3
                 cat /tmp/resultat_test_Partie3_etape3
                 echo ''
+		read -p "Passer au test suivant ? [O/N]" rep
+		case $rep in
+			[Oo\n]* );;
+			[Nn]* ) echo 'Au revoir!'; exit;;
+		esac
         fi
 done
 
+echo 'Tests finis!'

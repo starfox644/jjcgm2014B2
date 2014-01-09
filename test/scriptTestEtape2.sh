@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #script creer pour lancer tous les programmes de tests
 #pour l'étape 2 à la suite.
-
 
 echo ********************************************
 echo * Lancement des tests de la partie 2	*
@@ -28,10 +27,16 @@ do
                 echo '* lancement du programme de test :' $files'*'
                 echo '***************************************************************************************'
                 echo ''    
-		echo $PWD
                 ./nachos-step2 -x $files > /tmp/resultat_test_etape2
                 cat /tmp/resultat_test_etape2
                 echo ''
+		read -p "Passer au test suivant ? [O/N]" rep
+		case $rep in
+			[Oo\n]* );;
+			[Nn]* ) echo 'Au revoir!'; exit;;
+		esac
         fi
 done
+
+echo 'Tests finis!'
 
