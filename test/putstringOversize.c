@@ -1,13 +1,13 @@
 #include "syscall.h"
-
+#define MAX MAX_STRING_SIZE + 10
 int main()
 {
 	// Test quand une chaine de caracteres depasse la taille maximum autorisee (MAX_STRING_SIZE)
-	int i, max = MAX_STRING_SIZE+10;
+	int i;
 //	int cpt;
-	char s[max];
+	char s[MAX];
 	// On ajoute l'alphabet jusqu'a la taille entree dans max-1 (pour le \0)
-	for (i=0; i < max-1; i++)
+	for (i=0; i < MAX-1; i++)
 	{
 		if (i%10 == 0)
 			s[i] = '|';
