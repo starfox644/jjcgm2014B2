@@ -8,5 +8,5 @@ int main()
 		s[i] = ('a'+i)%26;
 	// Test with oversize string
 	PutString(s);
-    Halt();
+    return 0;
 }
