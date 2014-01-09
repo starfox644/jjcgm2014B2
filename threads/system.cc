@@ -119,12 +119,18 @@ Initialize (int argc, char **argv)
 	    }
 	  else if (!strcmp (*argv, "-rs"))
 	    {
-		ASSERT (argc > 1);
-		RandomInit (atoi (*(argv + 1)));	// initialize pseudo-random
-		// number generator
-		randomYield = TRUE;
-		argCount = 2;
-	    }
+#ifdef CHANGED
+			if (argc > 1){
+				RandomInit (atoi (*(argv + 1)));	// initialize pseudo-random
+				// number generator
+				randomYield = TRUE;
+				argCount = 2;
+			}else{
+				fprintf(stderr,"\nErreur, problème d'arguments\n");
+				Exit(-1);
+			}
+		}
+#endif
 #ifdef USER_PROGRAM
 	  if (!strcmp (*argv, "-s"))
 	      debugUserProg = TRUE;
