@@ -25,7 +25,7 @@
 //      memory, and jump to it.
 //----------------------------------------------------------------------
 
-void
+int
 StartProcess (char *filename)
 {
 	OpenFile *executable = fileSystem->Open (filename);
@@ -34,7 +34,7 @@ StartProcess (char *filename)
 	if (executable == NULL)
 	{
 		printf ("Unable to open file %s\n", filename);
-		return;
+		Exit(-1);
 	}
 	space = new AddrSpace (executable);
 	currentThread->space = space;
@@ -48,6 +48,7 @@ StartProcess (char *filename)
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
 	// by doing the syscall "exit"
+	return 0;
 }
 
 // Data structures needed for the console test.  Threads making
