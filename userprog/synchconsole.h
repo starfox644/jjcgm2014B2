@@ -41,13 +41,13 @@ private:
  *	to : nachOs string adress where it will be saved, must have size+1 chars
  *          size : maximum number of characters
  */
- void copyStringFromMachine(int from, char *to, unsigned size);
+ bool copyStringFromMachine(int from, char *to, unsigned size);
 
  /**
   *  from : string adress in memory where the string read was saved
   *  to : buffer adress in MIPS
   */
- void copyStringToMachine(char* from, int to);
+ bool copyStringToMachine(char* from, int to);
 
 #endif // SYNCHCONSOLE_H
 

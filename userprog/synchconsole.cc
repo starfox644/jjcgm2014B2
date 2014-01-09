@@ -126,30 +126,33 @@ int SynchConsole::SynchPutInt(int n)
  *	to : nachOs string adress where it will be saved, must have size+1 chars
  *          size : maximum number of characters
  */
-void copyStringFromMachine(int from, char *to, unsigned size)
+bool copyStringFromMachine(int from, char *to, unsigned size)
 {
 	unsigned int i = 0;
 	int result;
+	bool err = true;
 	// While there’s char to read, we read byte by byte and put it in array to
-	while (i < size && machine->ReadMem(from+i, 1, &result) && (char)result != '\0') {
+	while (i < size && (err = machine->ReadMem(from+i, 1, &result)) && (char)result != '\0') {
 		to[i] = (char) result;
 		i++;
 	}
 	to[i] = '\0';
+	return err;
 }
 
 /**
  *  from : string adress in memory where the string read was saved
  *  to : buffer adress in MIPS
  */
-void copyStringToMachine(char* from, int to)
+bool copyStringToMachine(char* from, int to)
 {
 	int i = 0;
-	while(from[i] != '\0')
+	bool err = true;
+	while(from[i] != '\0' && (err = machine->WriteMem(to+i, 1, (int)from[i])))
 	{
-		machine->WriteMem(to+i, 1, (int)from[i]);
 		i++;
 	}
+	return err;
 }
 
 

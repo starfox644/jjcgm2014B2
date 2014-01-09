@@ -99,9 +99,13 @@ ExceptionHandler (ExceptionType which)
 			case SC_PutString:
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
-				copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1) ;
-				n = synchconsole->SynchPutString(buffer);
-				machine->WriteRegister(2, n);
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = synchconsole->SynchPutString(buffer);
+					machine->WriteRegister(2, n);
+				}
+				else
+					machine->WriteRegister(2, -1);
 				break;
 
 			case SC_GetString:
@@ -112,9 +116,13 @@ ExceptionHandler (ExceptionType which)
 				{
 					// allocation successfull
 					n = synchconsole->SynchGetString(dynBuffer, maxSize);
-					copyStringToMachine(dynBuffer, adr);
-					// return 0 for success
-					machine->WriteRegister(2, n);
+					if (copyStringToMachine(dynBuffer, adr))
+					{
+						// return 0 for success
+						machine->WriteRegister(2, n);
+					}
+					else
+						machine->WriteRegister(2, -1);
 					delete dynBuffer;
 				}
 				else
