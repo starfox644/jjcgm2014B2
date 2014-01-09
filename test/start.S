@@ -23,7 +23,12 @@
 	.ent	__start
 __start:
 	jal	main
+#ifdef CHANGED
+	// la valeur de retour est dans r2, on la met dans r4 pour appeler exit avec
+	move	$4,$2
+#else
 	move	$4,$0		
+#endif
 	jal	Exit	 /* if we return from main, exit(0) */
 	.end __start
 
@@ -51,7 +56,6 @@ Halt:
 	.globl Exit
 	.ent	Exit
 Exit:
-	addiu $4,$2,#0
 	addiu $2,$0,SC_Exit
 	syscall
 	j	$31

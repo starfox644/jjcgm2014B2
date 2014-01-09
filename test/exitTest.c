@@ -14,5 +14,5 @@ int main()
 {
     print('a', 4);
 
-    Exit(42);
+    return 6;
 }
