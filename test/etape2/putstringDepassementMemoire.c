@@ -2,6 +2,6 @@
 
 int main()
 {
-	PutString(2045);//taille a modifier si on change la taille de la mémoire virtuelle
-    Halt();
+	PutString(9500);//taille a modifier si on change la taille de la mémoire virtuelle
+    return 0;
 }
