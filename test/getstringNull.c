@@ -8,6 +8,8 @@
 
 int main()
 {
-	GetString(0,10);
-    return 0;
+	if(GetString(0,10) == -1)
+		PutString("Erreur de GetString");
+
+	return 0;
 }
