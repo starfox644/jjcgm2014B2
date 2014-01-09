@@ -35,6 +35,7 @@
 #define SC_GetChar	 13
 #define SC_GetString 14
 #define SC_PutInt	 15
+#define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
 #ifdef IN_USER_MODE
