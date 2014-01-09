@@ -107,12 +107,11 @@ ExceptionHandler (ExceptionType which)
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				dynBuffer = new char[maxSize];
-				printf("alloc : %d", maxSize);
 				if(dynBuffer != NULL)
 				{
 					// allocation successfull
-					synchconsole->SynchGetString(buffer, maxSize);
-					copyStringToMachine(buffer, adr);
+					synchconsole->SynchGetString(dynBuffer, maxSize);
+					copyStringToMachine(dynBuffer, adr);
 					// return 0 for success
 					machine->WriteRegister(2, 0);
 					delete dynBuffer;
