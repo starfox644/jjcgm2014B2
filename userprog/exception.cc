@@ -101,6 +101,8 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					/*printf("buffer : \n %s\n", buffer);
+					printf("fin du buffer\n");*/
 					n = synchconsole->SynchPutString(buffer);
 					machine->WriteRegister(2, n);
 				}
