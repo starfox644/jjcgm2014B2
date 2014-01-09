@@ -10,18 +10,16 @@ echo
 PWD=`pwd`
 cd ..
 
-#programme que l'on veut tester pour les test
-PROG=$PWD/build/nachos-step3
-
 #on rajoute notre dossier d'étape correspondant
 directory=$PWD/build/etape2/ 
 
+#on efface les .o pour eviter des problèmes.
+`rm $directory*.o`
 #on lance notre recherche pour avoir les noms des fichiers executable
 command=`find $directory -executable` 
-#on efface les .o pour eviter des problèmes.
-`rm $directory/*.o`
-#Pour chaque programme executable existant dans notre recherche
 
+#Pour chaque programme executable existant dans notre recherche
+cd build
 for files in *$command*
 do
         if [ '$files' != $directory ]
@@ -32,7 +30,7 @@ do
                 echo '* lancement du programme de test :' $files'*'
                 echo '***************************************************************************************'
                 echo ''        
-                .$PROG -x -rs 0 $files > /tmp/resultat_test_Partie3_etape2
+                ./nachos-step3 -rs 0 -x  $files > /tmp/resultat_test_Partie3_etape2
                 cat /tmp/resultat_test_Partie3_etape2
                 echo ''
         fi
@@ -41,16 +39,14 @@ done
 ###########################################################################################################################################################################
 #on change de dossier pour faire les test de l'etape3
 
-cd ..
+`rm $directory/*.o`
 PWD2=`pwd`
-directory=$PWD/etape3/
-
+directory=$PWD2/etape3/
+#on efface les .o pour eviter des problèmes.
+`rm $directory*.o`
 #on lance notre recherche pour avoir les noms des fichiers executable
 command=`find $directory -executable` 
-#on efface les .o pour eviter des problèmes.
-`rm $directory/*.o`
-#Pour chaque programme executable existant dans notre recherche
-
+#Pour chaque programme executable existant dans notre recherchecd build
 for files in *$command*
 do
         if [ '$files' != $directory ]
@@ -61,7 +57,7 @@ do
                 echo '* lancement du programme de test :' $files'*'
                 echo '***************************************************************************************'
                 echo ''        
-                .$PROG -x -rs 0 $files > /tmp/resultat_test_Partie3_etape3
+                ./nachos-step3 -rs 0 -x  $files > /tmp/resultat_test_Partie3_etape3
                 cat /tmp/resultat_test_Partie3_etape3
                 echo ''
         fi

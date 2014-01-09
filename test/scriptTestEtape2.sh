@@ -10,19 +10,14 @@ echo
 #recuperation de l'emplacement ou nous somme
 PWD=`pwd`
 cd ..
-
-#programme que l'on veut lancer pour les tests
-PROG=$PWD/build/nachos-step2
-
-
 #on rajoute notre dossier d'étape correspondant
 directory=$PWD/build/etape2/ 
 #on lance notre recherche pour avoir les noms des fichiers executable
 command=`find $directory -executable` 
 #on efface les .o pour eviter des problèmes.
-`rm $directory/*.o`
+`rm $directory*.o`
 #Pour chaque programme executable existant dans notre recherche
-
+cd build
 for files in *$command*
 do
         if [ '$files' != $directory ]
@@ -32,8 +27,9 @@ do
                 echo '***************************************************************************************'
                 echo '* lancement du programme de test :' $files'*'
                 echo '***************************************************************************************'
-                echo ''        
-                .$PROG -x $files > /tmp/resultat_test_etape2
+                echo ''    
+		echo $PWD
+                ./nachos-step2 -x $files > /tmp/resultat_test_etape2
                 cat /tmp/resultat_test_etape2
                 echo ''
         fi
