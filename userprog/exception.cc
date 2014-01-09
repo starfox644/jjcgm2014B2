@@ -99,8 +99,13 @@ ExceptionHandler (ExceptionType which)
 			case SC_PutString:
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
-				copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1) ;
-				synchconsole->SynchPutString(buffer);
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = synchconsole->SynchPutString(buffer);
+					machine->WriteRegister(2, n);
+				}
+				else
+					machine->WriteRegister(2, -1);
 				break;
 
 			case SC_GetString:
@@ -110,10 +115,14 @@ ExceptionHandler (ExceptionType which)
 				if(dynBuffer != NULL)
 				{
 					// allocation successfull
-					synchconsole->SynchGetString(dynBuffer, maxSize);
-					copyStringToMachine(dynBuffer, adr);
-					// return 0 for success
-					machine->WriteRegister(2, 0);
+					n = synchconsole->SynchGetString(dynBuffer, maxSize);
+					if (copyStringToMachine(dynBuffer, adr))
+					{
+						// return 0 for success
+						machine->WriteRegister(2, n);
+					}
+					else
+						machine->WriteRegister(2, -1);
 					delete dynBuffer;
 				}
 				else
@@ -131,7 +140,7 @@ ExceptionHandler (ExceptionType which)
 
 			case SC_Exit:
 				codeErreur = machine->ReadRegister(4); // on recupere le code retour contenu dans le registre r4
-				printf("Arret du programme avec le code retour : %d\n", codeErreur); // on affiche le code retour
+				printf("Program stopped with return code : %d\n", codeErreur); // on affiche le code retour
 				DEBUG('a',"Program exit");
 				interrupt->Halt ();	// on arrete proprement avec une interruption.
 				break;

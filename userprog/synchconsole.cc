@@ -64,7 +64,7 @@ char SynchConsole::SynchGetChar()
  * Print the string given in parameter
  * This function suppose that 's' is a valid string adress
  */
-void SynchConsole::SynchPutString(const char s[])
+int SynchConsole::SynchPutString(const char s[])
 {
 	int i = 0;
 
@@ -76,34 +76,36 @@ void SynchConsole::SynchPutString(const char s[])
 		writeDone->P ();
 		i++;
 	}
-
 	pthread_mutex_unlock(&mutexWrite);
+	return i;
 }
 
 /**
  * Ask for a string in the console
  */
-void SynchConsole::SynchGetString(char *s, int n)
+int SynchConsole::SynchGetString(char *s, int n)
 {
 	int i = 0;
 	char ch = 0;
 
+	while (i < n-1 && ch != '\n' && ch != EOF)
+	{
 	pthread_mutex_lock(&mutexRead);
 
-	while (i < n-1 && ch != '\n' && ch != EOF) {
 		// wait for character to arrive
 		readAvail->P ();
 		ch = console->GetChar ();
 
-		if (ch != EOF) {
+		if (ch != EOF)
+		{
 			s[i] = ch;
 			i++;
 		}
 	}
-
 	s[i] = '\0';
-
 	pthread_mutex_unlock(&mutexRead);
+	return i;
+
 }
 
 /**
@@ -124,30 +126,33 @@ int SynchConsole::SynchPutInt(int n)
  *	to : nachOs string adress where it will be saved, must have size+1 chars
  *          size : maximum number of characters
  */
-void copyStringFromMachine(int from, char *to, unsigned size)
+bool copyStringFromMachine(int from, char *to, unsigned size)
 {
 	unsigned int i = 0;
 	int result;
+	bool err = true;
 	// While there’s char to read, we read byte by byte and put it in array to
-	while (i < size && machine->ReadMem(from+i, 1, &result) && (char)result != '\0') {
+	while (i < size && (err = machine->ReadMem(from+i, 1, &result)) && (char)result != '\0') {
 		to[i] = (char) result;
 		i++;
 	}
 	to[i] = '\0';
+	return err;
 }
 
 /**
  *  from : string adress in memory where the string read was saved
  *  to : buffer adress in MIPS
  */
-void copyStringToMachine(char* from, int to)
+bool copyStringToMachine(char* from, int to)
 {
 	int i = 0;
-	while(from[i] != '\0')
+	bool err = true;
+	while(from[i] != '\0' && (err = machine->WriteMem(to+i, 1, (int)from[i])))
 	{
-		machine->WriteMem(to+i, 1, (int)from[i]);
 		i++;
 	}
+	return err;
 }
 
 
