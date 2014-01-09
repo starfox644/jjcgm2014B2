@@ -146,7 +146,7 @@ void PutChar(char c);
 /*
  * PutString writes in console the given string at the adress
  */
-void PutString(char* s);
+int PutString(char* s);
 
 /**
  * Writes an int in console

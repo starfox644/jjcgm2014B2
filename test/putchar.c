@@ -1,5 +1,9 @@
 #include "syscall.h"
 
+/**
+ * Affiche n caracteres a partir du caractere c
+ * ex print(f, 3) affichera "fgh"
+ */
 void print(char c, int n)
 {
     int i;

@@ -12,16 +12,9 @@
 
 #include "syscall.h"
 
-int
-main ()
+int main ()
 {
-    int c;
-    int v;
-    v = 5;
-    c = 6;
-    v += c * 5;
     Halt ();
 
-    /* not reached */
     return 0;
 }
