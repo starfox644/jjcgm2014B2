@@ -76,6 +76,8 @@ ExceptionHandler (ExceptionType which)
 	int maxSize;
 	if (which == SyscallException)
 	{
+		currentThread->setIsSyscall(true);
+
 		switch (type)
 		{
 			case SC_Halt:
@@ -151,6 +153,10 @@ ExceptionHandler (ExceptionType which)
 				ASSERT(FALSE);
 			}
 		}
+		currentThread->setIsSyscall(false);
+	}
+	else if (which == AddressErrorException && currentThread->getIsSyscall()) {
+		// we do nothing
 	}
 #else
 	if ((which == SyscallException) && (type == SC_Halt))
