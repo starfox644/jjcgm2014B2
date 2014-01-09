@@ -1,5 +1,6 @@
 #include "syscall.h"
 
+// ecrit abcd et renvoie 6 en valeur de retour
 void print(char c, int n)
 {
     int i;

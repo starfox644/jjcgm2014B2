@@ -1,8 +1,9 @@
 #include "syscall.h"
 #define MAX MAX_STRING_SIZE + 50
+
+// Test quand une chaine de caracteres depasse la taille maximum autorisee (MAX_STRING_SIZE)
 int main()
 {
-	// Test quand une chaine de caracteres depasse la taille maximum autorisee (MAX_STRING_SIZE)
 	int i;
 	int cpt;
 	char s[MAX];

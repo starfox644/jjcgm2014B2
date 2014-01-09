@@ -1,8 +1,7 @@
 #include "syscall.h"
 
-
+// test de retour d'une valeur
 int main()
 {
-	// on retourne une valeur differente de 0
-    return 2;
+    return 42;
 }

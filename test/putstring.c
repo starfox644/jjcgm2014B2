@@ -1,5 +1,6 @@
 #include "syscall.h"
 
+// affiche la chaine hello world
 int main()
 {
 	// System call PutString test

@@ -1,8 +1,8 @@
 #include "syscall.h"
 
+// Test with some weird string
 int main()
 {
-	// Test with some weird string
 	PutString("!@#([])=+}{~ŷÿ$\n");
 	PutString("£%ê€§^¨%\n");
     Halt();
