@@ -58,7 +58,7 @@ char SynchConsole::SynchGetChar()
  * Print the string given in parameter
  * This function suppose that 's' is a valid string adress
  */
-void SynchConsole::SynchPutString(const char s[])
+int SynchConsole::SynchPutString(const char s[])
 {
 	int i = 0;
 
@@ -68,28 +68,31 @@ void SynchConsole::SynchPutString(const char s[])
 		writeDone->P ();
 		i++;
 	}
+	return i;
 }
 
 /**
  * Ask for a string in the console
  */
-void SynchConsole::SynchGetString(char *s, int n)
+int SynchConsole::SynchGetString(char *s, int n)
 {
 	int i = 0;
 	char ch = 0;
 
-	while (i < n-1 && ch != '\n' && ch != EOF) {
+	while (i < n-1 && ch != '\n' && ch != EOF)
+	{
 		// wait for character to arrive
 		readAvail->P ();
 		ch = console->GetChar ();
 
-		if (ch != EOF) {
+		if (ch != EOF)
+		{
 			s[i] = ch;
 			i++;
 		}
 	}
-
 	s[i] = '\0';
+	return i;
 }
 
 /**
