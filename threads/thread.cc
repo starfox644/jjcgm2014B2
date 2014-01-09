@@ -403,6 +403,18 @@ Thread::RestoreUserState ()
     for (int i = 0; i < NumTotalRegs; i++)
 	machine->WriteRegister (i, userRegisters[i]);
 }
+
+#ifdef CHANGED
+
+void Thread::setIsSyscall(bool b) {
+	isSyscall = b;
+}
+
+bool Thread::getIsSyscall() {
+	return isSyscall;
+}
+
+#endif
 #endif
 
 

@@ -76,68 +76,79 @@ extern void ThreadPrint (int arg);
 
 class Thread
 {
-  private:
-    // NOTE: DO NOT CHANGE the order of these first two members.
-    // THEY MUST be in this position for SWITCH to work.
-    int *stackTop;		// the current stack pointer
-    int machineState[MachineStateSize];	// all registers except for stackTop
+private:
+	// NOTE: DO NOT CHANGE the order of these first two members.
+	// THEY MUST be in this position for SWITCH to work.
+	int *stackTop;		// the current stack pointer
+	int machineState[MachineStateSize];	// all registers except for stackTop
 
-  public:
-      Thread (const char *debugName);	// initialize a Thread 
-     ~Thread ();		// deallocate a Thread
-    // NOTE -- thread being deleted
-    // must not be running when delete 
-    // is called
+public:
+	Thread (const char *debugName);	// initialize a Thread
+	~Thread ();		// deallocate a Thread
+	// NOTE -- thread being deleted
+	// must not be running when delete
+	// is called
 
-    // basic thread operations
+	// basic thread operations
 
-    void Fork (VoidFunctionPtr func, int arg);	// Make thread run (*func)(arg)
-    void Yield ();		// Relinquish the CPU if any 
-    // other thread is runnable
-    void Sleep ();		// Put the thread to sleep and 
-    // relinquish the processor
-    void Finish ();		// The thread is done executing
+	void Fork (VoidFunctionPtr func, int arg);	// Make thread run (*func)(arg)
+	void Yield ();		// Relinquish the CPU if any
+	// other thread is runnable
+	void Sleep ();		// Put the thread to sleep and
+	// relinquish the processor
+	void Finish ();		// The thread is done executing
 
-    void CheckOverflow ();	// Check if thread has 
-    // overflowed its stack
-    void setStatus (ThreadStatus st)
-    {
-	status = st;
-    }
-    const char *getName ()
-    {
-	return (name);
-    }
-    void Print ()
-    {
-	printf ("%s, ", name);
-    }
+	void CheckOverflow ();	// Check if thread has
+	// overflowed its stack
+	void setStatus (ThreadStatus st)
+	{
+		status = st;
+	}
+	const char *getName ()
+	{
+		return (name);
+	}
+	void Print ()
+	{
+		printf ("%s, ", name);
+	}
 
-  private:
-    // some of the private data for this class is listed above
+#ifdef CHANGED
+	void setIsSyscall(bool b);
+	bool getIsSyscall();
 
-    int *stack;			// Bottom of the stack 
-    // NULL if this is the main thread
-    // (If NULL, don't deallocate stack)
-    ThreadStatus status;	// ready, running or blocked
-    const char *name;
+#endif
 
-    void StackAllocate (VoidFunctionPtr func, int arg);
-    // Allocate a stack for thread.
-    // Used internally by Fork()
+private:
+	// some of the private data for this class is listed above
+
+	int *stack;			// Bottom of the stack
+	// NULL if this is the main thread
+	// (If NULL, don't deallocate stack)
+	ThreadStatus status;	// ready, running or blocked
+	const char *name;
+
+	void StackAllocate (VoidFunctionPtr func, int arg);
+	// Allocate a stack for thread.
+	// Used internally by Fork()
+
+#ifdef CHANGED
+	//indicates if we are in a syscall
+	bool isSyscall;
+#endif
 
 #ifdef USER_PROGRAM
-// A thread running a user program actually has *two* sets of CPU registers -- 
-// one for its state while executing user code, one for its state 
-// while executing kernel code.
+	// A thread running a user program actually has *two* sets of CPU registers --
+	// one for its state while executing user code, one for its state
+	// while executing kernel code.
 
-    int userRegisters[NumTotalRegs];	// user-level CPU register state
+	int userRegisters[NumTotalRegs];	// user-level CPU register state
 
-  public:
-    void SaveUserState ();	// save user-level register state
-    void RestoreUserState ();	// restore user-level register state
+public:
+	void SaveUserState ();	// save user-level register state
+	void RestoreUserState ();	// restore user-level register state
 
-    AddrSpace *space;		// User code this thread is running.
+	AddrSpace *space;		// User code this thread is running.
 #endif
 };
 
@@ -149,10 +160,10 @@ extern "C"
 //      enable interrupts
 //      call "func"
 //      (when func returns, if ever) call ThreadFinish()
-    void ThreadRoot ();
+void ThreadRoot ();
 
 // Stop running oldThread and start running newThread
-    void SWITCH (Thread * oldThread, Thread * newThread);
+void SWITCH (Thread * oldThread, Thread * newThread);
 }
 
 #endif				// THREAD_H
