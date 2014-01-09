@@ -3,6 +3,8 @@
 #ifndef SYNCHCONSOLE_H
 #define SYNCHCONSOLE_H
 
+#include <pthread.h>
+
 #include "copyright.h"
 #include "utility.h"
 #include "console.h"
@@ -30,6 +32,8 @@ public:
 
 private:
 	Console *console;
+	 pthread_mutex_t mutexRead;
+	 pthread_mutex_t mutexWrite;
 };
 
 /**
