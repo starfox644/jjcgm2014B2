@@ -1,6 +1,6 @@
 /*
  * userThreadMulti.c
- *
+ *	Programme qui crée 12 threads et qui attend qu'il ce termine
  *  Created on: 10 janv. 2014
  *      Author: galdween
  */

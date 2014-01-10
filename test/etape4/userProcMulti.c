@@ -1,6 +1,7 @@
 /*
  * userProcMulti.c
- *
+ *	Ce programme permet de lancer 12 processus du programme userThreadMulti qui va lui meme créée 12 thread.
+ *	Le but est d'avoir 12 processus lancer par notre programme de test qui crée eux meme 12 threads.
  *  Created on: 10 janv. 2014
  *      Author: galdween
  */
@@ -8,6 +9,7 @@
 #define MAX_PROC 12
 
 int main(){
+
 
 	int pid[MAX_PROC], i;
 	PutString("Lancement du programme de test userProcMulti\n");
