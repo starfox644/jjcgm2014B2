@@ -24,6 +24,9 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
+#ifdef CHANGED
+#include "userthread.h"
+#endif
 
 //----------------------------------------------------------------------
 // UpdatePC : Increments the Program Counter register in order to resume
@@ -150,6 +153,15 @@ ExceptionHandler (ExceptionType which)
 				// writes the number of characters written in return register
 				machine->WriteRegister(2, n);
 				break;
+
+#ifdef step3
+			case SC_UserThreadCreate:
+				printf("appel systeme user thread create\n");
+				n = machine->ReadRegister(4);
+				adr = machine->ReadRegister(5);
+				do_UserThreadCreate(n, adr);
+				break;
+#endif
 
 			case SC_Exit:
 				// read return code in r4 register

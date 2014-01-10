@@ -166,6 +166,11 @@ int GetString(char* s, int n);
  */
 int GetChar();
 
+/**
+ * Create a new user thread
+ */
+int UserThreadCreate(void f(void *arg), void *arg);
+
 #endif //CHANGED
 
 #endif // IN_USER_MODE
