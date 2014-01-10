@@ -16,6 +16,7 @@ int main()
 	pid = ForkExec("../etape4/pustring");
 	if(pid == -1){
 		PutString("Erreur lors du ForkExec\n");
+		return -1;
 	}
 	PutString("\n");
     return 0;
