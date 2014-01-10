@@ -156,7 +156,6 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef step3
 			case SC_UserThreadCreate:
-				printf("appel systeme user thread create\n");
 				n = machine->ReadRegister(4);
 				adr = machine->ReadRegister(5);
 				do_UserThreadCreate(n, adr);

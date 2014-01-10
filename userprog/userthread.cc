@@ -1,6 +1,8 @@
 #ifdef CHANGED
 #include "userthread.h"
 #include "thread.h"
+#include "system.h"
+#include "machine.h"
 
 /**
 *    f : 		function address to execute in the MIPS processor
@@ -14,15 +16,33 @@ int do_UserThreadCreate(int f, int arg)
 	fun.arg = arg;*/
 
 	Thread *newThread = new Thread("test");
+	// the new thread shares the memory space with the current thread
+	newThread->space = currentThread->space;
+	// sets initial argument of the thread
+	newThread->setInitArg(arg);
+
 	// creation of the thread, init and positionning in the file
 	// the new thread executes StartUserThread (saving register)
-	newThread->Fork(StartUserThread, 0);
+	newThread->Fork(StartUserThread, f);
 	return 0;
 }
 
 void StartUserThread(int f)
 {
-	printf("lancement du thread dans start user thread\n");
+	currentThread->space->InitRegisters();
+	currentThread->space->RestoreState ();	// load page table register
+
+	// copy the arg in register r4
+	machine->WriteRegister(4, currentThread->getInitArg());
+	// set PC
+	machine->WriteRegister(PCReg, f);
+	// set next PC
+	machine->WriteRegister(NextPCReg, f+4);
+	// set return address (none)
+	machine->WriteRegister(31, -1);
+	// set SP
+	machine->WriteRegister(StackReg, f+3*PageSize);
+	machine->Run ();		// jump to the user progam
 }
 
 #endif

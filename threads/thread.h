@@ -117,6 +117,9 @@ public:
 	void setIsSyscall(bool b);
 	bool getIsSyscall();
 
+	void setInitArg(int arg);
+	int getInitArg();
+
 #endif
 
 private:
@@ -135,6 +138,8 @@ private:
 #ifdef CHANGED
 	//indicates if we are in a syscall
 	bool isSyscall;
+	// initial argument of the thread
+	int initArg;
 #endif
 
 #ifdef USER_PROGRAM

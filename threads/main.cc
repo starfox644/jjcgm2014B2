@@ -83,9 +83,6 @@ main (int argc, char **argv)
 {
 	int argCount;		// the number of arguments for a particular command
 
-#ifdef step3
-	printf("step 3\n");
-#endif
 	DEBUG ('t', "Entering main");
 	(void) Initialize (argc, argv);
 

@@ -414,6 +414,16 @@ bool Thread::getIsSyscall() {
 	return isSyscall;
 }
 
+void Thread::setInitArg(int arg)
+{
+	initArg = arg;
+}
+
+int Thread::getInitArg()
+{
+	return initArg;
+}
+
 #endif
 #endif
 
