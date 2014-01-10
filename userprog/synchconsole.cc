@@ -50,9 +50,9 @@ void SynchConsole::SynchPutChar(const char ch)
 /**
  * Ask a character in the console
  */
-char SynchConsole::SynchGetChar()
+int SynchConsole::SynchGetChar()
 {
-	char ch;
+	int ch;
 
 	readAvail->P ();		// wait for character to arrive
 	ch = console->GetChar ();
@@ -86,9 +86,9 @@ int SynchConsole::SynchPutString(const char s[])
 int SynchConsole::SynchGetString(char *s, int n)
 {
 	int i = 0;
-	char ch = 0;
+	int ch = 0;
 
-	while (i < n-1 && ch != '\n' && ch != EOF)
+	while (i < n-1 && (char)ch != '\n' && ch != EOF)
 	{
 	pthread_mutex_lock(&mutexRead);
 
@@ -98,7 +98,7 @@ int SynchConsole::SynchGetString(char *s, int n)
 
 		if (ch != EOF)
 		{
-			s[i] = ch;
+			s[i] = (char)ch;
 			i++;
 		}
 	}
