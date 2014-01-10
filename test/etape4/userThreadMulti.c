@@ -7,33 +7,30 @@
 #include "syscall.h"
 #define MAX_THREAD 12
 
+sem_t sem;
+
 void f(void* arg)
 {
-	int i;
-	for (i = 0 ; i < 80 ; i++);
+	SemWait(&sem);
+	PutString("Lancement du thread\n");
 	PutChar('a');
 	PutChar('b');
 	PutChar('c');
 	PutChar('d');
-
+	PutChar('\n');
+	SemPost(&sem);
 }
 
 int main(){
 
-	int pthreadID[MAX_THREAD],i;
-	PutString("Lancement du programme de test userProcMulti\n");
-	for(i = 0; i < MAX_THREAD; i++){
-		PutString("Lancement du thread numéro : ");
-		PutInt(i);
-		PutString("\n");
-		pthreadID[i] = UserThreadCreate(f, 0);
-
+	int pthreadID[MAX_THREAD],i, error;
+	if((error = SemInit(&sem,1)) == -1){
+		return -1;
 	}
-	for(i = 0; i < MAX_THREAD; i ++){
-		if(UserThreadJoin(pthreadID[i], 0) == -1)
-			PutString("Erreur join du main sur le thread : \n");
-			PutInt(pthreadID[i]);
-			PutString("\n");
+
+	PutString("\n Lancement du programme de test userThreadMulti\n");
+	for(i = 0; i < MAX_THREAD; i++){
+		pthreadID[i] = UserThreadCreate(f, 0);
 	}
 	return 0;
 }
