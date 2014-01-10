@@ -41,7 +41,7 @@ void StartUserThread(int f)
 	// set return address (none)
 	machine->WriteRegister(31, -1);
 	// set SP
-	machine->WriteRegister(StackReg, f+3*PageSize);
+	machine->WriteRegister(StackReg, f+2*PageSize);
 	machine->Run ();		// jump to the user progam
 }
 
