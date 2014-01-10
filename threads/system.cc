@@ -19,8 +19,9 @@ Scheduler *scheduler;		// the ready list
 Interrupt *interrupt;		// interrupt status
 Statistics *stats;		// performance metrics
 Timer *timer;			// the hardware timer device, for invoking context switches
-
-
+#ifdef step4
+FrameProvider *frameProvider; //gestion des cadres
+#endif
 
 #ifdef FILESYS_NEEDED
 FileSystem *fileSystem;
@@ -168,6 +169,10 @@ Initialize (int argc, char **argv)
 #endif
     if (randomYield)		// start the timer (if needed)
 	timer = new Timer (TimerInterruptHandler, 0, randomYield);
+
+#ifdef step4
+    frameProvider = new FrameProvider();
+#endif
 
     threadToBeDestroyed = NULL;
 

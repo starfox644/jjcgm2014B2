@@ -21,6 +21,7 @@
 #include "noff.h"
 #ifdef CHANGED
 #include <string>
+class FrameProvider;
 #endif
 #include <strings.h>		/* for bzero */
 
@@ -132,7 +133,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	{
 		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
 #ifdef step4
-		pageTable[i].physicalPage = i+1;
+		pageTable[i].physicalPage = frameProvider->GetEmptyFrame();
 #else
 		pageTable[i].physicalPage = i;
 #endif

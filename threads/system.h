@@ -15,6 +15,9 @@
 #include "interrupt.h"
 #include "stats.h"
 #include "timer.h"
+#ifdef step4
+class FrameProvider;
+#endif
 
 #ifdef CHANGED
 #include "syscall.h"
@@ -32,7 +35,9 @@ extern Scheduler *scheduler;	// the ready list
 extern Interrupt *interrupt;	// interrupt status
 extern Statistics *stats;	// performance metrics
 extern Timer *timer;		// the hardware alarm clock
-
+#ifdef step4
+extern FrameProvider *frameProvider; // permet de gerer les cadres
+#endif
 #ifdef USER_PROGRAM
 #include "machine.h"
 extern Machine *machine;	// user program memory and registers
