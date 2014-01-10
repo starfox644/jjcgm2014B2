@@ -18,9 +18,9 @@ do
 	then
 		#on affiche le nom du programme et on lance le programme
 		echo ''
-		echo '**********************************************'
-		echo '* lancement du programme de test :' $files  '*'
-		echo '**********************************************'
+		echo '***************************************************************************************'
+		echo '* lancement du programme de test :' $files'*'
+		echo '***************************************************************************************'
 		echo ''	
 		./nachos-step2 -x $files > /tmp/resultat_test_etape2
 		cat /tmp/resultat_test_etape2
