@@ -10,24 +10,43 @@
 */
 int do_UserThreadCreate(int f, int arg)
 {
-	// we create a function_t containing the function f and it’s arguments
-	/*function_t fun;
-	fun.f = f;
-	fun.arg = arg;*/
-
+	int n;
+	bool error = false;
 	Thread *newThread = new Thread("test");
-	// the new thread shares the memory space with the current thread
-	newThread->space = currentThread->space;
-	// sets initial argument of the thread
-	newThread->setInitArg(arg);
 
-	// creation of the thread, init and positionning in the file
-	// the new thread executes StartUserThread (saving register)
-	newThread->Fork(StartUserThread, f);
-	return 0;
+	// test the accessibility of the code and the argument
+    error = !machine->ReadMem(f, sizeof(int), &n);
+    if(!error)
+    {
+    	// accept arg 0 for passing NULL as argument
+    	error = (arg == 0) || !machine->ReadMem(arg, sizeof(int), &n);
+    	if(!error)
+    	{
+    		// test the accessibility of the stack
+    		error = !machine->ReadMem(f+STACK_OFFSET*PageSize, sizeof(int), &n);
+    	}
+    }
+
+    if(!error)
+    {
+		// the new thread shares the memory space with the current thread
+		newThread->space = currentThread->space;
+		// sets initial argument of the thread
+		newThread->setInitArg(arg);
+
+		// creation of the thread, init and positionning in the file
+		// the new thread executes StartUserThread (saving register)
+		newThread->Fork(StartUserThread, f);
+    	return 0;
+    }
+    else
+    {
+    	delete newThread;
+    	return -1;
+    }
 }
 
-void StartUserThread(int f)
+static void StartUserThread(int f)
 {
 	currentThread->space->InitRegisters();
 	currentThread->space->RestoreState ();	// load page table register
