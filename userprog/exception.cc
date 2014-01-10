@@ -159,8 +159,16 @@ ExceptionHandler (ExceptionType which)
 			case SC_UserThreadCreate:
 				n = machine->ReadRegister(4);
 				adr = machine->ReadRegister(5);
-				do_UserThreadCreate(n, adr);
-				machine->WriteRegister(2, 0);
+				if(do_UserThreadCreate(n, adr) == -1)
+				{
+					// error : returns -1
+					machine->WriteRegister(2, -1);
+				}
+				else
+				{
+					// success
+					machine->WriteRegister(2, 0);
+				}
 				break;
 
 			case SC_UserThreadExit:
@@ -182,6 +190,9 @@ ExceptionHandler (ExceptionType which)
 			}
 		}
 		currentThread->setIsSyscall(false);
+
+		// LB: Do not forget to increment the pc before returning!
+		UpdatePC ();
 	}
 	else if (which == AddressErrorException && currentThread->getIsSyscall()) {
 		// we do nothing, exception is ignored and current syscall will return -1
@@ -210,8 +221,5 @@ ExceptionHandler (ExceptionType which)
 		printf("type:%d)\n", type);
 		ASSERT (FALSE);
 	}
-
-	// LB: Do not forget to increment the pc before returning!
-	UpdatePC ();
 	// End of addition
 }
