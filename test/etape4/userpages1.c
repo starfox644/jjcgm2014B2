@@ -25,7 +25,6 @@ void f(void *s){
 }
 
 int main(){
-	int i;
 	UserThreadCreate(f, (void *) THIS);
 	f((void *) THAT);
 
