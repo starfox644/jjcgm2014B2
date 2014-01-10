@@ -159,6 +159,11 @@ ExceptionHandler (ExceptionType which)
 				n = machine->ReadRegister(4);
 				adr = machine->ReadRegister(5);
 				do_UserThreadCreate(n, adr);
+				machine->WriteRegister(2, 0);
+				break;
+
+			case SC_UserThreadExit:
+				do_UserThreadExit();
 				break;
 #endif
 

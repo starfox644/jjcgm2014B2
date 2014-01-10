@@ -171,6 +171,11 @@ int GetChar();
  */
 int UserThreadCreate(void f(void *arg), void *arg);
 
+/**
+ * Terminate the current thread
+ */
+void UserThreadExit();
+
 #endif //CHANGED
 
 #endif // IN_USER_MODE

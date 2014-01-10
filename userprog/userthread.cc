@@ -45,4 +45,9 @@ void StartUserThread(int f)
 	machine->Run ();		// jump to the user progam
 }
 
+void do_UserThreadExit()
+{
+	currentThread->Finish();
+}
+
 #endif
