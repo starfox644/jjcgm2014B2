@@ -35,6 +35,8 @@
 #define SC_GetChar	 13
 #define SC_GetString 14
 #define SC_PutInt	 15
+#define SC_UserThreadCreate 16
+#define SC_UserThreadExit 17
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
