@@ -8,6 +8,7 @@
 #include "copyright.h"
 #include "utility.h"
 #include "console.h"
+#include "synch.h"
 
 class SynchConsole {
 public:
@@ -32,8 +33,6 @@ public:
 
 private:
 	Console *console;
-	 pthread_mutex_t mutexRead;
-	 pthread_mutex_t mutexWrite;
 };
 
 /**

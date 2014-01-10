@@ -9,6 +9,9 @@ static Semaphore *readAvail;
 
 static Semaphore *writeDone;
 
+static Semaphore *semRead;
+static Semaphore *semWrite;
+
 static void ReadAvail(int arg) { readAvail->V(); }
 
 static void WriteDone(int arg) { writeDone->V(); }
@@ -22,8 +25,8 @@ SynchConsole::SynchConsole(char *readFile, char *writeFile)
 	writeDone = new Semaphore("write done", 0);
 	console = new Console (readFile, writeFile, ReadAvail, WriteDone, 0);
 
-	pthread_mutex_init(&mutexRead, NULL);
-	pthread_mutex_init(&mutexWrite, NULL);
+	semRead = new Semaphore("Reading semaphore", 1);
+	semWrite = new Semaphore("Writing semaphore", 1);
 }
 
 /**
@@ -34,8 +37,8 @@ SynchConsole::~SynchConsole()
 	delete console;
 	delete writeDone;
 	delete readAvail;
-	pthread_mutex_destroy(&mutexRead);
-	pthread_mutex_destroy(&mutexWrite);
+	delete semRead;
+	delete semWrite;
 }
 
 /**
@@ -68,7 +71,7 @@ int SynchConsole::SynchPutString(const char s[])
 {
 	int i = 0;
 
-	pthread_mutex_lock(&mutexWrite);
+	semWrite->P ();
 
 	// on traite chaque caractere jusqu'au caractere '\0'
 	while (s[i] != '\0') {
@@ -76,7 +79,8 @@ int SynchConsole::SynchPutString(const char s[])
 		writeDone->P ();
 		i++;
 	}
-	pthread_mutex_unlock(&mutexWrite);
+
+	semWrite->V ();
 	return i;
 }
 
@@ -88,9 +92,10 @@ int SynchConsole::SynchGetString(char *s, int n)
 	int i = 0;
 	int ch = 0;
 
+	semRead->P ();
+
 	while (i < n-1 && (char)ch != '\n' && ch != EOF)
 	{
-	pthread_mutex_lock(&mutexRead);
 
 		// wait for character to arrive
 		readAvail->P ();
@@ -103,7 +108,9 @@ int SynchConsole::SynchGetString(char *s, int n)
 		}
 	}
 	s[i] = '\0';
-	pthread_mutex_unlock(&mutexRead);
+
+	semRead->V ();
+
 	return i;
 
 }
