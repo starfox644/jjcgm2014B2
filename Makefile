@@ -3,7 +3,6 @@
 DEFAULT_VERBOSITY=0
 export DEFAULT_VERBOSITY
 
-
 .PHONY: all clean depend print build build-origin origin check mips-progs bin
 
 # By default, build the check target so that we check that initial

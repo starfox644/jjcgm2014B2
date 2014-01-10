@@ -1,18 +1,7 @@
 #include "syscall.h"
 
-void print(char c, int n)
-{
-    int i;
-    for(i = 0; i < n; i++)
-    {
-        PutChar(c+i);
-    }
-    PutChar('\n');
-}
-
+// test de retour d'une valeur
 int main()
 {
-    print('a', 4);
-
-    return 2;
+    return 42;
 }
