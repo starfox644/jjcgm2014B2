@@ -76,6 +76,7 @@ ExceptionHandler (ExceptionType which)
 	int maxSize;
 	if (which == SyscallException)
 	{
+		// notify a syscall for called functions
 		currentThread->setIsSyscall(true);
 
 		switch (type)
@@ -103,13 +104,15 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
-					/*printf("buffer : \n %s\n", buffer);
-					printf("fin du buffer\n");*/
 					n = synchconsole->SynchPutString(buffer);
+					// writes the number of characters written in return register
 					machine->WriteRegister(2, n);
 				}
 				else
+				{
+					// copy error, writes -1 in return register
 					machine->WriteRegister(2, -1);
+				}
 				break;
 
 			case SC_GetString:
@@ -122,11 +125,14 @@ ExceptionHandler (ExceptionType which)
 					n = synchconsole->SynchGetString(dynBuffer, maxSize);
 					if (copyStringToMachine(dynBuffer, adr))
 					{
-						// return 0 for success
+						// writes the number of characters read in return register
 						machine->WriteRegister(2, n);
 					}
 					else
+					{
+						// copy error, writes -1 in return register
 						machine->WriteRegister(2, -1);
+					}
 					delete dynBuffer;
 				}
 				else
@@ -137,16 +143,21 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_PutInt:
+				// read the number in argument
 				n = machine->ReadRegister(4);
+				// read the maximum of characters
 				n = synchconsole->SynchPutInt(n);
+				// writes the number of characters written in return register
 				machine->WriteRegister(2, n);
 				break;
 
 			case SC_Exit:
-				codeErreur = machine->ReadRegister(4); // on recupere le code retour contenu dans le registre r4
-				printf("Program stopped with return code : %d\n", codeErreur); // on affiche le code retour
+				// read return code in r4 register
+				codeErreur = machine->ReadRegister(4);
+				printf("Program stopped with return code : %d\n", codeErreur);
 				DEBUG('a',"Program exit");
-				interrupt->Halt ();	// on arrete proprement avec une interruption.
+				// stop the program
+				interrupt->Halt ();
 				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
@@ -156,7 +167,7 @@ ExceptionHandler (ExceptionType which)
 		currentThread->setIsSyscall(false);
 	}
 	else if (which == AddressErrorException && currentThread->getIsSyscall()) {
-		// we do nothing
+		// we do nothing, exception is ignored and current syscall will return -1
 	}
 #else
 	if ((which == SyscallException) && (type == SC_Halt))

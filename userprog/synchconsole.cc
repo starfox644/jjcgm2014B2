@@ -125,6 +125,7 @@ int SynchConsole::SynchPutInt(int n)
  *	from : MIPS string adress in its memory
  *	to : nachOs string adress where it will be saved, must have size+1 chars
  *          size : maximum number of characters
+ *  returns false on memory error
  */
 bool copyStringFromMachine(int from, char *to, unsigned size)
 {
@@ -143,6 +144,7 @@ bool copyStringFromMachine(int from, char *to, unsigned size)
 /**
  *  from : string adress in memory where the string read was saved
  *  to : buffer adress in MIPS
+ *  returns false on memory error
  */
 bool copyStringToMachine(char* from, int to)
 {
