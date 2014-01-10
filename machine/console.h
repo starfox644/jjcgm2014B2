@@ -42,15 +42,23 @@ class Console {
 				// initialize the hardware console device
     ~Console();			// clean up console emulation
 
-// external interface -- Nachos kernel code can call these
-    void PutChar(char ch);	// Write "ch" to the console display, 
-				// and return immediately.  "writeHandler" 
-				// is called when the I/O completes. 
 
+    // external interface -- Nachos kernel code can call these
+    void PutChar(char ch);	// Write "ch" to the console display,
+				// and return immediately.  "writeHandler"
+				// is called when the I/O completes.
+
+#ifdef CHANGED
+    int GetChar();	// Poll the console input.  If a char is
+				// available, return it.  Otherwise, return EOF.
+				// "readHandler" is called whenever there is
+				// a char to be gotten
+#else
     char GetChar();	   	// Poll the console input.  If a char is 
 				// available, return it.  Otherwise, return EOF.
     				// "readHandler" is called whenever there is 
 				// a char to be gotten
+#endif
 
 // internal emulation routines -- DO NOT call these. 
     void WriteDone();	 	// internal routines to signal I/O completion
@@ -67,9 +75,16 @@ class Console {
 					// interrupt handlers
     bool putBusy;    			// Is a PutChar operation in progress?
 					// If so, you can't do another one!
-    char incoming;    			// Contains the character to be read,
+#ifdef CHANGED
+    int incoming;    			// Contains the character to be read,
 					// if there is one available. 
 					// Otherwise contains EOF.
+#else
+    char incoming;    			// Contains the character to be read,
+					// if there is one available.
+					// Otherwise contains EOF.
+#endif
+
 };
 
 #endif // CONSOLE_H

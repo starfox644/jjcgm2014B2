@@ -18,7 +18,7 @@ public:
 
 	void SynchPutChar(const char ch);// Unix putchar(3S)
 
-	char SynchGetChar();// Unix getchar(3S)
+	int SynchGetChar();// Unix getchar(3S)
 
 	int SynchPutString(const char *s);// Unix puts(3S)
 	int SynchGetString(char *s, int n);// Unix fgets(3S)

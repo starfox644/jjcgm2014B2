@@ -3,17 +3,26 @@
  *
  *  Created on: 8 janv. 2014
  *      Author: galdween
+ *
+ * Permet de tester des entrees de caracteres speciales, avec les fichiers putstringHexa0xFF
+ * et putstringHexa0x01
  */
 #include "syscall.h"
 
 int main()
 {
-	int MessageErreur; //variable de recuperation du message d'erreur
-	OpenFileId input = ConsoleInput; //methode pour récupérer le fichier donnée en argument dans la console
-	if((MessageErreur = PutString((char*)input)) == -1){ // verification si on a une erreur
+	char s[50];
+	int nbLus;
+	if((nbLus = GetString(s, 50)) == -1){ // verification si on a une erreur
 		PutString("\n");
-		PutString("Erreur lors du PutString, message d'erreur n° : ");
-		PutString((char*)MessageErreur);
+		PutString("Erreur lors du PutString");
+	}
+	else
+	{
+		PutString("nombre de caracteres lus : \n");
+		PutInt(nbLus);
+		PutString("\n");
+		PutString(s);
 	}
 	PutString("\n");
     return 0;
