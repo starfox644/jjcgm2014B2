@@ -200,7 +200,12 @@ Thread::Finish ()
 #ifdef CHANGED
     s_join->V();
     if(space != NULL)
+    {
     	space->addAvailableStackAddress(userStackAddr);
+#ifdef step4
+    	space->unMapStack(userStackAddr);
+#endif
+    }
 #endif
     // LB: Be careful to guarantee that no thread to be destroyed 
     // is ever lost 

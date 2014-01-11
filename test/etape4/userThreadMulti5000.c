@@ -22,14 +22,15 @@ void f(void* arg)
 
 int main(){
 
-	int pthreadID[MAX_THREAD],i, error;
+	//int pthreadID[MAX_THREAD],
+	int i, error;
 	if((error = SemInit(&sem,1)) == -1){
 		return -1;
 	}
 
 	PutString("\n Lancement du programme de test userThreadMulti\n");
 	for(i = 0; i < MAX_THREAD; i++){
-		pthreadID[i] = UserThreadCreate(f, 0);
+		UserThreadCreate(f, 0);
 	}
 	return 0;
 }

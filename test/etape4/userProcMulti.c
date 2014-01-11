@@ -9,8 +9,6 @@
 #define MAX_PROC 2
 
 int main(){
-
-
 	int i;
 	PutString("Lancement du programme de test userProcMulti\n");
 	for(i = 0; i < MAX_PROC; i++){
@@ -19,8 +17,6 @@ int main(){
 		PutString("\n");
 		ForkExec("./etape4/userThreadMulti");
 	}
-
 	return 0;
-
 }
 

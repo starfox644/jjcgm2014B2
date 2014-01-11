@@ -24,6 +24,7 @@ class Thread;
 
 #ifdef CHANGED
 #define UserStackSize		2048	// increase this as necessary!
+#define UserStackPages		UserStackSize / PageSize;
 #else
 #define UserStackSize		1024	// increase this as necessary!
 #endif
@@ -129,11 +130,19 @@ class AddrSpace
      * Allocate length bytes at virtualAddr in the address space.
      * Associate it with frames in physical memory.
      * If write is set, then the pages are allowed for writing.
-     * If a part of the memory needed in the addr space is already used
-     * or if there is no more physical frames available, returns true
+     * if there is no more physical frames available, returns true
      * else returns false
      */
     bool map(int virtualAddr, int length, bool write);
+
+    /**
+     * 	Release nbFrames of physical memory begining at beginPageIndex
+     * 	returns false if at least one page isn't allocated
+     */
+    bool unMap(int beginPageIndex, int nbFrames);
+
+    void unMapStack(int stackAddr);
+
     void setPid(int newPid);
     int getPid();
 
