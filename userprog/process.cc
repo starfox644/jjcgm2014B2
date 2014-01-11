@@ -90,8 +90,8 @@ void UserStartProcess (int adr)
 	//printf("[UserStartProcess] Debut fonction\n");
 //	printf("[UserStartProcess] addProcess\n");
 	currentThread->space->setPid(nbProcess);
-	processManager->addAddrProcess(currentThread->space);
 	currentThread->space->processRunning = true;
+	processManager->addAddrProcess(currentThread->space);
 	currentThread->space->InitRegisters ();	// set the initial register values
 //	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
