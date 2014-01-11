@@ -4,6 +4,8 @@
 #include "system.h"
 #include "machine.h"
 
+extern void do_exit(int returnCode);
+
 /**
 *    f : 		function address to execute in the MIPS processor
 *    arg : 	argument address for the f function, f will be called with arg
@@ -19,7 +21,7 @@ int do_UserThreadCreate(int f, int arg)
     if(!error)
     {
     	// accept arg 0 for passing NULL as argument
-    	error = (arg == 0) || !machine->ReadMem(arg, sizeof(int), &n);
+    	error = (arg != 0) && !machine->ReadMem(arg, sizeof(int), &n);
     	if(!error)
     	{
     		// test the accessibility of the stack
@@ -60,13 +62,17 @@ static void StartUserThread(int f)
 	// set return address (none)
 	machine->WriteRegister(31, -1);
 	// set SP
-	machine->WriteRegister(StackReg, f+2*PageSize);
+	machine->WriteRegister(StackReg, f+STACK_OFFSET*PageSize);
 	machine->Run ();		// jump to the user progam
 }
 
 void do_UserThreadExit()
 {
-	currentThread->Finish();
+	// if the main thread calls userthreadexit, that stops the program
+	if(!currentThread->isMainThread())
+		currentThread->Finish();
+	else
+		do_exit(0);
 }
 
 #endif

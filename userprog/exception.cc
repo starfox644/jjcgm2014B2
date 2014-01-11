@@ -26,6 +26,8 @@
 #include "syscall.h"
 
 #ifdef CHANGED
+#include "exit.h"
+
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadExit();
 #endif
@@ -179,10 +181,7 @@ ExceptionHandler (ExceptionType which)
 			case SC_Exit:
 				// read return code in r4 register
 				codeErreur = machine->ReadRegister(4);
-				printf("Program stopped with return code : %d\n", codeErreur);
-				DEBUG('a',"Program exit");
-				// stop the program
-				interrupt->Halt ();
+				do_exit(codeErreur);
 				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
@@ -224,5 +223,6 @@ ExceptionHandler (ExceptionType which)
 #ifndef CHANGED
 	UpdatePC ();
 #endif
+
 
 }

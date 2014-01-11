@@ -1,6 +1,9 @@
 #include "syscall.h"
 
-// Teste la creation de thread avec une mauvaise adresse de fonction
+/*
+ * Teste la creation de thread avec une mauvaise adresse de fonction.
+ * Ce test est cense afficher "Erreur de creation de thread."
+ */
 int main()
 {
 	int a = 0;

@@ -1,6 +1,9 @@
 #include "syscall.h"
 
-// Teste la creation de thread avec une mauvaise adresse d'argument
+/*
+ * Teste la creation de thread avec une mauvaise adresse d'argument
+ * Ce test est cense afficher "Erreur de creation de thread."
+ */
 
 
 void f(void *a)

@@ -120,6 +120,11 @@ public:
 	void setInitArg(int arg);
 	int getInitArg();
 
+	/**
+	 * 	Indicates is this thread is the main thread
+	 */
+	bool isMainThread();
+
 #endif
 
 private:
