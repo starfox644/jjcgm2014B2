@@ -1,5 +1,11 @@
 #include "syscall.h"
 
+/**
+ * 	Premier test de thread. Cree un thread qui effectue un affichage.
+ * 	Le thread principal attend ce thread et se termine.
+ * 	Ce test est cense afficher "lalaland argument : 0"
+ */
+
 void f(void* arg)
 {
 	int a = 5;
