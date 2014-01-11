@@ -46,8 +46,10 @@ SynchConsole::~SynchConsole()
  */
 void SynchConsole::SynchPutChar(const char ch)
 {
+	semWrite->P ();
 	console->PutChar (ch);
 	writeDone->P ();		// wait for write to finish
+	semWrite->V ();
 }
 
 /**
@@ -57,9 +59,12 @@ int SynchConsole::SynchGetChar()
 {
 	int ch;
 
+	semRead->P ();
+
 	readAvail->P ();		// wait for character to arrive
 	ch = console->GetChar ();
 
+	semRead->V ();
 	return  ch;
 }
 
@@ -123,8 +128,12 @@ int SynchConsole::SynchPutInt(int n)
 {
 	int nb = 0;
 	char str[MAX_STRING_SIZE];
+
+	semWrite->P ();
 	nb = snprintf(str, MAX_STRING_SIZE, "%d", n);
 	synchconsole->SynchPutString(str);
+
+	semWrite->V();
 	return nb;
 }
 
