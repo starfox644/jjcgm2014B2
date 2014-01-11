@@ -30,6 +30,7 @@ int main()
 	PutChar('1');
 	arg.wait = 1;
 	PutChar('2');
+	PutString("Entrez un caractere :");
 	arg.a = GetChar();
 	PutChar('3');
 	UserThreadCreate(f, &arg);
