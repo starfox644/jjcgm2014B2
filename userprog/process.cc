@@ -6,6 +6,7 @@
 #include "machine.h"
 //#include "addrspace.h"
 #include <string>
+#include "processManager.h"
 
 /**
  * Cree un thread et y lance le programme donne en parametre.
@@ -89,6 +90,8 @@ void UserStartProcess (int adr)
 	//printf("[UserStartProcess] Debut fonction\n");
 //	printf("[UserStartProcess] addProcess\n");
 	currentThread->space->setPid(nbProcess);
+	processManager->addAddrProcess(currentThread->space);
+	currentThread->space->processRunning = true;
 	currentThread->space->InitRegisters ();	// set the initial register values
 //	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
@@ -133,7 +136,7 @@ StartProcess (char *filename)
 
 	if (executable == NULL)
 	{
-		//printf ("Unable to open file %s\n", filename);
+		printf ("Unable to open file %s\n", filename);
 		Exit(-1);
 	}
 #ifndef step4

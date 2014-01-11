@@ -41,6 +41,7 @@ class AddrSpace
 
 #ifdef step4
 	AddrSpace();		// Create an address space
+	bool processRunning; //true si en cours d'exécution false sinon
 #else
 
     AddrSpace (OpenFile * executable);	// Create an address space,

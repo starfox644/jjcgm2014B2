@@ -21,6 +21,7 @@ Statistics *stats;		// performance metrics
 Timer *timer;			// the hardware timer device, for invoking context switches
 #ifdef step4
 FrameProvider *frameProvider; //gestion des cadres
+ProcessManager *processManager;// gestion des processus
 int nbProcess;
 Semaphore *s_process;
 Semaphore *s_nbProcess;
@@ -178,6 +179,7 @@ Initialize (int argc, char **argv)
     s_process = new Semaphore("sem process", 1);
     s_nbProcess = new Semaphore("sem nb process", 1);
     nbProcess = 0;
+    processManager = new ProcessManager();
 #endif
 
     threadToBeDestroyed = NULL;

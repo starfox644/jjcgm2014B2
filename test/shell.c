@@ -20,7 +20,7 @@ main ()
     	}while (buffer[i++] != '\n');
     	buffer[--i] = '\0';
     	if (i > 0){
-    		newProc = Exec (buffer);
+    		newProc = ForkExec (buffer);
     		Join (newProc);
 	    }
     }

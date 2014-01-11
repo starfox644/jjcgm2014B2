@@ -83,8 +83,8 @@ USER_FLAVORS=step2 step3 step4 countNew
 
 $(eval $(call define-flavor,step2,userprog filesys-stub,exit.cc synchconsole.cc))
 $(eval $(call define-flavor,step3,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc,-Dstep3))
-$(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc frameProvider.cc process.cc ,-Dstep4 -Dstep3))
-$(eval $(call define-flavor,countNew,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc frameProvider.cc process.cc countNew.cc ,-Dstep4 -Dstep3 -DcountNew))
+$(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc ,-Dstep4 -Dstep3))
+$(eval $(call define-flavor,countNew,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc  countNew.cc ,-Dstep4 -Dstep3 -DcountNew))
 # $(eval $(call define-flavor,step5,userprog filesys,\
 #     synchconsole.cc userthread.cc))
 # $(eval $(call define-flavor,mynetwork,userprog filesys-stub network, \
