@@ -176,7 +176,7 @@ int UserThreadCreate(void f(void *arg), void *arg);
 /**
  * Terminate the current thread
  */
-void UserThreadExit();
+void UserThreadExit(int status);
 
 /**
  * 	Return the current thread id

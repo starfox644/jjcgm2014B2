@@ -21,7 +21,7 @@ void f(void* arg)
 		}
 	}
 	*((int*)arg) = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

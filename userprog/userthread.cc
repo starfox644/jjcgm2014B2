@@ -25,7 +25,7 @@ int do_UserThreadCreate(int f, int arg)
     	if(!error)
     	{
     		// test the accessibility of the stack
-    		error = !machine->ReadMem(2*f+STACK_OFFSET*PageSize, sizeof(int), &n);
+    		error = !machine->ReadMem(2*currentThread->tid*f+STACK_OFFSET*PageSize, sizeof(int), &n);
     	}
     }
 
@@ -57,20 +57,22 @@ static void StartUserThread(int f)
 	currentThread->space->InitRegisters();
 	currentThread->space->RestoreState ();	// load page table register
 
-	// copy the arg in register r4
-	machine->WriteRegister(4, currentThread->getInitArg());
+	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
+	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC
-	machine->WriteRegister(PCReg, f);
+	machine->WriteRegister(PCReg, THREAD_START_OFFSET);
 	// set next PC
-	machine->WriteRegister(NextPCReg, f+4);
+	machine->WriteRegister(NextPCReg, THREAD_START_OFFSET + 4);
 	// set return address (none)
 	machine->WriteRegister(31, -1);
 	// set SP
-	machine->WriteRegister(StackReg, 2*f+STACK_OFFSET*PageSize);
+	machine->WriteRegister(StackReg, 2*currentThread->tid*f+STACK_OFFSET*PageSize);
+	// set r26 (reserved to OS) to the function address
+	machine->WriteRegister(26, f);
 	machine->Run ();		// jump to the user progam
 }
 
-void do_UserThreadExit()
+void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
@@ -87,7 +89,7 @@ void do_UserThreadExit()
 	else
 	{
 		// if the main thread calls userthreadexit, that stops the program
-		do_exit(0);
+		do_exit(status);
 	}
 }
 

@@ -29,8 +29,8 @@
 #include "exit.h"
 
 extern int do_UserThreadCreate(int f, int arg);
-extern int do_UserThreadExit();
 extern int do_UserThreadJoin(int tid);
+extern void do_UserThreadExit(int status);
 #endif
 
 //----------------------------------------------------------------------
@@ -171,7 +171,9 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_UserThreadExit:
-				do_UserThreadExit();
+				// reads the return code of the thread
+				codeErreur = machine->ReadRegister(4);
+				do_UserThreadExit(codeErreur);
 				break;
 
 			case SC_GetTid:

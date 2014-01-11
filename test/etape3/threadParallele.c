@@ -10,7 +10,7 @@ void fin(void* arg)
 	int* attFin = (int*)arg;
 	PutString("Dernier thread\n");
 	*attFin = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void g(void* arg)
@@ -18,7 +18,7 @@ void g(void* arg)
 	int* attg = (int*)arg;
 	PutString("Thread 2\n");
 	*attg = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void f(void* arg)
@@ -26,7 +26,7 @@ void f(void* arg)
 	int* attMain = (int*)arg;
 	PutString("Thread 1\n");
 	*attMain = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

@@ -32,6 +32,17 @@ __start:
 	jal	Exit	 /* if we return from main, exit(0) */
 	.end __start
 
+#ifdef CHANGED
+	.globl __startThread
+		.ent __startThread
+	__startThread:
+		move $4,$27				// copy of the arg
+		jal	$26					// jump to the thread's function
+		move $4,$0
+		jal	UserThreadExit		// if we return from the function, call UserThreadExit(0) */
+		.end __startThread
+#endif
+
 /* -------------------------------------------------------------
  * System call stubs:
  *	Assembly language assist to make system calls to the Nachos kernel.
