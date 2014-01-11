@@ -9,21 +9,21 @@
 void fin(void* arg)
 {
 	PutString("Dernier thread\n");
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void g(void* arg)
 {
 	PutString("Thread 2\n");
 	UserThreadCreate(fin, 0);
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void f(void* arg)
 {
 	PutString("Thread 1\n");
 	UserThreadCreate(g, 0);
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

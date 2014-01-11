@@ -10,7 +10,7 @@ void f(void* arg)
 	int* n = (int*)arg;
 	PutInt(*n);
 	PutString("\n");
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

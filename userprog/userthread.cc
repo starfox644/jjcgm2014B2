@@ -72,7 +72,7 @@ static void StartUserThread(int f)
 	machine->Run ();		// jump to the user progam
 }
 
-void do_UserThreadExit()
+void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
@@ -89,7 +89,7 @@ void do_UserThreadExit()
 	else
 	{
 		// if the main thread calls userthreadexit, that stops the program
-		do_exit(0);
+		do_exit(status);
 	}
 }
 

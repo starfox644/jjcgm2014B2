@@ -9,7 +9,7 @@ void fin(void* arg)
 	PutString("fin, Tid : \n");
 	PutInt(GetTid());
 	PutString("\n");
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void g(void* arg)
@@ -17,7 +17,7 @@ void g(void* arg)
 	PutString("g, Tid : \n");
 	PutInt(GetTid());
 	PutString("\n");
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void f(void* arg)
@@ -25,7 +25,7 @@ void f(void* arg)
 	PutString("f, Tid : \n");
 	PutInt(GetTid());
 	PutString("\n");
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

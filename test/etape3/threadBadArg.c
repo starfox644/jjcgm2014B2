@@ -8,7 +8,7 @@
 
 void f(void *a)
 {
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

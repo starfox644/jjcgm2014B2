@@ -38,7 +38,8 @@ __start:
 	__startThread:
 		move $4,$27				// copy of the arg
 		jal	$26					// jump to the thread's function
-		jal	UserThreadExit		// if we return from the function, call UserThreadExit) */
+		move $4,$0
+		jal	UserThreadExit		// if we return from the function, call UserThreadExit(0) */
 		.end __startThread
 #endif
 

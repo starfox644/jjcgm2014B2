@@ -21,7 +21,7 @@ void f(void* arg)
 	PutChar('6');
 	param->wait = 0;
 	PutChar('7');
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

@@ -11,6 +11,6 @@
 */
 int do_UserThreadCreate(int f, int arg);
 static void StartUserThread(int f);
-void do_UserThreadExit();
+void do_UserThreadExit(int status);
 
 #endif

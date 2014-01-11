@@ -9,7 +9,7 @@
 void f(void *a)
 {
 	PutString("Thread 2\n");
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()
