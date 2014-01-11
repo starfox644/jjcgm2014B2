@@ -71,18 +71,21 @@ static void StartUserThread(int f)
 
 void do_UserThreadExit()
 {
-	// if the main thread calls userthreadexit, that stops the program
 	if(!currentThread->isMainThread())
 	{
+		// remove the thread in the address space
 		currentThread->space->s_nbThreads->P();
 		currentThread->space->removeThread();
+		// if the main thread is waiting, notify the end of the thread
 		if(currentThread->space->attente)
 			currentThread->space->s_exit->V();
 		currentThread->space->s_nbThreads->V();
+		// terminates this thread
 		currentThread->Finish();
 	}
 	else
 	{
+		// if the main thread calls userthreadexit, that stops the program
 		do_exit(0);
 	}
 }
