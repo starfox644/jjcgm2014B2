@@ -65,6 +65,13 @@ AddrSpace::AddrSpace (OpenFile * executable)
     NoffHeader noffH;
     unsigned int i, size;
 
+#ifdef CHANGED
+    nbThreads = 0;
+    attente = false;
+    s_exit = new Semaphore("exit semaphore", 0);
+    s_nbThreads = new Semaphore("nbThread semaphore", 1);
+#endif
+
     executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
     if ((noffH.noffMagic != NOFFMAGIC) &&
 	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
@@ -195,3 +202,20 @@ AddrSpace::RestoreState ()
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
 }
+
+#ifdef CHANGED
+	void AddrSpace::addThread()
+	{
+		nbThreads++;
+	}
+
+	void AddrSpace::removeThread()
+	{
+		nbThreads--;
+	}
+
+	int AddrSpace::getNbThreads()
+	{
+		return nbThreads;
+	}
+#endif

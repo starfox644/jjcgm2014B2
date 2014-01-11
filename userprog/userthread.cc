@@ -33,6 +33,9 @@ int do_UserThreadCreate(int f, int arg)
     {
 		// the new thread shares the memory space with the current thread
 		newThread->space = currentThread->space;
+		newThread->space->s_nbThreads->P();
+		newThread->space->addThread();
+		newThread->space->s_nbThreads->V();
 		// sets initial argument of the thread
 		newThread->setInitArg(arg);
 
@@ -70,9 +73,18 @@ void do_UserThreadExit()
 {
 	// if the main thread calls userthreadexit, that stops the program
 	if(!currentThread->isMainThread())
+	{
+		currentThread->space->s_nbThreads->P();
+		currentThread->space->removeThread();
+		if(currentThread->space->attente)
+			currentThread->space->s_exit->V();
+		currentThread->space->s_nbThreads->V();
 		currentThread->Finish();
+	}
 	else
+	{
 		do_exit(0);
+	}
 }
 
 #endif

@@ -1,9 +1,7 @@
 #include "syscall.h"
 
 /**
- * 	Premier test de thread. Cree un thread qui effectue un affichage.
- * 	Le thread principal attend ce thread et se termine.
- * 	Ce test est cense afficher "thread cree \n argument : 0"
+ * 	Cree un thread qui cree un autre thread.
  */
 
 void g(void* arg)

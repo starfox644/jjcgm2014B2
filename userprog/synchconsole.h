@@ -33,6 +33,8 @@ public:
 
 private:
 	Console *console;
+	Semaphore *semRead;
+	Semaphore *semWrite;
 };
 
 /**

@@ -9,9 +9,6 @@ static Semaphore *readAvail;
 
 static Semaphore *writeDone;
 
-static Semaphore *semRead;
-static Semaphore *semWrite;
-
 static void ReadAvail(int arg) { readAvail->V(); }
 
 static void WriteDone(int arg) { writeDone->V(); }

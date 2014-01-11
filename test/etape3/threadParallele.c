@@ -1,7 +1,7 @@
 #include "syscall.h"
 
 /**
- *	Lance
+ *	Lance 3 threads en parallele et attend leur terminaison.
  */
 
 
