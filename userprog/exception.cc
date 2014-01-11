@@ -180,6 +180,10 @@ ExceptionHandler (ExceptionType which)
 			case SC_UserThreadExit:
 				do_UserThreadExit();
 				break;
+
+			case SC_GetTid:
+				machine->WriteRegister(2, currentThread->tid);
+				break;
 #endif
 
 			case SC_Exit:

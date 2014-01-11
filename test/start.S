@@ -192,6 +192,14 @@ UserThreadExit:
 	.end UserThreadExit
 #endif /*CHANGED*/
 
+.globl GetTid
+	.ent	GetTid
+GetTid:
+	addiu $2,$0,SC_GetTid
+	syscall
+	j	$31
+	.end GetTid
+
 /* dummy function to keep gcc happy */
         .globl  __main
         .ent    __main

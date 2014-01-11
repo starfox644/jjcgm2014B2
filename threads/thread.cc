@@ -24,6 +24,9 @@
 					// execution stack, for detecting 
 					// stack overflows
 
+#ifdef CHANGED
+	int Thread::nextTid = 1;
+#endif
 //----------------------------------------------------------------------
 // Thread::Thread
 //      Initialize a thread control block, so that we can then call
@@ -40,6 +43,9 @@ Thread::Thread (const char *threadName)
     status = JUST_CREATED;
 #ifdef USER_PROGRAM
     space = NULL;
+#endif
+#ifdef CHANGED
+    tid = 0;
 #endif
 }
 

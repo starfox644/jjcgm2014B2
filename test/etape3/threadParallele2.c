@@ -39,9 +39,6 @@ int main()
 	UserThreadCreate(f, &attf);
 	UserThreadCreate(g, &attg);
 	UserThreadCreate(fin, &attFin);
-	/*while(attf != 1);
-	while(attg != 1);
-	while(attFin != 1);*/
 	PutString("Le thread main a fini ! \n");
     return 0;
 }

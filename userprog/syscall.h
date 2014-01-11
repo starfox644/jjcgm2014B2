@@ -37,6 +37,7 @@
 #define SC_PutInt	 15
 #define SC_UserThreadCreate 16
 #define SC_UserThreadExit 17
+#define SC_GetTid 18
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -175,6 +176,11 @@ int UserThreadCreate(void f(void *arg), void *arg);
  * Terminate the current thread
  */
 void UserThreadExit();
+
+/**
+ * 	Return the current thread id
+ */
+int GetTid();
 
 #endif //CHANGED
 

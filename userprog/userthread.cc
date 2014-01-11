@@ -38,7 +38,8 @@ int do_UserThreadCreate(int f, int arg)
 		newThread->space->s_nbThreads->V();
 		// sets initial argument of the thread
 		newThread->setInitArg(arg);
-
+		newThread->tid = Thread::nextTid;
+		Thread::nextTid++;
 		// creation of the thread, init and positionning in the file
 		// the new thread executes StartUserThread (saving register)
 		newThread->Fork(StartUserThread, f);

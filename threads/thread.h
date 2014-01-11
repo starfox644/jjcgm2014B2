@@ -55,7 +55,6 @@
 // WATCH OUT IF THIS ISN'T BIG ENOUGH!!!!!
 #define StackSize	(4 * 1024)	// in words
 
-
 // Thread state
 enum ThreadStatus
 { JUST_CREATED, RUNNING, READY, BLOCKED };
@@ -159,6 +158,12 @@ public:
 	void RestoreUserState ();	// restore user-level register state
 
 	AddrSpace *space;		// User code this thread is running.
+	int tid;				// thread id
+
+#ifdef CHANGED
+	static int nextTid;
+#endif
+
 #endif
 };
 
