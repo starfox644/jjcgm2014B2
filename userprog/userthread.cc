@@ -25,7 +25,7 @@ int do_UserThreadCreate(int f, int arg)
     	if(!error)
     	{
     		// test the accessibility of the stack
-    		error = !machine->ReadMem(f+STACK_OFFSET*PageSize, sizeof(int), &n);
+    		error = !machine->ReadMem(2*f+STACK_OFFSET*PageSize, sizeof(int), &n);
     	}
     }
 
@@ -62,7 +62,7 @@ static void StartUserThread(int f)
 	// set return address (none)
 	machine->WriteRegister(31, -1);
 	// set SP
-	machine->WriteRegister(StackReg, f+STACK_OFFSET*PageSize);
+	machine->WriteRegister(StackReg, 2*f+STACK_OFFSET*PageSize);
 	machine->Run ();		// jump to the user progam
 }
 

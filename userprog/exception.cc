@@ -83,8 +83,6 @@ ExceptionHandler (ExceptionType which)
 	int maxSize;
 	if (which == SyscallException)
 	{
-		// notify a syscall for called functions
-		currentThread->setIsSyscall(true);
 		switch (type)
 		{
 			case SC_Halt:
@@ -106,6 +104,8 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_PutString:
+				// notify a syscall for called functions
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -122,6 +122,8 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_GetString:
+				// notify a syscall for called functions
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				dynBuffer = new char[maxSize];
@@ -159,6 +161,8 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef step3
 			case SC_UserThreadCreate:
+				// notify a syscall for called functions
+				currentThread->setIsSyscall(true);
 				n = machine->ReadRegister(4);
 				adr = machine->ReadRegister(5);
 				if(do_UserThreadCreate(n, adr) == -1)
