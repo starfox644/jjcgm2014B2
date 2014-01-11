@@ -36,7 +36,7 @@ int main()
 	UserThreadCreate(f, &arg);
 	PutChar('4');
 	while(arg.wait)
-		PutChar('');
+		PutChar(' ');
 	PutChar('8');
     return 0;
 }

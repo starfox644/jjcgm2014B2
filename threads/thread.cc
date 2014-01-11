@@ -424,6 +424,12 @@ int Thread::getInitArg()
 	return initArg;
 }
 
+bool Thread::isMainThread()
+{
+	// stack is always NULL for the main thread
+	return (stack == NULL);
+}
+
 #endif
 #endif
 

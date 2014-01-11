@@ -4,6 +4,8 @@
 #include "system.h"
 #include "machine.h"
 
+extern void do_exit(int returnCode);
+
 /**
 *    f : 		function address to execute in the MIPS processor
 *    arg : 	argument address for the f function, f will be called with arg
@@ -19,11 +21,11 @@ int do_UserThreadCreate(int f, int arg)
     if(!error)
     {
     	// accept arg 0 for passing NULL as argument
-    	error = (arg == 0) || !machine->ReadMem(arg, sizeof(int), &n);
+    	error = (arg != 0) && !machine->ReadMem(arg, sizeof(int), &n);
     	if(!error)
     	{
     		// test the accessibility of the stack
-    		error = !machine->ReadMem(f+STACK_OFFSET*PageSize, sizeof(int), &n);
+    		error = !machine->ReadMem(2*f+STACK_OFFSET*PageSize, sizeof(int), &n);
     	}
     }
 
@@ -31,6 +33,9 @@ int do_UserThreadCreate(int f, int arg)
     {
 		// the new thread shares the memory space with the current thread
 		newThread->space = currentThread->space;
+		newThread->space->s_nbThreads->P();
+		newThread->space->addThread();
+		newThread->space->s_nbThreads->V();
 		// sets initial argument of the thread
 		newThread->setInitArg(arg);
 
@@ -60,13 +65,29 @@ static void StartUserThread(int f)
 	// set return address (none)
 	machine->WriteRegister(31, -1);
 	// set SP
-	machine->WriteRegister(StackReg, f+2*PageSize);
+	machine->WriteRegister(StackReg, 2*f+STACK_OFFSET*PageSize);
 	machine->Run ();		// jump to the user progam
 }
 
 void do_UserThreadExit()
 {
-	currentThread->Finish();
+	if(!currentThread->isMainThread())
+	{
+		// remove the thread in the address space
+		currentThread->space->s_nbThreads->P();
+		currentThread->space->removeThread();
+		// if the main thread is waiting, notify the end of the thread
+		if(currentThread->space->attente)
+			currentThread->space->s_exit->V();
+		currentThread->space->s_nbThreads->V();
+		// terminates this thread
+		currentThread->Finish();
+	}
+	else
+	{
+		// if the main thread calls userthreadexit, that stops the program
+		do_exit(0);
+	}
 }
 
 #endif

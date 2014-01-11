@@ -26,6 +26,8 @@
 #include "syscall.h"
 
 #ifdef CHANGED
+#include "exit.h"
+
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadExit();
 #endif
@@ -81,8 +83,6 @@ ExceptionHandler (ExceptionType which)
 	int maxSize;
 	if (which == SyscallException)
 	{
-		// notify a syscall for called functions
-		currentThread->setIsSyscall(true);
 		switch (type)
 		{
 			case SC_Halt:
@@ -104,6 +104,8 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_PutString:
+				// notify a syscall for called functions
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -120,6 +122,8 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_GetString:
+				// notify a syscall for called functions
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				dynBuffer = new char[maxSize];
@@ -157,6 +161,8 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef step3
 			case SC_UserThreadCreate:
+				// notify a syscall for called functions
+				currentThread->setIsSyscall(true);
 				n = machine->ReadRegister(4);
 				adr = machine->ReadRegister(5);
 				if(do_UserThreadCreate(n, adr) == -1)
@@ -179,10 +185,7 @@ ExceptionHandler (ExceptionType which)
 			case SC_Exit:
 				// read return code in r4 register
 				codeErreur = machine->ReadRegister(4);
-				printf("Program stopped with return code : %d\n", codeErreur);
-				DEBUG('a',"Program exit");
-				// stop the program
-				interrupt->Halt ();
+				do_exit(codeErreur);
 				break;
 			default: {
 				printf("Unexpected user mode exception %d %d\n", which, type);
@@ -190,7 +193,6 @@ ExceptionHandler (ExceptionType which)
 			}
 		}
 		currentThread->setIsSyscall(false);
-
 		// LB: Do not forget to increment the pc before returning!
 		UpdatePC ();
 	}
@@ -222,4 +224,9 @@ ExceptionHandler (ExceptionType which)
 		ASSERT (FALSE);
 	}
 	// End of addition
+#ifndef CHANGED
+	UpdatePC ();
+#endif
+
+
 }

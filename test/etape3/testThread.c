@@ -1,16 +1,18 @@
 #include "syscall.h"
 
+/**
+ * 	Premier test de thread. Cree un thread qui effectue un affichage.
+ * 	Le thread principal attend ce thread et se termine.
+ * 	Ce test est cense afficher "thread cree \n argument : 0"
+ */
+
 void f(void* arg)
 {
-	int a = 5;
-	int b = 6;
-	PutInt(a);
-	PutInt(b);
-	if(PutString("lalaland\n") == -1)
+	if(PutString("thread cree\n") == -1)
 		PutString("Erreur putstring\n");
 	else
 	{
-		if(PutString("argument : \n") == -1)
+		if(PutString("argument : ") == -1)
 			PutString("Erreur putstring\n");
 		else
 		{
