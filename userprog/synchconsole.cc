@@ -129,11 +129,9 @@ int SynchConsole::SynchPutInt(int n)
 	int nb = 0;
 	char str[MAX_STRING_SIZE];
 
-	semWrite->P ();
 	nb = snprintf(str, MAX_STRING_SIZE, "%d", n);
 	synchconsole->SynchPutString(str);
 
-	semWrite->V();
 	return nb;
 }
 
