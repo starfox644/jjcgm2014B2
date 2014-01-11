@@ -190,7 +190,6 @@ ExceptionHandler (ExceptionType which)
 			}
 		}
 		currentThread->setIsSyscall(false);
-
 		// LB: Do not forget to increment the pc before returning!
 		UpdatePC ();
 	}
@@ -222,4 +221,8 @@ ExceptionHandler (ExceptionType which)
 		ASSERT (FALSE);
 	}
 	// End of addition
+#ifndef CHANGED
+	UpdatePC ();
+#endif
+
 }
