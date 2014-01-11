@@ -204,13 +204,16 @@ AddrSpace::RestoreState ()
 }
 
 #ifdef CHANGED
-	void AddrSpace::addThread()
+	void AddrSpace::addThread(Thread *th)
 	{
 		nbThreads++;
+		// add the new thread in threads list
+		l_threads.push_back(th);
 	}
 
-	void AddrSpace::removeThread()
+	void AddrSpace::removeThread(Thread *th)
 	{
+		std::list<Thread*>::iterator it = currentThread->space->l_threads.begin();
 		nbThreads--;
 	}
 

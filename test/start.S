@@ -190,7 +190,6 @@ UserThreadExit:
 	syscall
 	j	$31
 	.end UserThreadExit
-#endif /*CHANGED*/
 
 .globl GetTid
 	.ent	GetTid
@@ -199,6 +198,16 @@ GetTid:
 	syscall
 	j	$31
 	.end GetTid
+
+	.globl UserThreadJoin
+	.ent	UserThreadJoin
+UserThreadJoin:
+	addiu $2,$0,SC_UserThreadJoin
+	syscall
+	j	$31
+	.end UserThreadJoin
+
+#endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */
         .globl  __main

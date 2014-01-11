@@ -160,8 +160,13 @@ public:
 	AddrSpace *space;		// User code this thread is running.
 	int tid;				// thread id
 
+
 #ifdef CHANGED
 	static int nextTid;
+	// Semaphore used to UserThreadJoin
+	Semaphore *s_join;
+	// indicate if a thread wait this thread
+	bool wait;
 #endif
 
 #endif

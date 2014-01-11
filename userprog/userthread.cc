@@ -34,7 +34,7 @@ int do_UserThreadCreate(int f, int arg)
 		// the new thread shares the memory space with the current thread
 		newThread->space = currentThread->space;
 		newThread->space->s_nbThreads->P();
-		newThread->space->addThread();
+		newThread->space->addThread(newThread);
 		newThread->space->s_nbThreads->V();
 		// sets initial argument of the thread
 		newThread->setInitArg(arg);
@@ -43,7 +43,7 @@ int do_UserThreadCreate(int f, int arg)
 		// creation of the thread, init and positionning in the file
 		// the new thread executes StartUserThread (saving register)
 		newThread->Fork(StartUserThread, f);
-    	return 0;
+    	return newThread->tid;
     }
     else
     {
@@ -76,7 +76,7 @@ void do_UserThreadExit()
 	{
 		// remove the thread in the address space
 		currentThread->space->s_nbThreads->P();
-		currentThread->space->removeThread();
+		currentThread->space->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
 		if(currentThread->space->attente)
 			currentThread->space->s_exit->V();
@@ -88,6 +88,39 @@ void do_UserThreadExit()
 	{
 		// if the main thread calls userthreadexit, that stops the program
 		do_exit(0);
+	}
+}
+
+
+int do_UserThreadJoin(int tid)
+{
+	Thread* th;
+	std::list<Thread*>::iterator it = currentThread->space->l_threads.begin();
+
+	while (it != currentThread->space->l_threads.end() && (tid != (*it)->tid))
+	{
+		++it;
+	}
+	// tid does not exist or an other thread wait for this thread
+	if (it == currentThread->space->l_threads.end())
+	{
+		return -1;
+	}
+	else
+	{
+		th = *it;
+		if(th->wait)
+		{
+			return -1;
+		}
+		else
+		{
+			th->wait = true;
+			th->s_join->P();
+			th->wait = false;
+			th->s_join->V();
+			return 0;
+		}
 	}
 }
 

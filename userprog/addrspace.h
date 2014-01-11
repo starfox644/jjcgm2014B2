@@ -16,7 +16,10 @@
 #include "copyright.h"
 #include "filesys.h"
 #ifdef CHANGED
+//#include "thread.h"
 class Semaphore;
+class Thread;
+#include <list>
 #endif
 
 #ifdef CHANGED
@@ -43,12 +46,12 @@ class AddrSpace
     /**
      *  add a thread to this address space
      */
-    void addThread();
+    void addThread(Thread *th);
 
     /**
      *  remove a thread from this address space
      */
-    void removeThread();
+    void removeThread(Thread *th);
 
     /**
      * 	returns the number of user threads, without the main thread
@@ -58,6 +61,8 @@ class AddrSpace
     Semaphore *s_nbThreads;
     Semaphore *s_exit;
     bool attente;
+    std::list<Thread*> l_threads;
+
 #endif
 
   private:

@@ -10,5 +10,6 @@
 int do_UserThreadCreate(int f, int arg);
 static void StartUserThread(int f);
 void do_UserThreadExit();
+int do_UserThreadJoin(int tid);
 
 #endif

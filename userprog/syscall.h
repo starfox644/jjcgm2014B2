@@ -38,6 +38,7 @@
 #define SC_UserThreadCreate 16
 #define SC_UserThreadExit 17
 #define SC_GetTid 18
+#define SC_UserThreadJoin 23
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -181,6 +182,12 @@ void UserThreadExit();
  * 	Return the current thread id
  */
 int GetTid();
+
+
+/**
+ *	The current thread wait the given thread
+ */
+int UserThreadJoin(int tid);
 
 #endif //CHANGED
 
