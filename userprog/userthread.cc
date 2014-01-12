@@ -15,6 +15,7 @@ int do_UserThreadCreate(int f, int arg)
 	int n;
 	bool error = false;
 	int stackAddr;
+	s_create->P();
 	AddrSpace* space = currentThread->space;
 	Thread *newThread = new Thread("test");
 
@@ -50,11 +51,13 @@ int do_UserThreadCreate(int f, int arg)
 		// creation of the thread, init and positionning in the file
 		// the new thread executes StartUserThread (saving register)
 		newThread->Fork(StartUserThread, f);
+		s_create->V();
     	return newThread->tid;
     }
     else
     {
     	delete newThread;
+    	s_create->V();
     	return -1;
     }
 }

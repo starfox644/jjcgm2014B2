@@ -203,7 +203,7 @@ AddrSpace::InitRegisters ()
     DEBUG ('a', "Initializing stack register to %d\n",
 	   numPages * PageSize - 16);
 #else
-    machine->WriteRegister (StackReg, beginThreadsStackSpace);
+    machine->WriteRegister (StackReg, numPages * PageSize - 16);
     DEBUG ('a', "Initializing stack register to %d\n",
 	   numPages * PageSize - 16);
 #endif
