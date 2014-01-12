@@ -86,6 +86,7 @@ void do_UserThreadExit(int status)
 		if(currentThread->space->attente)
 			currentThread->space->s_exit->V();
 		currentThread->space->s_nbThreads->V();
+		currentThread->setThreadReturn(status);
 		// terminates this thread
 		currentThread->Finish();
 	}
@@ -97,7 +98,7 @@ void do_UserThreadExit(int status)
 }
 
 
-int do_UserThreadJoin(int tid)
+int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
 	std::list<Thread*>::iterator it = currentThread->space->l_threads.begin();
@@ -122,7 +123,10 @@ int do_UserThreadJoin(int tid)
 		{
 			th->wait = true;
 			th->s_join->P();
+
 			th->wait = false;
+			if (addrUser != 0)
+				machine->WriteMem(addrUser, sizeof(int), th->getThreadReturn());
 			th->s_join->V();
 			return 0;
 		}

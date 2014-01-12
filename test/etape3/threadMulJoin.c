@@ -19,7 +19,7 @@ void f(void* arg)
 {
 	int* tidg = (int*)arg;
 	PutString("Thread f\n");
-	if(UserThreadJoin(*tidg) == -1)
+	if(UserThreadJoin(*tidg, 0) == -1)
 		PutString("Erreur join de f sur g\n");
 	PutString("f fini\n");
 }
@@ -29,7 +29,7 @@ int main()
 	int tidf, tidg;
 	tidg = UserThreadCreate(g, 0);
 	tidf = UserThreadCreate(f, &tidg);
-	if(UserThreadJoin(tidg) == -1)
+	if(UserThreadJoin(tidg, 0) == -1)
 		PutString("Erreur join du main sur g\n");
 	PutString("Fin du main\n");
     return 0;

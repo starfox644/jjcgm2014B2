@@ -443,6 +443,16 @@ bool Thread::isMainThread()
 	return (stack == NULL);
 }
 
+void Thread::setThreadReturn(int th_ret)
+{
+	thread_return = th_ret;
+}
+
+int Thread::getThreadReturn()
+{
+	return thread_return;
+}
+
 #endif
 #endif
 
