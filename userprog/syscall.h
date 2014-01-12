@@ -207,12 +207,12 @@ int SemInit(sem_t *adrSem, int initValue);
 /**
  * Tell the thread to wait for a resource on the semaphore
  */
-int SemWait(int adrSem);
+int SemWait(sem_t *adrSem);
 
 /**
  * Release the semaphore once the resource is not needed anymore
  */
-int SemPost(int adrSem);
+int SemPost(sem_t *adrSem);
 
 #endif // CHANGED
 

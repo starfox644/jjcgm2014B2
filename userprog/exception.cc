@@ -207,9 +207,9 @@ ExceptionHandler (ExceptionType which)
 			case SC_SemWait:
 				currentThread->setIsSyscall(true);
 				n = machine->ReadRegister(4);
-
+				isSuccess = machine->ReadMem(n, sizeof(int), &n);
 				// error : returns -1
-				if(do_SemWait(n) == -1)
+				if(!isSuccess || (do_SemWait(n) == -1))
 					machine->WriteRegister(2, -1);
 				else
 					machine->WriteRegister(2, 0);
@@ -218,9 +218,9 @@ ExceptionHandler (ExceptionType which)
 			case SC_SemPost:
 				currentThread->setIsSyscall(true);
 				n = machine->ReadRegister(4);
-
+				isSuccess = machine->ReadMem(n, sizeof(int), &n);
 				// error : returns -1
-				if(do_SemPost(n) == -1)
+				if(!isSuccess || (do_SemPost(n) == -1))
 					machine->WriteRegister(2, -1);
 				else
 					machine->WriteRegister(2, 0);

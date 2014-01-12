@@ -10,7 +10,7 @@
 
 char buffer[NBMAX];
 int nbElem;
-sem_t *mutex, *empty, *full;
+sem_t mutex, empty, full;
 
 void ajouterRessource(char c)
 {
@@ -44,36 +44,36 @@ char retirerRessource()
 void producteur ()
 {
 	PutString("[Prod] Debut producteur\n");
-	while (1)
+	while (nbElem < NBMAX)
 	{
 		PutString("[Prod] Empty pris\n");
-		SemWait(*empty);
+		SemWait(&empty);
 		PutString("[Prod] Mutex pris\n");
-		SemWait(*mutex);
+		SemWait(&mutex);
 		PutString("[Prod] appel a ajouterRessource\n");
 		ajouterRessource('a'+nbElem);
 		PutString("[Prod] Mutex relache\n");
-		SemPost(*mutex);
+		SemPost(&mutex);
 		PutString("[Prod] Full relache\n");
-		SemPost(*full);
+		SemPost(&full);
 	}
 }
 
 void consommateur ()
 {
 	PutString("[Conso] Debut Consommateur\n");
-	while (1)
+	while (nbElem < NBMAX)
 	{
 		PutString("[Conso] Full pris\n");
-		SemWait(*full);
+		SemWait(&full);
 		PutString("[Conso] Mutex pris\n");
-		SemWait(*mutex);
+		SemWait(&mutex);
 		PutString("[Conso] appel a retirerRessource\n");
 		PutChar(retirerRessource());
 		PutString("[Conso] Mutex relache\n");
-		SemPost(*mutex);
+		SemPost(&mutex);
 		PutString("[Conso] Empty relache\n");
-		SemPost(*empty);
+		SemPost(&empty);
 	}
 }
 
@@ -82,7 +82,7 @@ int main ()
 	int error;
 	nbElem = 0;
 	PutString("Initialisation des semaphores\n");
-	if ((error = SemInit(mutex, 1)) == -1 || (error = SemInit(empty, NBMAX)) == -1 || (error = SemInit(full, 0)) == -1)
+	if ((error = SemInit(&mutex, 1)) == -1 || (error = SemInit(&empty, NBMAX)) == -1 || (error = SemInit(&full, 0)) == -1)
 		return -1;
 	PutString("Creation du thread producteur\n");
 	UserThreadCreate(producteur, 0);
