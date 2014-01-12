@@ -13,7 +13,6 @@ int do_SemInit(int adrSem, int initValue)
 	int id;
 	bool isSuccess;
 	id = currentThread->space->addSemaphore(initValue);
-	printf("seminit ajout du sem %d\n", id);
 	isSuccess = machine->WriteMem(adrSem, 4, id);
 	if (isSuccess == 1)
 		return 0;
@@ -31,9 +30,7 @@ int do_SemWait(int id)
 	sem = currentThread->space->getSemaphore(id);
 	if (sem != NULL)
 	{
-		printf("semwait attente du semaphore %d \n", id);
 		sem->P();
-		printf("semwait passage du semaphore \n");
 		return 0;
 	}
 	else
