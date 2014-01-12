@@ -127,6 +127,9 @@ public:
 	 */
 	bool isMainThread();
 
+	// tid given to the next thread
+	static int nextTid;
+
 #endif
 
 private:
@@ -162,15 +165,16 @@ public:
 	void RestoreUserState ();	// restore user-level register state
 
 	AddrSpace *space;		// User code this thread is running.
-	int tid;				// thread id
 
 
 #ifdef CHANGED
-	static int nextTid;
+	int tid;				// thread id
 	// Semaphore used to UserThreadJoin
 	Semaphore *s_join;
 	// indicate if a thread wait this thread
 	bool wait;
+	// initial stack pointer of the thread
+	int userStackAddr;
 #endif
 
 #endif
