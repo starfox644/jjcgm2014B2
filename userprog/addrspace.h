@@ -16,7 +16,6 @@
 #include "copyright.h"
 #include "filesys.h"
 #ifdef CHANGED
-//#include "thread.h"
 class Semaphore;
 class Thread;
 #include <list>
@@ -55,18 +54,27 @@ class AddrSpace
 
     /**
      * 	returns an initial stack pointer available for a new thread and removes it
-     * 	or -1 if it's impossible to add a new stack in the address space
+     * 	or returns -1 if it's impossible to add a new stack in the address space
      */
     int popAvailableStackPointer();
+
+    /**
+     * 	add a stackAddr to the list of available stack address
+     * 	this stack address must be in the address space
+     */
+	void addAvailableStackAddress(int stackAddr);
 
     /**
      * 	returns the number of user threads, without the main thread
      */
     int getNbThreads();
 
+    // locks access to the nbThreads variable
     Semaphore *s_nbThreads;
+    // locks the main thread while the others are finishing
     Semaphore *s_exit;
     bool attente;
+    // threads of the address space
     std::list<Thread*> l_threads;
 
 #endif
@@ -83,6 +91,7 @@ class AddrSpace
     int endThreadsStackSpace;
     // number of threads in execution without the main thread
     int nbThreads;
+    Semaphore* s_stackList;
     // list of available stack address in the address space for the threads
     std::list<int> l_availableStackAddress;
     // number max of threads depending on memory for the stacks

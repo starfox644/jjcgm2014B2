@@ -32,17 +32,17 @@
 static void
 SwapHeader (NoffHeader * noffH)
 {
-    noffH->noffMagic = WordToHost (noffH->noffMagic);
-    noffH->code.size = WordToHost (noffH->code.size);
-    noffH->code.virtualAddr = WordToHost (noffH->code.virtualAddr);
-    noffH->code.inFileAddr = WordToHost (noffH->code.inFileAddr);
-    noffH->initData.size = WordToHost (noffH->initData.size);
-    noffH->initData.virtualAddr = WordToHost (noffH->initData.virtualAddr);
-    noffH->initData.inFileAddr = WordToHost (noffH->initData.inFileAddr);
-    noffH->uninitData.size = WordToHost (noffH->uninitData.size);
-    noffH->uninitData.virtualAddr =
-	WordToHost (noffH->uninitData.virtualAddr);
-    noffH->uninitData.inFileAddr = WordToHost (noffH->uninitData.inFileAddr);
+	noffH->noffMagic = WordToHost (noffH->noffMagic);
+	noffH->code.size = WordToHost (noffH->code.size);
+	noffH->code.virtualAddr = WordToHost (noffH->code.virtualAddr);
+	noffH->code.inFileAddr = WordToHost (noffH->code.inFileAddr);
+	noffH->initData.size = WordToHost (noffH->initData.size);
+	noffH->initData.virtualAddr = WordToHost (noffH->initData.virtualAddr);
+	noffH->initData.inFileAddr = WordToHost (noffH->initData.inFileAddr);
+	noffH->uninitData.size = WordToHost (noffH->uninitData.size);
+	noffH->uninitData.virtualAddr =
+			WordToHost (noffH->uninitData.virtualAddr);
+	noffH->uninitData.inFileAddr = WordToHost (noffH->uninitData.inFileAddr);
 }
 
 //----------------------------------------------------------------------
@@ -62,98 +62,96 @@ SwapHeader (NoffHeader * noffH)
 
 AddrSpace::AddrSpace (OpenFile * executable)
 {
-    NoffHeader noffH;
-    unsigned int i, size;
+	NoffHeader noffH;
+	unsigned int i, size;
 
 #ifdef CHANGED
-    unsigned int availableStackSize;
-    nbThreads = 0;
-    attente = false;
-    s_exit = new Semaphore("exit semaphore", 0);
-    s_nbThreads = new Semaphore("nbThread semaphore", 1);
+	unsigned int availableStackSize;
+	nbThreads = 0;
+	attente = false;
+	s_exit = new Semaphore("exit semaphore", 0);
+	s_nbThreads = new Semaphore("nbThread semaphore", 1);
+	s_stackList = new Semaphore("stack list semaphore", 1);
 #endif
 
-    executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
-    if ((noffH.noffMagic != NOFFMAGIC) &&
-	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
-	SwapHeader (&noffH);
-    ASSERT (noffH.noffMagic == NOFFMAGIC);
-// how big is address space?
+	executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
+	if ((noffH.noffMagic != NOFFMAGIC) &&
+			(WordToHost (noffH.noffMagic) == NOFFMAGIC))
+		SwapHeader (&noffH);
+	ASSERT (noffH.noffMagic == NOFFMAGIC);
+	// how big is address space?
 
 #ifdef CHANGED
-    DEBUG ('a', "Executable informations :\n");
-    DEBUG('a', "code size : %d\n", noffH.code.size);
-    DEBUG('a', "init data size : : %d\n", noffH.initData.size);
-    DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
-    size = MemorySize;
-    beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
-    // to leave room for the stack
-    numPages = divRoundUp (size, PageSize);
-    size = numPages * PageSize;
-    availableStackSize = (size - beginThreadsStackSpace) - 1;
-    // the main thread is not included in this number
-    maxThreads = availableStackSize / UserStackSize;
+	DEBUG ('a', "Executable informations :\n");
+	DEBUG('a', "code size : %d\n", noffH.code.size);
+	DEBUG('a', "init data size : : %d\n", noffH.initData.size);
+	DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
+
+	// we use all the memory for the process
+	size = MemorySize;
+	// the available stack space begin after the main thread stack
+	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
+	// to leave room for the stack
+	numPages = divRoundUp (size, PageSize);
+	size = numPages * PageSize;
+	availableStackSize = (size - beginThreadsStackSpace) - 1;
+	// the main thread is not included in this number
+	maxThreads = availableStackSize / UserStackSize;
 
 
-    // the stacks space ends with the memory
-    endThreadsStackSpace = MemorySize - 1;
-    initAvailableStackPointers();
-
-    /*printf("endThreadsStackSpace : %d\n", endThreadsStackSpace);
-    printf("Address Space size : %d\n", MemorySize);
-    printf("beginThreadsStackSpace : %d\n", beginThreadsStackSpace);
-    printf("availableStackSize : %d\n", availableStackSize);
-    printf("nombre max de threads : %d\n", maxThreads);
-    printf("nb pages : %d\n", numPages);*/
+	// the stacks space ends with the memory
+	endThreadsStackSpace = MemorySize - 1;
+	// push in list the stack address available
+	initAvailableStackPointers();
 #else
-    size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
-    // to leave room for the stack
-    numPages = divRoundUp (size, PageSize);
-    size = numPages * PageSize;
+	size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
+	// to leave room for the stack
+	numPages = divRoundUp (size, PageSize);
+	size = numPages * PageSize;
 #endif
 
-    ASSERT (numPages <= NumPhysPages);	// check we're not trying
-    // to run anything too big --
-    // at least until we have
-    // virtual memory
+	ASSERT (numPages <= NumPhysPages);	// check we're not trying
+	// to run anything too big --
+	// at least until we have
+	// virtual memory
 
-    DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
-	   numPages, size);
-// first, set up the translation 
-    pageTable = new TranslationEntry[numPages];
-    for (i = 0; i < numPages; i++)
-      {
-	  pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-	  pageTable[i].physicalPage = i;
-	  pageTable[i].valid = TRUE;
-	  pageTable[i].use = FALSE;
-	  pageTable[i].dirty = FALSE;
-	  pageTable[i].readOnly = FALSE;	// if the code segment was entirely on 
-	  // a separate page, we could set its 
-	  // pages to be read-only
-      }
+	DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
+			numPages, size);
+	// first, set up the translation
+	pageTable = new TranslationEntry[numPages];
+	for (i = 0; i < numPages; i++)
+	{
+		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
+		pageTable[i].physicalPage = i;
+		pageTable[i].valid = TRUE;
+		pageTable[i].use = FALSE;
+		pageTable[i].dirty = FALSE;
+		pageTable[i].readOnly = FALSE;	// if the code segment was entirely on
+		// a separate page, we could set its
+		// pages to be read-only
+	}
 
-// zero out the entire address space, to zero the unitialized data segment 
-// and the stack segment
-    bzero (machine->mainMemory, size);
+	// zero out the entire address space, to zero the unitialized data segment
+	// and the stack segment
+	bzero (machine->mainMemory, size);
 
-// then, copy in the code and data segments into memory
-    if (noffH.code.size > 0)
-      {
-	  DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
-		 noffH.code.virtualAddr, noffH.code.size);
-	  executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
-			      noffH.code.size, noffH.code.inFileAddr);
-      }
-    if (noffH.initData.size > 0)
-      {
-	  DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
-		 noffH.initData.virtualAddr, noffH.initData.size);
-	  executable->ReadAt (&
-			      (machine->mainMemory
-			       [noffH.initData.virtualAddr]),
-			      noffH.initData.size, noffH.initData.inFileAddr);
-      }
+	// then, copy in the code and data segments into memory
+	if (noffH.code.size > 0)
+	{
+		DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
+				noffH.code.virtualAddr, noffH.code.size);
+		executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
+				noffH.code.size, noffH.code.inFileAddr);
+	}
+	if (noffH.initData.size > 0)
+	{
+		DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
+				noffH.initData.virtualAddr, noffH.initData.size);
+		executable->ReadAt (&
+				(machine->mainMemory
+						[noffH.initData.virtualAddr]),
+						noffH.initData.size, noffH.initData.inFileAddr);
+	}
 
 }
 
@@ -164,10 +162,15 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
-  // LB: Missing [] for delete
-  // delete pageTable;
-  delete [] pageTable;
-  // End of modification
+	// LB: Missing [] for delete
+	// delete pageTable;
+	delete [] pageTable;
+	// End of modification
+#ifdef CHANGED
+	delete s_nbThreads;
+	delete s_exit;
+	delete s_stackList;
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -183,29 +186,29 @@ AddrSpace::~AddrSpace ()
 void
 AddrSpace::InitRegisters ()
 {
-    int i;
+	int i;
 
-    for (i = 0; i < NumTotalRegs; i++)
-	machine->WriteRegister (i, 0);
+	for (i = 0; i < NumTotalRegs; i++)
+		machine->WriteRegister (i, 0);
 
-    // Initial program counter -- must be location of "Start"
-    machine->WriteRegister (PCReg, 0);
+	// Initial program counter -- must be location of "Start"
+	machine->WriteRegister (PCReg, 0);
 
-    // Need to also tell MIPS where next instruction is, because
-    // of branch delay possibility
-    machine->WriteRegister (NextPCReg, 4);
+	// Need to also tell MIPS where next instruction is, because
+	// of branch delay possibility
+	machine->WriteRegister (NextPCReg, 4);
 
-    // Set the stack register to the end of the address space, where we
-    // allocated the stack; but subtract off a bit, to make sure we don't
-    // accidentally reference off the end!
+	// Set the stack register to the end of the address space, where we
+	// allocated the stack; but subtract off a bit, to make sure we don't
+	// accidentally reference off the end!
 #ifdef CHANGED
-    machine->WriteRegister (StackReg, beginThreadsStackSpace);
-    DEBUG ('a', "Initializing stack register to %d\n",
-	   numPages * PageSize - 16);
+	machine->WriteRegister (StackReg, beginThreadsStackSpace);
+	DEBUG ('a', "Initializing stack register to %d\n",
+			numPages * PageSize - 16);
 #else
-    machine->WriteRegister (StackReg, numPages * PageSize - 16);
-    DEBUG ('a', "Initializing stack register to %d\n",
-	   numPages * PageSize - 16);
+	machine->WriteRegister (StackReg, numPages * PageSize - 16);
+	DEBUG ('a', "Initializing stack register to %d\n",
+			numPages * PageSize - 16);
 #endif
 }
 
@@ -233,56 +236,68 @@ AddrSpace::SaveState ()
 void
 AddrSpace::RestoreState ()
 {
-    machine->pageTable = pageTable;
-    machine->pageTableSize = numPages;
+	machine->pageTable = pageTable;
+	machine->pageTableSize = numPages;
 }
 
 #ifdef CHANGED
-	void AddrSpace::addThread(Thread *th)
-	{
-		nbThreads++;
-		// add the new thread in threads list
-		l_threads.push_back(th);
-	}
+void AddrSpace::addThread(Thread *th)
+{
+	nbThreads++;
+	// add the new thread in threads list
+	l_threads.push_back(th);
+}
 
-	void AddrSpace::removeThread(Thread *th)
-	{
-		nbThreads--;
-	}
+void AddrSpace::removeThread(Thread *th)
+{
+	nbThreads--;
+}
 
-	int AddrSpace::getNbThreads()
-	{
-		return nbThreads;
-	}
+int AddrSpace::getNbThreads()
+{
+	return nbThreads;
+}
 
-	/**
-	 * 	returns an initial stack pointer available for a new thread
-	 * 	or -1 if it's impossible to add a new stack in the address space
-	 */
-	int AddrSpace::popAvailableStackPointer()
+/**
+ * 	returns an initial stack pointer available for a new thread
+ * 	or -1 if it's impossible to add a new stack in the address space
+ */
+int AddrSpace::popAvailableStackPointer()
+{
+	int return_value;
+	s_stackList->P();
+	if(l_availableStackAddress.size() == 0)
 	{
-		int return_value;
-		if(l_availableStackAddress.size() == 0)
-		{
-			return_value = -1;
-		}
-		else
-		{
-			return_value = l_availableStackAddress.front();
-			l_availableStackAddress.pop_front();
-		}
-		return return_value;
+		return_value = -1;
 	}
+	else
+	{
+		return_value = l_availableStackAddress.front();
+		l_availableStackAddress.pop_front();
+	}
+	s_stackList->V();
+	return return_value;
+}
 
-    void AddrSpace::initAvailableStackPointers()
-    {
-    	int addr = beginThreadsStackSpace + UserStackSize;
-    	for(int i = 0 ; i < maxThreads ; i++)
-    	{
-    		//printf("insertion de %d\n", addr);
-    		l_availableStackAddress.push_back(addr);
-    		addr += UserStackSize;
-    	}
-    }
+void AddrSpace::addAvailableStackAddress(int stackAddr)
+{
+	ASSERT(stackAddr < (numPages*PageSize) && stackAddr >= beginThreadsStackSpace);
+	s_stackList->P();
+	l_availableStackAddress.push_back(stackAddr);
+	s_stackList->V();
+}
+
+void AddrSpace::initAvailableStackPointers()
+{
+	int addr = beginThreadsStackSpace + UserStackSize;
+	s_stackList->P();
+	for(int i = 0 ; i < maxThreads ; i++)
+	{
+		//printf("insertion de %d\n", addr);
+		l_availableStackAddress.push_back(addr);
+		addr += UserStackSize;
+	}
+	s_stackList->V();
+}
 
 #endif

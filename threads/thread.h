@@ -167,7 +167,7 @@ public:
 	int tid;				// thread id
 	// Semaphore used to UserThreadJoin
 	Semaphore *s_join;
-	// indicate if a thread wait this thread
+	// indicate if a thread is waiting this thread
 	bool wait;
 	// initial stack pointer of the thread
 	int userStackAddr;
