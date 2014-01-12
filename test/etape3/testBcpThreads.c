@@ -2,8 +2,7 @@
 #define NB_THREADS 100
 
 /**
- * 	Teste le lancement de deux threads executant la meme fonction.
- * 	Le premier affiche des 5 et le second affiche des 6.
+ * 	Teste le lancement de nombreux threads, chacun affichant un numero different.
  */
 void f(void* arg)
 {

@@ -82,7 +82,7 @@ int main ()
 	int error;
 	nbElem = 0;
 	PutString("Initialisation des semaphores\n");
-	if ((error = SemInit(mutex, 1)) == -1 && (error = SemInit(empty, NBMAX)) == -1 && (error = SemInit(full, 0)) == -1)
+	if ((error = SemInit(mutex, 1)) == -1 || (error = SemInit(empty, NBMAX)) == -1 || (error = SemInit(full, 0)) == -1)
 		return -1;
 	PutString("Creation du thread producteur\n");
 	UserThreadCreate(producteur, 0);
