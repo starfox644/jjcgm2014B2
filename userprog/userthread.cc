@@ -14,6 +14,7 @@ int do_UserThreadCreate(int f, int arg)
 {
 	int n;
 	bool error = false;
+	s_create->P();
 	Thread *newThread = new Thread("test");
 
 	// test the accessibility of the code and the argument
@@ -43,11 +44,13 @@ int do_UserThreadCreate(int f, int arg)
 		// creation of the thread, init and positionning in the file
 		// the new thread executes StartUserThread (saving register)
 		newThread->Fork(StartUserThread, f);
+		s_create->V();
     	return newThread->tid;
     }
     else
     {
     	delete newThread;
+    	s_create->V();
     	return -1;
     }
 }

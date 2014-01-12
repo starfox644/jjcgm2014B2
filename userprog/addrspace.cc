@@ -213,7 +213,6 @@ AddrSpace::RestoreState ()
 
 	void AddrSpace::removeThread(Thread *th)
 	{
-		std::list<Thread*>::iterator it = currentThread->space->l_threads.begin();
 		nbThreads--;
 	}
 

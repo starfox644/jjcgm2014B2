@@ -5,6 +5,8 @@
 // adresse de debut de la fonction startThread (dans start.s)
 #define THREAD_START_OFFSET 12
 
+class Semaphore;
+
 /**
 *    f : 		function address to execute in the MIPS processor
 *    arg : 	argument address for the f function, f will be called with arg
@@ -13,5 +15,7 @@ int do_UserThreadCreate(int f, int arg);
 static void StartUserThread(int f);
 int do_UserThreadJoin(int tid);
 void do_UserThreadExit(int status);
+
+Semaphore *s_create;
 
 #endif
