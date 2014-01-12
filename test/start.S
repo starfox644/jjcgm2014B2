@@ -32,6 +32,17 @@ __start:
 	jal	Exit	 /* if we return from main, exit(0) */
 	.end __start
 
+#ifdef CHANGED
+	.globl __startThread
+		.ent __startThread
+	__startThread:
+		move $4,$27				// copy of the arg
+		jal	$26					// jump to the thread's function
+		move $4,$0
+		jal	UserThreadExit		// if we return from the function, call UserThreadExit(0) */
+		.end __startThread
+#endif
+
 /* -------------------------------------------------------------
  * System call stubs:
  *	Assembly language assist to make system calls to the Nachos kernel.
@@ -222,6 +233,23 @@ SemDestroy:
 	syscall
 	j	$31
 	.end SemDestroy
+
+.globl GetTid
+	.ent	GetTid
+GetTid:
+	addiu $2,$0,SC_GetTid
+	syscall
+	j	$31
+	.end GetTid
+
+	.globl UserThreadJoin
+	.ent	UserThreadJoin
+UserThreadJoin:
+	addiu $2,$0,SC_UserThreadJoin
+	syscall
+	j	$31
+	.end UserThreadJoin
+
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */

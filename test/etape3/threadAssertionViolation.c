@@ -15,7 +15,7 @@ void f(void* arg)
 	PutInt(2);
 	PutString("\n");
 	*a = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 

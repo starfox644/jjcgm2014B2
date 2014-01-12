@@ -9,7 +9,7 @@ void g(void* arg)
 	int* attg = (int*)arg;
 	PutString("Thread 2\n");
 	*attg = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 void f(void* arg)
@@ -20,7 +20,7 @@ void f(void* arg)
 	UserThreadCreate(g, &attg);
 	while(attg != 1);
 	*attMain = 1;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

@@ -55,7 +55,6 @@
 // WATCH OUT IF THIS ISN'T BIG ENOUGH!!!!!
 #define StackSize	(4 * 1024)	// in words
 
-
 // Thread state
 enum ThreadStatus
 { JUST_CREATED, RUNNING, READY, BLOCKED };
@@ -125,6 +124,9 @@ public:
 	 */
 	bool isMainThread();
 
+	// tid given to the next thread
+	static int nextTid;
+
 #endif
 
 private:
@@ -159,6 +161,18 @@ public:
 	void RestoreUserState ();	// restore user-level register state
 
 	AddrSpace *space;		// User code this thread is running.
+
+
+#ifdef CHANGED
+	int tid;				// thread id
+	// Semaphore used to UserThreadJoin
+	Semaphore *s_join;
+	// indicate if a thread wait this thread
+	bool wait;
+	// initial stack pointer of the thread
+	int userStackAddr;
+#endif
+
 #endif
 };
 

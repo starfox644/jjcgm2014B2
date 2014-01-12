@@ -17,12 +17,13 @@
 #include "filesys.h"
 
 #ifdef CHANGED
-#include <list>
 class Semaphore;
+class Thread;
+#include <list>
 #endif
 
 #ifdef CHANGED
-#define UserStackSize		4096	// increase this as necessary!
+#define UserStackSize		2048	// increase this as necessary!
 #else
 #define UserStackSize		1024	// increase this as necessary!
 #endif
@@ -45,12 +46,18 @@ class AddrSpace
     /**
      *  add a thread to this address space
      */
-    void addThread();
+    void addThread(Thread *th);
 
     /**
      *  remove a thread from this address space
      */
-    void removeThread();
+    void removeThread(Thread *th);
+
+    /**
+     * 	returns an initial stack pointer available for a new thread and removes it
+     * 	or -1 if it's impossible to add a new stack in the address space
+     */
+    int popAvailableStackPointer();
 
     /**
      * 	returns the number of user threads, without the main thread
@@ -77,6 +84,9 @@ class AddrSpace
      * Return the semaphore identified by id, or NULL if it doesn't exist
      */
     Semaphore* getSemaphore(int id);
+
+    std::list<Thread*> l_threads;
+
 #endif
 
   private:
@@ -85,6 +95,10 @@ class AddrSpace
     unsigned int numPages;	// Number of pages in the virtual 
     // address space
 #ifdef CHANGED
+    // address where the memory available for threads' stacks begins
+    int beginThreadsStackSpace;
+    // address where the memory available for threads' stacks ends
+    int endThreadsStackSpace;
     // number of threads in execution without the main thread
     int nbThreads;
     // number of semaphore created
@@ -92,7 +106,13 @@ class AddrSpace
 
     // Semaphore list : needed to give an unique identifier for user semaphores
     std::list<Semaphore*> semList;
-#endif
+    // list of available stack address in the address space for the threads
+    std::list<int> l_availableStackAddress;
+    // number max of threads depending on memory for the stacks
+    int maxThreads;
+
+    void initAvailableStackPointers();
+#endif //CHANGED
 };
 
 #endif // ADDRSPACE_H

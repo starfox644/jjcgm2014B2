@@ -12,12 +12,9 @@ int do_SemInit(int adrSem, int initValue)
 {
 	int id;
 	bool isSuccess;
-	printf("adrSem : %i, initVal : %i\n", adrSem, initValue);
 	id = currentThread->space->addSemaphore(initValue);
-	printf("id : %i\n", id);
 	isSuccess = machine->WriteMem(adrSem, 4, id);
-	std::cout << "isSuccess : " << isSuccess;
-	if (isSuccess)
+	if (isSuccess == 1)
 		return 0;
 	else
 		return -1;

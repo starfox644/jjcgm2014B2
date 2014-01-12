@@ -24,6 +24,9 @@
 					// execution stack, for detecting 
 					// stack overflows
 
+#ifdef CHANGED
+	int Thread::nextTid = 1;
+#endif
 //----------------------------------------------------------------------
 // Thread::Thread
 //      Initialize a thread control block, so that we can then call
@@ -40,6 +43,11 @@ Thread::Thread (const char *threadName)
     status = JUST_CREATED;
 #ifdef USER_PROGRAM
     space = NULL;
+#endif
+#ifdef CHANGED
+    tid = 0;
+    wait = false;
+	s_join = new Semaphore("semaphore for join", 1);
 #endif
 }
 
@@ -90,6 +98,9 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     DEBUG ('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
 	   name, (int) func, arg);
 
+#ifdef CHANGED
+    s_join->P();
+#endif
     StackAllocate (func, arg);
 
 #ifdef USER_PROGRAM
@@ -159,7 +170,9 @@ Thread::Finish ()
     ASSERT (this == currentThread);
 
     DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
-
+#ifdef CHANGED
+    s_join->V();
+#endif
     // LB: Be careful to guarantee that no thread to be destroyed 
     // is ever lost 
     ASSERT (threadToBeDestroyed == NULL);

@@ -16,7 +16,7 @@ void f(void* arg)
 	Arg *param = (Arg*) arg;
 	PutChar(param->a);
 	param->wait = 0;
-	UserThreadExit();
+	UserThreadExit(0);
 }
 
 int main()

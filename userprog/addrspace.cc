@@ -68,8 +68,9 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	unsigned int i, size;
 
 #ifdef CHANGED
-	nbThreads = 0;
+	unsigned int availableStackSize;
 	nbSem = 0;
+	nbThreads = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -80,12 +81,39 @@ AddrSpace::AddrSpace (OpenFile * executable)
 			(WordToHost (noffH.noffMagic) == NOFFMAGIC))
 		SwapHeader (&noffH);
 	ASSERT (noffH.noffMagic == NOFFMAGIC);
-
 	// how big is address space?
+
+#ifdef CHANGED
+	DEBUG ('a', "Executable informations :\n");
+	DEBUG('a', "code size : %d\n", noffH.code.size);
+	DEBUG('a', "init data size : : %d\n", noffH.initData.size);
+	DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
+	size = MemorySize;
+	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
+	// to leave room for the stack
+	numPages = divRoundUp (size, PageSize);
+	size = numPages * PageSize;
+	availableStackSize = (size - beginThreadsStackSpace) - 1;
+	// the main thread is not included in this number
+	maxThreads = availableStackSize / UserStackSize;
+
+
+	// the stacks space ends with the memory
+	endThreadsStackSpace = MemorySize - 1;
+	initAvailableStackPointers();
+
+	/*printf("endThreadsStackSpace : %d\n", endThreadsStackSpace);
+    printf("Address Space size : %d\n", MemorySize);
+    printf("beginThreadsStackSpace : %d\n", beginThreadsStackSpace);
+    printf("availableStackSize : %d\n", availableStackSize);
+    printf("nombre max de threads : %d\n", maxThreads);
+    printf("nb pages : %d\n", numPages);*/
+#else
 	size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
 	// to leave room for the stack
 	numPages = divRoundUp (size, PageSize);
 	size = numPages * PageSize;
+#endif
 
 	ASSERT (numPages <= NumPhysPages);	// check we're not trying
 	// to run anything too big --
@@ -129,7 +157,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 						[noffH.initData.virtualAddr]),
 						noffH.initData.size, noffH.initData.inFileAddr);
 	}
-
 }
 
 //----------------------------------------------------------------------
@@ -173,9 +200,15 @@ AddrSpace::InitRegisters ()
 	// Set the stack register to the end of the address space, where we
 	// allocated the stack; but subtract off a bit, to make sure we don't
 	// accidentally reference off the end!
+#ifdef CHANGED
+	machine->WriteRegister (StackReg, beginThreadsStackSpace);
+	DEBUG ('a', "Initializing stack register to %d\n",
+			numPages * PageSize - 16);
+#else
 	machine->WriteRegister (StackReg, numPages * PageSize - 16);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			numPages * PageSize - 16);
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -207,12 +240,15 @@ AddrSpace::RestoreState ()
 }
 
 #ifdef CHANGED
-void AddrSpace::addThread()
+
+void AddrSpace::addThread(Thread *th)
 {
 	nbThreads++;
+	// add the new thread in threads list
+	l_threads.push_back(th);
 }
 
-void AddrSpace::removeThread()
+void AddrSpace::removeThread(Thread *th)
 {
 	nbThreads--;
 }
@@ -275,6 +311,36 @@ Semaphore* AddrSpace::getSemaphore(int id)
 	// Else, return it
 	else
 		return (Semaphore*)(*it);
+}
+
+/**
+ * 	returns an initial stack pointer available for a new thread
+ * 	or -1 if it's impossible to add a new stack in the address space
+ */
+int AddrSpace::popAvailableStackPointer()
+{
+	int return_value;
+	if(l_availableStackAddress.size() == 0)
+	{
+		return_value = -1;
+	}
+	else
+	{
+		return_value = l_availableStackAddress.front();
+		l_availableStackAddress.pop_front();
+	}
+	return return_value;
+}
+
+void AddrSpace::initAvailableStackPointers()
+{
+	int addr = beginThreadsStackSpace + UserStackSize;
+	for(int i = 0 ; i < maxThreads ; i++)
+	{
+		//printf("insertion de %d\n", addr);
+		l_availableStackAddress.push_back(addr);
+		addr += UserStackSize;
+	}
 }
 
 #endif

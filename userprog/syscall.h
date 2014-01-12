@@ -38,10 +38,12 @@
 #define SC_PutInt	 15
 #define SC_UserThreadCreate 16
 #define SC_UserThreadExit 17
+#define SC_GetTid 18
 #define SC_SemInit 19
 #define SC_SemWait 20
 #define SC_SemPost 21
 #define SC_SemDestroy 22
+#define SC_UserThreadJoin 23
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -184,7 +186,17 @@ int UserThreadCreate(void f(void *arg), void *arg);
 /**
  * Terminate the current thread
  */
-void UserThreadExit();
+void UserThreadExit(int status);
+
+/**
+ * 	Return the current thread id
+ */
+int GetTid();
+
+/**
+ *	The current thread wait the given thread
+ */
+int UserThreadJoin(int tid);
 
 /**
  * Create a new user semaphore with a token initialized to initValue

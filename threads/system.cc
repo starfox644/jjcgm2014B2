@@ -41,6 +41,12 @@ SynchConsole *synchconsole;
 PostOffice *postOffice;
 #endif
 
+#ifdef CHANGED
+#ifdef step3
+	extern Semaphore *s_create;
+#endif
+#endif
+
 
 // External definition, to allow us to take a pointer to this function
 extern void Cleanup ();
@@ -147,6 +153,11 @@ Initialize (int argc, char **argv)
     stats = new Statistics ();	// collect statistics
     interrupt = new Interrupt;	// start up interrupt handling
     scheduler = new Scheduler ();	// initialize the ready queue
+#ifdef CHANGED
+#ifdef step3
+    s_create = new Semaphore("sem create", 1);
+#endif
+#endif
     if (randomYield)		// start the timer (if needed)
 	timer = new Timer (TimerInterruptHandler, 0, randomYield);
 
