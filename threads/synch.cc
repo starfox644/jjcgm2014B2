@@ -51,6 +51,24 @@ Semaphore::~Semaphore ()
     delete queue;
 }
 
+#ifdef CHANGED
+/**
+ *	Return the semaphore id
+ */
+int Semaphore::getId()
+{
+	return this->id;
+}
+
+/**
+ *	Set the semaphore id
+ */
+void Semaphore::setId(int idSem)
+{
+	id = idSem;
+}
+#endif // CHANGED
+
 //----------------------------------------------------------------------
 // Semaphore::P
 //      Wait until semaphore value > 0, then decrement.  Checking the

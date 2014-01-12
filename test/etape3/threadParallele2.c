@@ -3,6 +3,7 @@
 /**
  *	Lance 3 threads en parallele et attend leur terminaison.
  *	Ce n'est qu'une fois tous les autres threads termines qu'il se termine a son tour.
+ *	Le thread principal attend les autres via semaphore pris par ses threads encore en execution
  */
 
 

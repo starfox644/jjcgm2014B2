@@ -66,7 +66,6 @@ int main ()
 	UserThreadCreate(producteur, 0);
 	PutString("Creation du thread consommateur");
 	UserThreadCreate(consommateur, 0);
-
 	return 0;
 
 

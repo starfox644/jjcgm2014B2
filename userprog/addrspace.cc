@@ -19,7 +19,9 @@
 #include "system.h"
 #include "addrspace.h"
 #include "noff.h"
-
+#ifdef CHANGED
+#include <string>
+#endif
 #include <strings.h>		/* for bzero */
 
 //----------------------------------------------------------------------
@@ -32,17 +34,17 @@
 static void
 SwapHeader (NoffHeader * noffH)
 {
-    noffH->noffMagic = WordToHost (noffH->noffMagic);
-    noffH->code.size = WordToHost (noffH->code.size);
-    noffH->code.virtualAddr = WordToHost (noffH->code.virtualAddr);
-    noffH->code.inFileAddr = WordToHost (noffH->code.inFileAddr);
-    noffH->initData.size = WordToHost (noffH->initData.size);
-    noffH->initData.virtualAddr = WordToHost (noffH->initData.virtualAddr);
-    noffH->initData.inFileAddr = WordToHost (noffH->initData.inFileAddr);
-    noffH->uninitData.size = WordToHost (noffH->uninitData.size);
-    noffH->uninitData.virtualAddr =
-	WordToHost (noffH->uninitData.virtualAddr);
-    noffH->uninitData.inFileAddr = WordToHost (noffH->uninitData.inFileAddr);
+	noffH->noffMagic = WordToHost (noffH->noffMagic);
+	noffH->code.size = WordToHost (noffH->code.size);
+	noffH->code.virtualAddr = WordToHost (noffH->code.virtualAddr);
+	noffH->code.inFileAddr = WordToHost (noffH->code.inFileAddr);
+	noffH->initData.size = WordToHost (noffH->initData.size);
+	noffH->initData.virtualAddr = WordToHost (noffH->initData.virtualAddr);
+	noffH->initData.inFileAddr = WordToHost (noffH->initData.inFileAddr);
+	noffH->uninitData.size = WordToHost (noffH->uninitData.size);
+	noffH->uninitData.virtualAddr =
+			WordToHost (noffH->uninitData.virtualAddr);
+	noffH->uninitData.inFileAddr = WordToHost (noffH->uninitData.inFileAddr);
 }
 
 //----------------------------------------------------------------------
@@ -62,70 +64,71 @@ SwapHeader (NoffHeader * noffH)
 
 AddrSpace::AddrSpace (OpenFile * executable)
 {
-    NoffHeader noffH;
-    unsigned int i, size;
+	NoffHeader noffH;
+	unsigned int i, size;
 
 #ifdef CHANGED
-    nbThreads = 0;
-    attente = false;
-    s_exit = new Semaphore("exit semaphore", 0);
-    s_nbThreads = new Semaphore("nbThread semaphore", 1);
+	nbThreads = 0;
+	nbSem = 0;
+	attente = false;
+	s_exit = new Semaphore("exit semaphore", 0);
+	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 #endif
 
-    executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
-    if ((noffH.noffMagic != NOFFMAGIC) &&
-	(WordToHost (noffH.noffMagic) == NOFFMAGIC))
-	SwapHeader (&noffH);
-    ASSERT (noffH.noffMagic == NOFFMAGIC);
+	executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
+	if ((noffH.noffMagic != NOFFMAGIC) &&
+			(WordToHost (noffH.noffMagic) == NOFFMAGIC))
+		SwapHeader (&noffH);
+	ASSERT (noffH.noffMagic == NOFFMAGIC);
 
-// how big is address space?
-    size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
-    // to leave room for the stack
-    numPages = divRoundUp (size, PageSize);
-    size = numPages * PageSize;
+	// how big is address space?
+	size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
+	// to leave room for the stack
+	numPages = divRoundUp (size, PageSize);
+	size = numPages * PageSize;
 
-    ASSERT (numPages <= NumPhysPages);	// check we're not trying
-    // to run anything too big --
-    // at least until we have
-    // virtual memory
+	ASSERT (numPages <= NumPhysPages);	// check we're not trying
+	// to run anything too big --
+	// at least until we have
+	// virtual memory
 
-    DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
-	   numPages, size);
-// first, set up the translation 
-    pageTable = new TranslationEntry[numPages];
-    for (i = 0; i < numPages; i++)
-      {
-	  pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-	  pageTable[i].physicalPage = i;
-	  pageTable[i].valid = TRUE;
-	  pageTable[i].use = FALSE;
-	  pageTable[i].dirty = FALSE;
-	  pageTable[i].readOnly = FALSE;	// if the code segment was entirely on 
-	  // a separate page, we could set its 
-	  // pages to be read-only
-      }
+	DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
+			numPages, size);
+	// first, set up the translation
+	pageTable = new TranslationEntry[numPages];
+	for (i = 0; i < numPages; i++)
+	{
+		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
+		pageTable[i].physicalPage = i;
+		pageTable[i].valid = TRUE;
+		pageTable[i].use = FALSE;
+		pageTable[i].dirty = FALSE;
+		pageTable[i].readOnly = FALSE;	// if the code segment was entirely on
+		// a separate page, we could set its
+		// pages to be read-only
+	}
 
-// zero out the entire address space, to zero the unitialized data segment 
-// and the stack segment
-    bzero (machine->mainMemory, size);
+	// zero out the entire address space, to zero the unitialized data segment
+	// and the stack segment
+	bzero (machine->mainMemory, size);
 
-// then, copy in the code and data segments into memory
-    if (noffH.code.size > 0)
-      {
-	  DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
-		 noffH.code.virtualAddr, noffH.code.size);
-	  executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
-			      noffH.code.size, noffH.code.inFileAddr);
-      }
-    if (noffH.initData.size > 0)
-      {
-	  DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
-		 noffH.initData.virtualAddr, noffH.initData.size);
-	  executable->ReadAt (&
-			      (machine->mainMemory
-			       [noffH.initData.virtualAddr]),
-			      noffH.initData.size, noffH.initData.inFileAddr);
-      }
+	// then, copy in the code and data segments into memory
+	if (noffH.code.size > 0)
+	{
+		DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
+				noffH.code.virtualAddr, noffH.code.size);
+		executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
+				noffH.code.size, noffH.code.inFileAddr);
+	}
+	if (noffH.initData.size > 0)
+	{
+		DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
+				noffH.initData.virtualAddr, noffH.initData.size);
+		executable->ReadAt (&
+				(machine->mainMemory
+						[noffH.initData.virtualAddr]),
+						noffH.initData.size, noffH.initData.inFileAddr);
+	}
 
 }
 
@@ -136,10 +139,10 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
-  // LB: Missing [] for delete
-  // delete pageTable;
-  delete [] pageTable;
-  // End of modification
+	// LB: Missing [] for delete
+	// delete pageTable;
+	delete [] pageTable;
+	// End of modification
 }
 
 //----------------------------------------------------------------------
@@ -155,24 +158,24 @@ AddrSpace::~AddrSpace ()
 void
 AddrSpace::InitRegisters ()
 {
-    int i;
+	int i;
 
-    for (i = 0; i < NumTotalRegs; i++)
-	machine->WriteRegister (i, 0);
+	for (i = 0; i < NumTotalRegs; i++)
+		machine->WriteRegister (i, 0);
 
-    // Initial program counter -- must be location of "Start"
-    machine->WriteRegister (PCReg, 0);
+	// Initial program counter -- must be location of "Start"
+	machine->WriteRegister (PCReg, 0);
 
-    // Need to also tell MIPS where next instruction is, because
-    // of branch delay possibility
-    machine->WriteRegister (NextPCReg, 4);
+	// Need to also tell MIPS where next instruction is, because
+	// of branch delay possibility
+	machine->WriteRegister (NextPCReg, 4);
 
-    // Set the stack register to the end of the address space, where we
-    // allocated the stack; but subtract off a bit, to make sure we don't
-    // accidentally reference off the end!
-    machine->WriteRegister (StackReg, numPages * PageSize - 16);
-    DEBUG ('a', "Initializing stack register to %d\n",
-	   numPages * PageSize - 16);
+	// Set the stack register to the end of the address space, where we
+	// allocated the stack; but subtract off a bit, to make sure we don't
+	// accidentally reference off the end!
+	machine->WriteRegister (StackReg, numPages * PageSize - 16);
+	DEBUG ('a', "Initializing stack register to %d\n",
+			numPages * PageSize - 16);
 }
 
 //----------------------------------------------------------------------
@@ -199,23 +202,79 @@ AddrSpace::SaveState ()
 void
 AddrSpace::RestoreState ()
 {
-    machine->pageTable = pageTable;
-    machine->pageTableSize = numPages;
+	machine->pageTable = pageTable;
+	machine->pageTableSize = numPages;
 }
 
 #ifdef CHANGED
-	void AddrSpace::addThread()
-	{
-		nbThreads++;
-	}
+void AddrSpace::addThread()
+{
+	nbThreads++;
+}
 
-	void AddrSpace::removeThread()
-	{
-		nbThreads--;
-	}
+void AddrSpace::removeThread()
+{
+	nbThreads--;
+}
 
-	int AddrSpace::getNbThreads()
+int AddrSpace::getNbThreads()
+{
+	return nbThreads;
+}
+
+/**
+ * Add newSem to semList, give it a unique modifier and return the id
+ */
+int AddrSpace::addSemaphore(int initValue)
+{
+	// unique name based on identifier
+	const char *name = "UserSem" + nbSem;
+	Semaphore *sem = new Semaphore (name, initValue);
+	// Set the semaphore id
+	sem->setId(nbSem);
+	nbSem++;
+	// Add it to the list
+	semList.push_back(sem);
+	return sem->getId();
+}
+
+/**
+ * Remove a semaphore from the list based on his identifier.
+ * If the identifier is valid, the semaphore is destroyed.
+ * If not, the function returns -1.
+ */
+int AddrSpace::removeSemaphore(int id)
+{
+	// iterator to find the semaphore in the list
+	std::list<Semaphore*>::iterator it=semList.begin();
+	while (it != semList.end() && (*it)->id != id)
+		it++;
+	// If semaphore not found, return -1 : error
+	if ((*it)->id != id)
+		return -1;
+	// Else, remove it
+	else
 	{
-		return nbThreads;
+		semList.erase(it);
+		return 0;
 	}
+}
+
+/**
+ * Return the semaphore identified by id, or NULL if it doesn't exist
+ */
+Semaphore* AddrSpace::getSemaphore(int id)
+{
+	// iterator to find the semaphore in the list
+	std::list<Semaphore*>::iterator it=semList.begin();
+	while (it != semList.end() && (*it)->id != id)
+		it++;
+	// If semaphore not found, return -1 : error
+	if ((*it)->id != id)
+		return NULL;
+	// Else, return it
+	else
+		return (Semaphore*)(*it);
+}
+
 #endif

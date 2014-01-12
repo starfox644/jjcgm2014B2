@@ -15,7 +15,9 @@
 
 #include "copyright.h"
 #include "filesys.h"
+
 #ifdef CHANGED
+#include <list>
 class Semaphore;
 #endif
 
@@ -58,6 +60,23 @@ class AddrSpace
     Semaphore *s_nbThreads;
     Semaphore *s_exit;
     bool attente;
+
+    /**
+     * Add newSem to semList and allocate it a unique modifier
+     */
+    int addSemaphore(int initValue);
+
+    /**
+     * Remove a semaphore from the list based on his identifier.
+     * If the identifier is valid, the semaphore is destroyed.
+     * If not, the function returns -1.
+     */
+    int removeSemaphore(int id);
+
+    /**
+     * Return the semaphore identified by id, or NULL if it doesn't exist
+     */
+    Semaphore* getSemaphore(int id);
 #endif
 
   private:
@@ -68,6 +87,11 @@ class AddrSpace
 #ifdef CHANGED
     // number of threads in execution without the main thread
     int nbThreads;
+    // number of semaphore created
+    int nbSem;
+
+    // Semaphore list : needed to give an unique identifier for user semaphores
+    std::list<Semaphore*> semList;
 #endif
 };
 
