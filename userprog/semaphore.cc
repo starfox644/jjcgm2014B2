@@ -31,9 +31,7 @@ int do_SemWait(int id)
 	sem = currentThread->space->getSemaphore(id);
 	if (sem != NULL)
 	{
-		printf("semwait attente du semaphore %d \n", id);
 		sem->P();
-		printf("semwait passage du semaphore \n");
 		return 0;
 	}
 	else
