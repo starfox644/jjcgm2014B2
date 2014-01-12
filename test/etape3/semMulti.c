@@ -1,6 +1,7 @@
 /**
  * Ce programme lance plusieurs threads pour tester l'entrelacement des semaphores.
  * 2 threads se partagent un meme semaphore et affiche des chaines de caracteres
+ * (semBasique mais avec plusieurs paires de threads associees a des semaphores differents)
  */
 #ifdef CHANGED
 #include "syscall.h"

@@ -178,6 +178,16 @@ AddrSpace::~AddrSpace ()
 	delete s_nbThreads;
 	delete s_exit;
 	delete s_stackList;
+
+	// Suppression des semaphores
+	std::list<Semaphore*>::iterator it = semList.begin();
+	std::list<Semaphore*>::iterator itDel;
+	while (it != semList.end())
+	{
+		itDel = it;
+		it++;
+		delete *itDel;
+	}
 #endif
 }
 
