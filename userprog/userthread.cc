@@ -112,11 +112,12 @@ int do_UserThreadJoin(int tid, int addrUser)
 	Thread* th;
 	std::list<Thread*>::iterator it = currentThread->space->l_threads.begin();
 
+	// search the given thread in l_thread
 	while (it != currentThread->space->l_threads.end() && (tid != (*it)->tid))
 	{
 		++it;
 	}
-	// tid does not exist or an other thread wait for this thread
+	// tid does not exist : error
 	if (it == currentThread->space->l_threads.end())
 	{
 		return -1;
@@ -124,6 +125,7 @@ int do_UserThreadJoin(int tid, int addrUser)
 	else
 	{
 		th = *it;
+		// an other thread wait for this thread : error
 		if(th->wait)
 		{
 			return -1;
@@ -131,9 +133,11 @@ int do_UserThreadJoin(int tid, int addrUser)
 		else
 		{
 			th->wait = true;
+			// wait while the thread doesn't finish
 			th->s_join->P();
 
 			th->wait = false;
+			// set return code to this address addrUser
 			if (addrUser != 0)
 				machine->WriteMem(addrUser, sizeof(int), th->getThreadReturn());
 			th->s_join->V();
