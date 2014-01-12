@@ -126,11 +126,13 @@ Initialize (int argc, char **argv)
 				randomYield = TRUE;
 				argCount = 2;
 			}else{
-				fprintf(stderr,"\nErreur, problème d'arguments\n");
+				fprintf(stderr,"\nPlease give an argument\n");
 				Exit(-1);
 			}
-		}
+#else
+			ASSERT(argc > 1);
 #endif
+		}
 #ifdef USER_PROGRAM
 	  if (!strcmp (*argv, "-s"))
 	      debugUserProg = TRUE;
