@@ -13,7 +13,6 @@ int do_SemInit(int adrSem, int initValue)
 	int id;
 	bool isSuccess;
 	id = currentThread->space->addSemaphore(initValue);
-	printf("seminit ajout du sem %d\n", id);
 	isSuccess = machine->WriteMem(adrSem, 4, id);
 	if (isSuccess == 1)
 		return 0;

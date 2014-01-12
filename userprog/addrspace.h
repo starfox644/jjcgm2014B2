@@ -63,7 +63,7 @@ class AddrSpace
      * 	add a stackAddr to the list of available stack address
      * 	this stack address must be in the address space
      */
-	void addAvailableStackAddress(int stackAddr);
+	void addAvailableStackAddress(unsigned int stackAddr);
 
     /**
      * 	returns the number of user threads, without the main thread
@@ -105,9 +105,9 @@ class AddrSpace
     // address space
 #ifdef CHANGED
     // address where the memory available for threads' stacks begins
-    int beginThreadsStackSpace;
+    unsigned int beginThreadsStackSpace;
     // address where the memory available for threads' stacks ends
-    int endThreadsStackSpace;
+    unsigned int endThreadsStackSpace;
     // number of threads in execution without the main thread
     int nbThreads;
     // number of semaphore created

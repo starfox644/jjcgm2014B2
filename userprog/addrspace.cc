@@ -342,7 +342,7 @@ int AddrSpace::popAvailableStackPointer()
 	return return_value;
 }
 
-void AddrSpace::addAvailableStackAddress(int stackAddr)
+void AddrSpace::addAvailableStackAddress(unsigned int stackAddr)
 {
 	ASSERT(stackAddr < (numPages*PageSize) && stackAddr >= beginThreadsStackSpace);
 	s_stackList->P();
