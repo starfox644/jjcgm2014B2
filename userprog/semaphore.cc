@@ -1,0 +1,71 @@
+#ifdef CHANGED
+#include "system.h"
+#include "syscall.h"
+#include <iostream>
+
+
+/**
+*	Demande l'initialisation d'un semaphore noyau
+*	Renvoie 0 si le semaphore est cree, -1 sinon
+*/
+int do_SemInit(int adrSem, int initValue)
+{
+	int id;
+	bool isSuccess;
+	printf("adrSem : %i, initVal : %i\n", adrSem, initValue);
+	id = currentThread->space->addSemaphore(initValue);
+	printf("id : %i\n", id);
+	isSuccess = machine->WriteMem(adrSem, 4, id);
+	std::cout << "isSuccess : " << isSuccess;
+	if (isSuccess)
+		return 0;
+	else
+		return -1;
+}
+
+/**
+ * Demande au semaphore identifie par id d'ajouter le thread courant
+ * a la liste des threads en attente pour la ressource
+ */
+int do_SemWait(int id)
+{
+	Semaphore *sem;
+	sem = currentThread->space->getSemaphore(id);
+	if (sem != NULL)
+	{
+		sem->P();
+		return 0;
+	}
+	else
+		return -1;
+}
+
+/**
+ * Demande au semaphore identifie par id de retirer le thread courant
+ * de la liste des threads en attente pour la ressource
+ */
+int do_SemPost(int id)
+{
+	Semaphore *sem;
+		sem = currentThread->space->getSemaphore(id);
+		if (sem != NULL)
+		{
+			sem->V();
+			return 0;
+		}
+		else
+			return -1;
+}
+
+/**
+ * Demande la suppression du semaphore identifie par id
+ */
+int do_SemDestroy(int id)
+{
+	if (currentThread->space->removeSemaphore(id) != -1)
+		return 0;
+	else
+		return -1;
+}
+
+#endif
