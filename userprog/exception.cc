@@ -30,7 +30,7 @@
 #include "semaphore.h"
 
 extern int do_UserThreadCreate(int f, int arg);
-extern int do_UserThreadJoin(int tid);
+extern int do_UserThreadJoin(int tid, int addrUser);
 extern void do_UserThreadExit(int status);
 #endif
 
@@ -187,7 +187,8 @@ ExceptionHandler (ExceptionType which)
 
 			case SC_UserThreadJoin:
 				n = machine->ReadRegister(4);
-				codeErreur = do_UserThreadJoin(n);
+				adr = machine->ReadRegister(5);
+				codeErreur = do_UserThreadJoin(n, adr);
 				machine->WriteRegister(2, codeErreur);
 				break;
 

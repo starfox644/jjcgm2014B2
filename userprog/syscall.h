@@ -195,8 +195,9 @@ int GetTid();
 
 /**
  *	The current thread wait the given thread
+ *	ptr_return : return code address of the current thread
  */
-int UserThreadJoin(int tid);
+int UserThreadJoin(int tid, int* ptr_return);
 
 /**
  * Create a new user semaphore with a token initialized to initValue

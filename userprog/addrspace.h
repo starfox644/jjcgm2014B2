@@ -55,16 +55,24 @@ class AddrSpace
 
     /**
      * 	returns an initial stack pointer available for a new thread and removes it
-     * 	or -1 if it's impossible to add a new stack in the address space
+     * 	or returns -1 if it's impossible to add a new stack in the address space
      */
     int popAvailableStackPointer();
+
+    /**
+     * 	add a stackAddr to the list of available stack address
+     * 	this stack address must be in the address space
+     */
+	void addAvailableStackAddress(int stackAddr);
 
     /**
      * 	returns the number of user threads, without the main thread
      */
     int getNbThreads();
 
+    // locks access to the nbThreads variable
     Semaphore *s_nbThreads;
+    // locks the main thread while the others are finishing
     Semaphore *s_exit;
     bool attente;
 
@@ -85,6 +93,7 @@ class AddrSpace
      */
     Semaphore* getSemaphore(int id);
 
+    // threads of the address space
     std::list<Thread*> l_threads;
 
 #endif
@@ -106,6 +115,7 @@ class AddrSpace
 
     // Semaphore list : needed to give an unique identifier for user semaphores
     std::list<Semaphore*> semList;
+    Semaphore* s_stackList;
     // list of available stack address in the address space for the threads
     std::list<int> l_availableStackAddress;
     // number max of threads depending on memory for the stacks

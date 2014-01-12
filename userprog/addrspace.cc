@@ -69,11 +69,18 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 #ifdef CHANGED
 	unsigned int availableStackSize;
+<<<<<<< HEAD
 	nbSem = 0;
+=======
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 	nbThreads = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
+<<<<<<< HEAD
+=======
+	s_stackList = new Semaphore("stack list semaphore", 1);
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 #endif
 
 	executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
@@ -88,7 +95,14 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	DEBUG('a', "code size : %d\n", noffH.code.size);
 	DEBUG('a', "init data size : : %d\n", noffH.initData.size);
 	DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
+<<<<<<< HEAD
 	size = MemorySize;
+=======
+
+	// we use all the memory for the process
+	size = MemorySize;
+	// the available stack space begin after the main thread stack
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
 	// to leave room for the stack
 	numPages = divRoundUp (size, PageSize);
@@ -100,6 +114,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 	// the stacks space ends with the memory
 	endThreadsStackSpace = MemorySize - 1;
+<<<<<<< HEAD
 	initAvailableStackPointers();
 
 	/*printf("endThreadsStackSpace : %d\n", endThreadsStackSpace);
@@ -108,6 +123,10 @@ AddrSpace::AddrSpace (OpenFile * executable)
     printf("availableStackSize : %d\n", availableStackSize);
     printf("nombre max de threads : %d\n", maxThreads);
     printf("nb pages : %d\n", numPages);*/
+=======
+	// push in list the stack address available
+	initAvailableStackPointers();
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 #else
 	size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
 	// to leave room for the stack
@@ -119,6 +138,47 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	// to run anything too big --
 	// at least until we have
 	// virtual memory
+<<<<<<< HEAD
+=======
+
+	DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
+			numPages, size);
+	// first, set up the translation
+	pageTable = new TranslationEntry[numPages];
+	for (i = 0; i < numPages; i++)
+	{
+		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
+		pageTable[i].physicalPage = i;
+		pageTable[i].valid = TRUE;
+		pageTable[i].use = FALSE;
+		pageTable[i].dirty = FALSE;
+		pageTable[i].readOnly = FALSE;	// if the code segment was entirely on
+		// a separate page, we could set its
+		// pages to be read-only
+	}
+
+	// zero out the entire address space, to zero the unitialized data segment
+	// and the stack segment
+	bzero (machine->mainMemory, size);
+
+	// then, copy in the code and data segments into memory
+	if (noffH.code.size > 0)
+	{
+		DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
+				noffH.code.virtualAddr, noffH.code.size);
+		executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
+				noffH.code.size, noffH.code.inFileAddr);
+	}
+	if (noffH.initData.size > 0)
+	{
+		DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
+				noffH.initData.virtualAddr, noffH.initData.size);
+		executable->ReadAt (&
+				(machine->mainMemory
+						[noffH.initData.virtualAddr]),
+						noffH.initData.size, noffH.initData.inFileAddr);
+	}
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 
 	DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
 			numPages, size);
@@ -170,6 +230,11 @@ AddrSpace::~AddrSpace ()
 	// delete pageTable;
 	delete [] pageTable;
 	// End of modification
+#ifdef CHANGED
+	delete s_nbThreads;
+	delete s_exit;
+	delete s_stackList;
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -240,13 +305,17 @@ AddrSpace::RestoreState ()
 }
 
 #ifdef CHANGED
+<<<<<<< HEAD
 
+=======
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 void AddrSpace::addThread(Thread *th)
 {
 	nbThreads++;
 	// add the new thread in threads list
 	l_threads.push_back(th);
 }
+<<<<<<< HEAD
 
 void AddrSpace::removeThread(Thread *th)
 {
@@ -311,6 +380,17 @@ Semaphore* AddrSpace::getSemaphore(int id)
 	// Else, return it
 	else
 		return (Semaphore*)(*it);
+=======
+
+void AddrSpace::removeThread(Thread *th)
+{
+	nbThreads--;
+}
+
+int AddrSpace::getNbThreads()
+{
+	return nbThreads;
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 }
 
 /**
@@ -320,6 +400,10 @@ Semaphore* AddrSpace::getSemaphore(int id)
 int AddrSpace::popAvailableStackPointer()
 {
 	int return_value;
+<<<<<<< HEAD
+=======
+	s_stackList->P();
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 	if(l_availableStackAddress.size() == 0)
 	{
 		return_value = -1;
@@ -329,18 +413,40 @@ int AddrSpace::popAvailableStackPointer()
 		return_value = l_availableStackAddress.front();
 		l_availableStackAddress.pop_front();
 	}
+<<<<<<< HEAD
 	return return_value;
 }
+=======
+	s_stackList->V();
+	return return_value;
+}
+
+void AddrSpace::addAvailableStackAddress(int stackAddr)
+{
+	ASSERT(stackAddr < (numPages*PageSize) && stackAddr >= beginThreadsStackSpace);
+	s_stackList->P();
+	l_availableStackAddress.push_back(stackAddr);
+	s_stackList->V();
+}
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 
 void AddrSpace::initAvailableStackPointers()
 {
 	int addr = beginThreadsStackSpace + UserStackSize;
+<<<<<<< HEAD
+=======
+	s_stackList->P();
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 	for(int i = 0 ; i < maxThreads ; i++)
 	{
 		//printf("insertion de %d\n", addr);
 		l_availableStackAddress.push_back(addr);
 		addr += UserStackSize;
 	}
+<<<<<<< HEAD
+=======
+	s_stackList->V();
+>>>>>>> d74bceda423a3b0c15c8a180be6ede0cfab56ccb
 }
 
 #endif

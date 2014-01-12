@@ -25,7 +25,7 @@ void g(void* arg)
 	for (i = 0 ; i < 500000 ; i++)
 	{
 	}
-	if(UserThreadJoin(*tidh) == -1)
+	if(UserThreadJoin(*tidh, 0) == -1)
 		PutString("Erreur join de g sur h\n");
 	PutString("Thread g fini\n");
 }
@@ -35,7 +35,7 @@ void f(void* arg)
 	int* tidg = (int*)arg;
 	if(PutString("thread f\n") == -1)
 		PutString("Erreur putstring\n");
-	if(UserThreadJoin(*tidg) == -1)
+	if(UserThreadJoin(*tidg, 0) == -1)
 		PutString("Erreur join de f sur g\n");
 	PutString("Thread f fini\n");
 }
@@ -47,7 +47,7 @@ int main()
 	tidg = UserThreadCreate(g, &tidh);
 	tidf = UserThreadCreate(f, &tidg);
 
-	if(UserThreadJoin(tidf) == -1)
+	if(UserThreadJoin(tidf, 0) == -1)
 		PutString("Erreur join du main sur f\n");
 	PutString("Fin du main\n");
     return 0;

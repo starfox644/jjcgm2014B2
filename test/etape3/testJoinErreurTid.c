@@ -16,7 +16,7 @@ int main()
 {
 	int tidf;
 	tidf = UserThreadCreate(f, 0);
-	if(UserThreadJoin(6) == -1)
+	if(UserThreadJoin(6, 0) == -1)
 		PutString("Erreur join\n");
 	PutString("Fin du main\n");
     return 0;

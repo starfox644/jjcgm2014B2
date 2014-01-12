@@ -70,6 +70,9 @@ Thread::~Thread ()
     ASSERT (this != currentThread);
     if (stack != NULL)
 	DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
+#ifdef CHANGED
+    delete s_join;
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -172,13 +175,15 @@ Thread::Finish ()
     DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
     s_join->V();
+    space->addAvailableStackAddress(userStackAddr);
 #endif
     // LB: Be careful to guarantee that no thread to be destroyed 
     // is ever lost 
     ASSERT (threadToBeDestroyed == NULL);
     // End of addition 
-
+#ifndef CHANGED
     threadToBeDestroyed = currentThread;
+#endif
     Sleep ();			// invokes SWITCH
     // not reached
 }
@@ -441,6 +446,16 @@ bool Thread::isMainThread()
 {
 	// stack is always NULL for the main thread
 	return (stack == NULL);
+}
+
+void Thread::setThreadReturn(int th_ret)
+{
+	thread_return = th_ret;
+}
+
+int Thread::getThreadReturn()
+{
+	return thread_return;
 }
 
 #endif
