@@ -23,7 +23,7 @@ class Thread;
 #endif
 
 #ifdef CHANGED
-#define UserStackSize		4096	// increase this as necessary!
+#define UserStackSize		2048	// increase this as necessary!
 #else
 #define UserStackSize		1024	// increase this as necessary!
 #endif
@@ -54,6 +54,12 @@ class AddrSpace
     void removeThread(Thread *th);
 
     /**
+     * 	returns an initial stack pointer available for a new thread and removes it
+     * 	or -1 if it's impossible to add a new stack in the address space
+     */
+    int popAvailableStackPointer();
+
+    /**
      * 	returns the number of user threads, without the main thread
      */
     int getNbThreads();
@@ -71,8 +77,18 @@ class AddrSpace
     unsigned int numPages;	// Number of pages in the virtual 
     // address space
 #ifdef CHANGED
+    // address where the memory available for threads' stacks begins
+    int beginThreadsStackSpace;
+    // address where the memory available for threads' stacks ends
+    int endThreadsStackSpace;
     // number of threads in execution without the main thread
     int nbThreads;
+    // list of available stack address in the address space for the threads
+    std::list<int> l_availableStackAddress;
+    // number max of threads depending on memory for the stacks
+    int maxThreads;
+
+    void initAvailableStackPointers();
 #endif
 };
 

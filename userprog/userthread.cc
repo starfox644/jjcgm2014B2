@@ -14,6 +14,8 @@ int do_UserThreadCreate(int f, int arg)
 {
 	int n;
 	bool error = false;
+	int stackAddr;
+	AddrSpace* space = currentThread->space;
 	Thread *newThread = new Thread("test");
 
 	// test the accessibility of the code and the argument
@@ -25,21 +27,26 @@ int do_UserThreadCreate(int f, int arg)
     	if(!error)
     	{
     		// test the accessibility of the stack
-    		error = !machine->ReadMem(2*currentThread->tid*f+STACK_OFFSET*PageSize, sizeof(int), &n);
+    		//error = !machine->ReadMem(2*currentThread->tid*f+STACK_OFFSET*PageSize, sizeof(int), &n);
+    		stackAddr = space->popAvailableStackPointer();
+    		error = (stackAddr == -1);
     	}
     }
 
     if(!error)
     {
 		// the new thread shares the memory space with the current thread
-		newThread->space = currentThread->space;
-		newThread->space->s_nbThreads->P();
-		newThread->space->addThread(newThread);
-		newThread->space->s_nbThreads->V();
+		newThread->space = space;
+		space->s_nbThreads->P();
+		space->addThread(newThread);
+		space->s_nbThreads->V();
 		// sets initial argument of the thread
 		newThread->setInitArg(arg);
 		newThread->tid = Thread::nextTid;
 		Thread::nextTid++;
+
+		newThread->userStackAddr = stackAddr;
+		//printf("Recuperation de l'adresse : %d\n", stackAddr);
 		// creation of the thread, init and positionning in the file
 		// the new thread executes StartUserThread (saving register)
 		newThread->Fork(StartUserThread, f);
@@ -66,7 +73,9 @@ static void StartUserThread(int f)
 	// set return address (none)
 	machine->WriteRegister(31, -1);
 	// set SP
-	machine->WriteRegister(StackReg, 2*currentThread->tid*f+STACK_OFFSET*PageSize);
+	//machine->WriteRegister(StackReg, 2*currentThread->tid*f+STACK_OFFSET*PageSize);
+	machine->WriteRegister(StackReg, currentThread->userStackAddr);
+	//printf("pile a l'adresse : %d\n", currentThread->userStackAddr);
 	// set r26 (reserved to OS) to the function address
 	machine->WriteRegister(26, f);
 	machine->Run ();		// jump to the user progam
