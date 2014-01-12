@@ -119,6 +119,9 @@ public:
 	void setInitArg(int arg);
 	int getInitArg();
 
+	void setThreadReturn(int th_ret);
+	int getThreadReturn();
+
 	/**
 	 * 	Indicates is this thread is the main thread
 	 */
@@ -147,6 +150,7 @@ private:
 	bool isSyscall;
 	// initial argument of the thread
 	int initArg;
+	int thread_return;
 #endif
 
 #ifdef USER_PROGRAM

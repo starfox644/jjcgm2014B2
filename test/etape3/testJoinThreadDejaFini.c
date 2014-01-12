@@ -28,11 +28,12 @@ void f(void* arg)
 int main()
 {
 	int tidf, tidg;
+	int th_ret;
 	tidg = UserThreadCreate(g, 0);
 	tidf = UserThreadCreate(f, 0);
-	if(UserThreadJoin(tidf) == -1)
+	if(UserThreadJoin(tidf, &th_ret) == -1)
 		PutString("Erreur join sur f\n");
-	if(UserThreadJoin(tidg) == -1)
+	if(UserThreadJoin(tidg, &th_ret) == -1)
 		PutString("Erreur join sur g\n");
 	PutString("Fin du main\n");
     return 0;

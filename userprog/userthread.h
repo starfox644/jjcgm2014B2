@@ -13,7 +13,12 @@ class Semaphore;
 */
 int do_UserThreadCreate(int f, int arg);
 static void StartUserThread(int f);
-int do_UserThreadJoin(int tid);
+
+/**
+ * userAddr : adresse de l'utilisateur, ou le code de retour doit
+ * 			  etre ecrit
+ */
+int do_UserThreadJoin(int tid, int addrUser);
 void do_UserThreadExit(int status);
 
 Semaphore *s_create;
