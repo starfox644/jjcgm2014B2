@@ -1,4 +1,29 @@
-#!/bin/sh
+#!/bin/bash
+
+
+#fonctions d'affichage
+function afficher
+{
+	tmp=`expr length "$chaine"`
+	number=`expr 4 + $tmp`
+	
+	echo ""
+	etoiles
+	echo "* $chaine *"
+	etoiles
+	echo ""
+}
+
+function etoiles
+{
+	for i in `seq 1 $number`
+	do
+		echo -n "*"
+	done
+	echo ""
+}
+
+
 #script creer pour lancer tous les programmes de tests
 #pour l'étape 3 à la suite.
 
@@ -20,22 +45,20 @@ command=`find $directory -executable`
 
 #Pour chaque programme executable existant dans notre recherche
 cd build
-for files in *$command*
+for files in $command
 do
-        if [ '$files' != $directory ]
+        if [ "$files" != "$directory" ]
         then
                 #on affiche le nom du programme et on lance le programme
-                echo ''
-                echo '***************************************************************************************'
-                echo '* lancement du programme de test :' $files'*'
-                echo '***************************************************************************************'
-                echo ''        
+                chaine="lancement du programme de test : $files"
+                afficher
+                
                 ./nachos-step3 -rs 0 -x  $files > /tmp/resultat_test_Partie3_etape2
                 cat /tmp/resultat_test_Partie3_etape2
                 echo ''
 		read -p "Passer au test suivant ? [O/N]" rep
 		case $rep in
-			[Oo\n]* );;
+			[Oo]* );;
 			[Nn]* ) echo 'Au revoir!'; exit;;
 		esac
         fi
@@ -52,22 +75,20 @@ directory=$PWD2/etape3/
 #on lance notre recherche pour avoir les noms des fichiers executable
 command=`find $directory -executable` 
 #Pour chaque programme executable existant dans notre recherchecd build
-for files in *$command*
+for files in $command
 do
-        if [ '$files' != $directory ]
+        if [ "$files" != "$directory" ]
         then
                 #on affiche le nom du programme et on lance le programme
-                echo ''
-                echo '***************************************************************************************'
-                echo '* lancement du programme de test :' $files'*'
-                echo '***************************************************************************************'
-                echo ''        
+                chaine="lancement du programme de test : $files"
+                afficher
+                
                 ./nachos-step3 -rs 0 -x  $files > /tmp/resultat_test_Partie3_etape3
                 cat /tmp/resultat_test_Partie3_etape3
                 echo ''
 		read -p "Passer au test suivant ? [O/N]" rep
 		case $rep in
-			[Oo\n]* );;
+			[Oo]* );;
 			[Nn]* ) echo 'Au revoir!'; exit;;
 		esac
         fi

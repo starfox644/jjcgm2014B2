@@ -1,4 +1,28 @@
 #!/bin/bash
+
+
+#fonctions d'affichage
+function afficher
+{
+	tmp=`expr length "$chaine"`
+	number=`expr 4 + $tmp`
+	
+	echo ""
+	etoiles
+	echo "* $chaine *"
+	etoiles
+	echo ""
+}
+
+function etoiles
+{
+	for i in `seq 1 $number`
+	do
+		echo -n "*"
+	done
+	echo ""
+}
+
 #script creer pour lancer tous les programmes de tests
 #pour l'étape 2 à la suite.
 
@@ -17,25 +41,23 @@ command=`find $directory -executable`
 `rm $directory*.o`
 #Pour chaque programme executable existant dans notre recherche
 cd build
-for files in *$command*
-do
-        if [ '$files' != $directory ]
-        then
-                #on affiche le nom du programme et on lance le programme
-                echo ''
-                echo '***************************************************************************************'
-                echo '* lancement du programme de test :' $files'*'
-                echo '***************************************************************************************'
-                echo ''    
-                ./nachos-step2 -x $files > /tmp/resultat_test_etape2
-                cat /tmp/resultat_test_etape2
-                echo ''
+for files in $command
+do	
+	if [ "$files" != "$directory" ]
+	then
+		#on affiche le nom du programme et on lance le programme
+		chaine="lancement du programme de test : $files"
+		afficher
+		
+		./nachos-step2 -x $files > /tmp/resultat_test_etape2
+		cat /tmp/resultat_test_etape2
+		echo ''
 		read -p "Passer au test suivant ? [O/N]" rep
 		case $rep in
-			[Oo\n]* );;
+			[Oo]* );;
 			[Nn]* ) echo 'Au revoir!'; exit;;
 		esac
-        fi
+	fi
 done
 
 echo 'Tests finis!'
