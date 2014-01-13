@@ -1,4 +1,28 @@
 #!/bin/bash
+
+
+#fonctions d'affichage
+function afficher
+{
+	tmp=`expr length "$chaine"`
+	number=`expr 4 + $tmp`
+	
+	echo ""
+	etoiles
+	echo "* $chaine *"
+	etoiles
+	echo ""
+}
+
+function etoiles
+{
+	for i in `seq 1 $number`
+	do
+		echo -n "*"
+	done
+	echo ""
+}
+
 #script creer pour lancer tous les programmes de tests
 #pour l'étape 2 à la suite.
 
@@ -22,11 +46,9 @@ do
 	if [ "$files" != "$directory" ]
 	then
 		#on affiche le nom du programme et on lance le programme
-		echo ''
-		echo '***************************************************************************************'
-		echo '* lancement du programme de test :' $files'*'
-		echo '***************************************************************************************'
-		echo ''    
+		chaine="lancement du programme de test : $files"
+		afficher
+		
 		./nachos-step2 -x $files > /tmp/resultat_test_etape2
 		cat /tmp/resultat_test_etape2
 		echo ''
