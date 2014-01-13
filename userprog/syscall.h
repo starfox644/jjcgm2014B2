@@ -29,6 +29,7 @@
 #define SC_Close	8
 #define SC_Fork		9
 #define SC_Yield	10
+
 #ifdef CHANGED
 #define SC_PutChar	 11
 #define SC_PutString 12
@@ -38,6 +39,10 @@
 #define SC_UserThreadCreate 16
 #define SC_UserThreadExit 17
 #define SC_GetTid 18
+#define SC_SemInit 19
+#define SC_SemWait 20
+#define SC_SemPost 21
+#define SC_SemDestroy 22
 #define SC_UserThreadJoin 23
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
@@ -142,6 +147,11 @@ void Yield ();
 
 #ifdef CHANGED
 
+/**
+ * User semaphore
+ */
+typedef int sem_t;
+
 /*
  * PutChar writes in console the given character
  */
@@ -183,14 +193,28 @@ void UserThreadExit(int status);
  */
 int GetTid();
 
-
 /**
  *	The current thread wait the given thread
  *	ptr_return : return code address of the current thread
  */
 int UserThreadJoin(int tid, int* ptr_return);
 
-#endif //CHANGED
+/**
+ * Create a new user semaphore with a token initialized to initValue
+ */
+int SemInit(sem_t *adrSem, int initValue);
+
+/**
+ * Tell the thread to wait for a resource on the semaphore
+ */
+int SemWait(sem_t *adrSem);
+
+/**
+ * Release the semaphore once the resource is not needed anymore
+ */
+int SemPost(sem_t *adrSem);
+
+#endif // CHANGED
 
 #endif // IN_USER_MODE
 

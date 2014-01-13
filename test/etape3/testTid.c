@@ -1,7 +1,8 @@
 #include "syscall.h"
 
 /**
- *	Lance 3 threads en parallele affichant leur tid. */
+ *	Lance 3 threads en parallele affichant leur tid.
+ */
 
 
 void fin(void* arg)

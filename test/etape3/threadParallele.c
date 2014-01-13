@@ -2,6 +2,7 @@
 
 /**
  *	Lance 3 threads en parallele et attend leur terminaison.
+ *	Le thread principal attend en faisant une attente active.
  */
 
 

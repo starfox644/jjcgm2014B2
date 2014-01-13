@@ -27,6 +27,7 @@
 
 #ifdef CHANGED
 #include "exit.h"
+#include "semaphore.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -82,6 +83,10 @@ ExceptionHandler (ExceptionType which)
 	char* dynBuffer;
 	int adr,codeErreur, n;
 	int maxSize;
+#ifdef step3
+	bool isSuccess;
+#endif //step3
+
 	if (which == SyscallException)
 	{
 		switch (type)
@@ -160,7 +165,7 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
-#ifdef step3
+	#ifdef step3
 			case SC_UserThreadCreate:
 				// notify a syscall for called functions
 				currentThread->setIsSyscall(true);
@@ -187,8 +192,51 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, codeErreur);
 				break;
 
-#endif
+			case SC_SemInit:
+				currentThread->setIsSyscall(true);
+				adr = machine->ReadRegister(4);
+				n = machine->ReadRegister(5);
+				isSuccess = do_SemInit(adr, n);
 
+				if(isSuccess == -1)
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, 0);
+				break;
+
+			case SC_SemWait:
+				currentThread->setIsSyscall(true);
+				n = machine->ReadRegister(4);
+				isSuccess = machine->ReadMem(n, sizeof(int), &n);
+				// error : returns -1
+				if(!isSuccess || (do_SemWait(n) == -1))
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, 0);
+				break;
+
+			case SC_SemPost:
+				currentThread->setIsSyscall(true);
+				n = machine->ReadRegister(4);
+				isSuccess = machine->ReadMem(n, sizeof(int), &n);
+				// error : returns -1
+				if(!isSuccess || (do_SemPost(n) == -1))
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, 0);
+				break;
+
+			case SC_SemDestroy:
+				currentThread->setIsSyscall(true);
+				n = machine->ReadRegister(4);
+
+				// error : returns -1
+				if(do_SemDestroy(n) == -1)
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, 0);
+				break;
+#endif // STEP3
 			case SC_Exit:
 				// read return code in r4 register
 				codeErreur = machine->ReadRegister(4);
@@ -214,7 +262,7 @@ ExceptionHandler (ExceptionType which)
 		DEBUG ('a', "Shutdown, initiated by user program.\n");
 		interrupt->Halt ();
 	}
-#endif
+#endif // CHANGED
 	else
 	{
 		printf ("Unexpected user mode exception (%d:", which);

@@ -1,7 +1,8 @@
 #include "syscall.h"
 
 /**
- *	Lance 3 threads en parallele qui n'appellent pas UserThreadExit. */
+ *	Lance 3 threads en parallele qui n'appellent pas UserThreadExit pour se terminer.
+ */
 
 
 void fin(void* arg)

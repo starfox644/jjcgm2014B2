@@ -39,13 +39,21 @@
 class Semaphore
 {
   public:
+
+#ifdef CHANGED
+	int id;
+#endif // CHANGED
+
     Semaphore (const char *debugName, int initialValue);// set initial value
      ~Semaphore ();		// de-allocate semaphore
     const char *getName ()
     {
 	return name;
     }				// debugging assist
-
+#ifdef CHANGED
+	int getId();		// return the semaphore id
+	void setId(int id);	// set the semaphore id
+#endif // CHANGED
     void P ();			// these are the only operations on a semaphore
     void V ();			// they are both *atomic*
 

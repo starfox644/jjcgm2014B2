@@ -2,7 +2,7 @@
 #include "syscall.h"
 
 /**
- * 	Premier test de thread. Cree un thread qui effectue un affichage et une boucle.
+ * 	Premier test de thread join. Cree un thread qui effectue un affichage et une boucle.
  * 	Le thread principal attend ce thread et se termine.
  */
 
