@@ -61,6 +61,7 @@ void consommateur ()
 		SemPost(&empty);
 		ite++;
 	}
+	PutString("\n");
 }
 
 int main ()
