@@ -92,7 +92,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
 	size = MemorySize;
 	// we use all the memory for the process
-	size = MemorySize;
+	size = MemorySize - PageSize;
 	// the available stack space begin after the main thread stack
 	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
 	// to leave room for the stack
@@ -132,7 +132,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	for (i = 0; i < numPages; i++)
 	{
 		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-		pageTable[i].physicalPage = i;
+		pageTable[i].physicalPage = i+1;
 		pageTable[i].valid = TRUE;
 		pageTable[i].use = FALSE;
 		pageTable[i].dirty = FALSE;
@@ -411,7 +411,6 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	int i, nbRead;
 	// lecture dans la memoire virtuelle a la position donnee puis le stocke dans le buffer
 	nbRead = executable->ReadAt(buffer, numBytes, position);
-
 	// charge la table des pages du processeur
 	machine->pageTable = pageTable;
 	machine->pageTableSize = numPages;
