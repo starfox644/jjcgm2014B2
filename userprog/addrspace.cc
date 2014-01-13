@@ -90,7 +90,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	DEBUG('a', "code size : %d\n", noffH.code.size);
 	DEBUG('a', "init data size : : %d\n", noffH.initData.size);
 	DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
-	size = MemorySize;
 	// we use all the memory for the process
 	size = MemorySize - PageSize;
 	// the available stack space begin after the main thread stack
