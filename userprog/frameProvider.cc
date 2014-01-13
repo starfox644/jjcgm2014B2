@@ -1,5 +1,7 @@
 #ifdef step4
 #include "frameProvider.h"
+#include "machine.h"
+#include "system.h"
 
 
 FrameProvider::FrameProvider ()
@@ -16,7 +18,7 @@ int FrameProvider::GetEmptyFrame()
 		return -1;
 	}
 	// initialisation du cadre à 0
-	bzero (machine->mainMemory[indexFrame*PageSize], PageSize);
+	bzero (&(machine->mainMemory[indexFrame*PageSize]), PageSize);
 	// indique que la page d’index “indexFrame” est occupee
 	bitmap->Mark(indexFrame);
 	return (indexFrame * PageSize);

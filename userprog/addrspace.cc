@@ -21,9 +21,11 @@
 #include "noff.h"
 #ifdef CHANGED
 #include <string>
-class FrameProvider;
 #endif
 #include <strings.h>		/* for bzero */
+#ifdef step4
+#include "frameProvider.h"
+#endif
 
 //----------------------------------------------------------------------
 // SwapHeader

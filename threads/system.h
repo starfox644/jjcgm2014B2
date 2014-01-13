@@ -16,7 +16,7 @@
 #include "stats.h"
 #include "timer.h"
 #ifdef step4
-class FrameProvider;
+#include "frameProvider.h"
 #endif
 
 #ifdef CHANGED

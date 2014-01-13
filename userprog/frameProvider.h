@@ -3,8 +3,6 @@
 
 #ifdef step4
 #include "bitmap.h"
-#include "machine.h"
-#include "system.h"
 
 class FrameProvider
 {
