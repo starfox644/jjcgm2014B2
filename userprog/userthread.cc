@@ -18,9 +18,14 @@ int do_UserThreadCreate(int f, int arg)
 	s_create->P();
 	AddrSpace* space = currentThread->space;
 	Thread *newThread = new Thread("test");
+#ifdef CHANGED
+	// error allocation
+	if (newThread == NULL)
+		error = true;
 
 	// test the accessibility of the code and the argument
-    error = !machine->ReadMem(f, sizeof(int), &n);
+    error = error || !machine->ReadMem(f, sizeof(int), &n);
+#endif
     if(!error)
     {
     	// accept arg 0 for passing NULL as argument
