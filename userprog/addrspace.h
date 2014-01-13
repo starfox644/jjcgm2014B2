@@ -98,6 +98,11 @@ class AddrSpace
     // threads of the address space
     std::list<Thread*> l_threads;
 
+#ifdef step4
+    static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
+	TranslationEntry *pageTable,unsigned numPages);
+#endif
+
 #endif
 
   private:

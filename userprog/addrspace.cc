@@ -145,23 +145,42 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	// and the stack segment
 	bzero (machine->mainMemory, size);
 
+#ifdef step4
 	// then, copy in the code and data segments into memory
 	if (noffH.code.size > 0)
 	{
 		DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
 				noffH.code.virtualAddr, noffH.code.size);
-		executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
-				noffH.code.size, noffH.code.inFileAddr);
+		ReadAtVirtual (executable, noffH.code.virtualAddr,
+				noffH.code.size, noffH.code.inFileAddr, pageTable, numPages);
 	}
 	if (noffH.initData.size > 0)
 	{
 		DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
 				noffH.initData.virtualAddr, noffH.initData.size);
-		executable->ReadAt (&
-				(machine->mainMemory
-						[noffH.initData.virtualAddr]),
-						noffH.initData.size, noffH.initData.inFileAddr);
+		ReadAtVirtual(executable, noffH.initData.virtualAddr,
+						noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
 	}
+#else
+
+	// then, copy in the code and data segments into memory
+		if (noffH.code.size > 0)
+		{
+			DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
+					noffH.code.virtualAddr, noffH.code.size);
+			executable->ReadAt (&(machine->mainMemory[noffH.code.virtualAddr]),
+					noffH.code.size, noffH.code.inFileAddr);
+		}
+		if (noffH.initData.size > 0)
+		{
+			DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
+					noffH.initData.virtualAddr, noffH.initData.size);
+			executable->ReadAt (&
+					(machine->mainMemory
+							[noffH.initData.virtualAddr]),
+							noffH.initData.size, noffH.initData.inFileAddr);
+		}
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -383,5 +402,26 @@ void AddrSpace::initAvailableStackPointers()
 	}
 	s_stackList->V();
 }
+
+#ifdef step4
+void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
+		TranslationEntry *pageTable,unsigned numPages)
+{
+	char* buffer = new char[numBytes];
+	int i, nbRead;
+	// lecture dans la memoire virtuelle a la position donnee puis le stocke dans le buffer
+	nbRead = executable->ReadAt(buffer, numBytes, position);
+
+	// charge la table des pages du processeur
+	machine->pageTable = pageTable;
+	machine->pageTableSize = numPages;
+
+	// copie du buffer en memoire a l’aide de WriteMem
+	for (i = 0 ; i < nbRead ; i++)
+	{
+		machine->WriteMem(virtualaddr+i,1,buffer[i]);
+	}
+}
+#endif
 
 #endif
