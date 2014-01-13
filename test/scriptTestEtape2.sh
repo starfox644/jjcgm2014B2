@@ -17,25 +17,25 @@ command=`find $directory -executable`
 `rm $directory*.o`
 #Pour chaque programme executable existant dans notre recherche
 cd build
-for files in *$command*
-do
-        if [ '$files' != $directory ]
-        then
-                #on affiche le nom du programme et on lance le programme
-                echo ''
-                echo '***************************************************************************************'
-                echo '* lancement du programme de test :' $files'*'
-                echo '***************************************************************************************'
-                echo ''    
-                ./nachos-step2 -x $files > /tmp/resultat_test_etape2
-                cat /tmp/resultat_test_etape2
-                echo ''
+for files in $command
+do	
+	if [ "$files" != "$directory" ]
+	then
+		#on affiche le nom du programme et on lance le programme
+		echo ''
+		echo '***************************************************************************************'
+		echo '* lancement du programme de test :' $files'*'
+		echo '***************************************************************************************'
+		echo ''    
+		./nachos-step2 -x $files > /tmp/resultat_test_etape2
+		cat /tmp/resultat_test_etape2
+		echo ''
 		read -p "Passer au test suivant ? [O/N]" rep
 		case $rep in
-			[Oo\n]* );;
+			[Oo]* );;
 			[Nn]* ) echo 'Au revoir!'; exit;;
 		esac
-        fi
+	fi
 done
 
 echo 'Tests finis!'
