@@ -20,9 +20,9 @@ command=`find $directory -executable`
 
 #Pour chaque programme executable existant dans notre recherche
 cd build
-for files in *$command*
+for files in $command
 do
-        if [ '$files' != $directory ]
+        if [ "$files" != "$directory" ]
         then
                 #on affiche le nom du programme et on lance le programme
                 echo ''
@@ -35,7 +35,7 @@ do
                 echo ''
 		read -p "Passer au test suivant ? [O/N]" rep
 		case $rep in
-			[Oo\n]* );;
+			[Oo]* );;
 			[Nn]* ) echo 'Au revoir!'; exit;;
 		esac
         fi
@@ -52,9 +52,9 @@ directory=$PWD2/etape3/
 #on lance notre recherche pour avoir les noms des fichiers executable
 command=`find $directory -executable` 
 #Pour chaque programme executable existant dans notre recherchecd build
-for files in *$command*
+for files in $command
 do
-        if [ '$files' != $directory ]
+        if [ "$files" != "$directory" ]
         then
                 #on affiche le nom du programme et on lance le programme
                 echo ''
@@ -67,7 +67,7 @@ do
                 echo ''
 		read -p "Passer au test suivant ? [O/N]" rep
 		case $rep in
-			[Oo\n]* );;
+			[Oo]* );;
 			[Nn]* ) echo 'Au revoir!'; exit;;
 		esac
         fi
