@@ -41,34 +41,33 @@ int do_UserThreadCreate(int f, int arg)
 
     if(!error)
     {
-		// the new thread shares the memory space with the current thread
-		newThread->space = space;
-		space->s_nbThreads->P();
-		space->addThread(newThread);
-		space->s_nbThreads->V();
-
-		// sets initial argument of the thread
-		newThread->setInitArg(arg);
 		// gets a tid for the thread
-		newThread->tid = Thread::nextTid;
-		Thread::nextTid++;
+		newThread->tid = Thread::getTid();
+		error = (newThread->tid == -1);
+		if(!error)
+		{
+			// the new thread shares the memory space with the current thread
+			newThread->space = space;
+			space->s_nbThreads->P();
+			space->addThread(newThread);
+			space->s_nbThreads->V();
 
-		// sets user stack address of the thread, in the address space
-		newThread->userStackAddr = stackAddr;
-		// creation of the new thread, StartUserThread will be called with f
-		newThread->Fork(StartUserThread, f);
-		// end of critical section
-		s_create->V();
-    	return newThread->tid;
+			// sets initial argument of the thread
+			newThread->setInitArg(arg);
+			// sets user stack address of the thread, in the address space
+			newThread->userStackAddr = stackAddr;
+			// creation of the new thread, StartUserThread will be called with f
+			newThread->Fork(StartUserThread, f);
+			// end of critical section
+			s_create->V();
+			return newThread->tid;
+		}
     }
-    else
-    {	// thread creation error
-
-    	delete newThread;
-		// end of critical section
-    	s_create->V();
-    	return -1;
-    }
+    // thread creation error
+    delete newThread;
+	// end of critical section
+    s_create->V();
+    return -1;
 }
 
 static void StartUserThread(int f)
@@ -97,6 +96,7 @@ void do_UserThreadExit(int status)
 	{
 		// remove the thread in the address space
 		currentThread->space->s_nbThreads->P();
+		currentThread->isFinished = true;
 		currentThread->space->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
 		if(currentThread->space->attente)
@@ -117,8 +117,9 @@ void do_UserThreadExit(int status)
 int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
+	AddrSpace *space = currentThread->space;
 	std::list<Thread*>::iterator it = currentThread->space->l_threads.begin();
-
+	space->s_userJoin->P();
 	// search the given thread in l_thread
 	while (it != currentThread->space->l_threads.end() && (tid != (*it)->tid))
 	{
@@ -127,19 +128,22 @@ int do_UserThreadJoin(int tid, int addrUser)
 	// tid does not exist : error
 	if (it == currentThread->space->l_threads.end())
 	{
+		space->s_userJoin->V();
 		return -1;
 	}
 	else
 	{
 		th = *it;
 		// an other thread wait for this thread : error
-		if(th->wait)
+		if(!th->isFinished && th->wait)
 		{
+			space->s_userJoin->V();
 			return -1;
 		}
 		else
 		{
 			th->wait = true;
+			space->s_userJoin->V();
 			// wait while the thread doesn't finish
 			th->s_join->P();
 

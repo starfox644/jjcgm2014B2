@@ -43,6 +43,7 @@
 #ifdef USER_PROGRAM
 #include "machine.h"
 #include "addrspace.h"
+#include <limits.h>
 #endif
 
 // CPU register state to be saved on context switch.  
@@ -127,8 +128,10 @@ public:
 	 */
 	bool isMainThread();
 
-	// tid given to the next thread
-	static int nextTid;
+	/**
+	 *	Gives an unique tid for a thread, or -1 if there is not tid available
+	 */
+	static int getTid();
 
 #endif
 
@@ -151,6 +154,9 @@ private:
 	// initial argument of the thread
 	int initArg;
 	int thread_return;
+
+	// tid given to the next thread
+	static int nextTid;
 #endif
 
 #ifdef USER_PROGRAM
@@ -175,6 +181,8 @@ public:
 	bool wait;
 	// initial stack pointer of the thread
 	int userStackAddr;
+	// indicates if the thread is finished
+	bool isFinished;
 #endif
 
 #endif
