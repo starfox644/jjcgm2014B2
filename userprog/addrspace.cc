@@ -75,6 +75,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
+	s_userJoin = new Semaphore("user join semaphore", 1);
 #endif
 
 	executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
@@ -178,6 +179,7 @@ AddrSpace::~AddrSpace ()
 	delete s_nbThreads;
 	delete s_exit;
 	delete s_stackList;
+	deleteThreads();
 #endif
 }
 
@@ -264,6 +266,15 @@ void AddrSpace::removeThread(Thread *th)
 int AddrSpace::getNbThreads()
 {
 	return nbThreads;
+}
+
+void AddrSpace::deleteThreads()
+{
+	std::list<Thread*>::iterator it;
+	for(it = l_threads.begin() ; it != l_threads.end() ; it++)
+	{
+		delete *it;
+	}
 }
 
 /**

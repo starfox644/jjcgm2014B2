@@ -74,6 +74,8 @@ class AddrSpace
     Semaphore *s_nbThreads;
     // locks the main thread while the others are finishing
     Semaphore *s_exit;
+    //
+    Semaphore *s_userJoin;
     bool attente;
 
     /**
@@ -120,6 +122,8 @@ class AddrSpace
     std::list<int> l_availableStackAddress;
     // number max of threads depending on memory for the stacks
     int maxThreads;
+
+    void deleteThreads();
 
     void initAvailableStackPointers();
 #endif //CHANGED

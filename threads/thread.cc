@@ -48,6 +48,7 @@ Thread::Thread (const char *threadName)
     tid = 0;
     wait = false;
 	s_join = new Semaphore("semaphore for join", 1);
+	isFinished = false;
 #endif
 }
 
@@ -456,6 +457,18 @@ void Thread::setThreadReturn(int th_ret)
 int Thread::getThreadReturn()
 {
 	return thread_return;
+}
+
+int Thread::getTid()
+{
+	if(nextTid <= INT_MAX)
+	{
+		return nextTid++;
+	}
+	else
+	{
+		return -1;
+	}
 }
 
 #endif
