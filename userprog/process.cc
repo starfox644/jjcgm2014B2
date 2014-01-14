@@ -20,12 +20,10 @@ int do_forkExec(int adrExec) {
 	machine->ReadMem(adrExec, 1, &c);
 	while (i < MAX_STRING_SIZE && c != '\0')
 	{
-//		printf("%c", c);
 		executable[i] = (char) c;
 		i++;
 		machine->ReadMem(adrExec+i, 1, &c);
 	}
-//	printf("\n");
 
 	// Si le chemin est plus long que MAX_STRING_SIZE, erreur car il n'y aura pas
 	// de '\0' donc le noyau plante
@@ -53,6 +51,7 @@ int do_forkExec(int adrExec) {
  */
 int allocateProcessSpace (Thread *t, char *filename)
 {
+	bool isSuccess;
 	printf("[allocateProcessSpace] Debut fonction\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
@@ -67,7 +66,9 @@ int allocateProcessSpace (Thread *t, char *filename)
 	 * */
 	//space = new AddrSpace (executable);
 	space = new AddrSpace();
-	space->loadInitialSections(executable);
+	isSuccess = space->loadInitialSections(executable);
+	if (!isSuccess)
+		return -1;
 	t->space = space;
 
 	delete executable;		// close file
