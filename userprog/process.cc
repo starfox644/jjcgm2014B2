@@ -38,7 +38,9 @@ int do_forkExec(int adrExec) {
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
+		printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
+		printf("[ForkExec] nbProc : %i\n", currentThread->space->getNbProcess());
 		return 0;
 	}
 	else
@@ -77,11 +79,12 @@ void UserStartProcess (int adr)
 {
 	printf("[UserStartProcess] Debut fonction\n");
 	currentThread->space->addProcess(); // ajoute 1 au nb de processus en cours
-	printf("[UserStartProcess] addProcess\n");
+//	printf("[UserStartProcess] addProcess\n");
 	currentThread->space->InitRegisters ();	// set the initial register values
-	printf("[UserStartProcess] InitRegisters\n");
+//	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
-	printf("[UserStartProcess] RestoreState\n");
+//	printf("[UserStartProcess] RestoreState\n");
+	printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
 	machine->Run ();		// jump to the user program
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits

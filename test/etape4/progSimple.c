@@ -2,6 +2,7 @@
 
 int main()
 {
-	PutString("Hello World !\n");
+//	PutString("Hello World !\n");
+	PutInt(17456);
 	return 0;
 }
