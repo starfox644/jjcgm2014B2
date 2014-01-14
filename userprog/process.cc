@@ -77,9 +77,12 @@ void UserStartProcess (int adr)
 {
 	printf("[UserStartProcess] Debut fonction\n");
 	currentThread->space->addProcess(); // ajoute 1 au nb de processus en cours
+	printf("[UserStartProcess] addProcess\n");
 	currentThread->space->InitRegisters ();	// set the initial register values
+	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
-	machine->Run ();		// jump to the user progam
+	printf("[UserStartProcess] RestoreState\n");
+	machine->Run ();		// jump to the user program
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
 	// by doing the syscall "exit"
