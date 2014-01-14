@@ -63,7 +63,9 @@ int allocateProcessSpace (Thread *t, char *filename)
 	/* TODO : Jerem doit changer l'allocation de l'espace d'adressage et je dois changer
 	 * cette ligne pour que la fonction puisse retourner une erreur si ca a foire
 	 * */
-	space = new AddrSpace (executable);
+	//space = new AddrSpace (executable);
+	space = new AddrSpace();
+	space->loadInitialSections(executable);
 	t->space = space;
 
 	delete executable;		// close file
@@ -104,7 +106,12 @@ StartProcess (char *filename)
 		printf ("Unable to open file %s\n", filename);
 		Exit(-1);
 	}
+#ifndef step4
 	space = new AddrSpace (executable);
+#else
+	space = new AddrSpace();
+	space->loadInitialSections(executable);
+#endif
 	currentThread->space = space;
 
 	delete executable;		// close file
