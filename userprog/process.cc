@@ -20,12 +20,10 @@ int do_forkExec(int adrExec) {
 	machine->ReadMem(adrExec, 1, &c);
 	while (i < MAX_STRING_SIZE && c != '\0')
 	{
-//		printf("%c", c);
 		executable[i] = (char) c;
 		i++;
 		machine->ReadMem(adrExec+i, 1, &c);
 	}
-//	printf("\n");
 
 	// Si le chemin est plus long que MAX_STRING_SIZE, erreur car il n'y aura pas
 	// de '\0' donc le noyau plante
@@ -38,7 +36,9 @@ int do_forkExec(int adrExec) {
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
+		printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
+		printf("[ForkExec] nbProc : %i\n", currentThread->space->getNbProcess());
 		return 0;
 	}
 	else
@@ -51,6 +51,7 @@ int do_forkExec(int adrExec) {
  */
 int allocateProcessSpace (Thread *t, char *filename)
 {
+	bool isSuccess;
 	printf("[allocateProcessSpace] Debut fonction\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
@@ -63,7 +64,11 @@ int allocateProcessSpace (Thread *t, char *filename)
 	/* TODO : Jerem doit changer l'allocation de l'espace d'adressage et je dois changer
 	 * cette ligne pour que la fonction puisse retourner une erreur si ca a foire
 	 * */
-	space = new AddrSpace (executable);
+	//space = new AddrSpace (executable);
+	space = new AddrSpace();
+	isSuccess = space->loadInitialSections(executable);
+	if (!isSuccess)
+		return -1;
 	t->space = space;
 
 	delete executable;		// close file
@@ -77,11 +82,12 @@ void UserStartProcess (int adr)
 {
 	printf("[UserStartProcess] Debut fonction\n");
 	currentThread->space->addProcess(); // ajoute 1 au nb de processus en cours
-	printf("[UserStartProcess] addProcess\n");
+//	printf("[UserStartProcess] addProcess\n");
 	currentThread->space->InitRegisters ();	// set the initial register values
-	printf("[UserStartProcess] InitRegisters\n");
+//	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
-	printf("[UserStartProcess] RestoreState\n");
+//	printf("[UserStartProcess] RestoreState\n");
+	printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
 	machine->Run ();		// jump to the user program
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
@@ -115,7 +121,12 @@ StartProcess (char *filename)
 		printf ("Unable to open file %s\n", filename);
 		Exit(-1);
 	}
+#ifndef step4
 	space = new AddrSpace (executable);
+#else
+	space = new AddrSpace();
+	space->loadInitialSections(executable);
+#endif
 	currentThread->space = space;
 
 	delete executable;		// close file

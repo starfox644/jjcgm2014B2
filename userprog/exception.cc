@@ -88,6 +88,7 @@ ExceptionHandler (ExceptionType which)
 #ifdef step3
 	bool isSuccess;
 #endif //step3
+	printf("[ExceptionHandler] type : %i\n", type);
 
 	if (which == SyscallException)
 	{

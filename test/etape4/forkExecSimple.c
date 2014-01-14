@@ -2,11 +2,6 @@
 
 int main()
 {
-
-	int error;
-	PutString("Avant le ForkExec\n");
-	error = ForkExec("./etape4/progSimple");
-	PutInt(error);
-	PutString("Apres le ForkExec\n");
+	ForkExec("./etape4/progSimple");
 	return 0;
 }
