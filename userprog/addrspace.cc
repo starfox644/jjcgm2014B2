@@ -239,7 +239,7 @@ AddrSpace::~AddrSpace ()
 	for (i = 0; i < numPages; i++)
 	{
 		if (pageTable[i].valid) {
-			ReleaseFrame(pageTable[i].physicalPage);
+			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
 		}
 	}
 #endif
