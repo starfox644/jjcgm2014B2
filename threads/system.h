@@ -45,6 +45,7 @@ extern Machine *machine;	// user program memory and registers
 #ifdef CHANGED
 #include "synchconsole.h"
 extern SynchConsole *synchconsole;
+extern Semaphore *s_process;
 #endif // CHANGED
 
 #endif

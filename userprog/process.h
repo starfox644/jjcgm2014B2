@@ -1,9 +1,9 @@
 #ifdef CHANGED
 
-static void addProcess ();
+void addProcess ();
 
-static void removeProcess () ;
+void removeProcess () ;
 
-static int getNbProcess ();
+int getNbProcess ();
 
 #endif

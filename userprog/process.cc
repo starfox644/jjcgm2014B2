@@ -7,15 +7,15 @@ do_forkExec(char s*) {
 	t->fork(startProcess, executable);
 }
 
-static void addProcess () {
+void addProcess () {
 	nbProcess++;
 }
 
-static void removeProcess () {
+void removeProcess () {
 	nbProcess--;
 }
 
-static int getNbProcess () {
+int getNbProcess () {
 	return nbProcess;
 }
 

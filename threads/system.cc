@@ -35,6 +35,7 @@ SynchDisk *synchDisk;
 Machine *machine;		// user program memory and registers
 #ifdef CHANGED
 SynchConsole *synchconsole;
+Semaphore *s_process;
 #endif // CHANGED
 #endif
 
@@ -172,6 +173,7 @@ Initialize (int argc, char **argv)
 
 #ifdef step4
     frameProvider = new FrameProvider();
+    s_process = new Semaphore("sem process", 1);
 #endif
 
     threadToBeDestroyed = NULL;
