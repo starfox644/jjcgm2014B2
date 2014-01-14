@@ -2,8 +2,25 @@
 #include "process.h"
 
 do_forkExec(char s*) {
-t = new thread(...);
-t->fork(startProcess, executable);
+	t = new thread(...);
+	addProcess;
+	t->fork(startProcess, executable);
+}
+
+static void initNbProcess() {
+	nbProcess = 0;
+}
+
+static void addProcess () {
+	nbProcess++;
+}
+
+static void removeProcess () {
+	nbProcess--;
+}
+
+static int getNbProcess () {
+	return nbProcess;
 }
 
 #endif
