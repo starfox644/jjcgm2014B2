@@ -36,6 +36,13 @@ int do_UserThreadCreate(int f, int arg)
     		// get an address for the stack if possible
     		stackAddr = space->popAvailableStackPointer();
     		error = (stackAddr == -1);
+#ifdef step4
+    		if(!error)
+    		{
+    			if(!space->map(stackAddr - UserStackSize, UserStackSize, true))
+    				error = true;
+    		}
+#endif
     	}
     }
 
