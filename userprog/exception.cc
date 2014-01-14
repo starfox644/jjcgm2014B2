@@ -28,6 +28,7 @@
 #ifdef CHANGED
 #include "exit.h"
 #include "semaphore.h"
+#include "process.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -237,6 +238,20 @@ ExceptionHandler (ExceptionType which)
 					machine->WriteRegister(2, 0);
 				break;
 #endif // STEP3
+
+#ifdef step4
+			case SC_ForkExec:
+				currentThread->setIsSyscall(true);
+				adr = machine->ReadRegister(4);
+
+				// error : returns -1
+				if (do_forkExec(adr) == -1)
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, 0);
+				break;
+#endif // STEP4
+
 			case SC_Exit:
 				// read return code in r4 register
 				codeErreur = machine->ReadRegister(4);

@@ -215,6 +215,11 @@ int SemWait(sem_t *adrSem);
  */
 int SemPost(sem_t *adrSem);
 
+/**
+ * Create a thread and execute the program given in parameter
+ */
+int ForkExec(OpenFileId *executable);
+
 #endif // CHANGED
 
 #endif // IN_USER_MODE
