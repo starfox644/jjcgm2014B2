@@ -28,6 +28,10 @@ class Thread;
 #define UserStackSize		1024	// increase this as necessary!
 #endif
 
+#ifdef step4
+#define MAX_THREADS 3
+#endif
+
 class AddrSpace
 {
   public:
@@ -101,6 +105,11 @@ class AddrSpace
 #ifdef step4
     static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
 	TranslationEntry *pageTable,unsigned numPages);
+
+    void addProcess ();
+    void removeProcess ();
+    int getNbProcess ();
+
 #endif
 
 #endif
@@ -119,6 +128,9 @@ class AddrSpace
     int nbThreads;
     // number of semaphore created
     int nbSem;
+
+    // number of process for process.cc
+    int nbProcess;
 
     // Semaphore list : needed to give an unique identifier for user semaphores
     std::list<Semaphore*> semList;

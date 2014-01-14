@@ -218,7 +218,7 @@ int SemPost(sem_t *adrSem);
 /**
  * Create a thread and execute the program given in parameter
  */
-int ForkExec(OpenFileId *executable);
+int ForkExec(char *executable);
 
 #endif // CHANGED
 

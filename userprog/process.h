@@ -1,3 +1,6 @@
+#ifndef ___PROCESS
+#define ___PROCESS
+
 #ifdef CHANGED
 
 /**
@@ -13,4 +16,5 @@ int do_forkExec(int adrExec);
 //----------------------------------------------------------------------
 int StartProcess (char *filename);
 
-#endif
+#endif // CHANGED
+#endif // ___PROCESS

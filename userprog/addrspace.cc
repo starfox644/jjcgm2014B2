@@ -70,10 +70,17 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	NoffHeader noffH;
 	unsigned int i, size;
 
+#ifdef step4
+	int frameAd;
+#endif
+
 #ifdef CHANGED
+#if defined(step3) | defined(step4)
 	unsigned int availableStackSize;
+#endif
 	nbSem = 0;
 	nbThreads = 0;
+	nbProcess = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -88,13 +95,29 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	ASSERT (noffH.noffMagic == NOFFMAGIC);
 	// how big is address space?
 
-#ifdef CHANGED
+#ifdef step4
+	// the available stack space begin after the main thread stack
+	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
+	// we add memory for threads
+	size = beginThreadsStackSpace + MAX_THREADS * UserStackSize;
+	// to leave room for the stack
+	numPages = divRoundUp (size, PageSize);
+	size = numPages * PageSize;
+	availableStackSize = (size - beginThreadsStackSpace) - 1;
+	// the main thread is not included in this number
+	maxThreads = availableStackSize / UserStackSize;
+
+	// the stacks space ends with the memory
+	endThreadsStackSpace = MemorySize - 1;
+	initAvailableStackPointers();
+
+#elif step3
 	DEBUG ('a', "Executable informations :\n");
 	DEBUG('a', "code size : %d\n", noffH.code.size);
 	DEBUG('a', "init data size : : %d\n", noffH.initData.size);
 	DEBUG('a', "uninit data size : : %d\n", noffH.uninitData.size);
 	// we use all the memory for the process
-	size = MemorySize - PageSize;
+	size = MemorySize;
 	// the available stack space begin after the main thread stack
 	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
 	// to leave room for the stack
@@ -109,12 +132,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	endThreadsStackSpace = MemorySize - 1;
 	initAvailableStackPointers();
 
-	/*printf("endThreadsStackSpace : %d\n", endThreadsStackSpace);
-    printf("Address Space size : %d\n", MemorySize);
-    printf("beginThreadsStackSpace : %d\n", beginThreadsStackSpace);
-    printf("availableStackSize : %d\n", availableStackSize);
-    printf("nombre max de threads : %d\n", maxThreads);
-    printf("nb pages : %d\n", numPages);*/
 #else
 	size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;	// we need to increase the size
 	// to leave room for the stack
@@ -135,7 +152,9 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	{
 		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
 #ifdef step4
-		pageTable[i].physicalPage = frameProvider->GetEmptyFrame();
+		frameAd = frameProvider->GetEmptyFrame();
+		ASSERT(frameAd != -1);
+		pageTable[i].physicalPage = frameAd;
 #else
 		pageTable[i].physicalPage = i;
 #endif
@@ -146,7 +165,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 		// a separate page, we could set its
 		// pages to be read-only
 	}
-
 	// zero out the entire address space, to zero the unitialized data segment
 	// and the stack segment
 	bzero (machine->mainMemory, size);
@@ -215,6 +233,21 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
+
+#ifdef step4
+	unsigned int i;
+	//release physical pages
+	for (i = 0; i < numPages; i++)
+	{
+		if (pageTable[i].valid) {
+			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
+		}
+	}
+
+	printf("%d/%d pages disponibles\n", frameProvider->NumAvailFrame(), NumPhysPages);
+#endif
+
+
 #endif
 }
 
@@ -420,13 +453,25 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	// charge la table des pages du processeur
 	machine->pageTable = pageTable;
 	machine->pageTableSize = numPages;
-
 	// copie du buffer en memoire a l’aide de WriteMem
 	for (i = 0 ; i < nbRead ; i++)
 	{
 		machine->WriteMem(virtualaddr+i,1,buffer[i]);
 	}
 }
-#endif
+
+void AddrSpace::addProcess () {
+	nbProcess++;
+}
+
+void AddrSpace::removeProcess () {
+	nbProcess--;
+}
+
+int AddrSpace::getNbProcess () {
+	return nbProcess;
+}
+
+#endif // step4
 
 #endif

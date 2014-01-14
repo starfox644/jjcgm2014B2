@@ -21,14 +21,13 @@ int FrameProvider::GetEmptyFrame()
 	bzero (&(machine->mainMemory[indexFrame*PageSize]), PageSize);
 	// indique que la page d’index “indexFrame” est occupee
 	bitmap->Mark(indexFrame);
-	return (indexFrame * PageSize);
+	return indexFrame;
 }
 
-void FrameProvider::ReleaseFrame(int addrFrame)
+void FrameProvider::ReleaseFrame(int indexFrame)
 {
-	int index = addrFrame / PageSize;
 	// indique que la page est libre
-	bitmap->Clear(index);
+	bitmap->Clear(indexFrame);
 }
 
 
