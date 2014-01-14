@@ -13,9 +13,10 @@ int main()
 	int pid = 0;
 	PutString("\n");
 	PutString("Lancement de putstring\n");
-	pid = ForkExec("pustring");
+	pid = ForkExec("../etape4/pustring");
 	if(pid == -1){
 		PutString("Erreur lors du ForkExec\n");
+		return -1;
 	}
 	PutString("\n");
     return 0;
