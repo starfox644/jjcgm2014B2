@@ -214,8 +214,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
-	int i;
-
 	// LB: Missing [] for delete
 	// delete pageTable;
 	delete [] pageTable;
@@ -237,6 +235,7 @@ AddrSpace::~AddrSpace ()
 	}
 
 #ifdef step4
+	unsigned int i;
 	//release physical pages
 	for (i = 0; i < numPages; i++)
 	{
