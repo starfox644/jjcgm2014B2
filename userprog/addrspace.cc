@@ -111,6 +111,8 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	endThreadsStackSpace = MemorySize - 1;
 	initAvailableStackPointers();
 
+	nbPagesUserStack = divRoundUp(UserStackSize, PageSize);
+
 #elif step3
 	DEBUG ('a', "Executable informations :\n");
 	DEBUG('a', "code size : %d\n", noffH.code.size);
@@ -214,6 +216,24 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
+
+#ifdef step4
+	unsigned int i;
+	//release physical pages
+	for (i = 0; i < numPages; i++)
+	{
+		if (pageTable[i].valid) {
+			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
+		}
+		else {
+			printf("Page %d invalide\n", i);
+		}
+
+	}
+
+	printf("%d/%d pages disponibles\n", frameProvider->NumAvailFrame(), NumPhysPages);
+#endif
+
 	// LB: Missing [] for delete
 	// delete pageTable;
 	delete [] pageTable;
@@ -233,20 +253,6 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
-
-#ifdef step4
-	unsigned int i;
-	//release physical pages
-	for (i = 0; i < numPages; i++)
-	{
-		if (pageTable[i].valid) {
-			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
-		}
-	}
-
-	printf("%d/%d pages disponibles\n", frameProvider->NumAvailFrame(), NumPhysPages);
-#endif
-
 
 #endif
 }
