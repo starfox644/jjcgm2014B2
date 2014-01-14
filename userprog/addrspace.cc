@@ -216,6 +216,18 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
+
+#ifdef step4
+	//release physical pages
+	for (i = 0; i < numPages; i++)
+	{
+		if (pageTable[i].valid) {
+			ReleaseFrame(pageTable[i].physicalPage);
+		}
+	}
+#endif
+
+
 #endif
 }
 
