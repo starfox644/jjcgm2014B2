@@ -183,6 +183,7 @@ public:
 	int userStackAddr;
 	// indicates if the thread is finished
 	bool isFinished;
+
 #endif
 
 #endif

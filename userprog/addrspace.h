@@ -35,8 +35,12 @@ class Thread;
 class AddrSpace
 {
   public:
+#ifdef step4
+	AddrSpace();		// Create an address space
+#else
     AddrSpace (OpenFile * executable);	// Create an address space,
     // initializing it with the program
+#endif
     // stored in the file "executable"
     ~AddrSpace ();		// De-allocate an address space
 
@@ -47,6 +51,14 @@ class AddrSpace
     void RestoreState ();	// info on a context switch 
 
 #ifdef CHANGED
+
+#ifdef step4
+    /**
+     *  allocate memory needed for the code, data and stack sections
+     */
+    bool loadInitialSections(OpenFile * executable);
+#endif
+
     /**
      *  add a thread to this address space
      */

@@ -17,7 +17,7 @@ int main(){
 		PutString("Lancement du proc numéro ");
 		PutInt(i);
 		PutString("\n");
-		pid[i] = ForkExec("../etape4/userThreadMulti");
+		pid[i] = ForkExec("./etape4/userThreadMulti");
 	}
 
 	return 0;
