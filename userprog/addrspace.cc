@@ -214,6 +214,8 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
+	int i;
+
 	// LB: Missing [] for delete
 	// delete pageTable;
 	delete [] pageTable;
