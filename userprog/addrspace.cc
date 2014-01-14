@@ -27,6 +27,11 @@
 #include "frameProvider.h"
 #endif
 
+#ifdef countNew
+#include "countNew.h"
+int nbNewAddrspace = 0;
+#endif
+
 //----------------------------------------------------------------------
 // SwapHeader
 //      Do little endian to big endian conversion on the bytes in the 
@@ -76,6 +81,11 @@ AddrSpace::AddrSpace ()
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
 	s_userJoin = new Semaphore("user join semaphore", 1);
+
+#ifdef countNew
+	nbNewAddrspace++;
+	displayNew(nbNewAddrspace, "AddrSpace");
+#endif
 }
 
 #else
@@ -176,6 +186,10 @@ AddrSpace::AddrSpace (OpenFile * executable)
 						[noffH.initData.virtualAddr]),
 						noffH.initData.size, noffH.initData.inFileAddr);
 	}
+#ifdef countNew
+	nbNewAddrspac++;
+	displayNew(nbNewAddrspace, "AddrSpace");
+#endif
 }
 
 #endif // step4
@@ -198,6 +212,8 @@ AddrSpace::~AddrSpace ()
 		}
 
 	}
+
+	printf("%d/%d pages availlables\n", frameProvider->NumAvailFrame(), NumPhysPages);
 #endif
 
 	// LB: Missing [] for delete
@@ -219,6 +235,11 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
+#endif
+
+#ifdef countNew
+	nbNewAddrspace--;
+	displayNew(nbNewAddrspace, "AddrSpace");
 #endif
 }
 
