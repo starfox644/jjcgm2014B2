@@ -29,6 +29,7 @@
 #include "exit.h"
 #include "semaphore.h"
 #include "process.h"
+#include "machine.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -305,6 +306,10 @@ ExceptionHandler (ExceptionType which)
 		default: 					printf("Unknown "); 				break;
 		}
 		printf("type:%d)\n", type);
+#ifdef CHANGED
+		printf("PC : %d\n", machine->ReadRegister(PCReg));
+		printf("SP : %d\n", machine->ReadRegister(StackReg));
+#endif
 		ASSERT (FALSE);
 	}
 	// End of addition
