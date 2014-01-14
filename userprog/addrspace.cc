@@ -243,6 +243,8 @@ AddrSpace::~AddrSpace ()
 			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
 		}
 	}
+
+	printf("%d/%d pages disponibles\n", frameProvider->NumAvailFrame(), NumPhysPages);
 #endif
 
 
