@@ -1,7 +1,9 @@
 #ifdef CHANGED
 #include "exit.h"
 #include "system.h"
+#ifdef step4
 #include "process.h"
+#endif
 
 void do_exit(int returnCode)
 {
@@ -18,11 +20,11 @@ void do_exit(int returnCode)
 	if(currentThread->space != NULL)
 		delete currentThread->space;
 
-	s_process->P();
-
 	printf("Program stopped with return code : %d\n", returnCode);
 	DEBUG('a',"Program exit");
 
+#ifdef step4
+	s_process->P();
 	// currentThread isn't the last main thread
 	if (getNbProcess() > 1)
 	{
@@ -38,6 +40,9 @@ void do_exit(int returnCode)
 		// stop the program
 		interrupt->Halt ();
 	}
+#else
+	interrupt->Halt ();
+#endif
 }
 
 #endif

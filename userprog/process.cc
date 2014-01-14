@@ -1,10 +1,10 @@
 #ifdef CHANGED
 #include "system.h"
-#include "syscall.h"
+//#include "syscall.h"
 #include "process.h"
 #include "thread.h"
 #include "machine.h"
-#include "addrspace.h"
+//#include "addrspace.h"
 #include <string>
 
 /**

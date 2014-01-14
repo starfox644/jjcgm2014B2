@@ -134,9 +134,6 @@ class AddrSpace
     // number of semaphore created
     int nbSem;
 
-    // number of process for process.cc
-    int nbProcess;
-
     // Semaphore list : needed to give an unique identifier for user semaphores
     std::list<Semaphore*> semList;
     Semaphore* s_stackList;

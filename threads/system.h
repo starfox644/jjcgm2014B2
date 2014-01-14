@@ -37,6 +37,9 @@ extern Statistics *stats;	// performance metrics
 extern Timer *timer;		// the hardware alarm clock
 #ifdef step4
 extern FrameProvider *frameProvider; // permet de gerer les cadres
+// number of process for process.cc
+extern int nbProcess;
+extern Semaphore *s_process;
 #endif
 #ifdef USER_PROGRAM
 #include "machine.h"
@@ -45,7 +48,6 @@ extern Machine *machine;	// user program memory and registers
 #ifdef CHANGED
 #include "synchconsole.h"
 extern SynchConsole *synchconsole;
-extern Semaphore *s_process;
 #endif // CHANGED
 
 #endif

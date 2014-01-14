@@ -21,6 +21,8 @@ Statistics *stats;		// performance metrics
 Timer *timer;			// the hardware timer device, for invoking context switches
 #ifdef step4
 FrameProvider *frameProvider; //gestion des cadres
+int nbProcess;
+Semaphore *s_process;
 #endif
 
 #ifdef FILESYS_NEEDED
@@ -35,7 +37,6 @@ SynchDisk *synchDisk;
 Machine *machine;		// user program memory and registers
 #ifdef CHANGED
 SynchConsole *synchconsole;
-Semaphore *s_process;
 #endif // CHANGED
 #endif
 
@@ -174,6 +175,7 @@ Initialize (int argc, char **argv)
 #ifdef step4
     frameProvider = new FrameProvider();
     s_process = new Semaphore("sem process", 1);
+    nbProcess = 0;
 #endif
 
     threadToBeDestroyed = NULL;

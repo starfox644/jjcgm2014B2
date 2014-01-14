@@ -1,3 +1,4 @@
+#ifdef CHANGED
 #ifndef ___PROCESS
 #define ___PROCESS
 
@@ -6,8 +7,6 @@ void addProcess ();
 void removeProcess () ;
 
 int getNbProcess ();
-
-#ifdef CHANGED
 
 /**
  * Cree un thread et lance le programme donne en parametre dedans.
