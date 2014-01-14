@@ -121,6 +121,11 @@ class AddrSpace
     unsigned int endThreadsStackSpace;
     // number of threads in execution without the main thread
     int nbThreads;
+
+#ifdef step4
+    int nbPagesUserStack;
+#endif
+
     // number of semaphore created
     int nbSem;
 

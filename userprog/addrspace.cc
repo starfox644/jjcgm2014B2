@@ -111,6 +111,8 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	endThreadsStackSpace = MemorySize - 1;
 	initAvailableStackPointers();
 
+	nbPagesUserStack = divRoundUp(UserStackSize, PageSize);
+
 #elif step3
 	DEBUG ('a', "Executable informations :\n");
 	DEBUG('a', "code size : %d\n", noffH.code.size);
