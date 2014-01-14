@@ -68,11 +68,8 @@ SwapHeader (NoffHeader * noffH)
 AddrSpace::AddrSpace (OpenFile * executable)
 {
 	NoffHeader noffH;
-	unsigned int i, size;
-
-#ifdef step4
-	int frameAd;
-#endif
+	unsigned int i;
+	unsigned int size;
 
 #ifdef CHANGED
 #if defined(step3) | defined(step4)
@@ -98,10 +95,11 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	// the available stack space begin after the main thread stack
 	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
 	// we add memory for threads
-	size = beginThreadsStackSpace + MAX_THREADS * UserStackSize;
+	//size = beginThreadsStackSpace + MAX_THREADS * UserStackSize;
+	size = MemorySize;
 	// to leave room for the stack
 	numPages = divRoundUp (size, PageSize);
-	size = numPages * PageSize;
+	//size = numPages * PageSize;
 	availableStackSize = (size - beginThreadsStackSpace) - 1;
 	// the main thread is not included in this number
 	maxThreads = availableStackSize / UserStackSize;
@@ -149,16 +147,24 @@ AddrSpace::AddrSpace (OpenFile * executable)
 			numPages, size);
 	// first, set up the translation
 	pageTable = new TranslationEntry[numPages];
+#ifdef step4
+	for(i = 0 ; i < numPages ; i++)
+	{
+		pageTable[i].valid = false;
+		pageTable[i].virtualPage = i;
+		pageTable[i].use = FALSE;
+		pageTable[i].dirty = FALSE;
+		pageTable[i].readOnly = FALSE;
+	}
+	map(0, noffH.code.size, true);
+	map(noffH.code.size, noffH.initData.size, true);
+	map(noffH.code.size + noffH.initData.size, noffH.uninitData.size, true);
+	map(noffH.code.size + noffH.initData.size + noffH.uninitData.size, (MAX_THREADS + 1) * UserStackSize, true);
+#else
 	for (i = 0; i < numPages; i++)
 	{
 		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-#ifdef step4
-		frameAd = frameProvider->GetEmptyFrame();
-		ASSERT(frameAd != -1);
-		pageTable[i].physicalPage = frameAd;
-#else
 		pageTable[i].physicalPage = i;
-#endif
 		pageTable[i].valid = TRUE;
 		pageTable[i].use = FALSE;
 		pageTable[i].dirty = FALSE;
@@ -169,6 +175,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	// zero out the entire address space, to zero the unitialized data segment
 	// and the stack segment
 	bzero (machine->mainMemory, size);
+#endif
 
 #ifdef step4
 	// then, copy in the code and data segments into memory
@@ -186,6 +193,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 		ReadAtVirtual(executable, noffH.initData.virtualAddr,
 						noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
 	}
+	map(0, noffH.code.size, false);
 #else
 
 	// then, copy in the code and data segments into memory
@@ -215,6 +223,19 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
+
+#ifdef step4
+	unsigned int i;
+	//release physical pages
+	for (i = 0; i < numPages; i++)
+	{
+		if (pageTable[i].valid) {
+			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
+		}
+
+	}
+#endif
+
 	// LB: Missing [] for delete
 	// delete pageTable;
 	delete [] pageTable;
@@ -234,21 +255,6 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
-
-#ifdef step4
-	unsigned int i;
-	//release physical pages
-	for (i = 0; i < numPages; i++)
-	{
-		if (pageTable[i].valid) {
-			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
-		}
-	}
-
-	printf("%d/%d pages disponibles\n", frameProvider->NumAvailFrame(), NumPhysPages);
-#endif
-
-
 #endif
 }
 
@@ -283,7 +289,7 @@ AddrSpace::InitRegisters ()
 #ifdef CHANGED
 	machine->WriteRegister (StackReg, beginThreadsStackSpace);
 	DEBUG ('a', "Initializing stack register to %d\n",
-			numPages * PageSize - 16);
+			beginThreadsStackSpace);
 #else
 	machine->WriteRegister (StackReg, numPages * PageSize - 16);
 	DEBUG ('a', "Initializing stack register to %d\n",
@@ -471,6 +477,53 @@ void AddrSpace::removeProcess () {
 
 int AddrSpace::getNbProcess () {
 	return nbProcess;
+}
+
+bool AddrSpace::map(int virtualAddr, int length, bool write)
+{
+	int i;
+	int frame;
+	// nb pages needed for the length
+	int nbPages = divRoundUp(length, PageSize) + 1;
+	// index of the begining page
+	int beginPage = divRoundDown(virtualAddr, PageSize);
+	if(length <= 0)
+		return true;
+	i = 0;
+	// get physical frames needed
+	do
+	{
+		if(!pageTable[beginPage + i].valid)
+		{
+			frame = frameProvider->GetEmptyFrame();
+			if(frame != -1)
+			{
+				// add the gotten page to the virtual memory
+				pageTable[beginPage + i].physicalPage = frame;
+				pageTable[beginPage + i].valid = TRUE;
+				pageTable[beginPage + i].use = FALSE;
+				pageTable[beginPage + i].dirty = FALSE;
+				pageTable[beginPage + i].readOnly = (int)(!write);
+			}
+		}
+		i++;
+	}
+	while(i != nbPages && frame != -1);
+	if(i != nbPages)
+	{
+		// error, no available physical frames
+
+		// free the physical pages we've got
+		for(int j = 0 ; j < i ; j++)
+		{
+			frameProvider->ReleaseFrame(pageTable[beginPage + j].physicalPage);
+		}
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 #endif // step4

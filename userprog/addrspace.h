@@ -110,6 +110,16 @@ class AddrSpace
     void removeProcess ();
     int getNbProcess ();
 
+    /**
+     * Allocate length bytes at virtualAddr in the address space.
+     * Associate it with frames in physical memory.
+     * If write is set, then the pages are allowed for writing.
+     * If a part of the memory needed in the addr space is already used
+     * or if there is no more physical frames available, returns true
+     * else returns false
+     */
+    bool map(int virtualAddr, int length, bool write);
+
 #endif
 
 #endif
@@ -145,6 +155,13 @@ class AddrSpace
     void deleteThreads();
 
     void initAvailableStackPointers();
+
+    /**
+     *	return 1 if the pages between begin and end are not been allocated yet
+     *	else 0
+     */
+    int arePagesAvailable(int begin, int end);
+
 #endif //CHANGED
 };
 
