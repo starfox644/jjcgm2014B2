@@ -235,6 +235,21 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
+
+#ifdef step4
+	unsigned int i;
+	//release physical pages
+	for (i = 0; i < numPages; i++)
+	{
+		if (pageTable[i].valid) {
+			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
+		}
+	}
+
+	printf("%d/%d pages disponibles\n", frameProvider->NumAvailFrame(), NumPhysPages);
+#endif
+
+
 #endif
 }
 
@@ -446,6 +461,19 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 		machine->WriteMem(virtualaddr+i,1,buffer[i]);
 	}
 }
-#endif
+
+void AddrSpace::addProcess () {
+	nbProcess++;
+}
+
+void AddrSpace::removeProcess () {
+	nbProcess--;
+}
+
+int AddrSpace::getNbProcess () {
+	return nbProcess;
+}
+
+#endif // step4
 
 #endif

@@ -52,13 +52,21 @@
 
 #include "utility.h"
 #include "system.h"
-
+#ifdef step4
+#include "process.h"
+#endif
 
 // External functions used by this file
 
 extern void ThreadTest (void), Copy (const char *unixFile, const char *nachosFile);
 extern void Print (char *file), PerformanceTest (void);
-extern void StartProcess (char *file), ConsoleTest (char *in, char *out);
+
+#ifdef step4
+#else
+	extern void StartProcess (char *file);
+#endif
+
+extern void ConsoleTest (char *in, char *out);
 #ifdef CHANGED
 	extern void SynchConsoleTest (char *in, char *out);
 #endif

@@ -105,6 +105,11 @@ class AddrSpace
 #ifdef step4
     static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
 	TranslationEntry *pageTable,unsigned numPages);
+
+    void addProcess ();
+    void removeProcess ();
+    int getNbProcess ();
+
 #endif
 
 #endif

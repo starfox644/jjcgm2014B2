@@ -16,9 +16,10 @@
 #include "addrspace.h"
 #include "synch.h"
 
-#ifdef CHANGED
+#ifdef step4
 #include "synchconsole.h"
-#endif
+// On enleve StartProcess de progtest.cc pour le mettre dans process.cc
+#else
 //----------------------------------------------------------------------
 // StartProcess
 //      Run a user program.  Open the executable, load it into
@@ -50,7 +51,7 @@ StartProcess (char *filename)
 	// by doing the syscall "exit"
 	return -1;
 }
-
+#endif
 // Data structures needed for the console test.  Threads making
 // I/O requests wait on a Semaphore to delay until the I/O completes.
 
