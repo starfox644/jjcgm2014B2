@@ -44,6 +44,7 @@
 #define SC_SemPost 21
 #define SC_SemDestroy 22
 #define SC_UserThreadJoin 23
+#define SC_ForkExec 24
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
