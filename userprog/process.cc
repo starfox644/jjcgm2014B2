@@ -7,10 +7,6 @@ do_forkExec(char s*) {
 	t->fork(startProcess, executable);
 }
 
-static void initNbProcess() {
-	nbProcess = 0;
-}
-
 static void addProcess () {
 	nbProcess++;
 }
