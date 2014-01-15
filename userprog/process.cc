@@ -59,7 +59,7 @@ int do_forkExec(int adrExec) {
 int allocateProcessSpace (Thread *t, char *filename)
 {
 	bool isSuccess;
-	//printf("[allocateProcessSpace] Debut fonction\n");
+	printf("[allocateProcessSpace] Debut fonction\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
 
@@ -68,9 +68,6 @@ int allocateProcessSpace (Thread *t, char *filename)
 		printf ("Unable to open file %s\n", filename);
 		return -1;
 	}
-	/* TODO : Jerem doit changer l'allocation de l'espace d'adressage et je dois changer
-	 * cette ligne pour que la fonction puisse retourner une erreur si ca a foire
-	 * */
 	//space = new AddrSpace (executable);
 	space = new AddrSpace();
 	isSuccess = space->loadInitialSections(executable);
@@ -87,12 +84,15 @@ int allocateProcessSpace (Thread *t, char *filename)
  */
 void UserStartProcess (int adr)
 {
+	printf("[UserStartProcess] Creation du processus pour progSimple\n");
 	//printf("[UserStartProcess] Debut fonction\n");
 //	printf("[UserStartProcess] addProcess\n");
+	currentThread->space->setPid(nbProcess);
 	currentThread->space->InitRegisters ();	// set the initial register values
 //	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
 	printf("lancement de %s\n", currentThread->getName());
+	printf("[UserStartProcess] pid : %i\n", currentThread->space->getPid());
 	fflush(stdin);
 //	printf("[UserStartProcess] RestoreState\n");
 	//printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
@@ -105,6 +105,7 @@ void UserStartProcess (int adr)
 void addProcess ()
 {
 	s_nbProcess->P();
+	currentThread->space->setPid(nbProcess);
 	nbProcess++;
 	s_nbProcess->V();
 }
@@ -126,6 +127,7 @@ int getNbProcess () {
 int
 StartProcess (char *filename)
 {
+	printf("[StartProcess] Creation du processus pour forkexecsimple\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
 

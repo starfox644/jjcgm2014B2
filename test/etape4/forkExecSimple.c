@@ -2,8 +2,9 @@
 
 int main()
 {
-	int tid;
-	tid = ForkExec("./etape4/progSimple");
-	PutString("Fin du process principal\n");
+//	PutString("Pid : ");
+//	PutInt(GetPid());
+	ForkExec("./etape4/progSimple");
+	PutString("\nFin du process principal\n");
 	return 0;
 }

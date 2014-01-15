@@ -81,6 +81,7 @@ AddrSpace::AddrSpace ()
 {
 	nbSem = 0;
 	nbThreads = 0;
+	pid = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -587,6 +588,16 @@ bool AddrSpace::map(int virtualAddr, int length, bool write)
 	{
 		return true;
 	}
+}
+
+int AddrSpace::getPid()
+{
+	return pid;
+}
+
+void AddrSpace::setPid(int newPid)
+{
+	pid = newPid;
 }
 
 #endif // step4
