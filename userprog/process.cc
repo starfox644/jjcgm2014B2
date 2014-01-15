@@ -12,10 +12,11 @@
  * Renvoie 0 si le thread est bien cree, -1 sinon
  */
 int do_forkExec(int adrExec) {
-	printf("[ForkExec] Debut fonction\n");
+	//printf("[ForkExec] Debut fonction\n");
 	char executable[MAX_STRING_SIZE];
 	int c;
 	int i = 0;
+	s_process->P();
 	// On recupere le chemin du programme a lancer char par char
 	machine->ReadMem(adrExec, 1, &c);
 	while (i < MAX_STRING_SIZE && c != '\0')
@@ -36,13 +37,16 @@ int do_forkExec(int adrExec) {
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
-		printf("[ForkExec] allocate reussi\n");
+		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
-		printf("[ForkExec] nbProc : %i\n", currentThread->space->getNbProcess());
+		s_process->V();
 		return 0;
 	}
 	else
+	{
+		s_process->V();
 		return -1;
+	}
 }
 
 /**
@@ -52,7 +56,7 @@ int do_forkExec(int adrExec) {
 int allocateProcessSpace (Thread *t, char *filename)
 {
 	bool isSuccess;
-	printf("[allocateProcessSpace] Debut fonction\n");
+	//printf("[allocateProcessSpace] Debut fonction\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
 
@@ -80,26 +84,31 @@ int allocateProcessSpace (Thread *t, char *filename)
  */
 void UserStartProcess (int adr)
 {
-	printf("[UserStartProcess] Debut fonction\n");
-	currentThread->space->addProcess(); // ajoute 1 au nb de processus en cours
+	//printf("[UserStartProcess] Debut fonction\n");
+	addProcess(); // ajoute 1 au nb de processus en cours
 //	printf("[UserStartProcess] addProcess\n");
 	currentThread->space->InitRegisters ();	// set the initial register values
 //	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
 //	printf("[UserStartProcess] RestoreState\n");
-	printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
+	//printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
 	machine->Run ();		// jump to the user program
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
 	// by doing the syscall "exit"
 }
 
-void addProcess () {
+void addProcess ()
+{
+	s_nbProcess->P();
 	nbProcess++;
+	s_nbProcess->V();
 }
 
 void removeProcess () {
+	s_nbProcess->P();
 	nbProcess--;
+	s_nbProcess->V();
 }
 
 int getNbProcess () {

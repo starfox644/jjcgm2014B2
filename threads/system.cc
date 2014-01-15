@@ -23,6 +23,7 @@ Timer *timer;			// the hardware timer device, for invoking context switches
 FrameProvider *frameProvider; //gestion des cadres
 int nbProcess;
 Semaphore *s_process;
+Semaphore *s_nbProcess;
 #endif
 
 #ifdef FILESYS_NEEDED
@@ -175,6 +176,7 @@ Initialize (int argc, char **argv)
 #ifdef step4
     frameProvider = new FrameProvider();
     s_process = new Semaphore("sem process", 1);
+    s_nbProcess = new Semaphore("sem nb process", 1);
     nbProcess = 0;
 #endif
 

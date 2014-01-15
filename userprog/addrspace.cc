@@ -70,7 +70,6 @@ AddrSpace::AddrSpace ()
 {
 	nbSem = 0;
 	nbThreads = 0;
-	nbProcess = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -335,14 +334,13 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		pageTable[i].dirty = FALSE;
 		pageTable[i].readOnly = FALSE;
 	}
-
 	success = map(0, noffH.code.size, true);
 	if(success)
 		success = map(noffH.code.size, noffH.initData.size, true);
 	if(success)
 		success = map(noffH.code.size + noffH.initData.size, noffH.uninitData.size, true);
 	if(success)
-		success = map(noffH.code.size + noffH.initData.size + noffH.uninitData.size, (MAX_THREADS + 1) * UserStackSize, true);
+		success = map(noffH.code.size + noffH.initData.size + noffH.uninitData.size, UserStackSize, true);
 	if(!success)
 	{
 		delete pageTable;
@@ -516,18 +514,6 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	{
 		machine->WriteMem(virtualaddr+i,1,buffer[i]);
 	}
-}
-
-void AddrSpace::addProcess () {
-	nbProcess++;
-}
-
-void AddrSpace::removeProcess () {
-	nbProcess--;
-}
-
-int AddrSpace::getNbProcess () {
-	return nbProcess;
 }
 
 bool AddrSpace::map(int virtualAddr, int length, bool write)

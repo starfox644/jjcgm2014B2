@@ -25,6 +25,7 @@ void do_exit(int returnCode)
 
 #ifdef step4
 	s_process->P();
+	printf("nb process : %d\n", getNbProcess());
 	// currentThread isn't the last main thread
 	if (getNbProcess() > 1)
 	{

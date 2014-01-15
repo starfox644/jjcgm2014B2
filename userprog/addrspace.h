@@ -118,10 +118,6 @@ class AddrSpace
     static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
 	TranslationEntry *pageTable,unsigned numPages);
 
-    void addProcess ();
-    void removeProcess ();
-    int getNbProcess ();
-
     /**
      * Allocate length bytes at virtualAddr in the address space.
      * Associate it with frames in physical memory.
@@ -136,8 +132,8 @@ class AddrSpace
 
 #endif
 
-  private:
       TranslationEntry * pageTable;	// Assume linear page table translation
+  private:
     // for now!
     unsigned int numPages;	// Number of pages in the virtual 
     // address space
