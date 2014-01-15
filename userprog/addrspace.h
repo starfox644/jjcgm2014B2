@@ -28,10 +28,6 @@ class Thread;
 #define UserStackSize		1024	// increase this as necessary!
 #endif
 
-#ifdef step4
-#define MAX_THREADS 3
-#endif
-
 class AddrSpace
 {
   public:

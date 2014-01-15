@@ -93,7 +93,7 @@ void UserStartProcess (int adr)
 //	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
 	printf("lancement de %s\n", currentThread->getName());
-	fflush(stdin);
+	fflush(stdout);
 //	printf("[UserStartProcess] RestoreState\n");
 	//printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
 	machine->Run ();		// jump to the user program
