@@ -467,7 +467,7 @@ int Thread::getInitArg()
 bool Thread::isMainThread()
 {
 	// stack is always NULL for the main thread
-	return (stack == NULL);
+	return (tid == 0);
 }
 
 void Thread::setThreadReturn(int th_ret)

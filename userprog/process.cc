@@ -33,6 +33,9 @@ int do_forkExec(int adrExec) {
 	else
 		executable[i] = '\0';
 
+	IntStatus oldLevel = interrupt->SetLevel(IntOff);
+	printf("[ForkExec] executable : %s\n", executable);
+
 	Thread *t = new Thread("ThreadForkExec");
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
@@ -40,11 +43,13 @@ int do_forkExec(int adrExec) {
 		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
 		s_process->V();
+		interrupt->SetLevel(oldLevel);
 		return 0;
 	}
 	else
 	{
 		s_process->V();
+		interrupt->SetLevel(oldLevel);
 		return -1;
 	}
 }
@@ -139,7 +144,7 @@ StartProcess (char *filename)
 	currentThread->space = space;
 
 	delete executable;		// close file
-
+	addProcess(); // ajoute 1 au nb de processus en cours
 	space->InitRegisters ();	// set the initial register values
 	space->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user progam

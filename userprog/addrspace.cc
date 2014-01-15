@@ -217,7 +217,6 @@ AddrSpace::~AddrSpace ()
 		if (pageTable[i].valid) {
 			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
 		}
-
 	}
 #endif
 
