@@ -258,6 +258,14 @@ ForkExec:
 	j	$31
 	.end ForkExec
 
+	.globl GetPid
+	.ent	GetPid
+GetPid:
+	addiu $2,$0,SC_GetPid
+	syscall
+	j	$31
+	.end GetPid
+
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */

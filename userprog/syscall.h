@@ -45,6 +45,7 @@
 #define SC_SemDestroy 22
 #define SC_UserThreadJoin 23
 #define SC_ForkExec 24
+#define SC_GetPid 25
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -219,6 +220,11 @@ int SemPost(sem_t *adrSem);
  * Create a thread and execute the program given in parameter
  */
 int ForkExec(char *executable);
+
+/**
+ * Return the current procesus ID
+ */
+int GetPid();
 
 #endif // CHANGED
 

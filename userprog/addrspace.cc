@@ -81,6 +81,7 @@ AddrSpace::AddrSpace ()
 {
 	nbSem = 0;
 	nbThreads = 0;
+	pid = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -530,6 +531,8 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 {
 	char* buffer = new char[numBytes];
 	int i, nbRead;
+	TranslationEntry* oldTr = machine->pageTable;
+	unsigned int ptSize = machine->pageTableSize;
 	// lecture dans la memoire virtuelle a la position donnee puis le stocke dans le buffer
 	nbRead = executable->ReadAt(buffer, numBytes, position);
 	// charge la table des pages du processeur
@@ -540,6 +543,9 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	{
 		machine->WriteMem(virtualaddr+i,1,buffer[i]);
 	}
+	// charge la table des pages du processeur
+	machine->pageTable = oldTr;
+	machine->pageTableSize = ptSize;
 }
 
 bool AddrSpace::map(int virtualAddr, int length, bool write)
@@ -586,6 +592,26 @@ bool AddrSpace::map(int virtualAddr, int length, bool write)
 	else
 	{
 		return true;
+	}
+}
+
+int AddrSpace::getPid()
+{
+	return pid;
+}
+
+void AddrSpace::setPid(int newPid)
+{
+	pid = newPid;
+}
+
+
+void AddrSpace::printMapping(unsigned int max)
+{
+	unsigned int i;
+	for(i = 0 ; i < max && i < numPages ; i++)
+	{
+		printf("virtual : %i physique : %i\n", i, pageTable[i].physicalPage);
 	}
 }
 

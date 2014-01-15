@@ -98,6 +98,7 @@ class AddrSpace
     //
     Semaphore *s_userJoin;
     bool attente;
+    int pid;
 
     /**
      * Add newSem to semList and allocate it a unique modifier
@@ -132,6 +133,10 @@ class AddrSpace
      * else returns false
      */
     bool map(int virtualAddr, int length, bool write);
+    void setPid(int newPid);
+    int getPid();
+
+    void printMapping(unsigned int max);
 
 #endif
 

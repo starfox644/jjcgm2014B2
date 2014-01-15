@@ -41,6 +41,7 @@ extern FrameProvider *frameProvider; // permet de gerer les cadres
 extern int nbProcess;
 extern Semaphore *s_process;
 extern Semaphore *s_nbProcess;
+extern int pid;
 #endif
 #ifdef USER_PROGRAM
 #include "machine.h"
