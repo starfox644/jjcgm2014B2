@@ -37,7 +37,7 @@ int do_forkExec(int adrExec) {
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
 		printf("[ForkExec] allocate reussi\n");
-		t->Fork(UserStartProcess, 0);
+		t->Fork(UserStartProcess, 1);
 		printf("[ForkExec] nbProc : %i\n", currentThread->space->getNbProcess());
 		return 0;
 	}
