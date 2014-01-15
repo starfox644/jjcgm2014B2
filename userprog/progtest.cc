@@ -142,3 +142,25 @@ SynchConsoleTest (char *in, char *out)
 	fprintf(stderr, "Solaris: EOF detected in SynchConsole!\n");
 }
 #endif //CHANGED
+
+#ifdef step4
+int allocatorTest(char *filename)
+{
+	OpenFile *executable = fileSystem->Open (filename);
+	AddrSpace *space;
+
+	if (executable == NULL)
+	{
+		printf ("Unable to open file %s\n", filename);
+		return -1;
+	}
+	space = new AddrSpace ();
+	space->loadInitialSections(executable);
+	currentThread->space = space;
+	delete executable;		// close file
+
+	// rajouter ici les tests d'allocation
+	printf("tests d'allocation\n");
+	return 0;
+}
+#endif

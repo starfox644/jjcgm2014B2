@@ -33,6 +33,7 @@ int do_forkExec(int adrExec) {
 	else
 		executable[i] = '\0';
 
+	IntStatus oldLevel = interrupt->SetLevel(IntOff);
 	printf("[ForkExec] executable : %s\n", executable);
 
 	Thread *t = new Thread("ThreadForkExec");
@@ -42,11 +43,13 @@ int do_forkExec(int adrExec) {
 		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
 		s_process->V();
+		interrupt->SetLevel(oldLevel);
 		return 0;
 	}
 	else
 	{
 		s_process->V();
+		interrupt->SetLevel(oldLevel);
 		return -1;
 	}
 }
