@@ -19,17 +19,23 @@
 #include "system.h"
 #include "addrspace.h"
 #include "noff.h"
+
 #ifdef CHANGED
 #include <string>
 #endif
+
 #include <strings.h>		/* for bzero */
+
 #ifdef step4
 #include "frameProvider.h"
 #endif
 
+#ifdef CHANGED
 #ifdef countNew
 #include "countNew.h"
 int nbNewAddrspace = 0;
+int nbAddrspaceCreated = 0;
+#endif
 #endif
 
 //----------------------------------------------------------------------
@@ -83,6 +89,7 @@ AddrSpace::AddrSpace ()
 
 #ifdef countNew
 	nbNewAddrspace++;
+	nbAddrspaceCreated++;
 	displayNew(nbNewAddrspace, "AddrSpace");
 #endif
 }
@@ -186,7 +193,8 @@ AddrSpace::AddrSpace (OpenFile * executable)
 						noffH.initData.size, noffH.initData.inFileAddr);
 	}
 #ifdef countNew
-	nbNewAddrspac++;
+	nbNewAddrspace++;
+	nbAddrspaceCreated++;
 	displayNew(nbNewAddrspace, "AddrSpace");
 #endif
 }
@@ -232,11 +240,11 @@ AddrSpace::~AddrSpace ()
 		it++;
 		delete *itDel;
 	}
-#endif
 
 #ifdef countNew
 	nbNewAddrspace--;
 	displayNew(nbNewAddrspace, "AddrSpace");
+#endif
 #endif
 }
 

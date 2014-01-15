@@ -24,6 +24,7 @@
 #ifdef countNew
 #include "countNew.h"
 int nbNewThread = 0;
+int nbThreadsCreated = 0;
 #endif
 #endif
 
@@ -60,6 +61,7 @@ Thread::Thread (const char *threadName)
 
 #ifdef countNew
 	nbNewThread++;
+	nbThreadsCreated++;
 	displayNew(nbNewThread, "Thread");
 #endif
 }

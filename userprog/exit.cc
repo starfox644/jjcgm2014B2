@@ -1,12 +1,18 @@
 #ifdef CHANGED
 #include "exit.h"
 #include "system.h"
+
 #ifdef step4
 #include "process.h"
 #endif
 
 void do_exit(int returnCode)
 {
+#ifdef countNew
+	printf("threads : created %d / destroyed %d / remaining %d\n", currentThread->nbThreadsCreated, currentThread->nbThreadsCreated - currentThread->nbNewThread, currentThread->nbNewThread);
+	printf("addrspace : created %d / destroyed %d / remaining %d\n", currentThread->space->nbAddrspaceCreated, currentThread->space->nbAddrspaceCreated - currentThread->space->nbNewAddrspace, currentThread->space->nbNewAddrspace);
+#endif
+
 	// indicates that the main thread is waiting for the others
 	currentThread->space->s_nbThreads->P();
 	currentThread->space->attente = true;

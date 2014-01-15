@@ -35,9 +35,18 @@ class Thread;
 class AddrSpace
 {
   public:
+
+#ifdef CHANGED
+#ifdef countNew
+	int nbNewAddrspace;
+	int nbAddrspaceCreated;
+#endif
+#endif
+
 #ifdef step4
 	AddrSpace();		// Create an address space
 #else
+
     AddrSpace (OpenFile * executable);	// Create an address space,
     // initializing it with the program
 #endif
