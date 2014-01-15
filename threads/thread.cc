@@ -197,7 +197,8 @@ Thread::Finish ()
     DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
     s_join->V();
-    space->addAvailableStackAddress(userStackAddr);
+    if(space != NULL)
+    	space->addAvailableStackAddress(userStackAddr);
 #endif
     // LB: Be careful to guarantee that no thread to be destroyed 
     // is ever lost 

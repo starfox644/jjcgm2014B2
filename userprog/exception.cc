@@ -243,6 +243,7 @@ ExceptionHandler (ExceptionType which)
 #ifdef step4
 			case SC_ForkExec:
 				printf("appel fork exec par : %s\n", currentThread->getName());
+				printf("pc : %d\n", machine->ReadRegister(PCReg));
 				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 

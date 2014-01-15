@@ -91,7 +91,7 @@ SWITCH:
 	sw	s7, S7(a0)
 	sw	fp, FP(a0)		# save frame pointer
 	sw	ra, PC(a0)		# save return address
-	
+
 	lw	sp, SP(a1)		# load the new stack pointer
 	lw	s0, S0(a1)		# load the callee-save registers
 	lw	s1, S1(a1)

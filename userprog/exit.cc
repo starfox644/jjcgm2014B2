@@ -12,7 +12,6 @@ void do_exit(int returnCode)
 	printf("threads : created %d / destroyed %d / remaining %d\n", currentThread->nbThreadsCreated, currentThread->nbThreadsCreated - currentThread->nbNewThread, currentThread->nbNewThread);
 	printf("addrspace : created %d / destroyed %d / remaining %d\n", currentThread->space->nbAddrspaceCreated, currentThread->space->nbAddrspaceCreated - currentThread->space->nbNewAddrspace, currentThread->space->nbNewAddrspace);
 #endif
-
 	// indicates that the main thread is waiting for the others
 	currentThread->space->s_nbThreads->P();
 	currentThread->space->attente = true;
@@ -24,21 +23,24 @@ void do_exit(int returnCode)
 	}
 
 	if(currentThread->space != NULL)
+	{
 		delete currentThread->space;
+		currentThread->space = NULL;
+	}
 
 	printf("Program stopped with return code : %d\n", returnCode);
 	DEBUG('a',"Program exit");
 
 #ifdef step4
 	s_process->P();
-	printf("nb process : %d\n", getNbProcess());
 	// currentThread isn't the last main thread
 	if (getNbProcess() > 1)
 	{
 		removeProcess();
-		threadToBeDestroyed = currentThread;
+		//threadToBeDestroyed = currentThread;
 		s_process->V();
-		currentThread->Yield();
+		//currentThread->Yield();
+		currentThread->Finish();
 	}
 	else // the current thread is the last thread
 	{
