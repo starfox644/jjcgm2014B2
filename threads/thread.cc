@@ -20,6 +20,13 @@
 #include "synch.h"
 #include "system.h"
 
+#ifdef CHANGED
+#ifdef countNew
+#include "countNew.h"
+int nbNewThread = 0;
+#endif
+#endif
+
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
 					// stack overflows
@@ -50,6 +57,11 @@ Thread::Thread (const char *threadName)
 	s_join = new Semaphore("semaphore for join", 1);
 	isFinished = false;
 #endif
+
+#ifdef countNew
+	nbNewThread++;
+	displayNew(nbNewThread, "Thread");
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -73,6 +85,11 @@ Thread::~Thread ()
 	DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
 #ifdef CHANGED
     delete s_join;
+#endif
+
+#ifdef countNew
+	nbNewThread--;
+	displayNew(nbNewThread, "Thread");
 #endif
 }
 
