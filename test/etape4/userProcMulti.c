@@ -6,10 +6,9 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 12
+#define MAX_PROC 1
 
-int main()
-{
+int main(){
 	int i;
 	PutString("Lancement du programme de test userProcMulti\n");
 	for(i = 0; i < MAX_PROC; i++){
