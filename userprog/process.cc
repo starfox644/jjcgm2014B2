@@ -148,7 +148,6 @@ StartProcess (char *filename)
 #endif // step4
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
-	printf("apres\n");
 	machine->Run ();		// jump to the user progam
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits

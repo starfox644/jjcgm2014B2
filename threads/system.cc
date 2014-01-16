@@ -13,6 +13,10 @@
 // This defines *all* of the global data structures used by Nachos.
 // These are all initialized and de-allocated by this file.
 
+#ifdef CHANGED
+Process* currentProcess;
+#endif
+
 Thread *currentThread;		// the thread we are running now
 Thread *threadToBeDestroyed;	// the thread that just finished
 Scheduler *scheduler;		// the ready list

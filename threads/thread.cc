@@ -225,9 +225,6 @@ Thread::Finish ()
 	if(space != NULL)
 	{
 		space->addAvailableStackAddress(userStackAddr);
-		/*#ifdef step4
-    	space->unMapStack(userStackAddr);
-#endif*/
 	}
 #endif
 	// LB: Be careful to guarantee that no thread to be destroyed
@@ -364,7 +361,7 @@ SetupThreadState ()
 	// This is definitely the case as soon as several *processes* are
 	// running together.
 #ifdef CHANGED
-	AddrSpace* space = currentThread->process->getAddrSpace();
+	AddrSpace* space = currentProcess->getAddrSpace();
 	if (space != NULL)
     {				// if there is an address space
 	  currentThread->RestoreUserState ();	// to restore, do it.
