@@ -137,7 +137,7 @@ class AddrSpace
     bool map(int virtualAddr, int length, bool write);
 
     /**
-     * 	Release nbFrames of physical memory begining at beginPageIndex
+     * 	Release nbFrames of physical memory beginning at beginPageIndex
      * 	returns false if at least one page isn't allocated
      */
     bool unMap(int beginPageIndex, int nbFrames);
