@@ -97,11 +97,20 @@ Scheduler::Run (Thread * nextThread)
     // End of addition
 
 #ifdef USER_PROGRAM		// ignore until running user programs
-    if (currentThread->space != NULL)
+#ifdef CHANGED
+    AddrSpace* space = currentThread->process->getAddrSpace();
+    if (space != NULL)
       {				// if this thread is a user program,
 	  currentThread->SaveUserState ();	// save the user's CPU registers
-	  currentThread->space->SaveState ();
+	  space->SaveState ();
       }
+#else
+    if (currentThread->space != NULL)
+      {				// if there is an address space
+	  currentThread->RestoreUserState ();	// to restore, do it.
+	  currentThread->space->RestoreState ();
+      }
+#endif
 #endif
 
     oldThread->CheckOverflow ();	// check if the old thread
@@ -132,12 +141,21 @@ Scheduler::Run (Thread * nextThread)
       }
 
 #ifdef USER_PROGRAM
+#ifdef CHANGED
+    space = currentThread->process->getAddrSpace();
+    if (space != NULL)
+    {				// if there is an address space
+    	currentThread->RestoreUserState ();	// to restore, do it.
+    	space->RestoreState ();
+    }
+#else
     if (currentThread->space != NULL)
       {				// if there is an address space
 	  currentThread->RestoreUserState ();	// to restore, do it.
 	  currentThread->space->RestoreState ();
       }
-#endif
+#endif // changed
+#endif // user program
 }
 
 //----------------------------------------------------------------------

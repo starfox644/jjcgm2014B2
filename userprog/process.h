@@ -2,6 +2,10 @@
 #ifndef ___PROCESS
 #define ___PROCESS
 
+#include "addrspace.h"
+class Thread;
+class OpenFile;
+
 void addProcess ();
 
 void removeProcess () ;
@@ -31,6 +35,17 @@ void UserStartProcess (int adr);
 //      memory, and jump to it.
 //----------------------------------------------------------------------
 int StartProcess (char *filename);
+
+class Process
+{
+	private:
+		AddrSpace *addrSpace;
+	public:
+		Process();
+		bool allocateAddrSpace(OpenFile * executable);
+		void freeAddrSpace();
+		AddrSpace* getAddrSpace();
+};
 
 #endif // CHANGED
 #endif // ___PROCESS

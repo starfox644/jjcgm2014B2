@@ -257,7 +257,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_GetPid:
-				machine->WriteRegister(2, currentThread->space->getPid());
+				machine->WriteRegister(2, currentThread->process->getAddrSpace()->getPid());
 				break;
 #endif // STEP4
 
