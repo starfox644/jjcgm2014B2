@@ -32,15 +32,12 @@ int do_UserThreadCreate(int f, int arg)
     	if(!error)
     	{
     		// get an address for the stack if possible
+#ifdef step4
+    		stackAddr = space->allocThreadStack();
+#else
     		stackAddr = space->popAvailableStackPointer();
+#endif
     		error = (stackAddr == -1);
-/*#ifdef step4
-    		if(!error)
-    		{
-    			if(!space->map(stackAddr - UserStackSize, UserStackSize, true))
-    				error = true;
-    		}
-#endif*/
     	}
     }
 
@@ -104,7 +101,7 @@ void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
-		AddrSpace* space = currentThread->process->getAddrSpace();
+		AddrSpace* space = currentProcess->getAddrSpace();
 		// remove the thread in the address space
 		space->s_nbThreads->P();
 		currentThread->isFinished = true;

@@ -47,7 +47,6 @@ class AddrSpace
 
 #ifdef step4
 	AddrSpace();		// Create an address space
-	bool processRunning; //true si en cours d'exécution false sinon
 #else
 
     AddrSpace (OpenFile * executable);	// Create an address space,
@@ -69,6 +68,11 @@ class AddrSpace
      *  allocate memory needed for the code, data and stack sections
      */
     bool loadInitialSections(OpenFile * executable);
+
+	int allocThreadStack();
+
+	void freeThreadStack(unsigned int stackAddr);
+
 #endif
 
     /**
@@ -105,7 +109,6 @@ class AddrSpace
     //
     Semaphore *s_userJoin;
     bool attente;
-    int pid;
 
     /**
      * Add newSem to semList and allocate it a unique modifier
@@ -153,11 +156,9 @@ class AddrSpace
 
     void unMapStack(int stackAddr);
 
-    void setPid(int newPid);
-    int getPid();
-
     void printMapping(unsigned int max);
 
+    /** manages the available virtual memory */
     AddrSpaceAllocator* addrSpaceAllocator;
 
 #endif

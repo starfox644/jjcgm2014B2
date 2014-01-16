@@ -14,6 +14,7 @@
 // These are all initialized and de-allocated by this file.
 
 #ifdef CHANGED
+// current process being executed
 Process* currentProcess;
 #endif
 
@@ -24,11 +25,11 @@ Interrupt *interrupt;		// interrupt status
 Statistics *stats;		// performance metrics
 Timer *timer;			// the hardware timer device, for invoking context switches
 #ifdef step4
-FrameProvider *frameProvider; //gestion des cadres
-ProcessManager *processManager;// gestion des processus
-int nbProcess;
-Semaphore *s_process;
-Semaphore *s_nbProcess;
+FrameProvider *frameProvider; 	//gestion des cadres physiques
+ProcessManager *processManager; // gestion des processus
+int nbProcess;					// nombre de processus en cours d'execution
+Semaphore *s_createProcess;
+Semaphore *s_nbProcess;			// verrouillage du nombre de processus
 #endif
 
 #ifdef FILESYS_NEEDED
@@ -181,7 +182,7 @@ Initialize (int argc, char **argv)
 
 #ifdef step4
 	frameProvider = new FrameProvider();
-	s_process = new Semaphore("sem process", 1);
+	s_createProcess = new Semaphore("sem process", 1);
 	s_nbProcess = new Semaphore("sem nb process", 1);
 	nbProcess = 0;
 	processManager = new ProcessManager();
