@@ -107,28 +107,6 @@ class AddrSpace
     bool attente;
     int pid;
 
-    /**
-     * Add newSem to semList and allocate it a unique modifier
-     */
-    int addSemaphore(int initValue);
-
-    /**
-     * Remove a semaphore from the list based on his identifier.
-     * If the identifier is valid, the semaphore is destroyed.
-     * If not, the function returns -1.
-     */
-    int removeSemaphore(int id);
-
-    /**
-     * Return the semaphore identified by id, or NULL if it doesn't exist
-     */
-    Semaphore* getSemaphore(int id);
-
-    /**
-     * Delete the semaphore list
-     */
-    void deleteSemaphores();
-
     // threads of the address space
     std::list<Thread*> l_threads;
 
@@ -181,11 +159,6 @@ class AddrSpace
     int nbPagesUserStack;
 #endif
 
-    // number of semaphore created
-    int nbSem;
-
-    // Semaphore list : needed to give an unique identifier for user semaphores
-    std::list<Semaphore*> semList;
     Semaphore* s_stackList;
     // list of available stack address in the address space for the threads
     std::list<int> l_availableStackAddress;

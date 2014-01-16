@@ -90,7 +90,6 @@ SwapHeader (NoffHeader * noffH)
 #ifdef step4
 AddrSpace::AddrSpace ()
 {
-	nbSem = 0;
 	nbThreads = 0;
 	pid = 0;
 	attente = false;
@@ -119,7 +118,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 #endif // step3
 
 #ifdef CHANGED
-	nbSem = 0;
 	nbThreads = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
@@ -242,7 +240,6 @@ AddrSpace::~AddrSpace ()
 	delete s_exit;
 	delete s_stackList;
 	deleteThreads();
-	deleteSemaphores();
 
 
 #ifdef countNew
@@ -431,71 +428,6 @@ void AddrSpace::deleteThreads()
 	{
 		delete *it;
 	}
-}
-
-/**
- * Add newSem to semList, give it a unique modifier and return the id
- */
-int AddrSpace::addSemaphore(int initValue)
-{
-	// unique name based on identifier
-	const char *name = "UserSem" + nbSem;
-	Semaphore *sem = new Semaphore (name, initValue);
-	// Set the semaphore id
-	sem->setId(nbSem);
-	nbSem++;
-	// Add it to the list
-	semList.push_back(sem);
-	return sem->getId();
-}
-
-/**
- * Remove a semaphore from the list based on his identifier.
- * If the identifier is valid, the semaphore is destroyed.
- * If not, the function returns -1.
- */
-int AddrSpace::removeSemaphore(int id)
-{
-	// iterator to find the semaphore in the list
-	std::list<Semaphore*>::iterator it=semList.begin();
-	while (it != semList.end() && (*it)->id != id)
-		it++;
-	// If semaphore not found, return -1 : error
-	if ((*it)->id != id)
-		return -1;
-	// Else, remove it
-	else
-	{
-		semList.erase(it);
-		return 0;
-	}
-}
-
-/**
- * Return the semaphore identified by id, or NULL if it doesn't exist
- */
-Semaphore* AddrSpace::getSemaphore(int id)
-{
-	// iterator to find the semaphore in the list
-	std::list<Semaphore*>::iterator it=semList.begin();
-	while (it != semList.end() && (*it)->id != id)
-		it++;
-	// If semaphore not found, return -1 : error
-	if ((*it)->id != id)
-		return NULL;
-	// Else, return it
-	else
-		return (Semaphore*)(*it);
-}
-
-/**
- * Delete the semaphore list
- */
-void AddrSpace::deleteSemaphores()
-{
-	std::list<Semaphore*>::iterator it;
-	for (it = semList.begin() ; it != semList.end() ; it++)
-		delete *it;
 }
 
 /**

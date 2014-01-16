@@ -68,4 +68,4 @@ int do_SemDestroy(int id)
 		return -1;
 }
 
-#endif
+#endif // CHANGED
