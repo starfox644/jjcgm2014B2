@@ -33,8 +33,19 @@
 #ifdef CHANGED
 #ifdef countNew
 #include "countNew.h"
-int nbNewAddrspace = 0;
-int nbAddrspaceCreated = 0;
+
+
+	int AddrSpace::nbNewAddrspace = 0;
+	int AddrSpace::nbAddrspaceCreated = 0;
+
+	int AddrSpace::getNbNewAddrspace() {
+		return nbNewAddrspace;
+	}
+
+	int AddrSpace::getNbAddrspaceCreated() {
+		return nbAddrspaceCreated;
+	}
+
 #endif
 #endif
 

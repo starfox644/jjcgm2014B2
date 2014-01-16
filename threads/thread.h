@@ -136,6 +136,7 @@ public:
 #endif
 
 private:
+
 	// some of the private data for this class is listed above
 
 	int *stack;			// Bottom of the stack
@@ -185,8 +186,12 @@ public:
 	bool isFinished;
 
 #ifdef countNew
-	int nbNewThread;
-	int nbThreadsCreated;
+	// to count number of allocations
+	static int nbNewThread;
+	static int nbThreadsCreated;
+
+	static int getNbNewThread();
+	static int getNbThreadsCreated();
 #endif
 
 #endif

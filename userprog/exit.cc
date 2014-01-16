@@ -9,8 +9,8 @@
 void do_exit(int returnCode)
 {
 #ifdef countNew
-	printf("threads : created %d / destroyed %d / remaining %d\n", currentThread->nbThreadsCreated, currentThread->nbThreadsCreated - currentThread->nbNewThread, currentThread->nbNewThread);
-	printf("addrspace : created %d / destroyed %d / remaining %d\n", currentThread->space->nbAddrspaceCreated, currentThread->space->nbAddrspaceCreated - currentThread->space->nbNewAddrspace, currentThread->space->nbNewAddrspace);
+	printf("threads : created %d / destroyed %d / remaining %d\n", Thread::getNbThreadsCreated(), Thread::getNbThreadsCreated() - Thread::getNbNewThread(), Thread::getNbNewThread());
+	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
 #endif
 	// indicates that the main thread is waiting for the others
 	currentThread->space->s_nbThreads->P();

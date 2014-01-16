@@ -35,8 +35,12 @@ class AddrSpace
 
 #ifdef CHANGED
 #ifdef countNew
-	int nbNewAddrspace;
-	int nbAddrspaceCreated;
+	// to count number of allocations
+	static int nbNewAddrspace;
+	static int nbAddrspaceCreated;
+
+	static 	int getNbNewAddrspace();
+	static int getNbAddrspaceCreated();
 #endif
 #endif
 

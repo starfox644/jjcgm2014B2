@@ -48,7 +48,7 @@ PostOffice *postOffice;
 
 #ifdef CHANGED
 #ifdef step3
-	extern Semaphore *s_create;
+extern Semaphore *s_create;
 #endif
 #endif
 
@@ -77,8 +77,8 @@ extern void Cleanup ();
 static void
 TimerInterruptHandler (int dummy)
 {
-    if (interrupt->getStatus () != IdleMode)
-	interrupt->YieldOnReturn ();
+	if (interrupt->getStatus () != IdleMode)
+		interrupt->YieldOnReturn ();
 }
 
 //----------------------------------------------------------------------
@@ -94,36 +94,37 @@ TimerInterruptHandler (int dummy)
 void
 Initialize (int argc, char **argv)
 {
-    int argCount;
-    const char *debugArgs = "";
-    bool randomYield = FALSE;
+	int argCount;
+	const char *debugArgs = "";
+	bool randomYield = FALSE;
+
 
 #ifdef USER_PROGRAM
-    bool debugUserProg = FALSE;	// single step user program
+	bool debugUserProg = FALSE;	// single step user program
 #endif
 #ifdef FILESYS_NEEDED
-    bool format = FALSE;	// format disk
+	bool format = FALSE;	// format disk
 #endif
 #ifdef NETWORK
-    double rely = 1;		// network reliability
-    int netname = 0;		// UNIX socket name
+	double rely = 1;		// network reliability
+	int netname = 0;		// UNIX socket name
 #endif
 
-    for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount)
-      {
-	  argCount = 1;
-	  if (!strcmp (*argv, "-d"))
-	    {
-		if (argc == 1)
-		    debugArgs = "+";	// turn on all debug flags
-		else
-		  {
-		      debugArgs = *(argv + 1);
-		      argCount = 2;
-		  }
-	    }
-	  else if (!strcmp (*argv, "-rs"))
-	    {
+	for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount)
+	{
+		argCount = 1;
+		if (!strcmp (*argv, "-d"))
+		{
+			if (argc == 1)
+				debugArgs = "+";	// turn on all debug flags
+			else
+			{
+				debugArgs = *(argv + 1);
+				argCount = 2;
+			}
+		}
+		else if (!strcmp (*argv, "-rs"))
+		{
 #ifdef CHANGED
 			if (argc > 1){
 				RandomInit (atoi (*(argv + 1)));	// initialize pseudo-random
@@ -139,77 +140,77 @@ Initialize (int argc, char **argv)
 #endif
 		}
 #ifdef USER_PROGRAM
-	  if (!strcmp (*argv, "-s"))
-	      debugUserProg = TRUE;
+		if (!strcmp (*argv, "-s"))
+			debugUserProg = TRUE;
 #endif
 #ifdef FILESYS_NEEDED
-	  if (!strcmp (*argv, "-f"))
-	      format = TRUE;
+		if (!strcmp (*argv, "-f"))
+			format = TRUE;
 #endif
 #ifdef NETWORK
-	  if (!strcmp (*argv, "-l"))
-	    {
-		ASSERT (argc > 1);
-		rely = atof (*(argv + 1));
-		argCount = 2;
-	    }
-	  else if (!strcmp (*argv, "-m"))
-	    {
-		ASSERT (argc > 1);
-		netname = atoi (*(argv + 1));
-		argCount = 2;
-	    }
+		if (!strcmp (*argv, "-l"))
+		{
+			ASSERT (argc > 1);
+			rely = atof (*(argv + 1));
+			argCount = 2;
+		}
+		else if (!strcmp (*argv, "-m"))
+		{
+			ASSERT (argc > 1);
+			netname = atoi (*(argv + 1));
+			argCount = 2;
+		}
 #endif
-      }
+	}
 
-    DebugInit (debugArgs);	// initialize DEBUG messages
-    stats = new Statistics ();	// collect statistics
-    interrupt = new Interrupt;	// start up interrupt handling
-    scheduler = new Scheduler ();	// initialize the ready queue
+	DebugInit (debugArgs);	// initialize DEBUG messages
+	stats = new Statistics ();	// collect statistics
+	interrupt = new Interrupt;	// start up interrupt handling
+	scheduler = new Scheduler ();	// initialize the ready queue
 #ifdef CHANGED
 #ifdef step3
-    s_create = new Semaphore("sem create", 1);
+	s_create = new Semaphore("sem create", 1);
 #endif
 #endif
-    if (randomYield)		// start the timer (if needed)
-	timer = new Timer (TimerInterruptHandler, 0, randomYield);
+	if (randomYield)		// start the timer (if needed)
+		timer = new Timer (TimerInterruptHandler, 0, randomYield);
 
 #ifdef step4
-    frameProvider = new FrameProvider();
-    s_process = new Semaphore("sem process", 1);
-    s_nbProcess = new Semaphore("sem nb process", 1);
-    nbProcess = 0;
-    processManager = new ProcessManager();
+	frameProvider = new FrameProvider();
+	s_process = new Semaphore("sem process", 1);
+	s_nbProcess = new Semaphore("sem nb process", 1);
+	nbProcess = 0;
+	processManager = new ProcessManager();
 #endif
 
-    threadToBeDestroyed = NULL;
+	threadToBeDestroyed = NULL;
 
-    // We didn't explicitly allocate the current thread we are running in.
-    // But if it ever tries to give up the CPU, we better have a Thread
-    // object to save its state. 
-    currentThread = new Thread ("main");
-    currentThread->setStatus (RUNNING);
+	// We didn't explicitly allocate the current thread we are running in.
+	// But if it ever tries to give up the CPU, we better have a Thread
+	// object to save its state.
+	currentThread = new Thread ("main");
+	currentThread->setStatus (RUNNING);
 
-    interrupt->Enable ();
-    CallOnUserAbort (Cleanup);	// if user hits ctl-C
+	interrupt->Enable ();
+	CallOnUserAbort (Cleanup);	// if user hits ctl-C
 
 #ifdef USER_PROGRAM
-    machine = new Machine (debugUserProg);	// this must come first
+	machine = new Machine (debugUserProg);	// this must come first
 #ifdef CHANGED
-    synchconsole = new SynchConsole(NULL, NULL);
+	synchconsole = new SynchConsole(NULL, NULL);
 #endif // CHANGED
 #endif
 
 #ifdef FILESYS
-    synchDisk = new SynchDisk ("DISK");
+	synchDisk = new SynchDisk ("DISK");
 #endif
 
 #ifdef FILESYS_NEEDED
-    fileSystem = new FileSystem (format);
+	fileSystem = new FileSystem (format);
 #endif
 
 #ifdef NETWORK
-    postOffice = new PostOffice (netname, rely, 10);
+	postOffice = new PostOffice (netname, rely, 10);
 #endif
 }
 
@@ -220,29 +221,29 @@ Initialize (int argc, char **argv)
 void
 Cleanup ()
 {
-    printf ("\nCleaning up...\n");
+	printf ("\nCleaning up...\n");
 #ifdef NETWORK
-    delete postOffice;
+	delete postOffice;
 #endif
 
 #ifdef USER_PROGRAM
-    delete machine;
+	delete machine;
 #ifdef CHANGED
-    delete synchconsole;
+	delete synchconsole;
 #endif // CHANGED
 #endif
 
 #ifdef FILESYS_NEEDED
-    delete fileSystem;
+	delete fileSystem;
 #endif
 
 #ifdef FILESYS
-    delete synchDisk;
+	delete synchDisk;
 #endif
 
-    delete timer;
-    delete scheduler;
-    delete interrupt;
+	delete timer;
+	delete scheduler;
+	delete interrupt;
 
-    Exit (0);
+	Exit (0);
 }
