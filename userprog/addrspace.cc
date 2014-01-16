@@ -333,20 +333,21 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 
 	// the available stack space begin after the main thread stack
 	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
+	beginThreadsStackSpace = divRoundUp(beginThreadsStackSpace, PageSize) * PageSize;
 	// we add memory for threads
 	//size = beginThreadsStackSpace + MAX_THREADS * UserStackSize;
 	size = MemorySize;
 	// to leave room for the stack
 	numPages = divRoundUp (size, PageSize);
 	//size = numPages * PageSize;
-	availableStackSize = (size - beginThreadsStackSpace) - 1;
+	availableStackSize = (size - beginThreadsStackSpace);
 	// the main thread is not included in this number
 	maxThreads = availableStackSize / UserStackSize;
 
 	// the stacks space ends with the memory
 	endThreadsStackSpace = MemorySize - 1;
-	initAvailableStackPointers();
-
+	//initAvailableStackPointers();
+	addrSpaceAllocator = new AddrSpaceAllocator(this, beginThreadsStackSpace, availableStackSize);
 	nbPagesUserStack = divRoundUp(UserStackSize, PageSize);
 
 	DEBUG ('a', "Initializing address space, num pages %d, size %d\n",
@@ -489,6 +490,13 @@ Semaphore* AddrSpace::getSemaphore(int id)
  */
 int AddrSpace::popAvailableStackPointer()
 {
+#ifdef step4
+	int return_value;
+	s_stackList->P();
+	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false) + UserStackSize);
+	s_stackList->V();
+	return return_value;
+#else
 	int return_value;
 	s_stackList->P();
 	if(l_availableStackAddress.size() == 0)
@@ -502,14 +510,22 @@ int AddrSpace::popAvailableStackPointer()
 	}
 	s_stackList->V();
 	return return_value;
+#endif
+
 }
 
 void AddrSpace::addAvailableStackAddress(unsigned int stackAddr)
 {
+#ifdef step4
+	s_stackList->P();
+	addrSpaceAllocator->free(stackAddr - UserStackSize);
+	s_stackList->V();
+#else
 	ASSERT(stackAddr < (numPages*PageSize) && stackAddr >= beginThreadsStackSpace);
 	s_stackList->P();
 	l_availableStackAddress.push_back(stackAddr);
 	s_stackList->V();
+#endif
 }
 
 void AddrSpace::initAvailableStackPointers()
@@ -568,6 +584,8 @@ bool AddrSpace::map(int virtualAddr, int length, bool write)
 			frame = frameProvider->GetEmptyFrame();
 			if(frame != -1)
 			{
+				if(beginPage + i == 216)
+					printf("alloc de la page 216\n");
 				// add the gotten page to the virtual memory
 				pageTable[beginPage + i].physicalPage = frame;
 				pageTable[beginPage + i].valid = TRUE;
@@ -601,9 +619,15 @@ bool AddrSpace::unMap(int beginPageIndex, int nbPages)
 {
 	int i;
 	bool allAllocated = true;
+	bool prev = true;
 	for(i = 0 ; i < nbPages ; i++)
 	{
+		if(beginPageIndex + i == 216)
+			printf("liberation de la page 216\n");
+		prev = allAllocated;
 		allAllocated &= frameProvider->ReleaseFrame(beginPageIndex + i);
+		if(prev && !allAllocated)
+			printf("page %i non allouee\n", beginPageIndex + i);
 	}
 	return allAllocated;
 }

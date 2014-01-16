@@ -65,6 +65,10 @@ int do_UserThreadCreate(int f, int arg)
 			newThread->userStackAddr = stackAddr;
 			// creation of the new thread, StartUserThread will be called with f
 			newThread->Fork(StartUserThread, f);
+#ifdef step4
+			/*space->addrSpaceAllocator->printFreeList();
+			space->addrSpaceAllocator->printBusyList();*/
+#endif
 			// end of critical section
 			s_create->V();
 			return newThread->tid;
