@@ -95,9 +95,7 @@ AddrSpace::AddrSpace ()
 	nbSem = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
-	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
-	s_userJoin = new Semaphore("user join semaphore", 1);
 
 #ifdef countNew
 	nbNewAddrspace++;
@@ -121,9 +119,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	nbSem = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
-	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
-	s_userJoin = new Semaphore("user join semaphore", 1);
 #endif // CHANGED
 
 	executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
@@ -236,7 +232,6 @@ AddrSpace::~AddrSpace ()
 	delete [] pageTable;
 	// End of modification
 #ifdef CHANGED
-	delete s_nbThreads;
 	delete s_exit;
 	delete s_stackList;
 	//deleteThreads();		**********

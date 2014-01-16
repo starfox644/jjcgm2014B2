@@ -17,9 +17,9 @@ void do_exit(int returnCode)
 #endif
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indicates that the main thread is waiting for the others
-	space->s_nbThreads->P();
+	currentProcess->threadManager->s_nbThreads->P();
 	space->attente = true;
-	space->s_nbThreads->V();
+	currentProcess->threadManager->s_nbThreads->V();
 	while(currentProcess->threadManager->getNbThreads() > 0)
 	{
 		// semaphore wait for waiting the others threads

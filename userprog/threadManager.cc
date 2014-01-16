@@ -7,15 +7,17 @@
 ThreadManager::ThreadManager ()
 {
 	nbThreads = 0;
+	s_nbThreads = new Semaphore("nbThread semaphore", 1);
+	s_userJoin = new Semaphore("user join semaphore", 1);
 }
 
 ThreadManager::~ThreadManager ()
 {
+	delete s_nbThreads;
 }
 
 void ThreadManager::addThread(Thread *th)
 {
-	printf("add thread\n");
 	nbThreads++;
 	// add the new thread in threads list
 	l_threads.push_back(th);

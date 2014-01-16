@@ -1,8 +1,10 @@
 #ifdef CHANGED
 #ifndef ___THREADMANAGER
 #define ___THREADMANAGER
-class Thread;
+
 #include <list>
+class Thread;
+class Semaphore;
 
 class ThreadManager
 {
@@ -42,6 +44,11 @@ class ThreadManager
 
 	// number of threads in execution without the main thread
 	int nbThreads;
+
+    Semaphore *s_userJoin;
+
+    // locks access to the nbThreads variable
+    Semaphore *s_nbThreads;
 };
 
 #endif // ___THREADMANAGER

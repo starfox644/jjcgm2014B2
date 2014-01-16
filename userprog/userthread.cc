@@ -51,9 +51,9 @@ int do_UserThreadCreate(int f, int arg)
 		{
 			// the new thread shares the memory space with the current thread
 			newThread->process = currentThread->process;
-			space->s_nbThreads->P();
+			currentProcess->threadManager->s_nbThreads->P();
 			currentProcess->threadManager->addThread(newThread);
-			space->s_nbThreads->V();
+			currentProcess->threadManager->s_nbThreads->V();
 
 			// sets initial argument of the thread
 			newThread->setInitArg(arg);
@@ -100,13 +100,13 @@ void do_UserThreadExit(int status)
 	{
 		AddrSpace* space = currentProcess->getAddrSpace();
 		// remove the thread in the address space
-		space->s_nbThreads->P();
+		currentProcess->threadManager->s_nbThreads->P();
 		currentThread->isFinished = true;
 		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
 		if(space->attente)
 			space->s_exit->V();
-		space->s_nbThreads->V();
+		currentProcess->threadManager->s_nbThreads->V();
 		currentThread->setThreadReturn(status);
 		// terminates this thread
 		currentThread->Finish();
@@ -122,20 +122,14 @@ void do_UserThreadExit(int status)
 int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
-	AddrSpace *space = currentThread->process->getAddrSpace();
-	//std::list<Thread*>::iterator it = currentProcess->threadManager->l_threads.begin();
-	space->s_userJoin->P();
+	//AddrSpace *space = currentThread->process->getAddrSpace();
+
+	currentProcess->threadManager->s_userJoin->P();
 	// search the given thread in l_thread
-	/*while (it != currentProcess->threadManager->l_threads.end() && (tid != (*it)->tid))
-	{
-		++it;
-	}
 	// tid does not exist : error
-	if (it == currentProcess->threadManager->l_threads.end())
-	{*/
 	if ((th = currentProcess->threadManager->searchThread(tid)) == NULL)
 	{
-		space->s_userJoin->V();
+		currentProcess->threadManager->s_userJoin->V();
 		return -1;
 	}
 	else
@@ -144,13 +138,13 @@ int do_UserThreadJoin(int tid, int addrUser)
 		// an other thread wait for this thread : error
 		if(!th->isFinished && th->wait)
 		{
-			space->s_userJoin->V();
+			currentProcess->threadManager->s_userJoin->V();
 			return -1;
 		}
 		else
 		{
 			th->wait = true;
-			space->s_userJoin->V();
+			currentProcess->threadManager->s_userJoin->V();
 			// wait while the thread doesn't finish
 			th->s_join->P();
 
