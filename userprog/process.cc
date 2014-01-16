@@ -93,7 +93,7 @@ int getNbProcess () {
 	return nbProcess;
 }
 
-#endif
+#endif // step4
 
 /**
  * Alloue l'espace necessaire au processus pour son programme.
@@ -145,7 +145,7 @@ StartProcess (char *filename)
 	currentThread->process = process;
 #ifdef step4
 	addProcess(); // ajoute 1 au nb de processus en cours
-#endif
+#endif // step4
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
 	printf("apres\n");
@@ -165,6 +165,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 {
 	bool return_value = true;
 #ifdef step4
+	semManager = new SemaphoreManager();
 	addrSpace = new AddrSpace();
 	if(addrSpace != NULL)
 	{
@@ -177,7 +178,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	}
 #else
 	addrSpace = new AddrSpace(executable);
-#endif
+#endif // step4
 	return return_value;
 }
 
@@ -192,4 +193,4 @@ AddrSpace* Process::getAddrSpace()
 	return addrSpace;
 }
 
-#endif
+#endif // CHANGED

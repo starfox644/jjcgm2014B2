@@ -5,6 +5,7 @@
 #include "addrspace.h"
 class Thread;
 class OpenFile;
+#include "semaphoreManager.h"
 
 void addProcess ();
 
@@ -41,6 +42,7 @@ class Process
 	private:
 		AddrSpace *addrSpace;
 	public:
+		SemaphoreManager *semManager;
 		Process();
 		bool allocateAddrSpace(OpenFile * executable);
 		void freeAddrSpace();

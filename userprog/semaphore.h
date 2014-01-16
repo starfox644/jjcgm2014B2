@@ -1,5 +1,7 @@
 #ifdef CHANGED
 
+#include "semaphoreManager.h"
+
 /**
 *	Demande l'initialisation d'un semaphore noyau
 */
