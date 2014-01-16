@@ -20,6 +20,13 @@
 #include "synch.h"
 #include "system.h"
 
+#ifdef CHANGED
+#ifdef countNew
+#include "countNew.h"
+int nbNewThread = 0;
+#endif
+#endif
+
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
 					// stack overflows
@@ -50,6 +57,11 @@ Thread::Thread (const char *threadName)
 	s_join = new Semaphore("semaphore for join", 1);
 	isFinished = false;
 #endif
+
+#ifdef countNew
+	nbNewThread++;
+	displayNew(nbNewThread, "Thread");
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -73,6 +85,11 @@ Thread::~Thread ()
 	DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
 #ifdef CHANGED
     delete s_join;
+#endif
+
+#ifdef countNew
+	nbNewThread--;
+	displayNew(nbNewThread, "Thread");
 #endif
 }
 
@@ -115,7 +132,9 @@ Thread::Fork (VoidFunctionPtr func, int arg)
     // an already running program, as in the "fork" Unix system call. 
     
     // LB: Observe that currentThread->space may be NULL at that time.
+#ifndef step4
     this->space = currentThread->space;
+#endif
 
 #endif // USER_PROGRAM
 
@@ -446,7 +465,7 @@ int Thread::getInitArg()
 bool Thread::isMainThread()
 {
 	// stack is always NULL for the main thread
-	return (stack == NULL);
+	return (tid == 0);
 }
 
 void Thread::setThreadReturn(int th_ret)

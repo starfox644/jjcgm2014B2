@@ -62,6 +62,7 @@ extern void ThreadTest (void), Copy (const char *unixFile, const char *nachosFil
 extern void Print (char *file), PerformanceTest (void);
 
 #ifdef step4
+	extern int allocatorTest(char* file);
 #else
 	extern void StartProcess (char *file);
 #endif
@@ -124,6 +125,15 @@ main (int argc, char **argv)
 			// Nachos will loop forever waiting
 			// for console input
 		}
+#ifdef step4
+		else if(!strcmp (*argv, "-ta"))
+		{
+			ASSERT (argc > 1);
+			allocatorTest(*(argv + 1));
+			argCount = 2;
+			return 0;
+		}
+#endif
 #ifdef CHANGED
 		else if (!strcmp (*argv, "-sc")) {
 			if (argc == 1)

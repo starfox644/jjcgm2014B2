@@ -3,6 +3,9 @@
 #include "syscall.h"
 #include <iostream>
 
+#ifdef countNew
+#include "countNew.h"
+#endif
 
 /**
 *	Demande l'initialisation d'un semaphore noyau

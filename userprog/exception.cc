@@ -88,7 +88,6 @@ ExceptionHandler (ExceptionType which)
 #ifdef step3
 	bool isSuccess;
 #endif //step3
-	printf("[ExceptionHandler] type : %i\n", type);
 
 	if (which == SyscallException)
 	{
@@ -243,14 +242,19 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef step4
 			case SC_ForkExec:
+				printf("appel fork exec par : %s\n", currentThread->getName());
 				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 
 				// error : returns -1
 				if (do_forkExec(adr) == -1)
+				{
 					machine->WriteRegister(2, -1);
+				}
 				else
+				{
 					machine->WriteRegister(2, 0);
+				}
 				break;
 #endif // STEP4
 

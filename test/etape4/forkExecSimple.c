@@ -2,6 +2,8 @@
 
 int main()
 {
-	ForkExec("./etape4/progSimple");
+	int tid;
+	tid = ForkExec("./etape4/progSimple");
+	PutString("Fin du process principal\n");
 	return 0;
 }
