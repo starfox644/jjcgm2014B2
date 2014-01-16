@@ -24,20 +24,26 @@ class Thread;
 
 #ifdef CHANGED
 #define UserStackSize		2048	// increase this as necessary!
+#define UserStackPages		UserStackSize / PageSize;
 #else
 #define UserStackSize		1024	// increase this as necessary!
-#endif
-
-#ifdef step4
-#define MAX_THREADS 3
 #endif
 
 class AddrSpace
 {
   public:
+
+#ifdef CHANGED
+#ifdef countNew
+	int nbNewAddrspace;
+	int nbAddrspaceCreated;
+#endif
+#endif
+
 #ifdef step4
 	AddrSpace();		// Create an address space
 #else
+
     AddrSpace (OpenFile * executable);	// Create an address space,
     // initializing it with the program
 #endif
@@ -93,6 +99,7 @@ class AddrSpace
     //
     Semaphore *s_userJoin;
     bool attente;
+    int pid;
 
     /**
      * Add newSem to semList and allocate it a unique modifier
@@ -122,11 +129,23 @@ class AddrSpace
      * Allocate length bytes at virtualAddr in the address space.
      * Associate it with frames in physical memory.
      * If write is set, then the pages are allowed for writing.
-     * If a part of the memory needed in the addr space is already used
-     * or if there is no more physical frames available, returns true
+     * if there is no more physical frames available, returns true
      * else returns false
      */
     bool map(int virtualAddr, int length, bool write);
+
+    /**
+     * 	Release nbFrames of physical memory begining at beginPageIndex
+     * 	returns false if at least one page isn't allocated
+     */
+    bool unMap(int beginPageIndex, int nbFrames);
+
+    void unMapStack(int stackAddr);
+
+    void setPid(int newPid);
+    int getPid();
+
+    void printMapping(unsigned int max);
 
 #endif
 

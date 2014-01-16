@@ -184,6 +184,11 @@ public:
 	// indicates if the thread is finished
 	bool isFinished;
 
+#ifdef countNew
+	int nbNewThread;
+	int nbThreadsCreated;
+#endif
+
 #endif
 
 #endif

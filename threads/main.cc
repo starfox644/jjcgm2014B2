@@ -109,6 +109,7 @@ main (int argc, char **argv)
 		{			// run a user program
 			ASSERT (argc > 1);
 			StartProcess (*(argv + 1));
+			return -1;
 			argCount = 2;
 		}
 		else if (!strcmp (*argv, "-c"))

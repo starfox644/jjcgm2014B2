@@ -48,11 +48,12 @@ Machine::Run()
     // End of correction
 
     interrupt->setStatus(UserMode);
-    for (;;) {
-        OneInstruction(instr);
-	interrupt->OneTick();
-	if (singleStep && (runUntilTime <= stats->totalTicks))
-	  Debugger();
+    for (;;)
+    {
+    	OneInstruction(instr);
+    	interrupt->OneTick();
+    	if (singleStep && (runUntilTime <= stats->totalTicks))
+    		Debugger();
     }
 }
 

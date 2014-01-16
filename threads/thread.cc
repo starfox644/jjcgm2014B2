@@ -24,6 +24,7 @@
 #ifdef countNew
 #include "countNew.h"
 int nbNewThread = 0;
+int nbThreadsCreated = 0;
 #endif
 #endif
 
@@ -60,6 +61,7 @@ Thread::Thread (const char *threadName)
 
 #ifdef countNew
 	nbNewThread++;
+	nbThreadsCreated++;
 	displayNew(nbNewThread, "Thread");
 #endif
 }
@@ -116,6 +118,8 @@ Thread::~Thread ()
 void
 Thread::Fork (VoidFunctionPtr func, int arg)
 {
+
+	//printf("[Fork] Creation d'un thread\n");
     DEBUG ('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
 	   name, (int) func, arg);
 
@@ -195,7 +199,13 @@ Thread::Finish ()
     DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
     s_join->V();
-    space->addAvailableStackAddress(userStackAddr);
+    if(space != NULL)
+    {
+    	space->addAvailableStackAddress(userStackAddr);
+#ifdef step4
+    	space->unMapStack(userStackAddr);
+#endif
+    }
 #endif
     // LB: Be careful to guarantee that no thread to be destroyed 
     // is ever lost 

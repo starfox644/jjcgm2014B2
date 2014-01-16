@@ -33,22 +33,21 @@ int do_forkExec(int adrExec) {
 	else
 		executable[i] = '\0';
 
-	IntStatus oldLevel = interrupt->SetLevel(IntOff);
-	printf("[ForkExec] executable : %s\n", executable);
+	//printf("[ForkExec] executable : %s\n", executable);
 
 	Thread *t = new Thread("ThreadForkExec");
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
+		addProcess(); // ajoute 1 au nb de processus en cours
+		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
 		s_process->V();
-		interrupt->SetLevel(oldLevel);
 		return 0;
 	}
 	else
 	{
 		s_process->V();
-		interrupt->SetLevel(oldLevel);
 		return -1;
 	}
 }
@@ -69,10 +68,8 @@ int allocateProcessSpace (Thread *t, char *filename)
 		printf ("Unable to open file %s\n", filename);
 		return -1;
 	}
-	/* TODO : Jerem doit changer l'allocation de l'espace d'adressage et je dois changer
-	 * cette ligne pour que la fonction puisse retourner une erreur si ca a foire
-	 * */
 	//space = new AddrSpace (executable);
+	//printf("appel a addrSpace avec %s\n", t->getName());
 	space = new AddrSpace();
 	isSuccess = space->loadInitialSections(executable);
 	if (!isSuccess)
@@ -88,12 +85,15 @@ int allocateProcessSpace (Thread *t, char *filename)
  */
 void UserStartProcess (int adr)
 {
+	//printf("[UserStartProcess] Creation du processus pour progSimple\n");
 	//printf("[UserStartProcess] Debut fonction\n");
-	addProcess(); // ajoute 1 au nb de processus en cours
 //	printf("[UserStartProcess] addProcess\n");
+	currentThread->space->setPid(nbProcess);
 	currentThread->space->InitRegisters ();	// set the initial register values
 //	printf("[UserStartProcess] InitRegisters\n");
 	currentThread->space->RestoreState ();	// load page table register
+	//printf("[UserStartProcess] lancement de %s pid : %i\n", currentThread->getName(), currentThread->space->getPid());
+	fflush(stdout);
 //	printf("[UserStartProcess] RestoreState\n");
 	//printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
 	machine->Run ();		// jump to the user program
@@ -105,6 +105,7 @@ void UserStartProcess (int adr)
 void addProcess ()
 {
 	s_nbProcess->P();
+	currentThread->space->setPid(nbProcess);
 	nbProcess++;
 	s_nbProcess->V();
 }
@@ -126,19 +127,25 @@ int getNbProcess () {
 int
 StartProcess (char *filename)
 {
+	//printf("[StartProcess] Creation du processus pour forkexecsimple\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
 
 	if (executable == NULL)
 	{
-		printf ("Unable to open file %s\n", filename);
+		//printf ("Unable to open file %s\n", filename);
 		Exit(-1);
 	}
 #ifndef step4
 	space = new AddrSpace (executable);
 #else
 	space = new AddrSpace();
-	space->loadInitialSections(executable);
+	if(!space->loadInitialSections(executable))
+	{
+		delete executable;		// close file
+		delete space;
+		return -1;
+	}
 #endif
 	currentThread->space = space;
 

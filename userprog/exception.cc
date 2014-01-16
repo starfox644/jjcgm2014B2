@@ -242,7 +242,6 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef step4
 			case SC_ForkExec:
-				printf("appel fork exec par : %s\n", currentThread->getName());
 				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 
@@ -255,6 +254,10 @@ ExceptionHandler (ExceptionType which)
 				{
 					machine->WriteRegister(2, 0);
 				}
+				break;
+
+			case SC_GetPid:
+				machine->WriteRegister(2, currentThread->space->getPid());
 				break;
 #endif // STEP4
 
@@ -311,10 +314,6 @@ ExceptionHandler (ExceptionType which)
 		default: 					printf("Unknown "); 				break;
 		}
 		printf("type:%d)\n", type);
-#ifdef CHANGED
-		printf("PC : %d\n", machine->ReadRegister(PCReg));
-		printf("SP : %d\n", machine->ReadRegister(StackReg));
-#endif
 		ASSERT (FALSE);
 	}
 	// End of addition
