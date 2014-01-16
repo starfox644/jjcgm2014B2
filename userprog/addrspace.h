@@ -70,21 +70,19 @@ class AddrSpace
      */
     bool loadInitialSections(OpenFile * executable);
 
-	int allocThreadStack();
-
-	void freeThreadStack(unsigned int stackAddr);
-
 #endif
 
     /**
      * 	returns an initial stack pointer available for a new thread and removes it
      * 	or returns -1 if it's impossible to add a new stack in the address space
+     * 	Used for step3
      */
     int popAvailableStackPointer();
 
     /**
      * 	add a stackAddr to the list of available stack address
      * 	this stack address must be in the address space
+     * 	Used for step3
      */
 	void addAvailableStackAddress(unsigned int stackAddr);
 
@@ -125,9 +123,13 @@ class AddrSpace
     /**
      * Allocate length bytes at virtualAddr in the address space.
      * Associate it with frames in physical memory.
+     * The part allocated begins at the begining of the page of virtualAddr
+     * and ends with the number of pages needed for the length.
      * If write is set, then the pages are allowed for writing.
      * if there is no more physical frames available, returns true
      * else returns false
+     * If some pages of the needed part are already mapped, there is no
+     * error and the associated frames are used for the new mapping.
      */
     bool mapMem(int virtualAddr, int length, bool write);
 
@@ -135,11 +137,30 @@ class AddrSpace
      * 	Release nbFrames of physical memory beginning at beginPageIndex
      * 	returns false if at least one page isn't allocated
      */
-    bool unMapMem(int beginPageIndex, int nbFrames);
+    bool unMapMem(unsigned int beginPageIndex, unsigned int nbFrames);
 
-    void unMapStack(int stackAddr);
-
+    /**
+	 *  Print the index of physical frames associated to the pages.
+	*/
     void printMapping(unsigned int max);
+
+    /**
+     *	Allocate a stack for a thread in the virtual memory,
+     *	and associate it with physical frames.
+     *	Return -1 on error
+     */
+	int allocThreadStack();
+
+	/**
+	 *	Release a stack which was allocated for a thread in virtual memory.
+	 */
+	void freeThreadStack(unsigned int stackAddr);
+
+	/**
+	 * 	Set the access right (read only or writing) of a group of nbPages pages,
+	 * 	begining at beginPages.
+	 */
+	bool setAccessRight(unsigned int beginPage, unsigned int nbPages, bool readOnly);
 
     /** manages the available virtual memory */
     AddrSpaceAllocator* addrSpaceAllocator;
@@ -175,12 +196,6 @@ class AddrSpace
     std::list<int> l_availableStackAddress;
 
     void initAvailableStackPointers();
-
-    /**
-     *	return 1 if the pages between begin and end are not been allocated yet
-     *	else 0
-     */
-    int arePagesAvailable(int begin, int end);
 
 #endif //CHANGED
 };

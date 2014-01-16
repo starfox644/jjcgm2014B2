@@ -404,21 +404,6 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 	}
 }
 
-int AddrSpace::allocThreadStack()
-{
-	int return_value;
-	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
-	if(return_value == -1)
-		return -1;
-	else
-		return return_value + UserStackSize - 4;
-}
-
-void AddrSpace::freeThreadStack(unsigned int stackAddr)
-{
-	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
-}
-
 #endif // step4
 
 #ifdef CHANGED
@@ -556,12 +541,15 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 
 bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 {
-	int i;
+	unsigned int i;
 	int frame;
-	// nb pages needed for the length
-	int nbPages = divRoundUp(length, PageSize) + 1;
-	// index of the begining page
-	int beginPage = divRoundDown(virtualAddr, PageSize);
+	// number of pages needed for the given length
+	unsigned int nbPages = divRoundUp(length, PageSize) + 1;
+	// index of the begining page of virtualAddr
+	unsigned int beginPage = divRoundDown(virtualAddr, PageSize);
+	// check integrity
+	ASSERT(beginPage + nbPages <= numPages);
+	// < 0 = no allocation
 	if(length <= 0)
 		return true;
 	i = 0;
@@ -569,8 +557,11 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 	do
 	{
 		//DEBUG(',', "tentative de mapping de la page %i du processus %i\n", beginPage + i, getPid());
+
+		// verify if page is already allocated
 		if(!pageTable[beginPage + i].valid)
 		{
+			// get
 			frame = frameProvider->GetEmptyFrame();
 			if(frame != -1)
 			{
@@ -595,7 +586,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 		// error, no available physical frames
 
 		// free the physical pages we've got
-		for(int j = 0 ; j < i ; j++)
+		for(unsigned int j = 0 ; j < i ; j++)
 		{
 			frameProvider->ReleaseFrame(pageTable[beginPage + j].physicalPage);
 		}
@@ -608,24 +599,49 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 }
 
 
-bool AddrSpace::unMapMem(int beginPageIndex, int nbPages)
+bool AddrSpace::unMapMem(unsigned int beginPage, unsigned int nbPages)
 {
-	int i;
+	unsigned int i;
 	bool allAllocated = true;
+	ASSERT(beginPage + nbPages <= numPages);
 	for(i = 0 ; i < nbPages ; i++)
 	{
-		//DEBUG(',', "unmapping page %i du processus %i\n", beginPageIndex + i, getPid());
-		allAllocated &= frameProvider->ReleaseFrame(beginPageIndex + i);
-		pageTable[beginPageIndex + i].valid = false;
+		//DEBUG(',', "unmapping page %i du processus %i\n", beginPage + i, getPid());
+		allAllocated &= frameProvider->ReleaseFrame(beginPage + i);
+		pageTable[beginPage + i].valid = false;
 	}
 	return allAllocated;
 }
 
-void AddrSpace::unMapStack(int stackAddr)
+
+bool AddrSpace::setAccessRight(unsigned int beginPage, unsigned int nbPages, bool readOnly)
 {
-	ASSERT(((stackAddr - UserStackSize) % PageSize) == 0);
-	int beginPage = (stackAddr - UserStackSize) / PageSize;
-	unMapMem(beginPage, UserStackSize / PageSize);
+	unsigned int i;
+	bool allAllocated = true;
+	ASSERT(beginPage + nbPages <= numPages);
+	for(i = 0 ; i < nbPages ; i++)
+	{
+		// check allocation of page
+		allAllocated &= pageTable[beginPage + i].valid;
+		// change access right
+		pageTable[beginPage + i].readOnly = readOnly;
+	}
+	return allAllocated;
+}
+
+int AddrSpace::allocThreadStack()
+{
+	int return_value;
+	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
+	if(return_value == -1)
+		return -1;
+	else
+		return return_value + UserStackSize - 4;
+}
+
+void AddrSpace::freeThreadStack(unsigned int stackAddr)
+{
+	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
 }
 
 void AddrSpace::printMapping(unsigned int max)

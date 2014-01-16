@@ -41,11 +41,15 @@ bool FrameProvider::ReleaseFrame(int indexFrame)
 	}
 }
 
-
 int FrameProvider::NumAvailFrame()
 {
 	// retourne le nombre de cadres libres
 	return bitmap->NumClear();
+}
+
+int FrameProvider::verifyFrame(int indexFrame)
+{
+	return bitmap->Test(indexFrame);
 }
 
 #endif
