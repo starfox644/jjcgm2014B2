@@ -19,6 +19,7 @@
 #ifdef CHANGED
 class Semaphore;
 class Thread;
+class threadManager;
 #include <list>
 #define UserStackSize		2048	// increase this as necessary!
 #define UserStackPages		UserStackSize / PageSize;
@@ -72,16 +73,6 @@ class AddrSpace
 #endif
 
     /**
-     *  add a thread to this address space
-     */
-    void addThread(Thread *th);
-
-    /**
-     *  remove a thread from this address space
-     */
-    void removeThread(Thread *th);
-
-    /**
      * 	returns an initial stack pointer available for a new thread and removes it
      * 	or returns -1 if it's impossible to add a new stack in the address space
      */
@@ -92,11 +83,6 @@ class AddrSpace
      * 	this stack address must be in the address space
      */
 	void addAvailableStackAddress(unsigned int stackAddr);
-
-    /**
-     * 	returns the number of user threads, without the main thread
-     */
-    int getNbThreads();
 
     // locks access to the nbThreads variable
     Semaphore *s_nbThreads;
@@ -128,9 +114,6 @@ class AddrSpace
      * Delete the semaphore list
      */
     void deleteSemaphores();
-
-    // threads of the address space
-    std::list<Thread*> l_threads;
 
 #ifdef step4
     static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
@@ -174,25 +157,21 @@ class AddrSpace
     unsigned int beginThreadsStackSpace;
     // address where the memory available for threads' stacks ends
     unsigned int endThreadsStackSpace;
-    // number of threads in execution without the main thread
-    int nbThreads;
 
 #ifdef step4
     int nbPagesUserStack;
 #endif
-
     // number of semaphore created
     int nbSem;
+
+	// number max of threads depending on memory for the stacks
+	int maxThreads;
 
     // Semaphore list : needed to give an unique identifier for user semaphores
     std::list<Semaphore*> semList;
     Semaphore* s_stackList;
     // list of available stack address in the address space for the threads
     std::list<int> l_availableStackAddress;
-    // number max of threads depending on memory for the stacks
-    int maxThreads;
-
-    void deleteThreads();
 
     void initAvailableStackPointers();
 
