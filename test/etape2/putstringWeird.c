@@ -5,5 +5,5 @@ int main()
 {
 	PutString("!@#([])=+}{~ŷÿ$\n");
 	PutString("£%ê€§^¨%\n");
-    Halt();
+    return 0;
 }

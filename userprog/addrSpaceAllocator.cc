@@ -8,6 +8,7 @@ AddrSpaceAllocator::AddrSpaceAllocator(AddrSpace* addrS, int addr, int length)
 {
 	ASSERT(addr % PageSize == 0);
 	ASSERT(length % PageSize == 0);
+
 	this->addrspace = addrS;
 	freeHead = new struct space;
 	freeHead->addr = addr;
@@ -17,14 +18,52 @@ AddrSpaceAllocator::AddrSpaceAllocator(AddrSpace* addrS, int addr, int length)
 	busyHead = NULL;
 }
 
-
 AddrSpaceAllocator::~AddrSpaceAllocator()
 {
-
+	// liberation de la liste des blocs libres
+	struct space* actu = freeHead;
+	struct space* tmp = NULL;
+	while (actu != NULL)
+	{
+		tmp = actu;
+		actu = actu->next;
+		delete tmp;
+	}
+	// liberation de la liste des blocs occupes
+	actu = busyHead;
+	tmp = NULL;
+	while (actu != NULL)
+	{
+		tmp = actu;
+		actu = actu->next;
+		delete tmp;
+	}
 }
 
 /*
- *
+	 *	Affichage de la liste des blocs libres
+	 */
+void AddrSpaceAllocator::printFreeList()
+{
+	struct space* actu = freeHead;
+	if (actu == NULL)
+	{
+		printf("La liste des bloc libre est vide\n");
+	}
+	else
+	{
+		printf("Contenu de la liste des blocs libres : \n ");
+		while (actu != NULL)
+		{
+			printf("(addr = %d, length = %d)  " , actu->addr, actu->length);
+			actu = actu->next;
+		}
+	}
+	printf("\n\n");
+}
+
+/*
+ * Affichage de la liste des blocs occupes
  */
 void AddrSpaceAllocator::printBusyList()
 {
@@ -45,30 +84,12 @@ void AddrSpaceAllocator::printBusyList()
 	printf("\n\n");
 }
 
-void AddrSpaceAllocator::printFreeList()
-{
-	struct space* actu = freeHead;
-	if (actu == NULL)
-	{
-		printf("La liste des bloc libre est vide\n");
-	}
-	else
-	{
-		printf("Contenu de la liste des blocs libres : \n ");
-		while (actu != NULL)
-		{
-			printf("(addr = %d, length = %d)  " , actu->addr, actu->length);
-			actu = actu->next;
-		}
-	}
-	printf("\n\n");
-}
-
-/**
- * canAllocate verifie s'il est possible d'allouer un bloc
- * dont la taille est passee en parametre.
- * S'il existe un bloc libre de taille suffisante, il est retourne,
- * On renvoie null sinon
+/*
+ * Verification qu'il est possible d'allouer un bloc dont la taille
+ * est passe en parametre
+ * Si une allocation est possible un pointeur vers le bloc est retourne,
+ * et l'allocation pourra etre realisee,
+ * NULL sinon.
  */
 struct space* AddrSpaceAllocator::canAllocate(int length)
 {
@@ -78,7 +99,6 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
 	{
 		current = current->next;
 	}
-	//printf("[CanAllocate] current->addr = %d\n", current->addr);
 	// plus de bloc libre ou memoire insuffisante
 	if (current == NULL)
 	{
@@ -90,8 +110,8 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
 	}
 }
 
-/**
- * removeFreeSpace
+/*
+ * suppression du bloc libre a l'adresse addr et de taille lengthAlloc
  */
 void AddrSpaceAllocator::removeFreeSpace(int addr, int lengthAlloc)
 {
@@ -125,12 +145,13 @@ void AddrSpaceAllocator::removeFreeSpace(int addr, int lengthAlloc)
 		{
 			// suppresion du bloc
 			prec->next = actu->next;
+			delete actu;
 		}
 	}
 }
+
 /*
- * Ajout du bloc libre dont l'adresse et la taille sont passees en parametre.
- * (maj des listes, et fusion si possible)
+ * Ajout d'un bloc libre de taille length a l'adresse addr
  */
 void AddrSpaceAllocator::addFreeSpace(int addr, int length)
 {
@@ -196,53 +217,11 @@ void AddrSpaceAllocator::addFreeSpace(int addr, int length)
 		}
 	}
 }
-/**
- *  addBusySpace : ajout d'un bloc occupe dans la liste.
- *  La zone occupee debute a l'adresse addr et est de taille "lengthAlloc"
+
+/*
+ *	Suppression du bloc occupe d'adresse addr
+ *	Renvoie la taille du bloc libere, -1 en cas d'erreur.
  */
-void AddrSpaceAllocator::addBusySpace(int addr, int lengthAlloc, bool forbiddenPage)
-{
-	struct space* actu = busyHead;
-	struct space* prec = NULL;
-	//printf("Ajout bloc occupe a l'adresse %d de taille %d\n", addr, lengthAlloc);
-
-	// creation du nouveau bloc occupe
-	struct space* newSpace = new struct space;
-	newSpace->addr = addr;
-	newSpace->length = lengthAlloc;
-	newSpace->forbiddenPage = forbiddenPage;
-
-	while (actu != NULL && actu->addr < addr)
-	{
-		prec = actu;
-		actu = actu->next;
-	}
-
-	// si la listed es blocs occupes est vide
-	if (prec == NULL && actu == NULL)
-	{
-		busyHead =newSpace;
-	}
-	// ajout en queue
-	else if (actu == NULL)
-	{
-		newSpace->next = NULL;
-		prec->next = newSpace;
-	}
-	// ajout en tete
-	else if (actu == busyHead)
-	{
-		newSpace->next = actu;
-		busyHead = newSpace;
-	}
-	else
-	{
-		newSpace->next = actu;
-		prec->next = newSpace;
-	}
-}
-
-
 int AddrSpaceAllocator::removeBusySpace(int addr)
 {
 	struct space* actu = busyHead;
@@ -252,6 +231,7 @@ int AddrSpaceAllocator::removeBusySpace(int addr)
 	// la liste des blocs occupes est vide : erreur
 	if (actu == NULL)
 		return -1;
+
 	while(actu != NULL
 			&& ((!actu->forbiddenPage && actu->addr < addr)
 					|| (actu->forbiddenPage && ((actu->addr - PageSize) < addr))))
@@ -290,17 +270,63 @@ int AddrSpaceAllocator::removeBusySpace(int addr)
 		}
 		else
 		{
-			//printf("prec->addr = %d et actu->addr = %d\n", prec->addr, actu->addr);
 			prec->next = actu->next;
 		}
+		delete actu;
 		return length;
 	}
 }
 
+/*
+ *	Ajout d'un bloc occupe a l'adresse addr, de taille lengthAlloc
+ *	et contenant ou non une page interdite. (ca presence est indiquee par
+ *	le booleen forbiddenPage)
+ */
+void AddrSpaceAllocator::addBusySpace(int addr, int lengthAlloc, bool forbiddenPage)
+{
+	struct space* actu = busyHead;
+	struct space* prec = NULL;
+
+	// creation du nouveau bloc occupe
+	struct space* newSpace = new struct space;
+	newSpace->addr = addr;
+	newSpace->length = lengthAlloc;
+	newSpace->forbiddenPage = forbiddenPage;
+
+	while (actu != NULL && actu->addr < addr)
+	{
+		prec = actu;
+		actu = actu->next;
+	}
+
+	// si la listed es blocs occupes est vide
+	if (prec == NULL && actu == NULL)
+	{
+		busyHead =newSpace;
+	}
+	// ajout en queue
+	else if (actu == NULL)
+	{
+		newSpace->next = NULL;
+		prec->next = newSpace;
+	}
+	// ajout en tete
+	else if (actu == busyHead)
+	{
+		newSpace->next = actu;
+		busyHead = newSpace;
+	}
+	else
+	{
+		newSpace->next = actu;
+		prec->next = newSpace;
+	}
+}
 
 /*
- * Fonction testant si une fusion avec le precedant est possible.
- * Puis met a jour le chainage en consequence
+ *	Verifie qu'une fusion est possible entre le bloc newSpace
+ *	et le precedent nomme prec.
+ *	Mise a jour du chainage en consequence
  */
 void AddrSpaceAllocator::testFusionGauche(struct space* prec,  struct space* newSpace)
 {
@@ -318,9 +344,11 @@ void AddrSpaceAllocator::testFusionGauche(struct space* prec,  struct space* new
         prec->next = newSpace;
     }
 }
+
 /*
- * Fonction testant si une fusion avec le suivant est possible.
- * Puis met a jour le chainage en consequence
+ *	Verifie qu'une fusion est possible entre le bloc newSpace
+ *	et le suivant nomme suiv.
+ *	Mise a jour du chainage en consequence
  */
 void AddrSpaceAllocator::testFusionDroite(struct space* suiv,  struct space* newSpace)
 {
@@ -341,10 +369,14 @@ void AddrSpaceAllocator::testFusionDroite(struct space* suiv,  struct space* new
 }
 
 /*
- * Allocation d'un bloc de taille lenthAlloc.
- * Dans le cas ou le booleen forbiddenPage est a vrai, une "page interdite" et allouee
- * juste avant le bloc. lengthAlloc = taille vulu du bloc + taille de la page
- * renvoie l'adresse du bloc alloue ou -1 un cas d'erreur.
+ *	Allocation d'un bloc memoire, renvoie  l'adresse du bloc si elle s'est
+ *	bien passee, -1 sinon.
+ *	lengthAlloc : taille du bloc a allouee (+ taille page interdite, s'il y a)
+ *					cette taille n'est pas alignee selon les pages.
+ *	write : si ce booleen est a vrai, les pages seront allouees en ecriture
+ *	forbiddenPage : Indique s'il y a besoin ou non de creer une page interdite
+ *					en debut de bloc
+ *
  */
 int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbiddenPage)
 {
@@ -363,7 +395,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		// d'une page interdite
 		if (forbiddenPage)
 		{
-			//printf("FORBIDDEN pageSize = %d\n", PageSize);
 			size = alignedLength-PageSize;
 			addrMap = current->addr + PageSize;
 			current->forbiddenPage = true;
@@ -378,16 +409,9 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		// associe des frame physique a l'espace d'adressage
 		if (addrspace->mapMem(addrMap, size, write))
 		{
-			//printf("Ajout dans la liste des occupee a l'adresse %d de taille %d\n", current->addr, alignedLength);
-			//printf("Size = %d\n", size);
 			addBusySpace(current->addr,alignedLength, forbiddenPage);
-			//printf("ajout dans la liste des blocs occupees reussi\n");
 			// suppression du bloc libre et ajout eventuel d'un nouveau bloc
 			removeFreeSpace(current->addr, alignedLength);
-			//printf("Suppression dans la liste des blocs libres reussi\n");
-
-			//printf("[AllocateFirst] current->addr = %d\n", current->addr);
-			// ajout du bloc dans la liste des bloc occupes
 		}
 		else
 		{
@@ -408,6 +432,7 @@ int AddrSpaceAllocator::free(int addr)
 	int length;
 	//printf("debut de liberation de l'adresse : %d\n", addr);
 	ASSERT((addr%PageSize) == 0);
+
 	// suppression dans la liste des bloc occupes
 	if ((length = removeBusySpace(addr)) == -1)
 	{
@@ -422,9 +447,6 @@ int AddrSpaceAllocator::free(int addr)
 		{
 			//ajout dand la liste des blocs libres
 			addFreeSpace(addr,length);
-			/*printf("listes : \n");
-			printBusyList();
-			printFreeList();*/
 			return 0;
 		}
 		else

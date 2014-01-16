@@ -36,8 +36,12 @@ class AddrSpace
 
 #ifdef CHANGED
 #ifdef countNew
-	int nbNewAddrspace;
-	int nbAddrspaceCreated;
+	// to count number of allocations
+	static int nbNewAddrspace;
+	static int nbAddrspaceCreated;
+
+	static 	int getNbNewAddrspace();
+	static int getNbAddrspaceCreated();
 #endif
 #endif
 
@@ -120,6 +124,11 @@ class AddrSpace
      */
     Semaphore* getSemaphore(int id);
 
+    /**
+     * Delete the semaphore list
+     */
+    void deleteSemaphores();
+
     // threads of the address space
     std::list<Thread*> l_threads;
 
@@ -137,7 +146,7 @@ class AddrSpace
     bool mapMem(int virtualAddr, int length, bool write);
 
     /**
-     * 	Release nbFrames of physical memory begining at beginPageIndex
+     * 	Release nbFrames of physical memory beginning at beginPageIndex
      * 	returns false if at least one page isn't allocated
      */
     bool unMapMem(int beginPageIndex, int nbFrames);

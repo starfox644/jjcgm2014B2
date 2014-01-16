@@ -33,8 +33,19 @@
 #ifdef CHANGED
 #ifdef countNew
 #include "countNew.h"
-int nbNewAddrspace = 0;
-int nbAddrspaceCreated = 0;
+
+
+	int AddrSpace::nbNewAddrspace = 0;
+	int AddrSpace::nbAddrspaceCreated = 0;
+
+	int AddrSpace::getNbNewAddrspace() {
+		return nbNewAddrspace;
+	}
+
+	int AddrSpace::getNbAddrspaceCreated() {
+		return nbAddrspaceCreated;
+	}
+
 #endif
 #endif
 
@@ -83,7 +94,7 @@ AddrSpace::AddrSpace ()
 	nbThreads = 0;
 	pid = 0;
 	attente = false;
-	processRunning = false; //true si en cours d'exécution false sinon
+	processRunning = false; //true si en cours d'execution false sinon
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
@@ -205,7 +216,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 //----------------------------------------------------------------------
 // AddrSpace::~AddrSpace
-//      Dealloate an address space.  Nothing for now!
+//      Deallocate an address space.  Nothing for now!
 //----------------------------------------------------------------------
 
 AddrSpace::~AddrSpace ()
@@ -231,16 +242,8 @@ AddrSpace::~AddrSpace ()
 	delete s_exit;
 	delete s_stackList;
 	deleteThreads();
+	deleteSemaphores();
 
-	// Suppression des semaphores
-	std::list<Semaphore*>::iterator it = semList.begin();
-	std::list<Semaphore*>::iterator itDel;
-	while (it != semList.end())
-	{
-		itDel = it;
-		it++;
-		delete *itDel;
-	}
 
 #ifdef countNew
 	nbNewAddrspace--;
@@ -486,6 +489,16 @@ Semaphore* AddrSpace::getSemaphore(int id)
 }
 
 /**
+ * Delete the semaphore list
+ */
+void AddrSpace::deleteSemaphores()
+{
+	std::list<Semaphore*>::iterator it;
+	for (it = semList.begin() ; it != semList.end() ; it++)
+		delete *it;
+}
+
+/**
  * 	returns an initial stack pointer available for a new thread
  * 	or -1 if it's impossible to add a new stack in the address space
  */
@@ -648,7 +661,6 @@ void AddrSpace::setPid(int newPid)
 {
 	pid = newPid;
 }
-
 
 void AddrSpace::printMapping(unsigned int max)
 {

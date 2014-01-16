@@ -6,5 +6,5 @@ int main()
 	PutInt(GetPid());*/
 	PutString("\nHello World !\n");
 //	PutInt(17456);
-	return 5;
+	return 0;
 }
