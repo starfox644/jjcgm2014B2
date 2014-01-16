@@ -21,13 +21,15 @@
 //class AddrSpaceAllocator;
 #include "addrSpaceAllocator.h"
 // On enleve StartProcess de progtest.cc pour le mettre dans process.cc
-#else
+#endif
+
+
+#ifndef CHANGED
 //----------------------------------------------------------------------
 // StartProcess
 //      Run a user program.  Open the executable, load it into
 //      memory, and jump to it.
 //----------------------------------------------------------------------
-
 int
 StartProcess (char *filename)
 {
@@ -53,7 +55,7 @@ StartProcess (char *filename)
 	// by doing the syscall "exit"
 	return -1;
 }
-#endif
+#endif // changed
 // Data structures needed for the console test.  Threads making
 // I/O requests wait on a Semaphore to delay until the I/O completes.
 
@@ -160,8 +162,6 @@ int allocatorTest(char *filename)
 		return -1;
 	}
 	space = new AddrSpace ();
-	space->loadInitialSections(executable);
-	currentThread->space = space;
 	delete executable;		// close file
 
 	// rajouter ici les tests d'allocation

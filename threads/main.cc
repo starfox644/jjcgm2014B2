@@ -52,8 +52,10 @@
 
 #include "utility.h"
 #include "system.h"
-#ifdef step4
+#ifdef CHANGED
 #include "process.h"
+#else
+extern void StartProcess (char *file);
 #endif
 
 // External functions used by this file
@@ -63,8 +65,6 @@ extern void Print (char *file), PerformanceTest (void);
 
 #ifdef step4
 	extern int allocatorTest(char* file);
-#else
-	extern void StartProcess (char *file);
 #endif
 
 extern void ConsoleTest (char *in, char *out);
