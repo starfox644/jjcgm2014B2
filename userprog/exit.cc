@@ -31,7 +31,7 @@ void do_exit(int returnCode)
 
 	}
 
-//	printf("Program stopped with return code : %d\n", returnCode);
+	printf("Program stopped with return code : %d\n", returnCode);
 	DEBUG('a',"Program exit");
 
 #ifdef step4

@@ -282,7 +282,7 @@ AddrSpace::InitRegisters ()
 	// Set the stack register to the end of the address space, where we
 	// allocated the stack; but subtract off a bit, to make sure we don't
 	// accidentally reference off the end!
-#ifdef CHANGED
+#ifdef step3
 	machine->WriteRegister (StackReg, beginThreadsStackSpace);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			beginThreadsStackSpace);
