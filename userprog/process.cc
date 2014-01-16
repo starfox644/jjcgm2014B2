@@ -159,6 +159,7 @@ StartProcess (char *filename)
 Process::Process()
 {
 	addrSpace = NULL;
+	threadManager = new ThreadManager();
 }
 
 bool Process::allocateAddrSpace(OpenFile * executable)
@@ -166,7 +167,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	bool return_value = true;
 #ifdef step4
 	addrSpace = new AddrSpace();
-	threadManager = new ThreadManager();
+	//threadManager = new ThreadManager();
 	if(addrSpace != NULL)
 	{
 		// load code and initial data
@@ -178,7 +179,6 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	}
 #else
 	addrSpace = new AddrSpace(executable);
-	threadManager = new ThreadManager();
 #endif
 	return return_value;
 }

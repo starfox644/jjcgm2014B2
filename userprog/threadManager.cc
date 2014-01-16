@@ -31,6 +31,19 @@ int ThreadManager::getNbThreads()
 	return nbThreads;
 }
 
+Thread* ThreadManager::searchThread(int tid)
+{
+	std::list<Thread*>::iterator it = currentProcess->threadManager->l_threads.begin();
+	while (it != currentProcess->threadManager->l_threads.end() && (tid != (*it)->tid))
+	{
+		++it;
+	}
+	if (it == currentProcess->threadManager->l_threads.end())
+		return NULL;
+	else
+		return *it;
+}
+
 void ThreadManager::deleteThreads()
 {
 	std::list<Thread*>::iterator it;

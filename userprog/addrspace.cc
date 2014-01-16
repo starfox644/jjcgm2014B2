@@ -93,7 +93,6 @@ SwapHeader (NoffHeader * noffH)
 AddrSpace::AddrSpace ()
 {
 	nbSem = 0;
-	//nbThreads = 0;	*******
 	pid = 0;
 	attente = false;
 	processRunning = false; //true si en cours d'execution false sinon
@@ -122,7 +121,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 #ifdef CHANGED
 	nbSem = 0;
-	//nbThreads = 0;	************************
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);

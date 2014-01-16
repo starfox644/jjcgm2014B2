@@ -130,22 +130,24 @@ int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
 	AddrSpace *space = currentThread->process->getAddrSpace();
-	std::list<Thread*>::iterator it = currentProcess->threadManager->l_threads.begin();
+	//std::list<Thread*>::iterator it = currentProcess->threadManager->l_threads.begin();
 	space->s_userJoin->P();
 	// search the given thread in l_thread
-	while (it != currentProcess->threadManager->l_threads.end() && (tid != (*it)->tid))
+	/*while (it != currentProcess->threadManager->l_threads.end() && (tid != (*it)->tid))
 	{
 		++it;
 	}
 	// tid does not exist : error
 	if (it == currentProcess->threadManager->l_threads.end())
+	{*/
+	if ((th = currentProcess->threadManager->searchThread(tid)) == NULL)
 	{
 		space->s_userJoin->V();
 		return -1;
 	}
 	else
 	{
-		th = *it;
+		//th = *it;
 		// an other thread wait for this thread : error
 		if(!th->isFinished && th->wait)
 		{

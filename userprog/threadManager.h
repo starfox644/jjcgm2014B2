@@ -22,21 +22,26 @@ class ThreadManager
 	 */
 	void removeThread(Thread *th);
 
-	/**
+	/*
 	 * 	returns the number of user threads, without the main thread
 	 */
 	int getNbThreads();
+
+	/*
+	 * returns the thread with this tid.
+	 * If isn't in l_threads, return NULL
+	 */
+	Thread* searchThread(int tid);
+	/**
+	 * delete list of threads
+	 */
+	void deleteThreads();
 
 	// threads of the address space
 	std::list<Thread*> l_threads;
 
 	// number of threads in execution without the main thread
 	int nbThreads;
-
-	/**
-	 * delete list of threads
-	 */
-	void deleteThreads();
 };
 
 #endif // ___THREADMANAGER
