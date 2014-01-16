@@ -166,6 +166,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	bool return_value = true;
 #ifdef step4
 	addrSpace = new AddrSpace();
+	th_manag = new ThreadManager();
 	if(addrSpace != NULL)
 	{
 		// load code and initial data
@@ -177,6 +178,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	}
 #else
 	addrSpace = new AddrSpace(executable);
+	th_manag = new ThreadManager();
 #endif
 	return return_value;
 }

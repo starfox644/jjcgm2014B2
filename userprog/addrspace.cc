@@ -122,7 +122,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 #ifdef CHANGED
 	nbSem = 0;
-	//nbThreads = 0;	*********
+	//nbThreads = 0;	************************
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);

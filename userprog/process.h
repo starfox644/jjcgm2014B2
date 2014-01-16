@@ -5,6 +5,7 @@
 #include "addrspace.h"
 class Thread;
 class OpenFile;
+class ThreadManager;
 
 void addProcess ();
 
@@ -41,6 +42,7 @@ class Process
 	private:
 		AddrSpace *addrSpace;
 	public:
+		ThreadManager *th_manag;
 		Process();
 		bool allocateAddrSpace(OpenFile * executable);
 		void freeAddrSpace();
