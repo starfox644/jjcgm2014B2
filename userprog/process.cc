@@ -13,7 +13,7 @@
  * Renvoie 0 si le thread est bien cree, -1 sinon
  */
 int do_forkExec(int adrExec) {
-	//printf("[ForkExec] Debut fonction\n");
+	printf("[ForkExec] Debut fonction\n");
 	char executable[MAX_STRING_SIZE];
 	int c;
 	int i = 0;
