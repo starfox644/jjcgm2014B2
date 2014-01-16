@@ -202,9 +202,9 @@ Thread::Finish ()
     if(space != NULL)
     {
     	space->addAvailableStackAddress(userStackAddr);
-#ifdef step4
+/*#ifdef step4
     	space->unMapStack(userStackAddr);
-#endif
+#endif*/
     }
 #endif
     // LB: Be careful to guarantee that no thread to be destroyed 

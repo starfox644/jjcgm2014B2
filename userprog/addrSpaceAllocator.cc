@@ -354,7 +354,7 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 
 	if (current == NULL)
 	{
-		printf("IMPOSSIBLE D'ALLOUER\n");
+		//printf("IMPOSSIBLE D'ALLOUER\n");
 		return -1;
 	}
 	else
@@ -376,7 +376,7 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		}
 
 		// associe des frame physique a l'espace d'adressage
-		if (addrspace->map(addrMap, size, write))
+		if (addrspace->mapMem(addrMap, size, write))
 		{
 			//printf("Ajout dans la liste des occupee a l'adresse %d de taille %d\n", current->addr, alignedLength);
 			//printf("Size = %d\n", size);
@@ -391,12 +391,11 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		}
 		else
 		{
-			printf("erreur map\n");
+			//printf("erreur map\n");
 			return -1;
 		}
 	}
 	return addrMap;
-
 }
 
 /*
@@ -407,19 +406,19 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 int AddrSpaceAllocator::free(int addr)
 {
 	int length;
-	printf("debut de liberation de l'adresse : %d\n", addr);
+	//printf("debut de liberation de l'adresse : %d\n", addr);
 	ASSERT((addr%PageSize) == 0);
 	// suppression dans la liste des bloc occupes
 	if ((length = removeBusySpace(addr)) == -1)
 	{
-		printf("erreur de suppression d'un espace occupe\n");
+		//printf("erreur de suppression d'un espace occupe\n");
 		ASSERT(FALSE);
 		return -1;
 	}
 	else
 	{
 		ASSERT(length%PageSize == 0);
-		if(addrspace->unMap(addr/PageSize, length/PageSize))
+		if(addrspace->unMapMem(addr/PageSize, length/PageSize))
 		{
 			//ajout dand la liste des blocs libres
 			addFreeSpace(addr,length);
@@ -430,7 +429,7 @@ int AddrSpaceAllocator::free(int addr)
 		}
 		else
 		{
-			printf("erreur de unmap dans addrSpaceAllocator\n");
+			//printf("erreur de unmap dans addrSpaceAllocator\n");
 			ASSERT(FALSE);
 			return -1;
 		}

@@ -14,7 +14,7 @@ int FrameProvider::GetEmptyFrame()
 	int indexFrame;
 	if ((indexFrame = bitmap->Find ()) == -1)
 	{
-		printf(" No frame are free\n");
+		DEBUG(',', "Plus de frames physiques disponibles\n");
 		return -1;
 	}
 	// initialisation du cadre à 0
@@ -28,10 +28,13 @@ bool FrameProvider::ReleaseFrame(int indexFrame)
 {
 	if(!bitmap->Test(indexFrame))
 	{
+		DEBUG(',', "Echec de liberation de la frame physique %i non allouee\n", indexFrame);
+		ASSERT(FALSE);
 		return false;
 	}
 	else
 	{
+		DEBUG(',', "liberation de la frame physique %i\n", indexFrame);
 		// indique que la page est libre
 		bitmap->Clear(indexFrame);
 		return true;

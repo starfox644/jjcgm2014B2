@@ -134,13 +134,13 @@ class AddrSpace
      * if there is no more physical frames available, returns true
      * else returns false
      */
-    bool map(int virtualAddr, int length, bool write);
+    bool mapMem(int virtualAddr, int length, bool write);
 
     /**
      * 	Release nbFrames of physical memory begining at beginPageIndex
      * 	returns false if at least one page isn't allocated
      */
-    bool unMap(int beginPageIndex, int nbFrames);
+    bool unMapMem(int beginPageIndex, int nbFrames);
 
     void unMapStack(int stackAddr);
 

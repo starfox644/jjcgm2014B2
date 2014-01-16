@@ -363,13 +363,13 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		pageTable[i].dirty = FALSE;
 		pageTable[i].readOnly = FALSE;
 	}
-	success = map(0, noffH.code.size, true);
+	success = mapMem(0, noffH.code.size, true);
 	if(success)
-		success = map(noffH.code.size, noffH.initData.size, true);
+		success = mapMem(noffH.code.size, noffH.initData.size, true);
 	if(success)
-		success = map(noffH.code.size + noffH.initData.size, noffH.uninitData.size, true);
+		success = mapMem(noffH.code.size + noffH.initData.size, noffH.uninitData.size, true);
 	if(success)
-		success = map(noffH.code.size + noffH.initData.size + noffH.uninitData.size, UserStackSize, true);
+		success = mapMem(noffH.code.size + noffH.initData.size + noffH.uninitData.size, UserStackSize, true);
 	if(!success)
 	{
 		delete pageTable;
@@ -391,7 +391,7 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		ReadAtVirtual(executable, noffH.initData.virtualAddr,
 				noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
 	}
-	if(!map(0, noffH.code.size, false))
+	if(!mapMem(0, noffH.code.size, false))
 	{
 		return false;
 	}
@@ -493,10 +493,11 @@ int AddrSpace::popAvailableStackPointer()
 {
 #ifdef step4
 	int return_value;
-	s_stackList->P();
-	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false) + UserStackSize);
-	s_stackList->V();
-	return return_value;
+	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
+	if(return_value == -1)
+		return -1;
+	else
+		return return_value + UserStackSize - 4;
 #else
 	int return_value;
 	s_stackList->P();
@@ -518,9 +519,7 @@ int AddrSpace::popAvailableStackPointer()
 void AddrSpace::addAvailableStackAddress(unsigned int stackAddr)
 {
 #ifdef step4
-	s_stackList->P();
-	addrSpaceAllocator->free(stackAddr - UserStackSize);
-	s_stackList->V();
+	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
 #else
 	ASSERT(stackAddr < (numPages*PageSize) && stackAddr >= beginThreadsStackSpace);
 	s_stackList->P();
@@ -566,7 +565,7 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	machine->pageTableSize = ptSize;
 }
 
-bool AddrSpace::map(int virtualAddr, int length, bool write)
+bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 {
 	int i;
 	int frame;
@@ -580,20 +579,24 @@ bool AddrSpace::map(int virtualAddr, int length, bool write)
 	// get physical frames needed
 	do
 	{
+		DEBUG(',', "essai de mapping de la page %i du processus %i\n", beginPage + i, getPid());
 		if(!pageTable[beginPage + i].valid)
 		{
 			frame = frameProvider->GetEmptyFrame();
 			if(frame != -1)
 			{
-				if(beginPage + i == 216)
-					printf("alloc de la page 216\n");
 				// add the gotten page to the virtual memory
 				pageTable[beginPage + i].physicalPage = frame;
 				pageTable[beginPage + i].valid = TRUE;
 				pageTable[beginPage + i].use = FALSE;
 				pageTable[beginPage + i].dirty = FALSE;
 				pageTable[beginPage + i].readOnly = (int)(!write);
+				DEBUG(',', "mapping de la page %i reussi a la frame %i\n", beginPage + i, frame);
 			}
+		}
+		else
+		{
+			DEBUG(',', "page %i deja allouee\n", beginPage + i);
 		}
 		i++;
 	}
@@ -616,19 +619,15 @@ bool AddrSpace::map(int virtualAddr, int length, bool write)
 }
 
 
-bool AddrSpace::unMap(int beginPageIndex, int nbPages)
+bool AddrSpace::unMapMem(int beginPageIndex, int nbPages)
 {
 	int i;
 	bool allAllocated = true;
-	bool prev = true;
 	for(i = 0 ; i < nbPages ; i++)
 	{
-		if(beginPageIndex + i == 216)
-			printf("liberation de la page 216\n");
-		prev = allAllocated;
+		DEBUG(',', "unmapping page %i du processus %i\n", beginPageIndex + i, getPid());
 		allAllocated &= frameProvider->ReleaseFrame(beginPageIndex + i);
-		if(prev && !allAllocated)
-			printf("page %i non allouee\n", beginPageIndex + i);
+		pageTable[beginPageIndex + i].valid = false;
 	}
 	return allAllocated;
 }
@@ -637,7 +636,7 @@ void AddrSpace::unMapStack(int stackAddr)
 {
 	ASSERT(((stackAddr - UserStackSize) % PageSize) == 0);
 	int beginPage = (stackAddr - UserStackSize) / PageSize;
-	unMap(beginPage, UserStackSize / PageSize);
+	unMapMem(beginPage, UserStackSize / PageSize);
 }
 
 int AddrSpace::getPid()
