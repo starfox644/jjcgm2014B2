@@ -22,6 +22,8 @@
 
 #ifdef CHANGED
 #include <string>
+//#include "threadManager.h"
+//class threadManager;
 #endif
 
 #include <strings.h>		/* for bzero */
@@ -91,7 +93,6 @@ SwapHeader (NoffHeader * noffH)
 AddrSpace::AddrSpace ()
 {
 	nbSem = 0;
-	nbThreads = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -118,7 +119,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 #ifdef CHANGED
 	nbSem = 0;
-	nbThreads = 0;
+	//nbThreads = 0;	************************
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
@@ -239,7 +240,7 @@ AddrSpace::~AddrSpace ()
 	delete s_nbThreads;
 	delete s_exit;
 	delete s_stackList;
-	deleteThreads();
+	//deleteThreads();		**********
 	deleteSemaphores();
 
 
@@ -275,14 +276,15 @@ AddrSpace::InitRegisters ()
 	// of branch delay possibility
 	machine->WriteRegister (NextPCReg, 4);
 
-	// Set the stack register to the end of the address space, where we
-	// allocated the stack; but subtract off a bit, to make sure we don't
-	// accidentally reference off the end!
 #ifdef step3
+	// set the stack register of the main thread after the code and data
 	machine->WriteRegister (StackReg, beginThreadsStackSpace);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			beginThreadsStackSpace);
 #else
+	// Set the stack register to the end of the address space, where we
+	// allocated the stack; but subtract off a bit, to make sure we don't
+	// accidentally reference off the end!
 	machine->WriteRegister (StackReg, numPages * PageSize - 16);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			numPages * PageSize - 16);
@@ -420,31 +422,6 @@ void AddrSpace::freeThreadStack(unsigned int stackAddr)
 #endif // step4
 
 #ifdef CHANGED
-void AddrSpace::addThread(Thread *th)
-{
-	nbThreads++;
-	// add the new thread in threads list
-	l_threads.push_back(th);
-}
-
-void AddrSpace::removeThread(Thread *th)
-{
-	nbThreads--;
-}
-
-int AddrSpace::getNbThreads()
-{
-	return nbThreads;
-}
-
-void AddrSpace::deleteThreads()
-{
-	std::list<Thread*>::iterator it;
-	for(it = l_threads.begin() ; it != l_threads.end() ; it++)
-	{
-		delete *it;
-	}
-}
 
 /**
  * Add newSem to semList, give it a unique modifier and return the id

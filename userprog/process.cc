@@ -2,6 +2,7 @@
 #include "machine.h"
 #include "syscall.h"
 #include "system.h"
+#include "threadManager.h"
 
 #ifdef step4
 /**
@@ -141,6 +142,7 @@ StartProcess (char *filename)
 #endif
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
+	currentProcess = process;
 	machine->Run ();		// jump to the user progam
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
@@ -152,6 +154,7 @@ Process::Process()
 {
 	addrSpace = NULL;
 	processRunning = false;
+	threadManager = new ThreadManager();
 }
 
 bool Process::allocateAddrSpace(OpenFile * executable)

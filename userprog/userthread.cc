@@ -3,6 +3,7 @@
 #include "thread.h"
 #include "system.h"
 #include "machine.h"
+#include "threadManager.h"
 
 extern void do_exit(int returnCode);
 
@@ -17,7 +18,7 @@ int do_UserThreadCreate(int f, int arg)
 	int stackAddr;
 	// locks this function
 	s_create->P();
-	AddrSpace* space = currentThread->process->getAddrSpace();
+	AddrSpace* space = currentProcess->getAddrSpace();
 	Thread *newThread = new Thread("test");
 	// error allocation
 	if (newThread == NULL)
@@ -51,7 +52,7 @@ int do_UserThreadCreate(int f, int arg)
 			// the new thread shares the memory space with the current thread
 			newThread->process = currentThread->process;
 			space->s_nbThreads->P();
-			space->addThread(newThread);
+			currentProcess->threadManager->addThread(newThread);
 			space->s_nbThreads->V();
 
 			// sets initial argument of the thread
@@ -78,10 +79,6 @@ int do_UserThreadCreate(int f, int arg)
 
 static void StartUserThread(int f)
 {
-	AddrSpace* space = currentThread->process->getAddrSpace();
-	space->InitRegisters();
-	space->RestoreState ();	// load page table register
-
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
 	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC to the function __startThread (in start.s)
@@ -105,7 +102,7 @@ void do_UserThreadExit(int status)
 		// remove the thread in the address space
 		space->s_nbThreads->P();
 		currentThread->isFinished = true;
-		space->removeThread(currentThread);
+		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
 		if(space->attente)
 			space->s_exit->V();
@@ -126,15 +123,15 @@ int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
 	AddrSpace *space = currentThread->process->getAddrSpace();
-	std::list<Thread*>::iterator it = space->l_threads.begin();
+	std::list<Thread*>::iterator it = currentProcess->threadManager->l_threads.begin();
 	space->s_userJoin->P();
 	// search the given thread in l_thread
-	while (it != space->l_threads.end() && (tid != (*it)->tid))
+	while (it != currentProcess->threadManager->l_threads.end() && (tid != (*it)->tid))
 	{
 		++it;
 	}
 	// tid does not exist : error
-	if (it == space->l_threads.end())
+	if (it == currentProcess->threadManager->l_threads.end())
 	{
 		space->s_userJoin->V();
 		return -1;
