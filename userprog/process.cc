@@ -180,6 +180,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 void Process::freeAddrSpace()
 {
 	delete addrSpace;
+	delete threadManager;
 	addrSpace = NULL;
 }
 

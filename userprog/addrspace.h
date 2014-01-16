@@ -86,12 +86,9 @@ class AddrSpace
      */
 	void addAvailableStackAddress(unsigned int stackAddr);
 
-    // locks access to the nbThreads variable
-    Semaphore *s_nbThreads;
     // locks the main thread while the others are finishing
     Semaphore *s_exit;
-    //
-    Semaphore *s_userJoin;
+
     bool attente;
 
     /**
