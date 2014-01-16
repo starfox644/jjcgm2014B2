@@ -15,7 +15,7 @@ ProcessManager::ProcessManager (){
 }
 
 int ProcessManager::addAddrProcess(AddrSpace *adr){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	if(adr->processRunning){ // si le programme est en cours d'execution on le rajoute
 		nbAdrProcess++;
 		//rajout de notre adresse de processus dans la liste
@@ -25,13 +25,13 @@ int ProcessManager::addAddrProcess(AddrSpace *adr){
 		return -1;
 	}
 
-	sem_Wait->V();
+	sem_Wait->V();*/
 	return 0;
 }
 void ProcessManager::removeAddrProcess(AddrSpace *adr){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	nbAdrProcess--;
-	sem_Wait->V();
+	sem_Wait->V();*/
 }
 int ProcessManager::getNbAddrProcess(){
 	return nbAdrProcess;
@@ -42,7 +42,7 @@ int ProcessManager::getNbAddrProcess(){
  * Je suis pas fan de l'attente active que j'ai faite pour le moment. Faut que je change ca >_<
  */
 int ProcessManager::WaitPid(int processPid){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
 	std::list<AddrSpace*>::iterator it=l_process.begin();
 	while (it != l_process.end() && (*it)->pid != processPid)
@@ -51,7 +51,7 @@ int ProcessManager::WaitPid(int processPid){
 	if ((*it)->pid != processPid){
 		sem_Wait->V();
 		return -1;
-	}else{
+	}else{*/
 		/* Version Mika : ton attente active peut foirer puisque si processRunning passe a false
 		 * a la fin de ton if, il retourne pas dans ta boucle donc la fonction return 0 et le processus
 		 * est toujours dans la liste.
@@ -68,13 +68,15 @@ int ProcessManager::WaitPid(int processPid){
 		*/
 
 		/* Version corrigee (je suppose que c'est bon) */
+	/*
 		while((*it)->processRunning == true);	// On attend que le processus termine
 		int procPid = (*it)->pid; 				// Recup PID pour le renvoyer
 		l_process.erase(it); 					// On supprime le processus de la liste
 		sem_Wait->V();							// On libere la ressource
 		return procPid;
 
-	}
+	}*/
+	return 0;
 }
 #endif //step4
 

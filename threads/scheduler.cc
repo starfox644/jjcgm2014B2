@@ -115,6 +115,7 @@ Scheduler::Run (Thread * nextThread)
 	currentThread->setStatus (RUNNING);	// nextThread is now running
 
 #ifdef CHANGED
+	// current process is the process of the current thread
 	currentProcess = currentThread->process;
 #endif
 

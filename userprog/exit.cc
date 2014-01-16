@@ -28,7 +28,7 @@ void do_exit(int returnCode)
 
 //	currentThread->space->processRunning = false;
 
-	if(currentThread->process->getAddrSpace() != NULL)
+	if(currentProcess->getAddrSpace() != NULL)
 	{
 
 	}
@@ -37,14 +37,14 @@ void do_exit(int returnCode)
 	DEBUG('a',"Program exit");
 
 #ifdef step4
-	s_process->P();
+	s_createProcess->P();
 	// currentThread isn't the last main thread
 	if (getNbProcess() > 1)
 	{
 		removeProcess();
 		//threadToBeDestroyed = currentThread;
 		//currentThread->space->processRunning = false;
-		s_process->V();
+		s_createProcess->V();
 		// currentThread->Yield();
 		currentThread->Finish();
 	}
@@ -52,7 +52,7 @@ void do_exit(int returnCode)
 	{
 		removeProcess();
 		//currentThread->space->processRunning = false;
-		s_process->V();
+		s_createProcess->V();
 		// stop the program
 		interrupt->Halt ();
 	}

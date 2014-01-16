@@ -18,7 +18,7 @@ int do_UserThreadCreate(int f, int arg)
 	int stackAddr;
 	// locks this function
 	s_create->P();
-	AddrSpace* space = currentThread->process->getAddrSpace();
+	AddrSpace* space = currentProcess->getAddrSpace();
 	Thread *newThread = new Thread("test");
 	// error allocation
 	if (newThread == NULL)
@@ -33,15 +33,12 @@ int do_UserThreadCreate(int f, int arg)
     	if(!error)
     	{
     		// get an address for the stack if possible
+#ifdef step4
+    		stackAddr = space->allocThreadStack();
+#else
     		stackAddr = space->popAvailableStackPointer();
+#endif
     		error = (stackAddr == -1);
-/*#ifdef step4
-    		if(!error)
-    		{
-    			if(!space->map(stackAddr - UserStackSize, UserStackSize, true))
-    				error = true;
-    		}
-#endif*/
     	}
     }
 
@@ -82,10 +79,6 @@ int do_UserThreadCreate(int f, int arg)
 
 static void StartUserThread(int f)
 {
-	AddrSpace* space = currentThread->process->getAddrSpace();
-	space->InitRegisters();
-	space->RestoreState ();	// load page table register
-
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
 	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC to the function __startThread (in start.s)
@@ -105,7 +98,7 @@ void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
-		AddrSpace* space = currentThread->process->getAddrSpace();
+		AddrSpace* space = currentProcess->getAddrSpace();
 		// remove the thread in the address space
 		space->s_nbThreads->P();
 		currentThread->isFinished = true;

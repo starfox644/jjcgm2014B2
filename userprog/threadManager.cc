@@ -9,13 +9,13 @@ ThreadManager::ThreadManager ()
 	nbThreads = 0;
 }
 
-
 ThreadManager::~ThreadManager ()
 {
-	nbThreads = 0;
 }
+
 void ThreadManager::addThread(Thread *th)
 {
+	printf("add thread\n");
 	nbThreads++;
 	// add the new thread in threads list
 	l_threads.push_back(th);

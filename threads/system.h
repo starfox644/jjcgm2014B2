@@ -45,7 +45,7 @@ extern FrameProvider *frameProvider; // permet de gerer les cadres
 extern ProcessManager *processManager; //permet de gerer les processus
 // number of process for process.cc
 extern int nbProcess;
-extern Semaphore *s_process;
+extern Semaphore *s_createProcess;
 extern Semaphore *s_nbProcess;
 extern int pid;
 #endif
