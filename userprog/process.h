@@ -42,7 +42,7 @@ class Process
 	private:
 		AddrSpace *addrSpace;
 	public:
-		ThreadManager *th_manag;
+		ThreadManager *threadManager;
 		Process();
 		bool allocateAddrSpace(OpenFile * executable);
 		void freeAddrSpace();

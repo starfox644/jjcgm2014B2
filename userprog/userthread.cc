@@ -3,6 +3,7 @@
 #include "thread.h"
 #include "system.h"
 #include "machine.h"
+#include "threadManager.h"
 
 extern void do_exit(int returnCode);
 
@@ -54,7 +55,7 @@ int do_UserThreadCreate(int f, int arg)
 			// the new thread shares the memory space with the current thread
 			newThread->process = currentThread->process;
 			space->s_nbThreads->P();
-			space->addThread(newThread);
+			currentProcess->threadManager->addThread(newThread);
 			space->s_nbThreads->V();
 
 			// sets initial argument of the thread
@@ -108,7 +109,7 @@ void do_UserThreadExit(int status)
 		// remove the thread in the address space
 		space->s_nbThreads->P();
 		currentThread->isFinished = true;
-		space->removeThread(currentThread);
+		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
 		if(space->attente)
 			space->s_exit->V();
@@ -129,15 +130,15 @@ int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
 	AddrSpace *space = currentThread->process->getAddrSpace();
-	std::list<Thread*>::iterator it = space->l_threads.begin();
+	std::list<Thread*>::iterator it = currentProcess->threadManager->l_threads.begin();
 	space->s_userJoin->P();
 	// search the given thread in l_thread
-	while (it != space->l_threads.end() && (tid != (*it)->tid))
+	while (it != currentProcess->threadManager->l_threads.end() && (tid != (*it)->tid))
 	{
 		++it;
 	}
 	// tid does not exist : error
-	if (it == space->l_threads.end())
+	if (it == currentProcess->threadManager->l_threads.end())
 	{
 		space->s_userJoin->V();
 		return -1;

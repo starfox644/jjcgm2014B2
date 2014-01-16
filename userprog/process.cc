@@ -2,6 +2,7 @@
 #include "machine.h"
 #include "syscall.h"
 #include "system.h"
+#include "threadManager.h"
 
 #ifdef step4
 /**
@@ -37,7 +38,7 @@ int do_forkExec(int adrExec)
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
-		addProcess(); // ajoute 1 au nb de processus en cours
+		//addProcess(); // ajoute 1 au nb de processus en cours
 		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
 		s_process->V();
@@ -144,7 +145,7 @@ StartProcess (char *filename)
 	delete executable;		// close file
 	currentThread->process = process;
 #ifdef step4
-	addProcess(); // ajoute 1 au nb de processus en cours
+	//addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
@@ -165,7 +166,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	bool return_value = true;
 #ifdef step4
 	addrSpace = new AddrSpace();
-	th_manag = new ThreadManager();
+	threadManager = new ThreadManager();
 	if(addrSpace != NULL)
 	{
 		// load code and initial data
@@ -177,7 +178,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	}
 #else
 	addrSpace = new AddrSpace(executable);
-	th_manag = new ThreadManager();
+	threadManager = new ThreadManager();
 #endif
 	return return_value;
 }

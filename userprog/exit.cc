@@ -5,6 +5,7 @@
 #ifdef CHANGED
 #include "process.h"
 #include "addrspace.h"
+#include "threadManager.h"
 #endif
 
 void do_exit(int returnCode)
@@ -13,12 +14,12 @@ void do_exit(int returnCode)
 	printf("threads : created %d / destroyed %d / remaining %d\n", Thread::getNbThreadsCreated(), Thread::getNbThreadsCreated() - Thread::getNbNewThread(), Thread::getNbNewThread());
 	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
 #endif
-	AddrSpace *space = currentThread->process->getAddrSpace();
+	AddrSpace *space = currentProcess->getAddrSpace();
 	// indicates that the main thread is waiting for the others
 	space->s_nbThreads->P();
 	space->attente = true;
 	space->s_nbThreads->V();
-	while(space->getNbThreads() > 0)
+	while(currentProcess->threadManager->getNbThreads() > 0)
 	{
 		// semaphore wait for waiting the others threads
 		space->s_exit->P();

@@ -2,7 +2,7 @@
 #include "threadManager.h"
 #include "copyright.h"
 #include "system.h"
-
+#include "thread.h"
 
 ThreadManager::ThreadManager ()
 {

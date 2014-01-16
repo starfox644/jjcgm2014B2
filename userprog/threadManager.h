@@ -1,10 +1,11 @@
 #ifdef CHANGED
 #ifndef ___THREADMANAGER
 #define ___THREADMANAGER
+class Thread;
+#include <list>
 
 class ThreadManager
 {
-
   public:
 
 	ThreadManager ();
@@ -36,20 +37,6 @@ class ThreadManager
 	 * delete list of threads
 	 */
 	void deleteThreads();
-
-//  private:
-
-	// number of threads in execution without the main thread
-	//int nbThreads;
-
-
-	// number max of threads depending on memory for the stacks
-	//int maxThreads;
-
-	/**
-	 * delete list of threads
-	 */
-	//void deleteThreads();
 };
 
 #endif // ___THREADMANAGER
