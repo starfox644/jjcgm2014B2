@@ -140,7 +140,12 @@ StartProcess (char *filename)
 	space = new AddrSpace (executable);
 #else
 	space = new AddrSpace();
-	space->loadInitialSections(executable);
+	if(!space->loadInitialSections(executable))
+	{
+		delete executable;		// close file
+		delete space;
+		return -1;
+	}
 #endif
 	currentThread->space = space;
 

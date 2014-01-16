@@ -514,7 +514,8 @@ void AddrSpace::addAvailableStackAddress(unsigned int stackAddr)
 
 void AddrSpace::initAvailableStackPointers()
 {
-	int addr = beginThreadsStackSpace + UserStackSize;
+	int addr = divRoundUp(beginThreadsStackSpace + UserStackSize, PageSize) * PageSize;
+	ASSERT((addr % PageSize) == 0);
 	s_stackList->P();
 	for(int i = 0 ; i < maxThreads ; i++)
 	{
@@ -593,6 +594,25 @@ bool AddrSpace::map(int virtualAddr, int length, bool write)
 	{
 		return true;
 	}
+}
+
+
+bool AddrSpace::unMap(int beginPageIndex, int nbPages)
+{
+	int i;
+	bool allAllocated = true;
+	for(i = 0 ; i < nbPages ; i++)
+	{
+		allAllocated &= frameProvider->ReleaseFrame(beginPageIndex + i);
+	}
+	return allAllocated;
+}
+
+void AddrSpace::unMapStack(int stackAddr)
+{
+	ASSERT(((stackAddr - UserStackSize) % PageSize) == 0);
+	int beginPage = (stackAddr - UserStackSize) / PageSize;
+	unMap(beginPage, UserStackSize / PageSize);
 }
 
 int AddrSpace::getPid()

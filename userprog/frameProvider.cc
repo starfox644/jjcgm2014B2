@@ -14,7 +14,7 @@ int FrameProvider::GetEmptyFrame()
 	int indexFrame;
 	if ((indexFrame = bitmap->Find ()) == -1)
 	{
-		printf(" No frame are free ");
+		printf(" No frame are free\n");
 		return -1;
 	}
 	// initialisation du cadre à 0
@@ -24,10 +24,18 @@ int FrameProvider::GetEmptyFrame()
 	return indexFrame;
 }
 
-void FrameProvider::ReleaseFrame(int indexFrame)
+bool FrameProvider::ReleaseFrame(int indexFrame)
 {
-	// indique que la page est libre
-	bitmap->Clear(indexFrame);
+	if(!bitmap->Test(indexFrame))
+	{
+		return false;
+	}
+	else
+	{
+		// indique que la page est libre
+		bitmap->Clear(indexFrame);
+		return true;
+	}
 }
 
 
