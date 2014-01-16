@@ -17,7 +17,7 @@
 #include "timer.h"
 #ifdef step4
 #include "frameProvider.h"
-//class ProcessManager;
+#include "processManager.h"
 #endif
 
 #ifdef CHANGED

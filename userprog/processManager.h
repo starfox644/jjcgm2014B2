@@ -8,8 +8,7 @@
 #ifndef __PROCESSMANAGER__H__
 #define __PROCESSMANAGER__H__
 
-#include "system.h"
-#include "addrspace.h"
+#include "synch.h"
 
 class ProcessManager{
 
