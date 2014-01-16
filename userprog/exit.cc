@@ -22,13 +22,15 @@ void do_exit(int returnCode)
 		currentThread->space->s_exit->P();
 	}
 
+//	currentThread->space->processRunning = false;
+
 	if(currentThread->space != NULL)
 	{
 		delete currentThread->space;
 		currentThread->space = NULL;
 	}
 
-	printf("Program stopped with return code : %d\n", returnCode);
+//	printf("Program stopped with return code : %d\n", returnCode);
 	DEBUG('a',"Program exit");
 
 #ifdef step4
@@ -37,16 +39,14 @@ void do_exit(int returnCode)
 	if (getNbProcess() > 1)
 	{
 		removeProcess();
-		//threadToBeDestroyed = currentThread;
-		currentThread->space->processRunning = false;
+		// threadToBeDestroyed = currentThread;
 		s_process->V();
-		//currentThread->Yield();
+		// currentThread->Yield();
 		currentThread->Finish();
 	}
 	else // the current thread is the last thread
 	{
 		removeProcess();
-		currentThread->space->processRunning = false;
 		s_process->V();
 		// stop the program
 		interrupt->Halt ();

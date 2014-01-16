@@ -119,6 +119,11 @@ class AddrSpace
      */
     Semaphore* getSemaphore(int id);
 
+    /**
+     * Delete the semaphore list
+     */
+    void deleteSemaphores();
+
     // threads of the address space
     std::list<Thread*> l_threads;
 
