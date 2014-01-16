@@ -17,6 +17,7 @@
 #include "timer.h"
 #ifdef step4
 #include "frameProvider.h"
+#include "processManager.h"
 #endif
 
 #ifdef CHANGED
@@ -37,6 +38,7 @@ extern Statistics *stats;	// performance metrics
 extern Timer *timer;		// the hardware alarm clock
 #ifdef step4
 extern FrameProvider *frameProvider; // permet de gerer les cadres
+extern ProcessManager *processManager; //permet de gerer les processus
 // number of process for process.cc
 extern int nbProcess;
 extern Semaphore *s_process;

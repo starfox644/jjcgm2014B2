@@ -83,6 +83,7 @@ AddrSpace::AddrSpace ()
 	nbThreads = 0;
 	pid = 0;
 	attente = false;
+	processRunning = false; //true si en cours d'exécution false sinon
 	s_exit = new Semaphore("exit semaphore", 0);
 	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);

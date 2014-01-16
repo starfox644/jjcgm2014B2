@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 1
+#define MAX_PROC 2
 
 int main(){
 	int i;
