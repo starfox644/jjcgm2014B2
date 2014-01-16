@@ -20,13 +20,14 @@
 class Semaphore;
 class Thread;
 #include <list>
-#endif
-
-#ifdef CHANGED
 #define UserStackSize		2048	// increase this as necessary!
 #define UserStackPages		UserStackSize / PageSize;
 #else
 #define UserStackSize		1024	// increase this as necessary!
+#endif
+
+#ifdef step4
+#include "addrSpaceAllocator.h"
 #endif
 
 class AddrSpace
@@ -151,6 +152,8 @@ class AddrSpace
     int getPid();
 
     void printMapping(unsigned int max);
+
+    AddrSpaceAllocator* addrSpaceAllocator;
 
 #endif
 

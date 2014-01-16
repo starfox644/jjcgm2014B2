@@ -18,6 +18,8 @@
 
 #ifdef step4
 #include "synchconsole.h"
+//class AddrSpaceAllocator;
+#include "addrSpaceAllocator.h"
 // On enleve StartProcess de progtest.cc pour le mettre dans process.cc
 #else
 //----------------------------------------------------------------------
@@ -146,8 +148,11 @@ SynchConsoleTest (char *in, char *out)
 #ifdef step4
 int allocatorTest(char *filename)
 {
+	//printf("allocator test\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
+	AddrSpaceAllocator *addrSpaceAlloc;
+	int addr;
 
 	if (executable == NULL)
 	{
@@ -161,6 +166,158 @@ int allocatorTest(char *filename)
 
 	// rajouter ici les tests d'allocation
 	printf("tests d'allocation\n");
+	addrSpaceAlloc = new AddrSpaceAllocator(space, 0, MemorySize);
+
+	addrSpaceAlloc->printFreeList();
+	addrSpaceAlloc->printBusyList();
+	if ((addr = addrSpaceAlloc->allocateFirst(52, false,true)) == -1)
+	{
+		printf("***ECHEC ALLOCATION***\n");
+	}
+	else
+	{
+		printf("***ALLOCATION A L'ADRESSE %d  OK***\n", addr);
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+
+	if ((addr = addrSpaceAlloc->allocateFirst(200, false,false)) == -1)
+	{
+		printf("***ECHEC ALLOCATION***\n");
+	}
+	else
+	{
+		printf("***ALLOCATION A L'ADRESSE %d   OK***\n", addr);
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+/*
+	if ((addr = addrSpaceAlloc->allocateFirst(20, false,false)) == -1)
+	{
+		printf("***ECHEC ALLOCATION***\n");
+	}
+	else
+	{
+		printf("***ALLOCATION A L'ADRESSE %d   OK*** \n", addr);
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+*/
+
+	if (addrSpaceAlloc->free(0) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK en 0***\n");
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+/*
+	if ((addr = addrSpaceAlloc->allocateFirst(178, false,false)) == -1)
+	{
+		printf("***ECHEC ALLOCATION***\n");
+	}
+	else
+	{
+		printf("***ALLOCATION A L'ADRESSE %d   OK***\n", addr);
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+
+	if ((addr = addrSpaceAlloc->allocateFirst(65139, false,false)) == -1)
+	{
+		printf("***ECHEC ALLOCATION***\n");
+	}
+	else
+	{
+		printf("***ALLOCATION de 65138 A L'ADRESSE %d   OK***\n", addr);
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+
+	if (addrSpaceAlloc->free(378) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK en 378***\n");
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+
+	if (addrSpaceAlloc->free(178) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK en 178***\n");
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+
+
+	if (addrSpaceAlloc->free(0) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK en 0***\n");
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+
+
+
+	if (addrSpaceAlloc->free(398) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK en 398***\n");
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}*/
+
+/*
+	if (addrSpaceAlloc->free(178) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK 178***\n");
+	}
+	addrSpaceAlloc->printFreeList();
+	addrSpaceAlloc->printBusyList();
+
+	if (addrSpaceAlloc->free(378) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK 378***\n");
+	}
+	addrSpaceAlloc->printFreeList();
+	addrSpaceAlloc->printBusyList();*/
+/*
+	if ((addr = addrSpaceAlloc->allocateFirst(179, false,true)) == -1)
+	{
+		printf("***ECHEC ALLOCATION***\n");
+	}
+	else
+	{
+		printf("***ALLOCATION A L'ADRESSE %d***\n", addr);
+	}
+	addrSpaceAlloc->printFreeList();
+	addrSpaceAlloc->printBusyList();*/
+	printf("Fin allocatorTest\n");
 	return 0;
 }
 #endif
