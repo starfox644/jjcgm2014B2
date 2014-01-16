@@ -23,8 +23,6 @@
 #ifdef CHANGED
 #ifdef countNew
 #include "countNew.h"
-int nbNewThread = 0;
-int nbThreadsCreated = 0;
 #endif
 #endif
 
@@ -34,7 +32,27 @@ int nbThreadsCreated = 0;
 
 #ifdef CHANGED
 	int Thread::nextTid = 1;
+
+
+#ifdef countNew
+	int Thread::nbNewThread = 0;
+	int Thread::nbThreadsCreated = 0;
+
+	int Thread::getNbNewThread() {
+		return nbNewThread;
+	}
+
+	int Thread::getNbThreadsCreated() {
+		return nbThreadsCreated;
+	}
 #endif
+
+
+#endif
+
+
+
+
 //----------------------------------------------------------------------
 // Thread::Thread
 //      Initialize a thread control block, so that we can then call

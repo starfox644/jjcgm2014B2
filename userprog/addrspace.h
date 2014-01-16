@@ -20,13 +20,14 @@
 class Semaphore;
 class Thread;
 #include <list>
-#endif
-
-#ifdef CHANGED
 #define UserStackSize		2048	// increase this as necessary!
 #define UserStackPages		UserStackSize / PageSize;
 #else
 #define UserStackSize		1024	// increase this as necessary!
+#endif
+
+#ifdef step4
+#include "addrSpaceAllocator.h"
 #endif
 
 class AddrSpace
@@ -35,8 +36,12 @@ class AddrSpace
 
 #ifdef CHANGED
 #ifdef countNew
-	int nbNewAddrspace;
-	int nbAddrspaceCreated;
+	// to count number of allocations
+	static int nbNewAddrspace;
+	static int nbAddrspaceCreated;
+
+	static 	int getNbNewAddrspace();
+	static int getNbAddrspaceCreated();
 #endif
 #endif
 
@@ -141,7 +146,7 @@ class AddrSpace
     bool map(int virtualAddr, int length, bool write);
 
     /**
-     * 	Release nbFrames of physical memory begining at beginPageIndex
+     * 	Release nbFrames of physical memory beginning at beginPageIndex
      * 	returns false if at least one page isn't allocated
      */
     bool unMap(int beginPageIndex, int nbFrames);
@@ -152,6 +157,8 @@ class AddrSpace
     int getPid();
 
     void printMapping(unsigned int max);
+
+    AddrSpaceAllocator* addrSpaceAllocator;
 
 #endif
 
