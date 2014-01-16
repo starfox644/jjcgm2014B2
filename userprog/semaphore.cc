@@ -2,6 +2,7 @@
 #include "system.h"
 #include "syscall.h"
 #include <iostream>
+#include "addrspace.h"
 
 #ifdef countNew
 #include "countNew.h"
@@ -15,7 +16,7 @@ int do_SemInit(int adrSem, int initValue)
 {
 	int id;
 	bool isSuccess;
-	id = currentThread->space->addSemaphore(initValue);
+	id = currentThread->process->getAddrSpace()->addSemaphore(initValue);
 	isSuccess = machine->WriteMem(adrSem, 4, id);
 	if (isSuccess == 1)
 		return 0;
@@ -30,7 +31,7 @@ int do_SemInit(int adrSem, int initValue)
 int do_SemWait(int id)
 {
 	Semaphore *sem;
-	sem = currentThread->space->getSemaphore(id);
+	sem = currentThread->process->getAddrSpace()->getSemaphore(id);
 	if (sem != NULL)
 	{
 		sem->P();
@@ -47,7 +48,7 @@ int do_SemWait(int id)
 int do_SemPost(int id)
 {
 	Semaphore *sem;
-		sem = currentThread->space->getSemaphore(id);
+		sem = currentThread->process->getAddrSpace()->getSemaphore(id);
 		if (sem != NULL)
 		{
 			sem->V();
@@ -62,7 +63,7 @@ int do_SemPost(int id)
  */
 int do_SemDestroy(int id)
 {
-	if (currentThread->space->removeSemaphore(id) != -1)
+	if (currentThread->process->getAddrSpace()->removeSemaphore(id) != -1)
 		return 0;
 	else
 		return -1;

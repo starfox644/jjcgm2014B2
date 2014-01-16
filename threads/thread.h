@@ -42,7 +42,12 @@
 
 #ifdef USER_PROGRAM
 #include "machine.h"
+#ifdef CHANGED
+#include "process.h"
+class Semaphore;
+#else
 #include "addrspace.h"
+#endif
 #include <limits.h>
 #endif
 
@@ -171,8 +176,11 @@ public:
 	void SaveUserState ();	// save user-level register state
 	void RestoreUserState ();	// restore user-level register state
 
-	AddrSpace *space;		// User code this thread is running.
-
+#ifdef CHANGED
+	Process *process; // thread's process reference
+#else
+	AddrSpace *space; // User code this thread is running.
+#endif
 
 #ifdef CHANGED
 	int tid;				// thread id
