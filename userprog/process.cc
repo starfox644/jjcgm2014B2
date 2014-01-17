@@ -92,7 +92,7 @@ int getNbProcess () {
  */
 int allocateProcessSpace (Thread *t, char *filename)
 {
-	//printf("[allocateProcessSpace] Debut fonction\n");
+//	printf("[allocateProcessSpace] Debut fonction\n");
 	OpenFile *executable = fileSystem->Open (filename);
 
 	if (executable == NULL)
@@ -102,7 +102,7 @@ int allocateProcessSpace (Thread *t, char *filename)
 	}
 	Process* process = NULL;
 	process = new Process();
-	printf("[AllocateProcessSpace] Creation du processus #%i\n", process->getPid());
+//	printf("[AllocateProcessSpace] Creation du processus #%i\n", process->getPid());
 	if(process == NULL || !process->allocateAddrSpace(executable))
 	{
 		delete executable;		// close file
