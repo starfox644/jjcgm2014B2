@@ -5,13 +5,12 @@
  *  Created on: 17 janv. 2014
  *      Author: galdween
  */
-#include "my_shell.h"
-/*int commandIntegre(char *cmdLine);
 
-void eval(char* cmdLine){
-	int pid; // contient le numéro de processus créé.
+#include "eval.h"
+
+void evalLine(char* cmdLine){
+
 	int newProc, error;
-
 	if(cmdLine[0] == 0){// on ne tient pas compte des lignes vide
 		return ;
 	}
@@ -26,7 +25,7 @@ void eval(char* cmdLine){
 		//on attend que l'executable ce finisse pour retourne au shell.
 		error = WaitPid (newProc);
 		if(error == -1){
-			PutString("Erreur lors de l'attente du processus fils");
+			PutString("Erreur lors de l'attente du processus fils\n");
 			return;
 		}
 	}
@@ -34,13 +33,13 @@ void eval(char* cmdLine){
 }
 
 int commandIntegre(char * cmdLine){
-	if(StrCmp(cmdLine,"quit"){ //commande pour arreter le shell
+	if(StrCmp(cmdLine,"quit") == 1){ //commande pour arreter le shell
 		Exit(0);
 	}
-	if(StrCmp(cmdLine,"jobs"){// on fait l'affichage des processus actif
-		AfficherJobs();
+	if(StrCmp(cmdLine,"jobs") == 1){// on fait l'affichage des processus actif
+		afficherJobs();
 	}
-	if(StrCmp(cmdLine,"help"){//on affiche l'aide de notre shell
+	if(StrCmp(cmdLine,"help") == 1){//on affiche l'aide de notre shell
 		PutString("Bienvenue dans l'aide de NachOS_Shell\n\n");
 		PutString("-Pour afficher les programmes en cours : \n");
 		PutString("\tTapez jobs\n");
@@ -52,4 +51,4 @@ int commandIntegre(char * cmdLine){
 	}
 	//pour le moment pas de ligne intégré autre que la commande quitter
 	return 0;
-}*/
+}
