@@ -106,8 +106,8 @@ void do_UserThreadExit(int status)
 		// if the main thread is waiting, notify the end of the thread
 		if(space->attente)
 			space->s_exit->V();
-		currentProcess->threadManager->s_nbThreads->V();
 		currentThread->setThreadReturn(status);
+		currentProcess->threadManager->s_nbThreads->V();
 		// terminates this thread
 		currentThread->Finish();
 	}

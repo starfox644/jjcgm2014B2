@@ -162,6 +162,7 @@ int allocatorTest(char *filename)
 		return -1;
 	}
 	space = new AddrSpace ();
+	space->loadInitialSections(executable);
 	delete executable;		// close file
 
 	// rajouter ici les tests d'allocation

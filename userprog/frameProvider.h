@@ -3,6 +3,7 @@
 
 #ifdef step4
 #include "bitmap.h"
+class Semaphore;
 
 class FrameProvider
 {
@@ -12,8 +13,10 @@ class FrameProvider
     // libère la page de numero indexFrame, retourne false si la page n'a pas ete allouee
     bool ReleaseFrame(int indexFrame);
     int NumAvailFrame();	    // renvoie le nombre de cadres disponibles
+    int verifyFrame(int indexFrame);	// verifie si la frame de numero indexFrame est allouee
 
   private:
+    Semaphore* s_frames;
     BitMap *bitmap;
 };
 #endif

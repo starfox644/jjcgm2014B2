@@ -1,4 +1,6 @@
 #ifdef CHANGED
+class SemaphoreManager;
+
 
 /**
 *	Demande l'initialisation d'un semaphore noyau

@@ -16,6 +16,7 @@ AddrSpaceAllocator::AddrSpaceAllocator(AddrSpace* addrS, int addr, int length)
 	freeHead->next = NULL;
 	busyHead = new struct space;
 	busyHead = NULL;
+	s_alloc = new Semaphore("semaphore alloc", 1);
 }
 
 AddrSpaceAllocator::~AddrSpaceAllocator()
@@ -388,10 +389,12 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 	struct space* current = canAllocate(alignedLength);
 	printf("Apres canAllocate\n");
 	int size, addrMap = 0;
+	s_alloc->P();
 
 	if (current == NULL)
 	{
-		printf("IMPOSSIBLE D'ALLOUER\n");
+		//printf("IMPOSSIBLE D'ALLOUER\n");
+		s_alloc->V();
 		return -1;
 	}
 	else
@@ -422,10 +425,17 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		}
 		else
 		{
+<<<<<<< HEAD
 			printf("erreur map\n");
+=======
+			//printf("erreur map\n");
+			s_alloc->V();
+>>>>>>> 7f170fcdbac2f12e83ba2dae73c0a9fa5413a0ad
 			return -1;
 		}
 	}
+	printf("adresse allouee : %i\n", addrMap);
+	s_alloc->V();
 	return addrMap;
 }
 
@@ -437,13 +447,14 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 int AddrSpaceAllocator::free(int addr)
 {
 	int length;
-	//printf("debut de liberation de l'adresse : %d\n", addr);
+	printf("adresse liberee : %i\n", addr);
 	ASSERT((addr%PageSize) == 0);
-
+	s_alloc->P();
 	// suppression dans la liste des bloc occupes
 	if ((length = removeBusySpace(addr)) == -1)
 	{
 		//printf("erreur de suppression d'un espace occupe\n");
+		s_alloc->V();
 		ASSERT(FALSE);
 		return -1;
 	}
@@ -454,12 +465,14 @@ int AddrSpaceAllocator::free(int addr)
 		{
 			//ajout dand la liste des blocs libres
 			addFreeSpace(addr,length);
+			s_alloc->V();
 			return 0;
 		}
 		else
 		{
 			//printf("erreur de unmap dans addrSpaceAllocator\n");
 			ASSERT(FALSE);
+			s_alloc->V();
 			return -1;
 		}
 	}

@@ -46,6 +46,7 @@
 #define SC_UserThreadJoin 23
 #define SC_ForkExec 24
 #define SC_GetPid 25
+#define SC_WaitPid 26
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -225,6 +226,11 @@ int ForkExec(char *executable);
  * Return the current procesus ID
  */
 int GetPid();
+
+/*
+ *  attend qu'un processus soit fini pour continuer a executer le processus courant
+ */
+int WaitPid(int processPid);
 
 #endif // CHANGED
 

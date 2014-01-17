@@ -3,6 +3,7 @@
 #define ___ADDRSPACEALLOCATOR
 
 class AddrSpace;
+class Semaphore;
 
 	struct space
 	{
@@ -111,6 +112,8 @@ class AddrSpaceAllocator
 		 */
 		struct space* freeHead;
 		struct space* busyHead;
+
+		Semaphore* s_alloc;
 };
 #endif // ___ADDRSPACEALLOCATOR
 
