@@ -2,6 +2,7 @@
 #include "machine.h"
 #include "syscall.h"
 #include "system.h"
+#include "semaphoreManager.h"
 #include "threadManager.h"
 
 #ifdef step4
@@ -86,7 +87,7 @@ int getNbProcess () {
 	return nbProcess;
 }
 
-#endif
+#endif // step4
 
 /**
  * Alloue l'espace necessaire au processus pour son programme.
@@ -141,6 +142,7 @@ StartProcess (char *filename)
 #ifdef step4
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
+
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user progam
@@ -161,6 +163,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 {
 	bool return_value = true;
 #ifdef step4
+	semManager = new SemaphoreManager();
 	addrSpace = new AddrSpace();
 	if(addrSpace != NULL)
 	{
@@ -173,7 +176,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	}
 #else
 	addrSpace = new AddrSpace(executable);
-#endif
+#endif // step4
 	return return_value;
 }
 
@@ -200,4 +203,4 @@ void Process::setPid(int newPid)
 	pid = newPid;
 }
 
-#endif
+#endif // CHANGED

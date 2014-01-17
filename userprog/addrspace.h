@@ -91,28 +91,6 @@ class AddrSpace
 
     bool attente;
 
-    /**
-     * Add newSem to semList and allocate it a unique modifier
-     */
-    int addSemaphore(int initValue);
-
-    /**
-     * Remove a semaphore from the list based on his identifier.
-     * If the identifier is valid, the semaphore is destroyed.
-     * If not, the function returns -1.
-     */
-    int removeSemaphore(int id);
-
-    /**
-     * Return the semaphore identified by id, or NULL if it doesn't exist
-     */
-    Semaphore* getSemaphore(int id);
-
-    /**
-     * Delete the semaphore list
-     */
-    void deleteSemaphores();
-
 #ifdef step4
     static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
 	TranslationEntry *pageTable,unsigned numPages);
@@ -180,14 +158,9 @@ class AddrSpace
 #ifdef step4
     int nbPagesUserStack;
 #endif
-    // number of semaphore created
-    int nbSem;
-
 	// number max of threads depending on memory for the stacks
 	int maxThreads;
 
-    // Semaphore list : needed to give an unique identifier for user semaphores
-    std::list<Semaphore*> semList;
     Semaphore* s_stackList;
     // list of available stack address in the address space for the threads
     std::list<int> l_availableStackAddress;
