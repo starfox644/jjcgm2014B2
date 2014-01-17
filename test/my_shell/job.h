@@ -23,5 +23,5 @@ typedef struct job{
 
 void afficherJobs();
 
-
+//pioupiou
 #endif /* JOB_H_ */
