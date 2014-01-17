@@ -9,6 +9,7 @@
 #define MY_NOTEPAD_H_
 #include "../nachos_libc/String.h"
 #include "../nachos_libc/Printf.h"
+#include "../nachos_libc/File.h"
 #include "syscall.h"
 
 /*
