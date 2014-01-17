@@ -7,7 +7,7 @@ class Semaphore;
 
 	struct space
 	{
-		int addr;
+		int addr;	// debut de bloc ou debut de la page interdite
 		int length;
 		bool forbiddenPage;
 		struct space* next;
@@ -46,8 +46,20 @@ class AddrSpaceAllocator
 		struct space* canAllocate(int length);
 
 		/*
+		 *	Verifie si l'adresse est dans une pile
+		 */
+		bool isInStack(int addr);
+
+		/*
+		 *	Renvoie vrai si l'adresse addr passee en parametre appartient au bloc actu,
+		 *	faux sinon.
+		 */
+		bool adresseDansBloc(int addr, struct space* actu);
+
+		/*
 		 *	Allocation d'un bloc memoire, renvoie  l'adresse du bloc si elle s'est
-		 *	bien passee, -1 sinon.
+		 *	bien passee, -1 sinon. Cette adresse represente le debut de la page interdite
+		 *	s'il y a.
 		 *	lengthAlloc : taille du bloc a allouee (+ taille page interdite, s'il y a)
 		 *					cette taille n'est pas alignee selon les pages.
 		 *	write : si ce booleen est a vrai, les pages seront allouees en ecriture

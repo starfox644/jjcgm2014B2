@@ -557,7 +557,7 @@ bool AddrSpace::setAccessRight(unsigned int beginPage, unsigned int nbPages, boo
 int AddrSpace::allocThreadStack()
 {
 	int return_value;
-	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
+	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, true));
 	if(return_value == -1)
 		return -1;
 	else
@@ -566,7 +566,7 @@ int AddrSpace::allocThreadStack()
 
 void AddrSpace::freeThreadStack(unsigned int stackAddr)
 {
-	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
+	addrSpaceAllocator->free(stackAddr - PageSize - UserStackSize + 4);
 }
 
 void AddrSpace::printMapping(unsigned int max)
