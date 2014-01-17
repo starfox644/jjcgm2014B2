@@ -33,7 +33,6 @@ USERPROG_LIBS=start.S
 # USERPROG_LIBS         = start.S nachos-libc.c
 # bigtest_EXTRA_SOURCES = bigtest_extra.c
 
-
 # IMPORTANT: the 4 original user programs (halt, ...) cannot have extra
 # sources and will always be linked only with start.S (USERPROG_LIBS
 # and ..._EXTRA_SOURCES are ignored for them)
