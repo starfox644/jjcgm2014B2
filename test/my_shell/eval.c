@@ -14,9 +14,9 @@ void evalLine(char* cmdLine){
 	if(cmdLine[0] == 0){// on ne tient pas compte des lignes vide
 		return ;
 	}
-
+	parseline(cmdLine,argv);
 	//on teste que ce ne soit pas une commande intégré.
-	if(commandIntegre(cmdLine) != 0){
+	if(commandIntegre(argv[0]) != 0){
 		//pour le moment on part du principe qu'on ne fait que des taches en premier plan et rien en tache de fond.
 		newProc = ForkExec(cmdLine); //on crée notre executable
 		if(newProc == -1){

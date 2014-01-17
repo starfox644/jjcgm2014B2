@@ -11,9 +11,12 @@
 #include "String.h"
 #include "syscall.h"
 #include "Printf.h"
+#include "parseline.h"
 
 #define MAX_CHAR 128
-
+//tableau d'argument
+char** argv;
+//fonction
 void evalLine(char*);
 int commandIntegre(char*);
 
