@@ -12,6 +12,7 @@
 void Printf(char* messageVoulu, void* variable){
 
 	int i = 0;
+	char buffer[MAX_LENGH],bufferSuite[MAX_LENGH];
 	//tant que le mot n'est pas finis ou que l'on ne trouve pas un % on continue
 	while(messageVoulu[i] != '%' || messageVoulu[i] != '\0'){
 		i++;
@@ -22,7 +23,7 @@ void Printf(char* messageVoulu, void* variable){
 	if(messageVoulu[i] == '%'){
 		switch (messageVoulu[i+1]){
 			case 'd'://on a un entier a afficher
-				char buffer[MAX_LENGH],bufferSuite[MAX_LENGH];
+
 				StrNCpy(messageVoulu, buffer, i - 1);
 				PutString(buffer);
 				PutInt((int) variable);
@@ -31,7 +32,7 @@ void Printf(char* messageVoulu, void* variable){
 					return;
 				}else{ //message non finis on continue d'afficher le reste du texte
 					int j = 0;
-					while(messageVoulu(i) != '\0'){
+					while(messageVoulu[i] != '\0'){
 						bufferSuite[j] = messageVoulu[i];
 						j++;
 						i++;

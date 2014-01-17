@@ -15,7 +15,7 @@ void evalLine(char* cmdLine){
 		return ;
 	}
 	//on teste que ce ne soit pas une commande intégré.
-	if(!commandIntegre(cmdLine)){
+	if(commandIntegre(cmdLine) != 0){
 		//pour le moment on part du principe qu'on ne fait que des taches en premier plan et rien en tache de fond.
 		newProc = ForkExec(cmdLine); //on crée notre executable
 		if(newProc == -1){
@@ -38,12 +38,15 @@ int commandIntegre(char * cmdLine){
 	}
 	if(StrCmp(cmdLine,"jobs") == 1){// on fait l'affichage des processus actif
 		afficherJobs();
+		return 0;
 	}
 	if(StrCmp(cmdLine,"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
 		PutString("Non implémenté :D\n");
+		return 0;
 	}
-	if(StrCmp(cmdLine,'pwd') == 1){//affiche le chemin du répertoire courant
+	if(StrCmp(cmdLine,"pwd") == 1){//affiche le chemin du répertoire courant
 		PutString("Non implémenté :D\n");
+		return 0;
 	}
 	if(StrCmp(cmdLine,"help") == 1){//on affiche l'aide de notre shell
 		PutString("Bienvenue dans l'aide de NachOS_Shell\n\n");
@@ -53,8 +56,9 @@ int commandIntegre(char * cmdLine){
 		PutString("\tTapez quit\n");
 		PutString("Merci d'utiliser NachOS_Shell!\n");
 		PutString("A bientot\n");
+		return 0;
 
 	}
 	//pour le moment pas de ligne intégré autre que la commande quitter
-	return 0;
+	return 1;
 }
