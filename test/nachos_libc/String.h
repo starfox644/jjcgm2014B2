@@ -42,4 +42,14 @@ int StrLengh(char * element);
  */
 char* StrChr(char *element, char elementATrouve);
 
+/*
+ * Fonction permettant de concatener deux mots.
+ */
+char* StrCat(char *source,char *destination);
+
+/*
+ * Fonction permettant de concatener une partie de n element du mot source vers le mot destination
+ */
+char* StrNCat(char * source, char *destination, int taille);
+
 #endif /* STRING_H_ */
