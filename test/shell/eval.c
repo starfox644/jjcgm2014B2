@@ -11,7 +11,8 @@ int commandIntegre(char *cmdLine);
 void eval(char* cmdLine){
 	int pid // contient le numéro de processus créé.
 	int newProc, error;
-	if(cmdLine == 0){// on ne tient pas compte des lignes vide
+
+	if(cmdLine[0] == 0){// on ne tient pas compte des lignes vide
 		return ;
 	}
 	//on teste que ce ne soit pas une commande intégré.
@@ -33,8 +34,21 @@ void eval(char* cmdLine){
 }
 
 int commandIntegre(char * cmdLine){
-	if(StrCmp(cmdLine,"quit"){
-		Exit(0);	//commande pour arreter le shell
+	if(StrCmp(cmdLine,"quit"){ //commande pour arreter le shell
+		Exit(0);
+	}
+	if(StrCmp(cmdLine,"jobs"){// on fait l'affichage des processus actif
+		AfficherJobs();
+	}
+	if(StrCmp(cmdLine,"help"){//on affiche l'aide de notre shell
+		PutString("Bienvenue dans l'aide de NachOS_Shell\n\n");
+		PutString("-Pour afficher les programmes en cours : \n");
+		PutString("\tTapez jobs\n");
+		PutString("-Pour quitter NachOS_Shell : \n");
+		PutString("\tTapez quit\n");
+		PutString("Merci d'utiliser NachOS_Shell!\n");
+		PutString("A bientot\n");
+
 	}
 	//pour le moment pas de ligne intégré autre que la commande quitter
 	return 0;

@@ -8,6 +8,6 @@
 #include "String.h"
 #define MAX_CHAR 128
 
-SynchConsole *console;
+static SynchConsole *console;
 
 
