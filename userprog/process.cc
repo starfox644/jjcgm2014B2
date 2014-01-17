@@ -6,6 +6,7 @@
 #include "threadManager.h"
 
 #ifdef step4
+
 /**
  * Cree un thread et y lance le programme donne en parametre.
  * Renvoie 0 si le thread est bien cree, -1 sinon
@@ -15,6 +16,8 @@ int do_forkExec(int adrExec)
 	char executable[MAX_STRING_SIZE];
 	int c;
 	int i = 0;
+
+	// cree une section critique pour creer un processus
 	s_createProcess->P();
 	// On recupere le chemin du programme a lancer char par char
 	machine->ReadMem(adrExec, 1, &c);
@@ -32,20 +35,22 @@ int do_forkExec(int adrExec)
 	else
 		executable[i] = '\0';
 
-	//printf("[ForkExec] executable : %s\n", executable);
-
 	Thread *t = new Thread("ThreadForkExec");
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
 		addProcess(); // ajoute 1 au nb de processus en cours
-		//printf("[ForkExec] allocate reussi\n");
+		// creation du thread principal
 		t->Fork(UserStartProcess, 0);
+		// relachement de la section critique de creation
 		s_createProcess->V();
 		return 0;
 	}
 	else
 	{
+		// erreur : l'allocation du processus ou du thread a echoue
+
+		// relachement de la section critique de creation
 		s_createProcess->V();
 		return -1;
 	}

@@ -1,8 +1,8 @@
 /*
  * Programme utilisateur de shell pour que les utilisateurs ai un interface.
  */
-#include "shell.h"
-int main (){
+/*#include "shell.h"
+int main (){*/
 
 /*int main (){
 
