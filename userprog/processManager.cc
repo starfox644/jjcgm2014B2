@@ -13,12 +13,12 @@ ProcessManager::ProcessManager (){
 	nbAdrProcess = 0;
 }
 
-int ProcessManager::addAddrProcess(AddrSpace *adr){
+int ProcessManager::addAddrProcess(Process *proc){
 	sem_Wait->P();
 	if(adr->processRunning){ // si le programme est en cours d'execution on le rajoute
 		nbAdrProcess++;
 		//rajout de notre adresse de processus dans la liste
-		l_process.push_back(adr);
+		l_process.push_back(proc);
 	}else{ //le programme n'est pas en cours d'execution donc on a une erreur
 		sem_Wait->V();
 		return -1;
@@ -27,9 +27,10 @@ int ProcessManager::addAddrProcess(AddrSpace *adr){
 	sem_Wait->V();
 	return 0;
 }
-void ProcessManager::removeAddrProcess(AddrSpace *adr){
+void ProcessManager::removeAddrProcess(Process *proc){
 	sem_Wait->P();
 	nbAdrProcess--;
+	proc->RunningStatus = false;
 	sem_Wait->V();
 }
 int ProcessManager::getNbAddrProcess(){
@@ -43,7 +44,7 @@ int ProcessManager::getNbAddrProcess(){
 int ProcessManager::WaitPid(int processPid){
 	sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
-	std::list<AddrSpace*>::iterator it=l_process.begin();
+	std::list<Process*>::iterator it=l_process.begin();
 	while (it != l_process.end() && (*it)->pid != processPid)
 		it++;
 	// si l'adresse du process n'est pas trouvee, return -1 : error

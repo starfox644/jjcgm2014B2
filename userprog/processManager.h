@@ -22,9 +22,9 @@ class ProcessManager{
 		// liste des addrSpace de chaque processus
 		std::list<Process*> l_process;
 		//rajout d'une addresse d'un processus a notre liste
-		int addAddrProcess(AddrSpace *);
+		int addAddrProcess(Process *);
 		//suppression d'une addresse d'un processus de notre liste
-		void removeAddrProcess(AddrSpace *);
+		void removeAddrProcess(Process *);
 		//récupération du nombre d'adresse de processus
 		int getNbAddrProcess();
 
