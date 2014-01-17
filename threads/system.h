@@ -30,6 +30,11 @@ extern void Initialize (int argc, char **argv);	// Initialization,
 extern void Cleanup ();		// Cleanup, called when
 						// Nachos is done.
 
+#ifdef CHANGED
+extern Process* currentProcess;
+extern Semaphore *s_createProcess;
+#endif
+
 extern Thread *currentThread;	// the thread holding the CPU
 extern Thread *threadToBeDestroyed;	// the thread that just finished
 extern Scheduler *scheduler;	// the ready list
@@ -41,7 +46,6 @@ extern FrameProvider *frameProvider; // permet de gerer les cadres
 extern ProcessManager *processManager; //permet de gerer les processus
 // number of process for process.cc
 extern int nbProcess;
-extern Semaphore *s_process;
 extern Semaphore *s_nbProcess;
 extern int pid;
 #endif

@@ -191,7 +191,12 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
 	TranslationEntry *entry;
 	unsigned int pageFrame;
 
+#ifdef CHANGED
+	vpn = (unsigned) virtAddr / PageSize;
+	DEBUG('a', "\tTranslate vpn : %i frame : %i \n", vpn, pageTable[vpn]);
+#else
 	DEBUG('a', "\tTranslate 0x%x, %s: ", virtAddr, writing ? "write" : "read");
+#endif
 
 	// check for alignment errors
 	if (((size == 4) && (virtAddr & 0x3)) || ((size == 2) && (virtAddr & 0x1))){

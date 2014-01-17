@@ -29,7 +29,7 @@
 
 Scheduler::Scheduler ()
 {
-    readyList = new List;
+	readyList = new List;
 }
 
 //----------------------------------------------------------------------
@@ -39,7 +39,7 @@ Scheduler::Scheduler ()
 
 Scheduler::~Scheduler ()
 {
-    delete readyList;
+	delete readyList;
 }
 
 //----------------------------------------------------------------------
@@ -53,10 +53,10 @@ Scheduler::~Scheduler ()
 void
 Scheduler::ReadyToRun (Thread * thread)
 {
-    DEBUG ('t', "Putting thread %s on ready list.\n", thread->getName ());
+	DEBUG ('t', "Putting thread %s on ready list.\n", thread->getName ());
 
-    thread->setStatus (READY);
-    readyList->Append ((void *) thread);
+	thread->setStatus (READY);
+	readyList->Append ((void *) thread);
 }
 
 //----------------------------------------------------------------------
@@ -70,7 +70,7 @@ Scheduler::ReadyToRun (Thread * thread)
 Thread *
 Scheduler::FindNextToRun ()
 {
-    return (Thread *) readyList->Remove ();
+	return (Thread *) readyList->Remove ();
 }
 
 //----------------------------------------------------------------------
@@ -90,54 +90,69 @@ Scheduler::FindNextToRun ()
 void
 Scheduler::Run (Thread * nextThread)
 {
-    Thread *oldThread = currentThread;
+	Thread *oldThread = currentThread;
 
-    // LB: For safety...
-    ASSERT (interrupt->getLevel () == IntOff);
-    // End of addition
+	// LB: For safety...
+	ASSERT (interrupt->getLevel () == IntOff);
+	// End of addition
 
 #ifdef USER_PROGRAM		// ignore until running user programs
-    if (currentThread->space != NULL)
-      {				// if this thread is a user program,
-	  currentThread->SaveUserState ();	// save the user's CPU registers
-	  currentThread->space->SaveState ();
-      }
+#ifdef CHANGED
+	currentThread->SaveUserState ();	// to restore, do it.
+	currentProcess->getAddrSpace()->SaveState ();
+#else
+	if (currentThread->space != NULL)
+	{				// if there is an address space
+		currentThread->SaveUserState ();	// to restore, do it.
+		currentThread->space->SaveState ();
+	}
+#endif
 #endif
 
-    oldThread->CheckOverflow ();	// check if the old thread
-    // had an undetected stack overflow
+	oldThread->CheckOverflow ();	// check if the old thread
+	// had an undetected stack overflow
 
-    currentThread = nextThread;	// switch to the next thread
-    currentThread->setStatus (RUNNING);	// nextThread is now running
+	currentThread = nextThread;	// switch to the next thread
+	currentThread->setStatus (RUNNING);	// nextThread is now running
 
-    DEBUG ('t', "Switching from thread \"%s\" to thread \"%s\"\n",
-	   oldThread->getName (), nextThread->getName ());
+#ifdef CHANGED
+	// current process is the process of the current thread
+	currentProcess = currentThread->process;
+#endif
 
-    // This is a machine-dependent assembly language routine defined 
-    // in switch.s.  You may have to think
-    // a bit to figure out what happens after this, both from the point
-    // of view of the thread and from the perspective of the "outside world".
-    SWITCH (oldThread, nextThread);
+	DEBUG ('t', "Switching from thread \"%s\" to thread \"%s\"\n",
+			oldThread->getName (), nextThread->getName ());
 
-    DEBUG ('t', "Now in thread \"%s\"\n", currentThread->getName ());
+	// This is a machine-dependent assembly language routine defined
+	// in switch.s.  You may have to think
+	// a bit to figure out what happens after this, both from the point
+	// of view of the thread and from the perspective of the "outside world".
+	SWITCH (oldThread, nextThread);
 
-    // If the old thread gave up the processor because it was finishing,
-    // we need to delete its carcass.  Note we cannot delete the thread
-    // before now (for example, in Thread::Finish()), because up to this
-    // point, we were still running on the old thread's stack!
-    if (threadToBeDestroyed != NULL)
-      {
-	  delete threadToBeDestroyed;
-	  threadToBeDestroyed = NULL;
-      }
+	DEBUG ('t', "Now in thread \"%s\"\n", currentThread->getName ());
+
+	// If the old thread gave up the processor because it was finishing,
+	// we need to delete its carcass.  Note we cannot delete the thread
+	// before now (for example, in Thread::Finish()), because up to this
+	// point, we were still running on the old thread's stack!
+	if (threadToBeDestroyed != NULL)
+	{
+		delete threadToBeDestroyed;
+		threadToBeDestroyed = NULL;
+	}
 
 #ifdef USER_PROGRAM
-    if (currentThread->space != NULL)
-      {				// if there is an address space
-	  currentThread->RestoreUserState ();	// to restore, do it.
-	  currentThread->space->RestoreState ();
-      }
-#endif
+#ifdef CHANGED
+	currentThread->RestoreUserState ();	// to restore, do it.
+	currentProcess->getAddrSpace()->RestoreState ();
+#else
+	if (currentThread->space != NULL)
+	{				// if there is an address space
+		currentThread->RestoreUserState ();	// to restore, do it.
+		currentThread->space->RestoreState ();
+	}
+#endif // changed
+#endif // user program
 }
 
 //----------------------------------------------------------------------
@@ -148,6 +163,6 @@ Scheduler::Run (Thread * nextThread)
 void
 Scheduler::Print ()
 {
-    printf ("Ready list contents:\n");
-    readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
+	printf ("Ready list contents:\n");
+	readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
 }

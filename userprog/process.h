@@ -2,6 +2,12 @@
 #ifndef ___PROCESS
 #define ___PROCESS
 
+#include "addrspace.h"
+class Thread;
+class OpenFile;
+class SemaphoreManager;
+class ThreadManager;
+
 void addProcess ();
 
 void removeProcess () ;
@@ -31,6 +37,24 @@ void UserStartProcess (int adr);
 //      memory, and jump to it.
 //----------------------------------------------------------------------
 int StartProcess (char *filename);
+
+class Process
+{
+	private:
+		AddrSpace *addrSpace;
+	    int pid;
+	public:
+		SemaphoreManager *semManager;
+		ThreadManager *threadManager;
+		Process();
+		bool allocateAddrSpace(OpenFile * executable);
+		void freeAddrSpace();
+		AddrSpace* getAddrSpace();
+	    void setPid(int newPid);
+	    int getPid();
+
+		bool processRunning; //true si en cours d'exécution false sinon
+};
 
 #endif // CHANGED
 #endif // ___PROCESS

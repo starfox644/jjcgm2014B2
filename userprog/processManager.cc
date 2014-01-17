@@ -9,12 +9,12 @@
 
 ProcessManager::ProcessManager (){
 	//on initialise notre semaphore
-	sem_Wait = new Semaphore("WaitPid semaphore", 1);
-	nbAdrProcess = 0;
+	/*sem_Wait = new Semaphore("WaitPid semaphore", 1);
+	nbAdrProcess = 0;*/
 }
 
 int ProcessManager::addAddrProcess(Process *proc){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	if(adr->processRunning){ // si le programme est en cours d'execution on le rajoute
 		nbAdrProcess++;
 		//rajout de notre adresse de processus dans la liste
@@ -24,14 +24,14 @@ int ProcessManager::addAddrProcess(Process *proc){
 		return -1;
 	}
 
-	sem_Wait->V();
+	sem_Wait->V();*/
 	return 0;
 }
 void ProcessManager::removeAddrProcess(Process *proc){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	nbAdrProcess--;
 	proc->RunningStatus = false;
-	sem_Wait->V();
+	sem_Wait->V();*/
 }
 int ProcessManager::getNbAddrProcess(){
 	return nbAdrProcess;
@@ -42,7 +42,7 @@ int ProcessManager::getNbAddrProcess(){
  * Je suis pas fan de l'attente active que j'ai faite pour le moment. Faut que je change ca >_<
  */
 int ProcessManager::WaitPid(int processPid){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
 	while (it != l_process.end() && (*it)->pid != processPid)
@@ -61,7 +61,8 @@ int ProcessManager::WaitPid(int processPid){
 		sem_Wait->V();							// On libere la ressource
 		return procPid;
 
-	}
+	}*/
+	return 0;
 }
 #endif //step4
 

@@ -1,23 +1,21 @@
 #ifdef CHANGED
-#include "system.h"
-//#include "syscall.h"
-#include "process.h"
-#include "thread.h"
 #include "machine.h"
-//#include "addrspace.h"
-#include <string>
-#include "processManager.h"
+#include "syscall.h"
+#include "system.h"
+#include "semaphoreManager.h"
+#include "threadManager.h"
 
+#ifdef step4
 /**
  * Cree un thread et y lance le programme donne en parametre.
  * Renvoie 0 si le thread est bien cree, -1 sinon
  */
-int do_forkExec(int adrExec) {
-	//printf("[ForkExec] Debut fonction\n");
+int do_forkExec(int adrExec)
+{
 	char executable[MAX_STRING_SIZE];
 	int c;
 	int i = 0;
-	s_process->P();
+	s_createProcess->P();
 	// On recupere le chemin du programme a lancer char par char
 	machine->ReadMem(adrExec, 1, &c);
 	while (i < MAX_STRING_SIZE && c != '\0')
@@ -43,42 +41,14 @@ int do_forkExec(int adrExec) {
 		addProcess(); // ajoute 1 au nb de processus en cours
 		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
-		s_process->V();
+		s_createProcess->V();
 		return 0;
 	}
 	else
 	{
-		s_process->V();
+		s_createProcess->V();
 		return -1;
 	}
-}
-
-/**
- * Alloue l'espace necessaire au processus pour son programme.
- * Renvoie -1 en cas d'erreur, 0 sinon
- */
-int allocateProcessSpace (Thread *t, char *filename)
-{
-	bool isSuccess;
-	//printf("[allocateProcessSpace] Debut fonction\n");
-	OpenFile *executable = fileSystem->Open (filename);
-	AddrSpace *space;
-
-	if (executable == NULL)
-	{
-		printf ("Unable to open file %s\n", filename);
-		return -1;
-	}
-	//space = new AddrSpace (executable);
-	//printf("appel a addrSpace avec %s\n", t->getName());
-	space = new AddrSpace();
-	isSuccess = space->loadInitialSections(executable);
-	if (!isSuccess)
-		return -1;
-	t->space = space;
-
-	delete executable;		// close file
-	return 0;
 }
 
 /**
@@ -86,19 +56,12 @@ int allocateProcessSpace (Thread *t, char *filename)
  */
 void UserStartProcess (int adr)
 {
-	//printf("[UserStartProcess] Creation du processus pour progSimple\n");
-	//printf("[UserStartProcess] Debut fonction\n");
-//	printf("[UserStartProcess] addProcess\n");
-	currentThread->space->setPid(nbProcess);
-	currentThread->space->processRunning = true;
-	processManager->addAddrProcess(currentThread->space);
-	currentThread->space->InitRegisters ();	// set the initial register values
-//	printf("[UserStartProcess] InitRegisters\n");
-	currentThread->space->RestoreState ();	// load page table register
-	//printf("[UserStartProcess] lancement de %s pid : %i\n", currentThread->getName(), currentThread->space->getPid());
-	fflush(stdout);
-//	printf("[UserStartProcess] RestoreState\n");
-	//printf("[UserStartProcess] nbProc : %i\n", currentThread->space->getNbProcess());
+	AddrSpace *space = currentProcess->getAddrSpace();
+	currentProcess->setPid(nbProcess);
+	currentProcess->processRunning = true;
+	//processManager->addAddrProcess(space);
+	space->InitRegisters ();	// set the initial register values
+	space->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user program
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
@@ -108,7 +71,7 @@ void UserStartProcess (int adr)
 void addProcess ()
 {
 	s_nbProcess->P();
-	currentThread->space->setPid(nbProcess);
+	currentProcess->setPid(nbProcess);
 	nbProcess++;
 	s_nbProcess->V();
 }
@@ -122,6 +85,34 @@ void removeProcess () {
 int getNbProcess () {
 	return nbProcess;
 }
+
+#endif // step4
+
+/**
+ * Alloue l'espace necessaire au processus pour son programme.
+ * Renvoie -1 en cas d'erreur, 0 sinon
+ */
+int allocateProcessSpace (Thread *t, char *filename)
+{
+	//printf("[allocateProcessSpace] Debut fonction\n");
+	OpenFile *executable = fileSystem->Open (filename);
+
+	if (executable == NULL)
+	{
+		printf ("Unable to open file %s\n", filename);
+		return -1;
+	}
+	Process* process = NULL;
+	process = new Process();
+	if(process == NULL || !process->allocateAddrSpace(executable))
+	{
+		delete executable;		// close file
+		return -1;
+	}
+	t->process = process;
+	delete executable;		// close file
+	return 0;
+}
 //----------------------------------------------------------------------
 // StartProcess
 //      Run a user program.  Open the executable, load it into
@@ -132,36 +123,84 @@ StartProcess (char *filename)
 {
 	//printf("[StartProcess] Creation du processus pour forkexecsimple\n");
 	OpenFile *executable = fileSystem->Open (filename);
-	AddrSpace *space;
-
 	if (executable == NULL)
 	{
 		printf ("Unable to open file %s\n", filename);
 		Exit(-1);
 	}
-#ifndef step4
-	space = new AddrSpace (executable);
-#else
-	space = new AddrSpace();
-	if(!space->loadInitialSections(executable))
+
+	Process* process = new Process();
+	if(!process->allocateAddrSpace(executable))
 	{
 		delete executable;		// close file
-		delete space;
 		return -1;
 	}
-#endif
-	currentThread->space = space;
-
 	delete executable;		// close file
+	currentThread->process = process;
+	currentProcess = process;
+#ifdef step4
 	addProcess(); // ajoute 1 au nb de processus en cours
-	space->InitRegisters ();	// set the initial register values
-	space->RestoreState ();	// load page table register
+#endif
+
+	process->getAddrSpace()->InitRegisters ();	// set the initial register values
+	process->getAddrSpace()->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user progam
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
 	// by doing the syscall "exit"
 	return -1;
-
 }
 
-#endif
+Process::Process()
+{
+	addrSpace = NULL;
+	processRunning = false;
+	threadManager = new ThreadManager();
+	semManager = new SemaphoreManager();
+}
+
+bool Process::allocateAddrSpace(OpenFile * executable)
+{
+	bool return_value = true;
+#ifdef step4
+	addrSpace = new AddrSpace();
+	if(addrSpace != NULL)
+	{
+		// load code and initial data
+		return_value = addrSpace->loadInitialSections(executable);
+	}
+	else
+	{
+		return_value = false;
+	}
+#else
+	addrSpace = new AddrSpace(executable);
+#endif // step4
+	return return_value;
+}
+
+void Process::freeAddrSpace()
+{
+	delete addrSpace;
+	delete threadManager;
+	delete semManager;
+	addrSpace = NULL;
+}
+
+AddrSpace* Process::getAddrSpace()
+{
+	return addrSpace;
+}
+
+
+int Process::getPid()
+{
+	return pid;
+}
+
+void Process::setPid(int newPid)
+{
+	pid = newPid;
+}
+
+#endif // CHANGED
