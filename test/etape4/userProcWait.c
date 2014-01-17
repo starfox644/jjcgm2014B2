@@ -13,7 +13,7 @@ int main(){
 	int pid, error;
 	PutString("Lancement du programme de test userProcWait\n");
 	PutString("\n");
-	pid = ForkExec("./etape4/userpages0");
+	pid = ForkExec("./etape2/putstring");
 	if(pid == -1){
 		PutString("Erreur de création du processus");
 		PutString("\n");
