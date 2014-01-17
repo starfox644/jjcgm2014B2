@@ -3,6 +3,7 @@
 
 #ifdef step4
 #include "bitmap.h"
+class Semaphore;
 
 class FrameProvider
 {
@@ -15,6 +16,7 @@ class FrameProvider
     int verifyFrame(int indexFrame);	// verifie si la frame de numero indexFrame est allouee
 
   private:
+    Semaphore* s_frames;
     BitMap *bitmap;
 };
 #endif
