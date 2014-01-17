@@ -64,6 +64,7 @@ class Process
 	    // gere les semaphores utilisateurs du processus
 		SemaphoreManager *semManager;
 		// gere les threads crees du processus
+		Semaphore *semProc;
 		ThreadManager *threadManager;
 
 		/**

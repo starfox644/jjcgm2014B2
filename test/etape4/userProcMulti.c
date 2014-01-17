@@ -14,7 +14,7 @@ int main()
 	PutString("Lancement du programme de test userProcMulti\n");
 	for(i = 0; i < MAX_PROC; i++)
 	{
-		PutString("Lancement du proc numéro ");
+//		PutString("Lancement du proc numéro ");
 		PutInt(i);
 		PutString("\n");
 		if(ForkExec("./etape4/userThreadMulti") == -1)

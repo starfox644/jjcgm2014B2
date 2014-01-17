@@ -633,7 +633,7 @@ int AddrSpace::allocThreadStack()
 
 void AddrSpace::freeThreadStack(unsigned int stackAddr)
 {
-	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
+	addrSpaceAllocator->free(stackAddr - PageSize - UserStackSize + 4);
 }
 
 void AddrSpace::printMapping(unsigned int max)
