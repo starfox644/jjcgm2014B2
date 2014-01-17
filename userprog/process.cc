@@ -57,7 +57,6 @@ int do_forkExec(int adrExec)
 void UserStartProcess (int adr)
 {
 	AddrSpace *space = currentProcess->getAddrSpace();
-	currentProcess->setPid(nbProcess);
 	currentProcess->processRunning = true;
 	//processManager->addAddrProcess(space);
 	space->InitRegisters ();	// set the initial register values
@@ -71,7 +70,6 @@ void UserStartProcess (int adr)
 void addProcess ()
 {
 	s_nbProcess->P();
-	currentProcess->setPid(nbProcess);
 	nbProcess++;
 	s_nbProcess->V();
 }
@@ -104,6 +102,7 @@ int allocateProcessSpace (Thread *t, char *filename)
 	}
 	Process* process = NULL;
 	process = new Process();
+	printf("[AllocateProcessSpace] Creation du processus #%i\n", process->getPid());
 	if(process == NULL || !process->allocateAddrSpace(executable))
 	{
 		delete executable;		// close file
@@ -155,6 +154,7 @@ Process::Process()
 {
 	addrSpace = NULL;
 	processRunning = false;
+	pid = nextPid; nextPid++;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 }

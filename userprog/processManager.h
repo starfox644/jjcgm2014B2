@@ -9,6 +9,7 @@
 #define __PROCESSMANAGER__H__
 
 #include "synch.h"
+//class Process;
 
 class ProcessManager{
 

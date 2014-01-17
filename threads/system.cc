@@ -25,6 +25,7 @@ Scheduler *scheduler;		// the ready list
 Interrupt *interrupt;		// interrupt status
 Statistics *stats;		// performance metrics
 Timer *timer;			// the hardware timer device, for invoking context switches
+int nextPid;					// numero du prochain processus a creer
 #ifdef step4
 FrameProvider *frameProvider; 	//gestion des cadres physiques
 ProcessManager *processManager; // gestion des processus
@@ -185,6 +186,7 @@ Initialize (int argc, char **argv)
 	frameProvider = new FrameProvider();
 	s_nbProcess = new Semaphore("sem nb process", 1);
 	nbProcess = 0;
+	nextPid = 0;
 	processManager = new ProcessManager();
 #endif
 

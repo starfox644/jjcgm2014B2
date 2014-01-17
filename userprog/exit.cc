@@ -45,7 +45,7 @@ void do_exit(int returnCode)
 	{
 		removeProcess();
 		//threadToBeDestroyed = currentThread;
-		//currentThread->space->processRunning = false;
+		currentProcess->processRunning = false;
 		//s_createProcess->V();
 		// currentThread->Yield();
 		s_createProcess->V();
@@ -54,7 +54,7 @@ void do_exit(int returnCode)
 	else // the current thread is the last thread
 	{
 		removeProcess();
-		//currentThread->space->processRunning = false;
+		currentProcess->processRunning = false;
 		//s_createProcess->V();
 		// stop the program
 		s_createProcess->V();
