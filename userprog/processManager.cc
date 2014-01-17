@@ -53,7 +53,6 @@ int ProcessManager::WaitPid(int processPid){
 		return -1;
 	}else{
 
-		/* Version corrigee (je suppose que c'est bon) */
 		while((*it)->processRunning == true){	// On attend que le processus termine
 			sem_Wait->V();
 			sem_Wait->P();
