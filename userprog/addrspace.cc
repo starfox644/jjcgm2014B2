@@ -562,9 +562,12 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 	// get physical frames needed
 	do
 	{
+		printf("test invalid page %d valide %d\n", beginPage + i);
 		//DEBUG(',', "tentative de mapping de la page %i du processus %i\n", beginPage + i, getPid());
 		if(!pageTable[beginPage + i].valid)
 		{
+			printf(" La page num %d est valide\n", beginPage+i);
+
 			frame = frameProvider->GetEmptyFrame();
 			if(frame != -1)
 			{
@@ -579,6 +582,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 		}
 		else
 		{
+			printf(" La page num %d est invalide\n", beginPage+i);
 			DEBUG(',', "page %i deja allouee\n", beginPage + i);
 		}
 		i++;

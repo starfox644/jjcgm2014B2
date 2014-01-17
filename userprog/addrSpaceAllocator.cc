@@ -102,10 +102,12 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
 	// plus de bloc libre ou memoire insuffisante
 	if (current == NULL)
 	{
+		printf("current = null dans canAllocate\n");
 		return NULL;
 	}
 	else
 	{
+		printf("current != null dans canAllocate\n");
 		return current;
 	}
 }
@@ -380,13 +382,16 @@ void AddrSpaceAllocator::testFusionDroite(struct space* suiv,  struct space* new
  */
 int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbiddenPage)
 {
+	printf("Debut allocationFirst\n");
 	int alignedLength = divRoundUp(lengthAlloc, PageSize) * PageSize;
+	printf("Apres alignement, allocation de %d\n", alignedLength);
 	struct space* current = canAllocate(alignedLength);
+	printf("Apres canAllocate\n");
 	int size, addrMap = 0;
 
 	if (current == NULL)
 	{
-		//printf("IMPOSSIBLE D'ALLOUER\n");
+		printf("IMPOSSIBLE D'ALLOUER\n");
 		return -1;
 	}
 	else
@@ -395,6 +400,7 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		// d'une page interdite
 		if (forbiddenPage)
 		{
+			printf("Il y a une page interdite\n");
 			size = alignedLength-PageSize;
 			addrMap = current->addr + PageSize;
 			current->forbiddenPage = true;
@@ -405,17 +411,18 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 			addrMap = current->addr;
 			current->forbiddenPage = false;
 		}
-
+		printf("Avant map\n");
 		// associe des frame physique a l'espace d'adressage
 		if (addrspace->mapMem(addrMap, size, write))
 		{
+			printf("map ok\n");
 			addBusySpace(current->addr,alignedLength, forbiddenPage);
 			// suppression du bloc libre et ajout eventuel d'un nouveau bloc
 			removeFreeSpace(current->addr, alignedLength);
 		}
 		else
 		{
-			//printf("erreur map\n");
+			printf("erreur map\n");
 			return -1;
 		}
 	}

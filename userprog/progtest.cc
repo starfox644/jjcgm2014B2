@@ -150,7 +150,7 @@ SynchConsoleTest (char *in, char *out)
 #ifdef step4
 int allocatorTest(char *filename)
 {
-	//printf("allocator test\n");
+	printf("allocator test\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	AddrSpace *space;
 	AddrSpaceAllocator *addrSpaceAlloc;
@@ -170,7 +170,7 @@ int allocatorTest(char *filename)
 
 	addrSpaceAlloc->printFreeList();
 	addrSpaceAlloc->printBusyList();
-	if ((addr = addrSpaceAlloc->allocateFirst(52, false,true)) == -1)
+	if ((addr = addrSpaceAlloc->allocateFirst(180, false,true)) == -1)
 	{
 		printf("***ECHEC ALLOCATION***\n");
 	}
@@ -180,8 +180,17 @@ int allocatorTest(char *filename)
 		addrSpaceAlloc->printFreeList();
 		addrSpaceAlloc->printBusyList();
 	}
-
-	if ((addr = addrSpaceAlloc->allocateFirst(200, false,false)) == -1)
+	if (addrSpaceAlloc->free(128) == -1)
+	{
+		printf("***ECHEC LIBERATION***\n");
+	}
+	else
+	{
+		printf("***LIBERATION OK en 0***\n");
+		addrSpaceAlloc->printFreeList();
+		addrSpaceAlloc->printBusyList();
+	}
+	/*if ((addr = addrSpaceAlloc->allocateFirst(200, false,false)) == -1)
 	{
 		printf("***ECHEC ALLOCATION***\n");
 	}
@@ -204,10 +213,13 @@ int allocatorTest(char *filename)
 	}
 	printf("LIBERATION DE ADDRSPACEALLOCATOR\n");
 	delete addrSpaceAlloc;
+
+
+	printf("toto\n");
 	//addrSpaceAlloc->printFreeList();
-	//addrSpaceAlloc->printBusyList();
-/*
-	if ((addr = addrSpaceAlloc->allocateFirst(178, false,false)) == -1)
+	//addrSpaceAlloc->printBusyList();*/
+
+	/*if ((addr = addrSpaceAlloc->allocateFirst(178, false,false)) == -1)
 	{
 		printf("***ECHEC ALLOCATION***\n");
 	}
@@ -216,8 +228,8 @@ int allocatorTest(char *filename)
 		printf("***ALLOCATION A L'ADRESSE %d   OK***\n", addr);
 		addrSpaceAlloc->printFreeList();
 		addrSpaceAlloc->printBusyList();
-	}
-
+	}*/
+/*
 	if ((addr = addrSpaceAlloc->allocateFirst(65139, false,false)) == -1)
 	{
 		printf("***ECHEC ALLOCATION***\n");
