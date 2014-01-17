@@ -8,6 +8,8 @@
 #ifndef JOB_H_
 #define JOB_H_
 
+#include "eval.h"
+
 #define MAX_CHAR 128
 #define MAX_JOB 1	//nombre maximum de jobs possible
 #define RUN 1		//etat d'un processus lors de l'affichage
@@ -15,13 +17,16 @@
 #define BACK 1		//si le processus est en arriere plan
 #define FIRST 0		//si le processus est au premier plan
 
+
 typedef struct job{
 	int numero;				//numéro du job prend le premier libre dans notre tableau qui est limite a MAXJOBS qui est un choix arbitraire du au projet de SR de L3(peux etre changé si on veut)
+	int pid;
 	int etat;				// etat du job en cours ou arreter
 	int plan;				//plan du job au premier ou arriere plan
 	char command[MAX_CHAR];	//ligne de commande exécuté par le job
 
 }job;
+
 
 /*
  * initialisation du tableau des jobs
@@ -29,7 +34,7 @@ typedef struct job{
 void init_jobs();
 
 /*
- * fonction renvoyant le job en premier plan
+ * fonction renvoyant le job en premier plan, -1 si il n'y en a pas
  */
 int get_premier_jobs();
 
@@ -43,6 +48,7 @@ int premier_libre();
  * et la ligne de commande entré par l'utilisateur
  */
 void add_job(int pid, int plan,char* commande);
+
 /*fonction de suppresion d'un jobs
  * au choix soit par son numéro de jobs
  * soit par son pid
