@@ -9,9 +9,12 @@
 #define MY_NOTEPAD_H_
 #include "../nachos_libc/String.h"
 #include "../nachos_libc/Printf.h"
-#include "system.h"
+#include "syscall.h"
 
-
-
+/*
+ * Fonction servant a afficher le menu de notre notepad
+ *
+ */
+void afficherMenu();
 
 #endif /* MY_NOTEPAD_H_ */
