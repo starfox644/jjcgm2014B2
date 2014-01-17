@@ -103,12 +103,11 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
 	// plus de bloc libre ou memoire insuffisante
 	if (current == NULL)
 	{
-		printf("current = null dans canAllocate\n");
+		printf("[canAllocate] Memoire insuffisante\n");
 		return NULL;
 	}
 	else
 	{
-		printf("current != null dans canAllocate\n");
 		return current;
 	}
 }
@@ -224,6 +223,7 @@ void AddrSpaceAllocator::addFreeSpace(int addr, int length)
 /*
  *	Suppression du bloc occupe d'adresse addr
  *	Renvoie la taille du bloc libere, -1 en cas d'erreur.
+ *	addr = debut page interdite s'il y a
  */
 int AddrSpaceAllocator::removeBusySpace(int addr)
 {
@@ -235,16 +235,13 @@ int AddrSpaceAllocator::removeBusySpace(int addr)
 	if (actu == NULL)
 		return -1;
 
-	while(actu != NULL
-			&& ((!actu->forbiddenPage && actu->addr < addr)
-					|| (actu->forbiddenPage && ((actu->addr - PageSize) < addr))))
+	while(actu != NULL && (actu->addr < addr))
 	{
 		prec = actu;
 		actu = actu->next;
 	}
 
 	// si la liste est vide ou que l'element n'est pas present dans la liste
-	//if(actu->addr != addr || (prec == NULL && actu == NULL))
 	if(actu == NULL || actu->addr != addr)
 	{
 		printf("Bloc d'adresse %d pas trouve\n", addr);
@@ -284,6 +281,7 @@ int AddrSpaceAllocator::removeBusySpace(int addr)
  *	Ajout d'un bloc occupe a l'adresse addr, de taille lengthAlloc
  *	et contenant ou non une page interdite. (ca presence est indiquee par
  *	le booleen forbiddenPage)
+ *	Addr = adresse debut page interdite s'il y a
  */
 void AddrSpaceAllocator::addBusySpace(int addr, int lengthAlloc, bool forbiddenPage)
 {
@@ -302,7 +300,7 @@ void AddrSpaceAllocator::addBusySpace(int addr, int lengthAlloc, bool forbiddenP
 		actu = actu->next;
 	}
 
-	// si la listed es blocs occupes est vide
+	// si la liste des blocs occupes est vide
 	if (prec == NULL && actu == NULL)
 	{
 		busyHead =newSpace;
@@ -383,11 +381,8 @@ void AddrSpaceAllocator::testFusionDroite(struct space* suiv,  struct space* new
  */
 int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbiddenPage)
 {
-	printf("Debut allocationFirst\n");
 	int alignedLength = divRoundUp(lengthAlloc, PageSize) * PageSize;
-	printf("Apres alignement, allocation de %d\n", alignedLength);
 	struct space* current = canAllocate(alignedLength);
-	printf("Apres canAllocate\n");
 	int size, addrMap = 0;
 	s_alloc->P();
 
@@ -403,7 +398,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		// d'une page interdite
 		if (forbiddenPage)
 		{
-			printf("Il y a une page interdite\n");
 			size = alignedLength-PageSize;
 			addrMap = current->addr + PageSize;
 			current->forbiddenPage = true;
@@ -414,40 +408,34 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 			addrMap = current->addr;
 			current->forbiddenPage = false;
 		}
-		printf("Avant map\n");
 		// associe des frame physique a l'espace d'adressage
 		if (addrspace->mapMem(addrMap, size, write))
 		{
-			printf("map ok\n");
 			addBusySpace(current->addr,alignedLength, forbiddenPage);
 			// suppression du bloc libre et ajout eventuel d'un nouveau bloc
 			removeFreeSpace(current->addr, alignedLength);
 		}
 		else
 		{
-<<<<<<< HEAD
-			printf("erreur map\n");
-=======
 			//printf("erreur map\n");
 			s_alloc->V();
->>>>>>> 7f170fcdbac2f12e83ba2dae73c0a9fa5413a0ad
 			return -1;
 		}
 	}
-	printf("adresse allouee : %i\n", addrMap);
 	s_alloc->V();
 	return addrMap;
 }
 
 /*
- * Liberation du bloc dont l'adresse est passee en parametre.
- * Si le bloc n'est pas present dans la liste des blocs occupes, -1 est retourne,
- * 0 en cas de reussite.
+ *	Liberation du bloc occupe d'adresse addr, renvoie 0 si elle s'est
+ *	bien passee, -1 sinon.
+ *	addr : represente l'adresse, alignee sur la taille d'une page,
+ *	du debut du bloc. (s'il y a une page interdite en debut du bloc, addr
+ *	sera celle du debut de cette page)
  */
 int AddrSpaceAllocator::free(int addr)
 {
 	int length;
-	printf("adresse liberee : %i\n", addr);
 	ASSERT((addr%PageSize) == 0);
 	s_alloc->P();
 	// suppression dans la liste des bloc occupes

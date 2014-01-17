@@ -62,7 +62,7 @@ class AddrSpaceAllocator
 		 *	bien passee, -1 sinon.
 		 *	addr : represente l'adresse, alignee sur la taille d'une page,
 		 *	du debut du bloc. (s'il y a une page interdite en debut du bloc, addr
-		 *	sera l'adresse du prochain octet apres cette page)
+		 *	sera celle du debut de cette page)
 		 */
 		int free(int addr);
 
@@ -81,6 +81,7 @@ class AddrSpaceAllocator
 		/*
 		 *	Suppression du bloc occupe d'adresse addr
 		 *	Renvoie la taille du bloc libere, -1 en cas d'erreur.
+		 *	addr = debut page interdite s'il y a
 		 */
 		int removeBusySpace(int addr);
 
@@ -88,6 +89,7 @@ class AddrSpaceAllocator
 		 *	Ajout d'un bloc occupe a l'adresse addr, de taille lengthAlloc
 		 *	et contenant ou non une page interdite. (ca presence est indiquee par
 		 *	le booleen forbiddenPage)
+		 *	Addr = adresse debut page interdite s'il y a
 		 */
 		void addBusySpace(int addr, int lengthAlloc, bool forbiddenPage);
 
