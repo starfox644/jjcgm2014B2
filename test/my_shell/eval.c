@@ -14,12 +14,13 @@ void evalLine(char* cmdLine){
 	if(cmdLine[0] == 0){// on ne tient pas compte des lignes vide
 		return ;
 	}
+
 	//on teste que ce ne soit pas une commande intégré.
 	if(commandIntegre(cmdLine) != 0){
 		//pour le moment on part du principe qu'on ne fait que des taches en premier plan et rien en tache de fond.
 		newProc = ForkExec(cmdLine); //on crée notre executable
 		if(newProc == -1){
-			PutString("Erreur de création de notre processus\n");
+			PutString("Programme non connu\n");
 			return;
 		}
 		//on attend que l'executable ce finisse pour retourne au shell.
@@ -48,14 +49,22 @@ int commandIntegre(char * cmdLine){
 		PutString("Non implémenté :D\n");
 		return 0;
 	}
+	if(StrCmp(cmdLine,"ta") == 1){
+
+		return 0;
+	}
 	if(StrCmp(cmdLine,"help") == 1){//on affiche l'aide de notre shell
-		PutString("Bienvenue dans l'aide de NachOS_Shell\n\n");
-		PutString("-Pour afficher les programmes en cours : \n");
-		PutString("\tTapez jobs\n");
-		PutString("-Pour quitter NachOS_Shell : \n");
-		PutString("\tTapez quit\n");
-		PutString("Merci d'utiliser NachOS_Shell!\n");
-		PutString("A bientot\n");
+		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
+		Printf("-Pour afficher les programmes en cours tapez :",0);
+		Printf(" jobs\n",0);
+		Printf("-Pour afficher le contenu du répertoire courant tapez :",0);
+		Printf(" ls\n",0);
+		Printf("-Pour afficher le chemin du répertoire courant tapez :",0);
+		Printf(" pwd\n",0);
+		Printf("-Pour quitter NachOS tapez :",0);
+		Printf(" quit\n\n",0);
+		Printf("Merci d'utiliser NachOS_Shell!\n",0);
+		Printf("\t\tA bientôt.\n",0);
 		return 0;
 
 	}

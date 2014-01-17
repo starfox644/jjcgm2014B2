@@ -9,9 +9,14 @@
 #define STRING_H_
 
 /*
- * Le but de cette fonction et de pouvoir comparer si 2 string son bien égaux.
+ * Le but de cette fonction et de pouvoir comparer si 2 string sont bien égaux.
  */
 int StrCmp(char*, char*);
+
+/*
+ * Le but de cette fonction et de pouvoir comparer si 2 char sont bien égaux
+ */
+int ChrCmp(char element1, char element2);
 /*
  * Le but de cette fonction et de pouvoir copier 2 char
  */
@@ -21,7 +26,15 @@ int StrCpy(char*, char*);
  * Le but de cette fonction et de pouvoir copier 2 char* sur une taille défini
  */
 int StrNCpy(char*,char*,int);
+/*
+ * Le but de cette fonction et de pouvoir copier 2 char* depuis un point de debut définir et d'une taille voulu
+ * Exemple : si on veut juste de la deuxieme lettre a la 4 eme c'est faisable.
+ */
+int StrNDCpy(char *source,char *destination,int debut, int taille);
 
-
+/*
+ *Le but de cette fonction et de calculer le nombre de caractère d'un char* et de le retourner.
+ */
+int StrLengh(char * element);
 
 #endif /* STRING_H_ */

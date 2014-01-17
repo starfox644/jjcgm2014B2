@@ -10,6 +10,7 @@
 #include "job.h"
 #include "String.h"
 #include "syscall.h"
+#include "Printf.h"
 
 #define MAX_CHAR 128
 
