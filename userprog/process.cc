@@ -8,8 +8,11 @@
 #ifdef step4
 
 /**
- * Cree un thread et y lance le programme donne en parametre.
- * Renvoie 0 si le thread est bien cree, -1 sinon
+ * Realise l'appel system fork exec.
+ * Lit le nom de l'executable dans la memoire du MIPS a partir de l'adresse passee en
+ * parametre et cree un thread principal pour le processus.
+ * Appelle ensuite allocateProcessSpace avec ces infos.
+ * Renvoie 0 si le processus a pu etre cree, -1 sinon
  */
 int do_forkExec(int adrExec)
 {
@@ -28,48 +31,114 @@ int do_forkExec(int adrExec)
 		machine->ReadMem(adrExec+i, 1, &c);
 	}
 
-	// Si le chemin est plus long que MAX_STRING_SIZE, erreur car il n'y aura pas
-	// de '\0' donc le noyau plante
+	// Si le chemin est plus long que MAX_STRING_SIZE, erreur car il n'y aura pas de '\0'
+	// sinon on rajoute un '\0'
 	if (i == MAX_STRING_SIZE)
 		return -1;
 	else
 		executable[i] = '\0';
 
-	Thread *t = new Thread("ThreadForkExec");
-	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
-	if (t != NULL && allocateProcessSpace(t, executable) != -1)
+	// creation du thread principal du processus
+	Thread *t = NULL;
+	t = new Thread("ThreadForkExec");
+	if(t == NULL)
 	{
-		addProcess(); // ajoute 1 au nb de processus en cours
-		// creation du thread principal
-		t->Fork(UserStartProcess, 0);
-		// relachement de la section critique de creation
-		s_createProcess->V();
-		return 0;
-	}
-	else
-	{
-		// erreur : l'allocation du processus ou du thread a echoue
-
 		// relachement de la section critique de creation
 		s_createProcess->V();
 		return -1;
 	}
+	else
+	{
+		// test d'allocation du processus
+		if (allocateProcessSpace(t, executable) != -1)
+		{
+			// ajoute 1 au nb de processus en cours
+			addProcess();
+			// creation du thread principal
+			t->Fork(UserStartProcess, 0);
+			// relachement de la section critique de creation
+			s_createProcess->V();
+			return 0;
+		}
+		else
+		{
+			// erreur : l'allocation du processus a echoue
+			delete t;
+			// relachement de la section critique de creation
+			s_createProcess->V();
+			return -1;
+		}
+	}
 }
 
 /**
- * Lance le processus dans la machine
+ * Alloue l'espace necessaire au processus pour son programme.
+ * t : thread principal du nouveau processus
+ * filename : nom du programme a executer
+ * Renvoie -1 en cas d'erreur, 0 sinon
+ */
+int allocateProcessSpace (Thread *t, char *filename)
+{
+	OpenFile *executable = fileSystem->Open (filename);
+
+	if (executable == NULL)
+	{
+		printf ("Unable to open file %s\n", filename);
+		return -1;
+	}
+	Process* process = NULL;
+	process = new Process();
+	if(process == NULL)
+	{
+		// erreur d'allocation du processus
+
+		delete executable;
+		return -1;
+	}
+	// allocation d'un espace d'adressage
+	else if(!process->allocateAddrSpace(executable))
+	{
+		// erreur d'allocation de l'espace
+
+		delete process;
+		delete executable;
+		return -1;
+	}
+	else
+	{
+		// assignement du processus cree au thread principal
+
+		t->process = process;
+		delete executable;
+		return 0;
+	}
+}
+
+/**
+ * 	Initialise l'etat du processus (registres et chargement de la table des pages)
+ * 	adr n'est pas utilise, il n'est present que pour le prototype de la fonction
+ * 	necessaire au thread.
  */
 void UserStartProcess (int adr)
 {
+	// intialisation du processus en section critique
+	s_createProcess->P();
+	// recuperation de l'espace d'adressage du processus
 	AddrSpace *space = currentProcess->getAddrSpace();
-	currentProcess->setPid(nbProcess);
+	// indication du lancement du processus
 	currentProcess->processRunning = true;
-	space->InitRegisters ();	// set the initial register values
-	space->RestoreState ();	// load page table register
-	machine->Run ();		// jump to the user program
-	ASSERT (FALSE);		// machine->Run never returns;
-	// the address space exits
-	// by doing the syscall "exit"
+	// attribution d'un pid au processus
+	currentProcess->setPid(nbProcess);
+	// initialisation de l'etat du processus
+	space->InitRegisters ();
+	space->RestoreState ();
+	// relachement de section critique
+	s_createProcess->V();
+	// lancement du programme
+	machine->Run ();
+	// on ne revient jamais ici si tout se passe normalement
+	// le processus se termine par un appel a exit
+	ASSERT (FALSE);
 }
 
 void addProcess ()
@@ -92,31 +161,6 @@ int getNbProcess () {
 
 #endif // step4
 
-/**
- * Alloue l'espace necessaire au processus pour son programme.
- * Renvoie -1 en cas d'erreur, 0 sinon
- */
-int allocateProcessSpace (Thread *t, char *filename)
-{
-	//printf("[allocateProcessSpace] Debut fonction\n");
-	OpenFile *executable = fileSystem->Open (filename);
-
-	if (executable == NULL)
-	{
-		printf ("Unable to open file %s\n", filename);
-		return -1;
-	}
-	Process* process = NULL;
-	process = new Process();
-	if(process == NULL || !process->allocateAddrSpace(executable))
-	{
-		delete executable;		// close file
-		return -1;
-	}
-	t->process = process;
-	delete executable;		// close file
-	return 0;
-}
 //----------------------------------------------------------------------
 // StartProcess
 //      Run a user program.  Open the executable, load it into
@@ -125,7 +169,6 @@ int allocateProcessSpace (Thread *t, char *filename)
 int
 StartProcess (char *filename)
 {
-	//printf("[StartProcess] Creation du processus pour forkexecsimple\n");
 	OpenFile *executable = fileSystem->Open (filename);
 	if (executable == NULL)
 	{
@@ -133,15 +176,27 @@ StartProcess (char *filename)
 		Exit(-1);
 	}
 
-	Process* process = new Process();
-	if(!process->allocateAddrSpace(executable))
+	Process* process = NULL;
+	process = new Process();
+	if(process == NULL)
 	{
 		delete executable;		// close file
 		return -1;
 	}
+	else if(!process->allocateAddrSpace(executable))
+	{
+		delete process;
+		delete executable;		// close file
+		return -1;
+	}
+
 	delete executable;		// close file
+
+	// assignement du processus cree au thread actuel
 	currentThread->process = process;
+	// le processus cree devient le processus actuel (premier processus lance)
 	currentProcess = process;
+
 #ifdef step4
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
@@ -178,6 +233,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 		return_value = false;
 	}
 #else
+	// les etapes precedentes chargent directement le code dans le constructeur
 	addrSpace = new AddrSpace(executable);
 #endif // step4
 	return return_value;
