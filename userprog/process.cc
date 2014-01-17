@@ -60,7 +60,7 @@ void UserStartProcess (int adr)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	currentProcess->setPid(nbProcess);
 	currentProcess->processRunning = true;
-	processManager->addAddrProcess(space);
+	//processManager->addAddrProcess(space);
 	space->InitRegisters ();	// set the initial register values
 	space->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user program

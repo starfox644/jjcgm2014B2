@@ -9,12 +9,12 @@
 
 ProcessManager::ProcessManager (){
 	//on initialise notre semaphore
-	sem_Wait = new Semaphore("WaitPid semaphore", 1);
-	nbAdrProcess = 0;
+	/*sem_Wait = new Semaphore("WaitPid semaphore", 1);
+	nbAdrProcess = 0;*/
 }
 
 int ProcessManager::addAddrProcess(Process *proc){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	if(adr->processRunning){ // si le programme est en cours d'execution on le rajoute
 		nbAdrProcess++;
 		//rajout de notre adresse de processus dans la liste
@@ -28,10 +28,10 @@ int ProcessManager::addAddrProcess(Process *proc){
 	return 0;
 }
 void ProcessManager::removeAddrProcess(Process *proc){
-	sem_Wait->P();
+	/*sem_Wait->P();
 	nbAdrProcess--;
 	proc->RunningStatus = false;
-	sem_Wait->V();
+	sem_Wait->V();*/
 }
 int ProcessManager::getNbAddrProcess(){
 	return nbAdrProcess;
