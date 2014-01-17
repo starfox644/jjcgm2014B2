@@ -222,15 +222,18 @@ Thread::Finish ()
 #ifdef CHANGED
 	// release the semaphore for threads which are waiting the end
 	s_join->V();
-	AddrSpace* space = process->getAddrSpace();
+	if(currentThread->isMainThread())
+	{
+		// the main thread is the last to finish, it must be deleted
+		threadToBeDestroyed = currentThread;
+	}
+	AddrSpace* space = currentProcess->getAddrSpace();
 	if(space != NULL)
 	{
 		// free the stack of the thread
 #ifdef step4
 		if(!currentThread->isMainThread())
 			space->freeThreadStack(userStackAddr);
-		else
-			threadToBeDestroyed = currentThread;
 #else
 		if(!currentThread->isMainThread())
 			space->addAvailableStackAddress(userStackAddr);

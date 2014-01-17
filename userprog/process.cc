@@ -210,14 +210,22 @@ StartProcess (char *filename)
 	return -1;
 }
 
+/**
+* 	Cree un processus vide.
+* 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
+*/
 Process::Process()
 {
 	addrSpace = NULL;
 	processRunning = false;
+	mainIsWaiting = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 }
 
+/**
+* 	alloue un espace d'adressage pour le processus en chargeant l'executable a l'interieur
+*/
 bool Process::allocateAddrSpace(OpenFile * executable)
 {
 	bool return_value = true;
@@ -239,6 +247,9 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	return return_value;
 }
 
+/**
+* 	libere l'espace d'adressage du processus
+*/
 void Process::freeAddrSpace()
 {
 	delete addrSpace;
@@ -247,6 +258,9 @@ void Process::freeAddrSpace()
 	addrSpace = NULL;
 }
 
+/**
+* 	Renvoie un pointeur sur l'espace d'adressage du processus
+*/
 AddrSpace* Process::getAddrSpace()
 {
 	return addrSpace;

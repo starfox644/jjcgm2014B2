@@ -8,9 +8,10 @@
 extern void do_exit(int returnCode);
 
 /**
-*    f : 	function address to execute in the MIPS processor
-*    arg : 	argument address for the f function, f will be called with arg
-*/
+ * 		Implements system call UserThreadCreate.
+ *    f : 		function address to execute in the MIPS processor
+ *    arg : 	argument address for the f function, f will be called with arg
+ */
 int do_UserThreadCreate(int f, int arg)
 {
 	int n;
@@ -19,8 +20,11 @@ int do_UserThreadCreate(int f, int arg)
 	// locks this function
 	s_createProcess->P();
 	AddrSpace* space = currentProcess->getAddrSpace();
-	Thread *newThread = new Thread("test");
-	// error allocation
+
+	// allocate the new thread
+	Thread *newThread = NULL;
+	newThread = new Thread("test");
+	// allocation error
 	if (newThread == NULL)
 		error = true;
 
@@ -34,8 +38,10 @@ int do_UserThreadCreate(int f, int arg)
     	{
     		// get an address for the stack if possible
 #ifdef step4
+    		// for step 4 we allocate a part of virtual memory
     		stackAddr = space->allocThreadStack();
 #else
+    		// for step 3 we use a list of stack pointers
     		stackAddr = space->popAvailableStackPointer();
 #endif
     		error = (stackAddr == -1);
@@ -49,9 +55,10 @@ int do_UserThreadCreate(int f, int arg)
 		error = (newThread->tid == -1);
 		if(!error)
 		{
-			// the new thread shares the memory space with the current thread
+			// the new thread is in same process
 			newThread->process = currentThread->process;
 			currentProcess->threadManager->s_nbThreads->P();
+			// add the thread to the process
 			currentProcess->threadManager->addThread(newThread);
 			currentProcess->threadManager->s_nbThreads->V();
 
@@ -61,10 +68,6 @@ int do_UserThreadCreate(int f, int arg)
 			newThread->userStackAddr = stackAddr;
 			// creation of the new thread, StartUserThread will be called with f
 			newThread->Fork(StartUserThread, f);
-#ifdef step4
-			/*space->addrSpaceAllocator->printFreeList();
-			space->addrSpaceAllocator->printBusyList();*/
-#endif
 			// end of critical section
 			s_createProcess->V();
 			return newThread->tid;
@@ -77,6 +80,9 @@ int do_UserThreadCreate(int f, int arg)
     return -1;
 }
 
+/**
+ * 		Launch an user thread, which have to execute the user function at the address f.
+ */
 static void StartUserThread(int f)
 {
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
@@ -94,19 +100,70 @@ static void StartUserThread(int f)
 	machine->Run ();		// jump to the user progam at __startThread
 }
 
+/**
+ * 		Implements system call UserThreadJoin.
+ *		Wait the thread tid and store the return code at addrUser.
+ *		If the thread isn't found in the process, -1 is returned.
+ */
+int do_UserThreadJoin(int tid, int addrUser)
+{
+	Thread* th;
+
+	currentProcess->threadManager->s_userJoin->P();
+
+	// search the waited thread in the process
+	if ((th = currentProcess->threadManager->searchThread(tid)) == NULL)
+	{
+		// error if the thread wasn't found
+		currentProcess->threadManager->s_userJoin->V();
+		return -1;
+	}
+	else
+	{
+		// check if the thread is already waited by another
+		if(!th->isFinished && th->wait)
+		{
+			// another thread is already waiting for this thread : error
+			currentProcess->threadManager->s_userJoin->V();
+			return -1;
+		}
+		else
+		{
+			// notify that we are waiting the thread
+			th->wait = true;
+			currentProcess->threadManager->s_userJoin->V();
+			// wait while the thread doesn't finish
+			th->s_join->P();
+			// notify that we are no more waiting the thread
+			th->wait = false;
+			// set return code at address addrUser
+			if (addrUser != 0)
+				machine->WriteMem(addrUser, sizeof(int), th->getThreadReturn());
+			th->s_join->V();
+			return 0;
+		}
+	}
+}
+
+/**
+ * 		Implements system call UserThreadExit.
+ * 		status is given at a thread which wait for it with UserThreadJoin.
+ */
 void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
 		s_createProcess->P();
 		AddrSpace* space = currentProcess->getAddrSpace();
-		// remove the thread in the address space
 		currentProcess->threadManager->s_nbThreads->P();
+		// notify that the thread is finished in case of UserThreadJoin
 		currentThread->isFinished = true;
+		// remove the thread in the process
 		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
-		if(space->attente)
+		if(currentProcess->mainIsWaiting)
 			space->s_exit->V();
+		// save the return status of the thread if another calls UserThreadJoin
 		currentThread->setThreadReturn(status);
 		currentProcess->threadManager->s_nbThreads->V();
 	    s_createProcess->V();
@@ -117,46 +174,6 @@ void do_UserThreadExit(int status)
 	{
 		// if the main thread calls userthreadexit, that stops the program
 		do_exit(status);
-	}
-}
-
-
-int do_UserThreadJoin(int tid, int addrUser)
-{
-	Thread* th;
-	//AddrSpace *space = currentThread->process->getAddrSpace();
-
-	currentProcess->threadManager->s_userJoin->P();
-	// search the given thread in l_thread
-	// tid does not exist : error
-	if ((th = currentProcess->threadManager->searchThread(tid)) == NULL)
-	{
-		currentProcess->threadManager->s_userJoin->V();
-		return -1;
-	}
-	else
-	{
-		//th = *it;
-		// an other thread wait for this thread : error
-		if(!th->isFinished && th->wait)
-		{
-			currentProcess->threadManager->s_userJoin->V();
-			return -1;
-		}
-		else
-		{
-			th->wait = true;
-			currentProcess->threadManager->s_userJoin->V();
-			// wait while the thread doesn't finish
-			th->s_join->P();
-
-			th->wait = false;
-			// set return code to this address addrUser
-			if (addrUser != 0)
-				machine->WriteMem(addrUser, sizeof(int), th->getThreadReturn());
-			th->s_join->V();
-			return 0;
-		}
 	}
 }
 

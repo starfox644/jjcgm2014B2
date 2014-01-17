@@ -245,9 +245,9 @@ ExceptionHandler (ExceptionType which)
 				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 
-				// error : returns -1
 				if (do_forkExec(adr) == -1)
 				{
+					// error : returns -1
 					machine->WriteRegister(2, -1);
 				}
 				else

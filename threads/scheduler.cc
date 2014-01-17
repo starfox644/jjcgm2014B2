@@ -98,8 +98,11 @@ Scheduler::Run (Thread * nextThread)
 
 #ifdef USER_PROGRAM		// ignore until running user programs
 #ifdef CHANGED
-	currentThread->SaveUserState ();	// to restore, do it.
-	currentProcess->getAddrSpace()->SaveState ();
+	if (currentProcess->getAddrSpace() != NULL)
+	{
+		currentThread->SaveUserState ();	// to restore, do it.
+		currentProcess->getAddrSpace()->SaveState ();
+	}
 #else
 	if (currentThread->space != NULL)
 	{				// if there is an address space
@@ -143,8 +146,11 @@ Scheduler::Run (Thread * nextThread)
 
 #ifdef USER_PROGRAM
 #ifdef CHANGED
-	currentThread->RestoreUserState ();	// to restore, do it.
-	currentProcess->getAddrSpace()->RestoreState ();
+	if (currentProcess->getAddrSpace() != NULL)
+	{
+		currentThread->RestoreUserState ();	// to restore, do it.
+		currentProcess->getAddrSpace()->RestoreState ();
+	}
 #else
 	if (currentThread->space != NULL)
 	{				// if there is an address space
