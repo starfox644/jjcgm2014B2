@@ -1,5 +1,5 @@
 
-int main (){
+/*int main (){
 
 	static SynchConsole *console;
 	char * in, out, buffer[MAX_CHAR];
@@ -14,4 +14,4 @@ int main (){
     	//on a finis de lire la commande entrée a la console
     	eval(buffer);
     }
-}
+}*/

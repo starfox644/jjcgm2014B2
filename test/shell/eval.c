@@ -6,10 +6,10 @@
  *      Author: galdween
  */
 #include "shell.h"
-int commandIntegre(char *cmdLine);
+/*int commandIntegre(char *cmdLine);
 
 void eval(char* cmdLine){
-	int pid // contient le numéro de processus créé.
+	int pid; // contient le numéro de processus créé.
 	int newProc, error;
 	if(cmdLine == 0){// on ne tient pas compte des lignes vide
 		return ;
@@ -38,4 +38,4 @@ int commandIntegre(char * cmdLine){
 	}
 	//pour le moment pas de ligne intégré autre que la commande quitter
 	return 0;
-}
+}*/
