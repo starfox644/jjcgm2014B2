@@ -37,4 +37,9 @@ int StrNDCpy(char *source,char *destination,int debut, int taille);
  */
 int StrLengh(char * element);
 
+/*
+ * Le but de cette fonction et de trouver l'emplacement d'un caractère dans un string et de renvoyer sa position ou 0 si le caractère n'est pa présent
+ */
+char* StrChr(char *element, char elementATrouve);
+
 #endif /* STRING_H_ */

@@ -1,7 +1,7 @@
 /*
  * Eval.c
  *	Ici nous allons étudier la ligne de commande entrée dans notre shell et faire ce qui correspond.
- *
+ * Récupération du code de notre APNEE de SR de Licence 3 modifé avec les commande pour NachOS
  *  Created on: 17 janv. 2014
  *      Author: galdween
  */
@@ -11,13 +11,19 @@
 void evalLine(char* cmdLine){
 
 	int newProc, error;
-	if(cmdLine[0] == 0){// on ne tient pas compte des lignes vide
-		return ;
+	//tableau d'argument
+	char* argv[MAXARGS];	//argv pour la création de nos programme
+	int bg;
+	bg = parseline(cmdLine,argv);
+	if(argv[0] == 0){// on ne tient pas compte des lignes vide
+			return ;
 	}
-	parseline(cmdLine,argv);
 	//on teste que ce ne soit pas une commande intégré.
-	if(commandIntegre(argv[0]) != 0){
+	if(commandIntegre(argv) != 0){
 		//pour le moment on part du principe qu'on ne fait que des taches en premier plan et rien en tache de fond.
+		/*
+		 * Partie a modifier pour gérer les arguments.
+		 */
 		newProc = ForkExec(cmdLine); //on crée notre executable
 		if(newProc == -1){
 			PutString("Programme non connu\n");
@@ -33,27 +39,23 @@ void evalLine(char* cmdLine){
 	return;
 }
 
-int commandIntegre(char * cmdLine){
-	if(StrCmp(cmdLine,"quit") == 1){ //commande pour arreter le shell
+int commandIntegre(char **argv){
+	if(StrCmp(argv[0],"quit") == 1){ //commande pour arreter le shell
 		Exit(0);
 	}
-	if(StrCmp(cmdLine,"jobs") == 1){// on fait l'affichage des processus actif
+	if(StrCmp(argv[0],"jobs") == 1){// on fait l'affichage des processus actif
 		afficherJobs();
 		return 0;
 	}
-	if(StrCmp(cmdLine,"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
+	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
 		PutString("Non implémenté :D\n");
 		return 0;
 	}
-	if(StrCmp(cmdLine,"pwd") == 1){//affiche le chemin du répertoire courant
+	if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
 		PutString("Non implémenté :D\n");
 		return 0;
 	}
-	if(StrCmp(cmdLine,"ta") == 1){
-
-		return 0;
-	}
-	if(StrCmp(cmdLine,"help") == 1){//on affiche l'aide de notre shell
+	if(StrCmp(argv[0],"help") == 1){//on affiche l'aide de notre shell
 		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
 		Printf("-Pour afficher les programmes en cours tapez :",0);
 		Printf(" jobs\n",0);

@@ -68,6 +68,17 @@ int StrLengh(char * element){
 	while(element[compteur] != '\0'){
 		compteur++;
 	}
-
 	return compteur;
+}
+
+char* StrChr(char *element, char elementATrouve){
+	int compteur = 0;
+	while(element[compteur] != '\0' && element[compteur] != elementATrouve){
+		compteur++;
+	}
+	if(element[compteur] == elementATrouve){
+		return &element[compteur];
+	}else{
+		return 0;
+	}
 }

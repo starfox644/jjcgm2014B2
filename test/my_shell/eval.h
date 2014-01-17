@@ -8,16 +8,15 @@
 #define __eval__h__
 
 #include "job.h"
-#include "String.h"
+#include "../nachos_libc/String.h"
 #include "syscall.h"
-#include "Printf.h"
+#include "../nachos_libc/Printf.h"
 #include "parseline.h"
 
 #define MAX_CHAR 128
-//tableau d'argument
-char** argv;
+#define MAXARGS 128
 //fonction
 void evalLine(char*);
-int commandIntegre(char*);
+int commandIntegre(char**);
 
 #endif
