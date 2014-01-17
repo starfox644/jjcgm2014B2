@@ -16,6 +16,7 @@
 #ifdef CHANGED
 // current process being executed
 Process* currentProcess;
+Semaphore *s_createProcess;
 #endif
 
 Thread *currentThread;		// the thread we are running now
@@ -28,7 +29,6 @@ Timer *timer;			// the hardware timer device, for invoking context switches
 FrameProvider *frameProvider; 	//gestion des cadres physiques
 ProcessManager *processManager; // gestion des processus
 int nbProcess;					// nombre de processus en cours d'execution
-Semaphore *s_createProcess;
 Semaphore *s_nbProcess;			// verrouillage du nombre de processus
 #endif
 

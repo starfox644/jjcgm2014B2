@@ -423,7 +423,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 			return -1;
 		}
 	}
-	printf("adresse allouee : %i\n", addrMap);
 	s_alloc->V();
 	return addrMap;
 }
@@ -436,7 +435,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 int AddrSpaceAllocator::free(int addr)
 {
 	int length;
-	printf("adresse liberee : %i\n", addr);
 	ASSERT((addr%PageSize) == 0);
 	s_alloc->P();
 	// suppression dans la liste des bloc occupes

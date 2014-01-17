@@ -12,7 +12,6 @@
  */
 int do_forkExec(int adrExec)
 {
-	printf("[ForkExec] Debut fonction\n");
 	char executable[MAX_STRING_SIZE];
 	int c;
 	int i = 0;

@@ -10,7 +10,7 @@
 
 void do_exit(int returnCode)
 {
-
+	s_createProcess->P();
 #ifdef countNew
 	printf("threads : created %d / destroyed %d / remaining %d\n", Thread::getNbThreadsCreated(), Thread::getNbThreadsCreated() - Thread::getNbNewThread(), Thread::getNbNewThread());
 	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
@@ -23,7 +23,9 @@ void do_exit(int returnCode)
 	while(currentProcess->threadManager->getNbThreads() > 0)
 	{
 		// semaphore wait for waiting the others threads
+		s_createProcess->V();
 		space->s_exit->P();
+		s_createProcess->P();
 	}
 
 //	currentThread->space->processRunning = false;
@@ -46,6 +48,7 @@ void do_exit(int returnCode)
 		//currentThread->space->processRunning = false;
 		//s_createProcess->V();
 		// currentThread->Yield();
+		s_createProcess->V();
 		currentThread->Finish();
 	}
 	else // the current thread is the last thread
@@ -54,6 +57,7 @@ void do_exit(int returnCode)
 		//currentThread->space->processRunning = false;
 		//s_createProcess->V();
 		// stop the program
+		s_createProcess->V();
 		interrupt->Halt ();
 	}
 #else

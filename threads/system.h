@@ -32,6 +32,7 @@ extern void Cleanup ();		// Cleanup, called when
 
 #ifdef CHANGED
 extern Process* currentProcess;
+extern Semaphore *s_createProcess;
 #endif
 
 extern Thread *currentThread;	// the thread holding the CPU
@@ -45,7 +46,6 @@ extern FrameProvider *frameProvider; // permet de gerer les cadres
 extern ProcessManager *processManager; //permet de gerer les processus
 // number of process for process.cc
 extern int nbProcess;
-extern Semaphore *s_createProcess;
 extern Semaphore *s_nbProcess;
 extern int pid;
 #endif

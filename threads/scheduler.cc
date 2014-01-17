@@ -98,13 +98,13 @@ Scheduler::Run (Thread * nextThread)
 
 #ifdef USER_PROGRAM		// ignore until running user programs
 #ifdef CHANGED
-	currentThread->SaveUserState ();	// save the user's CPU registers
-	currentProcess->getAddrSpace()->RestoreState ();
+	currentThread->SaveUserState ();	// to restore, do it.
+	currentProcess->getAddrSpace()->SaveState ();
 #else
 	if (currentThread->space != NULL)
 	{				// if there is an address space
-		currentThread->RestoreUserState ();	// to restore, do it.
-		currentThread->space->RestoreState ();
+		currentThread->SaveUserState ();	// to restore, do it.
+		currentThread->space->SaveState ();
 	}
 #endif
 #endif
@@ -137,7 +137,6 @@ Scheduler::Run (Thread * nextThread)
 	// point, we were still running on the old thread's stack!
 	if (threadToBeDestroyed != NULL)
 	{
-		printf("suppression de : %s\n", threadToBeDestroyed->getName());
 		delete threadToBeDestroyed;
 		threadToBeDestroyed = NULL;
 	}
@@ -145,6 +144,7 @@ Scheduler::Run (Thread * nextThread)
 #ifdef USER_PROGRAM
 #ifdef CHANGED
 	currentThread->RestoreUserState ();	// to restore, do it.
+	currentProcess->getAddrSpace()->RestoreState ();
 #else
 	if (currentThread->space != NULL)
 	{				// if there is an address space

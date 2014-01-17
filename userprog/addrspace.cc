@@ -350,7 +350,7 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 	pageTable = new TranslationEntry[numPages];
 	for(i = 0 ; i < numPages ; i++)
 	{
-		pageTable[i].valid = false;
+		pageTable[i].valid = FALSE;
 		pageTable[i].virtualPage = i;
 		pageTable[i].use = FALSE;
 		pageTable[i].dirty = FALSE;
