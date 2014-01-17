@@ -9,12 +9,11 @@
 #include "eval.h"
 
 void evalLine(char* cmdLine){
-
 	int newProc, error;
 	//tableau d'argument
 	char* argv[MAXARGS];	//argv pour la création de nos programme
-	int bg;
-	bg = parseline(cmdLine,argv);
+	int background;
+	background = parseline(cmdLine,argv);
 	if(argv[0] == 0){// on ne tient pas compte des lignes vide
 			return ;
 	}
