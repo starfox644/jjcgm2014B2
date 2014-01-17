@@ -173,6 +173,7 @@ Initialize (int argc, char **argv)
 	interrupt = new Interrupt;	// start up interrupt handling
 	scheduler = new Scheduler ();	// initialize the ready queue
 #ifdef CHANGED
+	s_createProcess = new Semaphore("sem process", 1);
 #ifdef step3
 	s_create = new Semaphore("sem create", 1);
 #endif
@@ -182,7 +183,6 @@ Initialize (int argc, char **argv)
 
 #ifdef step4
 	frameProvider = new FrameProvider();
-	s_createProcess = new Semaphore("sem process", 1);
 	s_nbProcess = new Semaphore("sem nb process", 1);
 	nbProcess = 0;
 	processManager = new ProcessManager();

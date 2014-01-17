@@ -17,7 +17,7 @@ int do_UserThreadCreate(int f, int arg)
 	bool error = false;
 	int stackAddr;
 	// locks this function
-	s_create->P();
+	s_createProcess->P();
 	AddrSpace* space = currentProcess->getAddrSpace();
 	Thread *newThread = new Thread("test");
 	// error allocation
@@ -66,14 +66,14 @@ int do_UserThreadCreate(int f, int arg)
 			space->addrSpaceAllocator->printBusyList();*/
 #endif
 			// end of critical section
-			s_create->V();
+			s_createProcess->V();
 			return newThread->tid;
 		}
     }
     // thread creation error
     delete newThread;
 	// end of critical section
-    s_create->V();
+    s_createProcess->V();
     return -1;
 }
 
@@ -98,6 +98,7 @@ void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
+		s_createProcess->P();
 		AddrSpace* space = currentProcess->getAddrSpace();
 		// remove the thread in the address space
 		currentProcess->threadManager->s_nbThreads->P();
@@ -108,6 +109,7 @@ void do_UserThreadExit(int status)
 			space->s_exit->V();
 		currentThread->setThreadReturn(status);
 		currentProcess->threadManager->s_nbThreads->V();
+	    s_createProcess->V();
 		// terminates this thread
 		currentThread->Finish();
 	}

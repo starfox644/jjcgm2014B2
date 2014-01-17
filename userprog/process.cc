@@ -156,13 +156,13 @@ Process::Process()
 	addrSpace = NULL;
 	processRunning = false;
 	threadManager = new ThreadManager();
+	semManager = new SemaphoreManager();
 }
 
 bool Process::allocateAddrSpace(OpenFile * executable)
 {
 	bool return_value = true;
 #ifdef step4
-	semManager = new SemaphoreManager();
 	addrSpace = new AddrSpace();
 	if(addrSpace != NULL)
 	{
@@ -183,6 +183,7 @@ void Process::freeAddrSpace()
 {
 	delete addrSpace;
 	delete threadManager;
+	delete semManager;
 	addrSpace = NULL;
 }
 
