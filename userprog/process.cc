@@ -2,6 +2,7 @@
 #include "machine.h"
 #include "syscall.h"
 #include "system.h"
+#include "semaphoreManager.h"
 
 #ifdef step4
 /**

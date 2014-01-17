@@ -5,7 +5,7 @@
 #include "addrspace.h"
 class Thread;
 class OpenFile;
-#include "semaphoreManager.h"
+class SemaphoreManager;
 
 void addProcess ();
 
