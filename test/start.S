@@ -266,6 +266,14 @@ GetPid:
 	j	$31
 	.end GetPid
 
+	.globl WaitPid
+	.ent	WaitPid
+WaitPid:
+	addiu $2,$0,SC_WaitPid
+	syscall
+	j	$31
+	.end WaitPid
+
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */
