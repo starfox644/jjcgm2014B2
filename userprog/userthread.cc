@@ -8,7 +8,7 @@
 extern void do_exit(int returnCode);
 
 /**
-*    f : 		function address to execute in the MIPS processor
+*    f : 	function address to execute in the MIPS processor
 *    arg : 	argument address for the f function, f will be called with arg
 */
 int do_UserThreadCreate(int f, int arg)

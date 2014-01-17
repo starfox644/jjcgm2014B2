@@ -486,7 +486,6 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 		// verify if page is already allocated
 		if(!pageTable[beginPage + i].valid)
 		{
-			// get
 			frame = frameProvider->GetEmptyFrame();
 			if(frame != -1)
 			{
@@ -501,6 +500,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 		}
 		else
 		{
+			//printf(" La page num %d est valide\n", beginPage+i);
 			DEBUG(',', "page %i deja allouee\n", beginPage + i);
 		}
 		i++;

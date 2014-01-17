@@ -7,11 +7,11 @@ int main()
 	PutString("\n---------------------------\n");
 	ForkExec("./etape2/putInt");
 	PutString("\n---------------------------\n");
-	ForkExec("./etape2/putchar");
+	/*ForkExec("./etape2/putchar");
 	PutString("\n---------------------------\n");
 	ForkExec("./etape2/putstringNumber");
 	PutString("\n---------------------------\n");
 	ForkExec("./etape4/forkExecSimple");
-	PutString("\n---------------------------\n");
+	PutString("\n---------------------------\n");*/
 	return 0;
 }
