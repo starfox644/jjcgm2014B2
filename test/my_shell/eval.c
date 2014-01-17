@@ -39,6 +39,12 @@ int commandIntegre(char * cmdLine){
 	if(StrCmp(cmdLine,"jobs") == 1){// on fait l'affichage des processus actif
 		afficherJobs();
 	}
+	if(StrCmp(cmdLine,"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
+		PutString("Non implémenté :D\n");
+	}
+	if(StrCmp(cmdLine,'pwd') == 1){//affiche le chemin du répertoire courant
+		PutString("Non implémenté :D\n");
+	}
 	if(StrCmp(cmdLine,"help") == 1){//on affiche l'aide de notre shell
 		PutString("Bienvenue dans l'aide de NachOS_Shell\n\n");
 		PutString("-Pour afficher les programmes en cours : \n");

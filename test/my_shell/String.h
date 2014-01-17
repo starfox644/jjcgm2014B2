@@ -11,7 +11,16 @@
 /*
  * Le but de cette fonction et de pouvoir comparer si 2 string son bien égaux.
  */
-int StrCmp(char* element1, char* element2);
+int StrCmp(char*, char*);
+/*
+ * Le but de cette fonction et de pouvoir copier 2 char
+ */
+int StrCpy(char*, char*);
+
+/*
+ * Le but de cette fonction et de pouvoir copier 2 char* sur une taille défini
+ */
+int StrNCpy(char*,char*,int);
 
 
 
