@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 2
+#define MAX_PROC 6
 
 int main()
 {
@@ -17,7 +17,10 @@ int main()
 		PutString("Lancement du proc numéro ");
 		PutInt(i);
 		PutString("\n");
-		ForkExec("./etape4/userThreadMulti");
+		if(ForkExec("./etape4/userThreadMulti") == -1)
+		{
+			PutString("echec de lancement de processus\n");
+		}
 	}
 
 	return 0;

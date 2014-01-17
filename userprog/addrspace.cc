@@ -131,7 +131,7 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 	// the available stack space begin after the main thread stack
 	beginThreadsStackSpace = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize;
 	// we align the begin on a page
-	beginThreadsStackSpace = divRoundUp(beginThreadsStackSpace, PageSize) * PageSize;
+	beginThreadsStackSpace = (divRoundUp(beginThreadsStackSpace, PageSize) + 1) * PageSize;
 	// the size of the virtual memory is the same as the physical memory
 	size = MemorySize;
 	// handle the memory in terms of pages, to have an aligned size
@@ -171,22 +171,26 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		// init the physical page, but if valid is false this isn't used
 		pageTable[i].physicalPage = 0;
 	}
+	DEBUG(',', "CODE MAPPING\n");
 	// map the code
-	success = mapMem(0, noffH.code.size, true);
+	success = mapMem(noffH.code.virtualAddr, noffH.code.size, true);
 	if(success)
 	{
+		DEBUG(',', "INITDATA MAPPING\n");
 		// map init data
-		success = mapMem(noffH.code.size, noffH.initData.size, true);
+		success = mapMem(noffH.initData.virtualAddr, noffH.initData.size, true);
 	}
 	if(success)
 	{
+		DEBUG(',', "UNINITDATA MAPPING\n");
 		// map uninit data
-		success = mapMem(noffH.code.size + noffH.initData.size, noffH.uninitData.size, true);
+		success = mapMem(noffH.uninitData.virtualAddr, noffH.uninitData.size, true);
 	}
 	if(success)
 	{
+		DEBUG(',', "MAIN STACK MAPPING\n");
 		// map main thread stack
-		success = mapMem(noffH.code.size + noffH.initData.size + noffH.uninitData.size, UserStackSize, true);
+		success = mapMem(beginThreadsStackSpace - UserStackSize, UserStackSize, true);
 	}
 	if(!success)
 	{
@@ -210,8 +214,8 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		ReadAtVirtual(executable, noffH.initData.virtualAddr,
 				noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
 	}
-	//
-	if(!mapMem(0, noffH.code.size, false))
+	DEBUG(',', "CODE READ ONLY\n");
+	if(!mapMem(noffH.code.virtualAddr, noffH.code.size, false))
 	{
 		return false;
 	}
@@ -348,6 +352,7 @@ AddrSpace::~AddrSpace ()
 
 #ifdef step4
 	unsigned int i;
+	DEBUG(',', "FINAL RELEASE\n");
 	//release physical pages
 	for (i = 0; i < numPages; i++)
 	{
@@ -400,7 +405,7 @@ AddrSpace::InitRegisters ()
 
 #ifdef step3
 	// set the stack register of the main thread after the code and data
-	machine->WriteRegister (StackReg, beginThreadsStackSpace);
+	machine->WriteRegister (StackReg, beginThreadsStackSpace - 4);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			beginThreadsStackSpace);
 #else
@@ -529,7 +534,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 	unsigned int i;
 	int frame;
 	// number of pages needed for the given length
-	unsigned int nbPages = divRoundUp(length, PageSize) + 1;
+	unsigned int nbPages = divRoundUp(length, PageSize);
 	// index of the begining page of virtualAddr
 	unsigned int beginPage = divRoundDown(virtualAddr, PageSize);
 	// check integrity
@@ -567,11 +572,12 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 	if(i != nbPages)
 	{
 		// error, no available physical frames
-
+		DEBUG(',', "RELEASE AFTER ERROR\n");
 		// free the physical pages we've got
 		for(unsigned int j = 0 ; j < i-1 ; j++)
 		{
 			frameProvider->ReleaseFrame(pageTable[beginPage + j].physicalPage);
+			pageTable[beginPage + j].valid = FALSE;
 		}
 		return false;
 	}
@@ -591,9 +597,9 @@ bool AddrSpace::unMapMem(unsigned int beginPage, unsigned int nbPages)
 	for(i = 0 ; i < nbPages ; i++)
 	{
 		// release physical frame of the page
-		allAllocated &= frameProvider->ReleaseFrame(beginPage + i);
+		allAllocated &= frameProvider->ReleaseFrame(pageTable[beginPage + i].physicalPage);
 		// update validity of the page
-		pageTable[beginPage + i].valid = false;
+		pageTable[beginPage + i].valid = FALSE;
 	}
 	return allAllocated;
 }

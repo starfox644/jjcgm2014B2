@@ -230,6 +230,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 {
 	bool return_value = true;
 #ifdef step4
+	addrSpace = NULL;
 	addrSpace = new AddrSpace();
 	if(addrSpace != NULL)
 	{
@@ -253,7 +254,9 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 void Process::freeAddrSpace()
 {
 	delete addrSpace;
+	threadManager->deleteThreads();
 	delete threadManager;
+	//semManager->deleteSemaphores();
 	delete semManager;
 	addrSpace = NULL;
 }

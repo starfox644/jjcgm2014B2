@@ -39,6 +39,7 @@ AddrSpaceAllocator::~AddrSpaceAllocator()
 		actu = actu->next;
 		delete tmp;
 	}
+	delete s_alloc;
 }
 
 /*
@@ -103,7 +104,6 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
 	// plus de bloc libre ou memoire insuffisante
 	if (current == NULL)
 	{
-		printf("[canAllocate] Memoire insuffisante\n");
 		return NULL;
 	}
 	else
@@ -147,8 +147,8 @@ void AddrSpaceAllocator::removeFreeSpace(int addr, int lengthAlloc)
 		{
 			// suppresion du bloc
 			prec->next = actu->next;
-			delete actu;
 		}
+		delete actu;
 	}
 }
 
@@ -409,6 +409,7 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 			current->forbiddenPage = false;
 		}
 		// associe des frame physique a l'espace d'adressage
+		DEBUG(',', "MAP STACK\n");
 		if (addrspace->mapMem(addrMap, size, write))
 		{
 			addBusySpace(current->addr,alignedLength, forbiddenPage);
@@ -449,6 +450,7 @@ int AddrSpaceAllocator::free(int addr)
 	else
 	{
 		ASSERT(length%PageSize == 0);
+		DEBUG(',', "UNMAP STACK\n");
 		if(addrspace->unMapMem(addr/PageSize, length/PageSize))
 		{
 			//ajout dand la liste des blocs libres

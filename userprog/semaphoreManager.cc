@@ -59,6 +59,7 @@ int SemaphoreManager::removeSemaphore(int id)
 	else
 	{
 		nbSem--;
+		delete *it;
 		semList.erase(it);
 		return 0;
 	}
