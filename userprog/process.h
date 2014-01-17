@@ -15,19 +15,26 @@ void removeProcess () ;
 int getNbProcess ();
 
 /**
- * Cree un thread et lance le programme donne en parametre dedans.
- * Renvoie 0 si le thread est bien cree, -1 sinon
+ * Realise l'appel system fork exec.
+ * Lit le nom de l'executable dans la memoire du MIPS a partir de l'adresse passee en
+ * parametre et cree un thread principal pour le processus.
+ * Appelle ensuite allocateProcessSpace avec ces infos.
+ * Renvoie 0 si le processus a pu etre cree, -1 sinon
  */
 int do_forkExec(int adrExec);
 
 /**
  * Alloue l'espace necessaire au processus pour son programme.
+ * t : thread principal du nouveau processus
+ * filename : nom du programme a executer
  * Renvoie -1 en cas d'erreur, 0 sinon
  */
 int allocateProcessSpace (Thread *t, char *filename);
 
 /**
- * Lance le processus dans la machine
+ * 	Initialise l'etat du processus (registres et chargement de la table des pages)
+ * 	adr n'est pas utilise, il n'est present que pour le prototype de la fonction
+ * 	necessaire au thread.
  */
 void UserStartProcess (int adr);
 
@@ -44,16 +51,21 @@ class Process
 		AddrSpace *addrSpace;
 	    int pid;
 	public:
-		SemaphoreManager *semManager;
-		ThreadManager *threadManager;
 		Process();
+	    // gere les semaphores utilisateurs du processus
+		SemaphoreManager *semManager;
+		// gere les threads crees du processus
+		ThreadManager *threadManager;
+		// alloue un espace d'adressage pour le processus en chargeant l'executable a l'interieur
 		bool allocateAddrSpace(OpenFile * executable);
+		// libere l'espace d'adressage du processus
 		void freeAddrSpace();
+		// renvoie un pointeur sur l'espace d'adressage du processus
 		AddrSpace* getAddrSpace();
 	    void setPid(int newPid);
 	    int getPid();
-
-		bool processRunning; //true si en cours d'exécution false sinon
+	    // vaut true si le processus a ete lance, false s'il s'est termine
+		bool processRunning;
 };
 
 #endif // CHANGED

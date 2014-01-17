@@ -7,7 +7,8 @@
  */
 #include "processManager.h"
 
-ProcessManager::ProcessManager (){
+ProcessManager::ProcessManager ()
+{
 	//on initialise notre semaphore
 	/*sem_Wait = new Semaphore("WaitPid semaphore", 1);
 	nbAdrProcess = 0;*/
@@ -41,7 +42,8 @@ int ProcessManager::getNbAddrProcess(){
  * Fonction en cours de réalisation
  * Je suis pas fan de l'attente active que j'ai faite pour le moment. Faut que je change ca >_<
  */
-int ProcessManager::WaitPid(int processPid){
+int ProcessManager::WaitPid(int processPid)
+{
 	/*sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
