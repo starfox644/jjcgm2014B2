@@ -4,8 +4,7 @@
 
 /*int main (){
 
-	char * in, out, buffer[128];
-
+		char * in, out, buffer[128];
     while (1){
     	PutString("<Nachos_Shell>");	//affichage du prompt
     	do{// tant que l'on appuie pas sur entrée on lis les caractères entrés dans la console.
