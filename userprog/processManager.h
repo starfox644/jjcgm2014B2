@@ -16,13 +16,11 @@ class ProcessManager{
 		//constructeur
 		//creation d'un processManager
 		ProcessManager ();
-
 		//variables
 		int nbAdrProcess;	// nombre d'adresse de processus de notre liste
 		Semaphore *sem_Wait;	//semaphore pour notre classe
 		// liste des addrSpace de chaque processus
-		std::list<AddrSpace*> l_process;
-
+		std::list<Process*> l_process;
 		//rajout d'une addresse d'un processus a notre liste
 		int addAddrProcess(AddrSpace *);
 		//suppression d'une addresse d'un processus de notre liste

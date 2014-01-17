@@ -7,7 +7,6 @@
  */
 #include "processManager.h"
 
-
 ProcessManager::ProcessManager (){
 	//on initialise notre semaphore
 	sem_Wait = new Semaphore("WaitPid semaphore", 1);
@@ -52,24 +51,12 @@ int ProcessManager::WaitPid(int processPid){
 		sem_Wait->V();
 		return -1;
 	}else{
-		/* Version Mika : ton attente active peut foirer puisque si processRunning passe a false
-		 * a la fin de ton if, il retourne pas dans ta boucle donc la fonction return 0 et le processus
-		 * est toujours dans la liste.
-		do{// tant que notre processus tourne on attend
-			if((*it)->processRunning == false){ // si le processus est deja arrete alors on le supprime de la liste et on renvoie le pid
-				int procPid = (*it)->pid;
-				l_process.erase(it);
-				sem_Wait->V();
-				return procPid;
-			}
-		}while((*it)->processRunning == true);
-		sem_Wait->V();
-		return 0;
-		*/
 
 		/* Version corrigee (je suppose que c'est bon) */
-		while((*it)->processRunning == true);	// On attend que le processus termine
-		int procPid = (*it)->pid; 				// Recup PID pour le renvoyer
+		while((*it)->processRunning == true){	// On attend que le processus termine
+			sem_Wait->V();
+			sem_Wait->P();
+		}int procPid = (*it)->pid; 				// Recup PID pour le renvoyer
 		l_process.erase(it); 					// On supprime le processus de la liste
 		sem_Wait->V();							// On libere la ressource
 		return procPid;
