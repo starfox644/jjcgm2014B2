@@ -227,17 +227,21 @@ Thread::Finish ()
 	{
 		// free the stack of the thread
 #ifdef step4
-		space->freeThreadStack(userStackAddr);
+		if(!currentThread->isMainThread())
+			space->freeThreadStack(userStackAddr);
+		else
+			threadToBeDestroyed = currentThread;
 #else
-		space->addAvailableStackAddress(userStackAddr);
+		if(!currentThread->isMainThread())
+			space->addAvailableStackAddress(userStackAddr);
 #endif
 	}
 #endif
+#ifndef CHANGED
 	// LB: Be careful to guarantee that no thread to be destroyed
 	// is ever lost
 	ASSERT (threadToBeDestroyed == NULL);
 	// End of addition
-#ifndef CHANGED
 	threadToBeDestroyed = currentThread;
 #endif
 	Sleep ();			// invokes SWITCH

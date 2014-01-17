@@ -99,6 +99,7 @@ Scheduler::Run (Thread * nextThread)
 #ifdef USER_PROGRAM		// ignore until running user programs
 #ifdef CHANGED
 	currentThread->SaveUserState ();	// save the user's CPU registers
+	currentProcess->getAddrSpace()->RestoreState ();
 #else
 	if (currentThread->space != NULL)
 	{				// if there is an address space
@@ -136,6 +137,7 @@ Scheduler::Run (Thread * nextThread)
 	// point, we were still running on the old thread's stack!
 	if (threadToBeDestroyed != NULL)
 	{
+		printf("suppression de : %s\n", threadToBeDestroyed->getName());
 		delete threadToBeDestroyed;
 		threadToBeDestroyed = NULL;
 	}

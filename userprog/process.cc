@@ -38,7 +38,7 @@ int do_forkExec(int adrExec)
 	// Si le thread a ete cree et que l'allocation de son espace d'adressage a reussi
 	if (t != NULL && allocateProcessSpace(t, executable) != -1)
 	{
-		//addProcess(); // ajoute 1 au nb de processus en cours
+		addProcess(); // ajoute 1 au nb de processus en cours
 		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
 		s_createProcess->V();
@@ -137,12 +137,12 @@ StartProcess (char *filename)
 	}
 	delete executable;		// close file
 	currentThread->process = process;
+	currentProcess = process;
 #ifdef step4
-	//addProcess(); // ajoute 1 au nb de processus en cours
+	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
-	currentProcess = process;
 	machine->Run ();		// jump to the user progam
 	ASSERT (FALSE);		// machine->Run never returns;
 	// the address space exits
