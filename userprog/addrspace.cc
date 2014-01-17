@@ -22,6 +22,8 @@
 
 #ifdef CHANGED
 #include <string>
+//#include "threadManager.h"
+//class threadManager;
 #endif
 
 #include <strings.h>		/* for bzero */
@@ -90,14 +92,9 @@ SwapHeader (NoffHeader * noffH)
 #ifdef step4
 AddrSpace::AddrSpace ()
 {
-	nbThreads = 0;
-	pid = 0;
 	attente = false;
-	processRunning = false; //true si en cours d'execution false sinon
 	s_exit = new Semaphore("exit semaphore", 0);
-	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
-	s_userJoin = new Semaphore("user join semaphore", 1);
 
 #ifdef countNew
 	nbNewAddrspace++;
@@ -118,12 +115,9 @@ AddrSpace::AddrSpace (OpenFile * executable)
 #endif // step3
 
 #ifdef CHANGED
-	nbThreads = 0;
 	attente = false;
 	s_exit = new Semaphore("exit semaphore", 0);
-	s_nbThreads = new Semaphore("nbThread semaphore", 1);
 	s_stackList = new Semaphore("stack list semaphore", 1);
-	s_userJoin = new Semaphore("user join semaphore", 1);
 #endif // CHANGED
 
 	executable->ReadAt ((char *) &noffH, sizeof (noffH), 0);
@@ -236,10 +230,8 @@ AddrSpace::~AddrSpace ()
 	delete [] pageTable;
 	// End of modification
 #ifdef CHANGED
-	delete s_nbThreads;
 	delete s_exit;
 	delete s_stackList;
-	deleteThreads();
 
 
 #ifdef countNew
@@ -274,14 +266,15 @@ AddrSpace::InitRegisters ()
 	// of branch delay possibility
 	machine->WriteRegister (NextPCReg, 4);
 
-	// Set the stack register to the end of the address space, where we
-	// allocated the stack; but subtract off a bit, to make sure we don't
-	// accidentally reference off the end!
 #ifdef step3
+	// set the stack register of the main thread after the code and data
 	machine->WriteRegister (StackReg, beginThreadsStackSpace);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			beginThreadsStackSpace);
 #else
+	// Set the stack register to the end of the address space, where we
+	// allocated the stack; but subtract off a bit, to make sure we don't
+	// accidentally reference off the end!
 	machine->WriteRegister (StackReg, numPages * PageSize - 16);
 	DEBUG ('a', "Initializing stack register to %d\n",
 			numPages * PageSize - 16);
@@ -404,31 +397,6 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 #endif // step4
 
 #ifdef CHANGED
-void AddrSpace::addThread(Thread *th)
-{
-	nbThreads++;
-	// add the new thread in threads list
-	l_threads.push_back(th);
-}
-
-void AddrSpace::removeThread(Thread *th)
-{
-	nbThreads--;
-}
-
-int AddrSpace::getNbThreads()
-{
-	return nbThreads;
-}
-
-void AddrSpace::deleteThreads()
-{
-	std::list<Thread*>::iterator it;
-	for(it = l_threads.begin() ; it != l_threads.end() ; it++)
-	{
-		delete *it;
-	}
-}
 
 /**
  * 	returns an initial stack pointer available for a new thread
@@ -436,14 +404,6 @@ void AddrSpace::deleteThreads()
  */
 int AddrSpace::popAvailableStackPointer()
 {
-#ifdef step4
-	int return_value;
-	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
-	if(return_value == -1)
-		return -1;
-	else
-		return return_value + UserStackSize - 4;
-#else
 	int return_value;
 	s_stackList->P();
 	if(l_availableStackAddress.size() == 0)
@@ -457,20 +417,14 @@ int AddrSpace::popAvailableStackPointer()
 	}
 	s_stackList->V();
 	return return_value;
-#endif
-
 }
 
 void AddrSpace::addAvailableStackAddress(unsigned int stackAddr)
 {
-#ifdef step4
-	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
-#else
 	ASSERT(stackAddr < (numPages*PageSize) && stackAddr >= beginThreadsStackSpace);
 	s_stackList->P();
 	l_availableStackAddress.push_back(stackAddr);
 	s_stackList->V();
-#endif
 }
 
 void AddrSpace::initAvailableStackPointers()
@@ -512,21 +466,27 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 
 bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 {
-	int i;
+	unsigned int i;
 	int frame;
-	// nb pages needed for the length
-	int nbPages = divRoundUp(length, PageSize) + 1;
-	// index of the begining page
-	int beginPage = divRoundDown(virtualAddr, PageSize);
+	// number of pages needed for the given length
+	unsigned int nbPages = divRoundUp(length, PageSize) + 1;
+	// index of the begining page of virtualAddr
+	unsigned int beginPage = divRoundDown(virtualAddr, PageSize);
+	// check integrity
+	ASSERT(beginPage + nbPages <= numPages);
+	// < 0 = no allocation
 	if(length <= 0)
 		return true;
 	i = 0;
 	// get physical frames needed
 	do
 	{
-		DEBUG(',', "essai de mapping de la page %i du processus %i\n", beginPage + i, getPid());
+		//DEBUG(',', "tentative de mapping de la page %i du processus %i\n", beginPage + i, getPid());
+
+		// verify if page is already allocated
 		if(!pageTable[beginPage + i].valid)
 		{
+			// get
 			frame = frameProvider->GetEmptyFrame();
 			if(frame != -1)
 			{
@@ -551,7 +511,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 		// error, no available physical frames
 
 		// free the physical pages we've got
-		for(int j = 0 ; j < i ; j++)
+		for(unsigned int j = 0 ; j < i ; j++)
 		{
 			frameProvider->ReleaseFrame(pageTable[beginPage + j].physicalPage);
 		}
@@ -564,34 +524,49 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 }
 
 
-bool AddrSpace::unMapMem(int beginPageIndex, int nbPages)
+bool AddrSpace::unMapMem(unsigned int beginPage, unsigned int nbPages)
 {
-	int i;
+	unsigned int i;
 	bool allAllocated = true;
+	ASSERT(beginPage + nbPages <= numPages);
 	for(i = 0 ; i < nbPages ; i++)
 	{
-		DEBUG(',', "unmapping page %i du processus %i\n", beginPageIndex + i, getPid());
-		allAllocated &= frameProvider->ReleaseFrame(beginPageIndex + i);
-		pageTable[beginPageIndex + i].valid = false;
+		//DEBUG(',', "unmapping page %i du processus %i\n", beginPage + i, getPid());
+		allAllocated &= frameProvider->ReleaseFrame(beginPage + i);
+		pageTable[beginPage + i].valid = false;
 	}
 	return allAllocated;
 }
 
-void AddrSpace::unMapStack(int stackAddr)
+
+bool AddrSpace::setAccessRight(unsigned int beginPage, unsigned int nbPages, bool readOnly)
 {
-	ASSERT(((stackAddr - UserStackSize) % PageSize) == 0);
-	int beginPage = (stackAddr - UserStackSize) / PageSize;
-	unMapMem(beginPage, UserStackSize / PageSize);
+	unsigned int i;
+	bool allAllocated = true;
+	ASSERT(beginPage + nbPages <= numPages);
+	for(i = 0 ; i < nbPages ; i++)
+	{
+		// check allocation of page
+		allAllocated &= pageTable[beginPage + i].valid;
+		// change access right
+		pageTable[beginPage + i].readOnly = readOnly;
+	}
+	return allAllocated;
 }
 
-int AddrSpace::getPid()
+int AddrSpace::allocThreadStack()
 {
-	return pid;
+	int return_value;
+	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
+	if(return_value == -1)
+		return -1;
+	else
+		return return_value + UserStackSize - 4;
 }
 
-void AddrSpace::setPid(int newPid)
+void AddrSpace::freeThreadStack(unsigned int stackAddr)
 {
-	pid = newPid;
+	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
 }
 
 void AddrSpace::printMapping(unsigned int max)

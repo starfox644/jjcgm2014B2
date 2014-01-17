@@ -31,6 +31,7 @@
 // stack overflows
 
 #ifdef CHANGED
+// the first thread has 0 as tid
 int Thread::nextTid = 1;
 
 
@@ -140,12 +141,11 @@ Thread::~Thread ()
 void
 Thread::Fork (VoidFunctionPtr func, int arg)
 {
-
-	//printf("[Fork] Creation d'un thread\n");
 	DEBUG ('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
 			name, (int) func, arg);
 
 #ifdef CHANGED
+	// blocks the semaphore for other threads to wait it
 	s_join->P();
 #endif
 	StackAllocate (func, arg);
@@ -220,11 +220,17 @@ Thread::Finish ()
 
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
+	// release the semaphore for threads which are waiting the end
 	s_join->V();
 	AddrSpace* space = process->getAddrSpace();
 	if(space != NULL)
 	{
+		// free the stack of the thread
+#ifdef step4
+		space->freeThreadStack(userStackAddr);
+#else
 		space->addAvailableStackAddress(userStackAddr);
+#endif
 	}
 #endif
 	// LB: Be careful to guarantee that no thread to be destroyed

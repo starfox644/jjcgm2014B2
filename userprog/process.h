@@ -6,6 +6,7 @@
 class Thread;
 class OpenFile;
 class SemaphoreManager;
+class ThreadManager;
 
 void addProcess ();
 
@@ -41,12 +42,18 @@ class Process
 {
 	private:
 		AddrSpace *addrSpace;
+	    int pid;
 	public:
 		SemaphoreManager *semManager;
+		ThreadManager *threadManager;
 		Process();
 		bool allocateAddrSpace(OpenFile * executable);
 		void freeAddrSpace();
 		AddrSpace* getAddrSpace();
+	    void setPid(int newPid);
+	    int getPid();
+
+		bool processRunning; //true si en cours d'exécution false sinon
 };
 
 #endif // CHANGED

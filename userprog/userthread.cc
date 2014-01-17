@@ -3,6 +3,7 @@
 #include "thread.h"
 #include "system.h"
 #include "machine.h"
+#include "threadManager.h"
 
 extern void do_exit(int returnCode);
 
@@ -17,7 +18,7 @@ int do_UserThreadCreate(int f, int arg)
 	int stackAddr;
 	// locks this function
 	s_create->P();
-	AddrSpace* space = currentThread->process->getAddrSpace();
+	AddrSpace* space = currentProcess->getAddrSpace();
 	Thread *newThread = new Thread("test");
 	// error allocation
 	if (newThread == NULL)
@@ -32,15 +33,12 @@ int do_UserThreadCreate(int f, int arg)
     	if(!error)
     	{
     		// get an address for the stack if possible
+#ifdef step4
+    		stackAddr = space->allocThreadStack();
+#else
     		stackAddr = space->popAvailableStackPointer();
+#endif
     		error = (stackAddr == -1);
-/*#ifdef step4
-    		if(!error)
-    		{
-    			if(!space->map(stackAddr - UserStackSize, UserStackSize, true))
-    				error = true;
-    		}
-#endif*/
     	}
     }
 
@@ -53,9 +51,9 @@ int do_UserThreadCreate(int f, int arg)
 		{
 			// the new thread shares the memory space with the current thread
 			newThread->process = currentThread->process;
-			space->s_nbThreads->P();
-			space->addThread(newThread);
-			space->s_nbThreads->V();
+			currentProcess->threadManager->s_nbThreads->P();
+			currentProcess->threadManager->addThread(newThread);
+			currentProcess->threadManager->s_nbThreads->V();
 
 			// sets initial argument of the thread
 			newThread->setInitArg(arg);
@@ -81,10 +79,6 @@ int do_UserThreadCreate(int f, int arg)
 
 static void StartUserThread(int f)
 {
-	AddrSpace* space = currentThread->process->getAddrSpace();
-	space->InitRegisters();
-	space->RestoreState ();	// load page table register
-
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
 	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC to the function __startThread (in start.s)
@@ -104,16 +98,16 @@ void do_UserThreadExit(int status)
 {
 	if(!currentThread->isMainThread())
 	{
-		AddrSpace* space = currentThread->process->getAddrSpace();
+		AddrSpace* space = currentProcess->getAddrSpace();
 		// remove the thread in the address space
-		space->s_nbThreads->P();
+		currentProcess->threadManager->s_nbThreads->P();
 		currentThread->isFinished = true;
-		space->removeThread(currentThread);
+		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
 		if(space->attente)
 			space->s_exit->V();
-		space->s_nbThreads->V();
 		currentThread->setThreadReturn(status);
+		currentProcess->threadManager->s_nbThreads->V();
 		// terminates this thread
 		currentThread->Finish();
 	}
@@ -128,33 +122,29 @@ void do_UserThreadExit(int status)
 int do_UserThreadJoin(int tid, int addrUser)
 {
 	Thread* th;
-	AddrSpace *space = currentThread->process->getAddrSpace();
-	std::list<Thread*>::iterator it = space->l_threads.begin();
-	space->s_userJoin->P();
+	//AddrSpace *space = currentThread->process->getAddrSpace();
+
+	currentProcess->threadManager->s_userJoin->P();
 	// search the given thread in l_thread
-	while (it != space->l_threads.end() && (tid != (*it)->tid))
-	{
-		++it;
-	}
 	// tid does not exist : error
-	if (it == space->l_threads.end())
+	if ((th = currentProcess->threadManager->searchThread(tid)) == NULL)
 	{
-		space->s_userJoin->V();
+		currentProcess->threadManager->s_userJoin->V();
 		return -1;
 	}
 	else
 	{
-		th = *it;
+		//th = *it;
 		// an other thread wait for this thread : error
 		if(!th->isFinished && th->wait)
 		{
-			space->s_userJoin->V();
+			currentProcess->threadManager->s_userJoin->V();
 			return -1;
 		}
 		else
 		{
 			th->wait = true;
-			space->s_userJoin->V();
+			currentProcess->threadManager->s_userJoin->V();
 			// wait while the thread doesn't finish
 			th->s_join->P();
 

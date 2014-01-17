@@ -81,10 +81,11 @@ USER_FLAVORS=step2 step3 step4 countNew
 # to the personal flavors
 #USER_FLAVORS=step2 step5 mynetwork final
 
-$(eval $(call define-flavor,step2,userprog filesys-stub,exit.cc synchconsole.cc process.cc semaphoreManager.cc))
-$(eval $(call define-flavor,step3,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc process.cc semaphoreManager.cc,-Dstep3))
-$(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc semaphoreManager.cc ,-Dstep4 -Dstep3))
-$(eval $(call define-flavor,countNew,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc semaphoreManager.cc ,-Dstep4 -Dstep3 -DcountNew))
+$(eval $(call define-flavor,step2,userprog filesys-stub,exit.cc synchconsole.cc process.cc threadManager.cc semaphoreManager.cc))
+$(eval $(call define-flavor,step3,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc process.cc threadManager.cc semaphoreManager.cc,-Dstep3))
+$(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc threadManager.cc semaphoreManager.cc,-Dstep4 -Dstep3))
+$(eval $(call define-flavor,countNew,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc,-Dstep4 -Dstep3 -DcountNew))
+
 # $(eval $(call define-flavor,step5,userprog filesys,\
 #     synchconsole.cc userthread.cc))
 # $(eval $(call define-flavor,mynetwork,userprog filesys-stub network, \
