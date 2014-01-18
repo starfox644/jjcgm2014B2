@@ -552,7 +552,7 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	machine->pageTable = oldTr;
 	machine->pageTableSize = ptSize;
 
-	delete buffer;
+	//delete buffer;
 }
 
 bool AddrSpace::mapMem(int virtualAddr, int length, bool write)

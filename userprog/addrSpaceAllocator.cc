@@ -246,8 +246,6 @@ void AddrSpaceAllocator::addFreeSpace(int addr, int length)
 		   testFusionGauche(actu, newSpace);
 		}
 	}
-
-	delete newSpace;
 }
 
 /*
