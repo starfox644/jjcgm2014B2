@@ -22,8 +22,6 @@ int main(){
 	it = Itoa(d);
 	Printf("it = %s\n",it);
 
-
-
 	d = 0;
 	c = 0;
 	s = (char*)malloc(MAX_LENGH * sizeof(char));
