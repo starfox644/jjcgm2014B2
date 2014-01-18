@@ -112,6 +112,8 @@ int Scanf(char* typeVariable, void *variable){
 		switch(typeVariable[1]){
 			case 'd' :	//cas de récupération d'un int
 				GetString((char*)variable,MAX_LENGH);
+				int i = Atoi((char*)variable);
+				variable = Itoa(i);
 				PutString((char*)variable);
 				break;
 			case 'c' : //cas de récupération d'un char

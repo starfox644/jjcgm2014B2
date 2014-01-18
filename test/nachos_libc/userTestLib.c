@@ -12,6 +12,7 @@ int main(){
 	int d = 12;
 	char c = 'c';
 	char *s = "toto";
+
 	Printf("d = %d\n",(void*)d);
 	Printf("c = %c\n",&c);
 	Printf("s = %s\n",s);
@@ -23,6 +24,7 @@ int main(){
 	Scanf("%c",&c);
 	Printf("Char entré : %c\n",&c);
 	Printf("Veuillez entrer un string svp ?\n", 0);
+	s = " ";
 	Scanf("%s",s);
 	Printf("String entré : %s\n",s);
 	return 0;

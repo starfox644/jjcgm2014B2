@@ -13,6 +13,7 @@ void evalLine(char* cmdLine){
 	//tableau d'argument
 	char* argv[MAXARGS];	//argv pour la création de nos programme
 	int background;
+	int pid;
 	background = parseline(cmdLine,argv);
 	if(argv[0] == 0){// on ne tient pas compte des lignes vide
 			return ;
@@ -24,7 +25,8 @@ void evalLine(char* cmdLine){
 		 * Partie a modifier pour gérer les arguments.
 		 */
 		newProc = ForkExec(cmdLine); //on crée notre executable
-		add_job(newProc,background,cmdLine);	//on l'ajoue a notre tableau
+		pid = GetPid();
+		add_job(pid,background,cmdLine);	//on l'ajoue a notre tableau
 		if(newProc == -1){
 			PutString("Programme non connu\n");
 			return;
