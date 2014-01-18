@@ -5,6 +5,7 @@
  *      Author: galdween
  */
 #include "Printf.h"
+#include "util.h"
 #include "syscall.h"
 
 int main(){
@@ -12,10 +13,20 @@ int main(){
 	int d = 12;
 	char c = 'c';
 	char *s = "toto";
-
 	Printf("d = %d\n",(void*)d);
 	Printf("c = %c\n",&c);
 	Printf("s = %s\n",s);
+
+	PutString("Atoi\n");
+	int at = Atoi(s);
+	Printf("at = %d\n",(void*)at);
+	PutString("Malloc\n");
+	char *it = (char*) malloc(32 * sizeof(char));
+	PutString("Itoa\n");
+	it = Itoa(d);
+	Printf("it = %s\n",it);
+
+
 
 	d = 0;
 	c = 0;

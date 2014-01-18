@@ -107,29 +107,19 @@ void Printf(char* messageVoulu, void* variable){
 }
 
 int Scanf(char* typeVariable, void *variable){
-	PutString("Debut de scanf\n");
 	char *tempo = (char*)malloc( 128 * sizeof(char));
 	int i;
 	if(typeVariable[0] == '%'){
 		switch(typeVariable[1]){
 			case 'd' :	//cas de récupération d'un int
-				PutString("Debut case d\n");
 				GetString(tempo,32);
-				PutString("Tempo : ");
-				PutString(tempo);
-				PutString("avant Atoi\n");
 				i = Atoi(tempo);
-				PutString("Tempo en i : ");
-				PutInt(i);
-				PutString("Apres copie\n");
 				break;
 			case 'c' : //cas de récupération d'un char
-				PutString("Debut case c\n");
 				GetString(tempo,StrLengh(tempo));
 				StrCpy(tempo,(char*)variable);
 				break;
 			case 's' : //cas de récupération d'un string
-				PutString("Debut case s\n");
 				GetString((char*)variable,MAX_LENGH);
 				break;
 			default :

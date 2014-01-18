@@ -36,7 +36,7 @@ USERPROG_LIBS=start.S $(NachOS_libc_SOURCES)
 # USERPROG_LIBS         = start.S nachos-libc.c
 # bigtest_EXTRA_SOURCES = bigtest_extra.c
 
-NachOS_libc_SOURCES=nachos_libc/Printf.c nachos_libc/String.c malloc/malloc_stub.c malloc/mem.c 
+NachOS_libc_SOURCES=nachos_libc/Printf.c nachos_libc/String.c malloc/malloc_stub.c malloc/mem.c ./nachos_libc/util.c ./nachos_libc/File.c
 my_shell/my_shell_EXTRA_SOURCES = my_shell/eval.c my_shell/job.c my_shell/parseline.c
 my_notepad/my_notepad_EXTRA_SOURCES = my_notepad/my_notepad.c
  
