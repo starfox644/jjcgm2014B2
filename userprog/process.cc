@@ -278,7 +278,9 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
+	Printf("Dans free addrSpace\n");
 	delete addrSpace;
+	Printf("apres delete addrSpace\n");
 	threadManager->deleteThreads();
 	delete threadManager;
 	delete semManager;
@@ -309,7 +311,10 @@ void Process::setPid(int newPid)
  */
 void Process::killProcess()
 {
-	interrupt->SetLevel (IntOff);
+	//interrupt->SetLevel (IntOff);
+
+	Printf("Debut KillPorcess\n");
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
 	while (it != threadManager->l_threads.end())
@@ -317,13 +322,19 @@ void Process::killProcess()
 		scheduler->RemoveTid((*it)->tid);
 		++it;
 	}
+	Printf("apres boucle\n");
 	freeAddrSpace();
+	Printf("apres freeAddrSpace\n");
 	if(scheduler->isReadyListEmpty())
 	{
+		Printf("La liste est vide\n");
 		interrupt->Halt();
 	}
 	else
 	{
+		Printf("avant finish\n");
+		(void) interrupt->SetLevel (oldLevel);
+		//interrupt->Halt();
 		currentThread->Finish();
 	}
 

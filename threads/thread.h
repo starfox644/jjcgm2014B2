@@ -44,6 +44,7 @@
 #include "machine.h"
 #ifdef CHANGED
 #include "process.h"
+
 class Semaphore;
 #else
 #include "addrspace.h"
@@ -113,11 +114,14 @@ public:
 	{
 		return (name);
 	}
+#ifdef CHANGED
+	void Print ();
+#else
 	void Print ()
 	{
 		printf ("%s, ", name);
 	}
-
+#endif
 #ifdef CHANGED
 	void setName(char* newName);
 #endif
