@@ -64,18 +64,18 @@ int commandIntegre(char **argv){
 		}
 	if(StrCmp(argv[0],"help") == 1){//on affiche l'aide de notre shell
 		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
-		Printf("-Pour afficher les programmes en cours tapez :",0);
-		Printf(" jobs\n",0);
-		Printf("-Pour afficher les processus système en cours tapez :",0);
-				Printf(" ps\n",0);
-		Printf("-Pour afficher le contenu du répertoire courant tapez :",0);
-		Printf(" ls\n",0);
-		Printf("-Pour afficher le chemin du répertoire courant tapez :",0);
-		Printf(" pwd\n",0);
-		Printf("-Pour quitter NachOS tapez :",0);
-		Printf(" quit\n\n",0);
-		Printf("Merci d'utiliser NachOS_Shell!\n",0);
-		Printf("\t\tA bientôt.\n",0);
+		Printf("-Pour afficher les programmes en cours tapez : jobs\n");
+		Printf("-Pour afficher les processus système en cours tapez : ps\n");
+		Printf("-Pour afficher le contenu du répertoire courant tapez : ls\n");
+		Printf("-Pour afficher le chemin du répertoire courant tapez : pwd\n");
+		Printf("-Pour copier un fichier Unix vers un fichier NachOS tapez : cp\n");
+		Printf("-Pour supprimer un fichier NachOS tapez : rm\n");
+		Printf("-Pour afficher le système de fichier dans son ensemble tapez : Dir\n");
+		Printf("-Pour naviguer dans le système de fichier tapez : cd\n");
+		Printf("-Pour avoir un fichier d'aide sur les commandes tapez : man\n");
+		Printf("-Pour quitter NachOS tapez : quit\n\n");
+		Printf("Merci d'utiliser NachOS_Shell!\n");
+		Printf("\t\tA bientôt.\n");
 		return 0;
 
 
@@ -84,33 +84,33 @@ int commandIntegre(char **argv){
 	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
 			PutString("Non implémenté :D\n");
 			return 0;
-		}
-		if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
+	}
+	if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
+		PutString("Non implémenté :D\n");
+		return 0;
+	}
+	if(StrCmp(argv[0],"cp") == 1){//copie un fichier unix vers un fichier nachOS
 			PutString("Non implémenté :D\n");
 			return 0;
-		}
+	}
+	if(StrCmp(argv[0],"rm") == 1){//supprime un fichier nachOS
+			PutString("Non implémenté :D\n");
+			return 0;
+	}
+	if(StrCmp(argv[0],"Dir") == 1){//affiche l'integralité du filesystem
+			PutString("Non implémenté :D\n");
+			return 0;
+	}
+	if(StrCmp(argv[0],"cd") == 1){//permet de naviger dans le système de fichier
+			PutString("Non implémenté :D\n");
+			return 0;
+	}
+	if(StrCmp(argv[0],"man") == 1){//affiche l'integralité du filesystem
+			PutString("Non implémenté :D\n");
+			return 0;
+	}
 	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
 }
 
-void afficherProcess(){
-	int *liste_Process;
-	int nbProcessus = GetNbProcess(), i = 0 ;
-	int compteur = 0;
-	//on alloue la mémoire et on recupere la liste des processus
-	liste_Process = (int*) malloc((nbProcessus * 100) * sizeof(int));
-	if(liste_Process == 0){
-		Printf("arf\n",0);
-	}
-	liste_Process = GetListProcess(liste_Process);
-	//on réalise l'affichage
-	Printf("Liste des processus sytème\n",0);
-	while(compteur < nbProcessus){ //pour chaque processus faire
-		Printf("Pid du processus : %d",(void*)liste_Process[i]);
-		i++;
-		Printf("\t\t Etat : %d\n",(void*)liste_Process[i]);
-		i++;
-		compteur++;
-	}
-	return;
-}
+

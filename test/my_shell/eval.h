@@ -12,6 +12,7 @@
 #include "syscall.h"
 #include "../nachos_libc/Printf.h"
 #include "parseline.h"
+#include "commandIntegre.h"
 
 #define MAX_CHAR (128)
 #define MAXARGS (128)
