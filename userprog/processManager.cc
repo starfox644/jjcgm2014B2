@@ -64,21 +64,21 @@ int ProcessManager::waitPid(int processPid){
 	// si le pid du process n'est pas trouve, return -1 : error
 	if (it == l_process.end())
 	{
-//		printf("[WaitPid - Process #%i] Erreur - Processus #%i introuvable dans la liste\n", currentProcess->getPid(), processPid);
+//		Printf("[WaitPid - Process #%i] Erreur - Processus #%i introuvable dans la liste\n", currentProcess->getPid(), processPid);
 		sem_Wait->V();
 		return -1;
 	}
 	// si le process a attendre est le process courant : -1
 	else if ((*it)->getPid() == currentProcess->getPid())
 	{
-//		printf("[WaitPid] Erreur - Un processus ne peut s'attendre lui-meme\n");
+//		Printf("[WaitPid] Erreur - Un processus ne peut s'attendre lui-meme\n");
 		sem_Wait->V();
 		return -1;
 	}
 	// Si le process est deja attendu TODO : a tester, on ne peut pas pour l'instant
 	else if ((*it)->getEstAttendu())
 	{
-//		printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
+//		Printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
 		sem_Wait->V();
 		return -1;
 	}

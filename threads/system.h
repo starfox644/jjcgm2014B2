@@ -33,6 +33,8 @@ extern void Cleanup ();		// Cleanup, called when
 #ifdef CHANGED
 extern Process* currentProcess;
 extern Semaphore *s_createProcess;
+//extern Semaphore *semRead;
+//extern Semaphore *semWrite;
 #endif
 
 extern Thread *currentThread;	// the thread holding the CPU

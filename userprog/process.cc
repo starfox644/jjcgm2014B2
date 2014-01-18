@@ -47,7 +47,7 @@ int do_forkExec(int adrExec)
 	t = new Thread("ThreadForkExec");
 	if(t == NULL)
 	{
-		printf("[ForkExec] Erreur creation thread\n");
+		Printf("[ForkExec] Erreur creation thread\n");
 		// relachement de la section critique de creation
 		s_createProcess->V();
 		return -1;
@@ -67,6 +67,7 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
+
 			//printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
@@ -133,7 +134,7 @@ int allocateProcessSpace (Thread *t, char *filename)
 
 	if (executable == NULL)
 	{
-		printf ("Unable to open file %s\n", filename);
+		Printf ("Unable to open file %s\n", filename);
 		return -1;
 	}
 	Process* process = NULL;
@@ -172,6 +173,7 @@ StartProcess (char *filename)
 	OpenFile *executable = fileSystem->Open (filename);
 	if (executable == NULL)
 	{
+
 		printf ("Unable to open file %s\n", filename);
 		return -1;
 	}
