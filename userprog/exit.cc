@@ -16,16 +16,19 @@ void do_exit(int returnCode)
 	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
 #endif
 	AddrSpace *space = currentProcess->getAddrSpace();
-	// indicates that the main thread is waiting for the others
-	currentProcess->threadManager->s_nbThreads->P();
-	space->attente = true;
-	currentProcess->threadManager->s_nbThreads->V();
-	while(currentProcess->threadManager->getNbThreads() > 0)
+	if (currentThread->isMainThread())
 	{
-		// semaphore wait for waiting the others threads
-		s_createProcess->V();
-		space->s_exit->P();
-		s_createProcess->P();
+		// indicates that the main thread is waiting for the others
+		currentProcess->threadManager->s_nbThreads->P();
+		space->attente = true;
+		currentProcess->threadManager->s_nbThreads->V();
+		while(currentProcess->threadManager->getNbThreads() > 0)
+		{
+			// semaphore wait for waiting the others threads
+			s_createProcess->V();
+			space->s_exit->P();
+			s_createProcess->P();
+		}
 	}
 
 //	currentThread->space->processRunning = false;
@@ -63,6 +66,7 @@ void do_exit(int returnCode)
 		interrupt->Halt ();
 	}
 #else
+	printf("Avant halt\n");
 	interrupt->Halt ();
 #endif
 }
