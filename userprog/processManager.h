@@ -38,7 +38,7 @@ class ProcessManager{
 		int waitPid(int processPid);
 
 	private:
-		int nextPid;					// numero du prochain processus a creer
+		int nextPid;		// numero du prochain processus a creer
 
 };
 #endif // __PROCESSMANAGER__H__
