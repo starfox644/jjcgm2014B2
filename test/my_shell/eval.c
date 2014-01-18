@@ -66,6 +66,8 @@ int commandIntegre(char **argv){
 		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
 		Printf("-Pour afficher les programmes en cours tapez :",0);
 		Printf(" jobs\n",0);
+		Printf("-Pour afficher les processus système en cours tapez :",0);
+				Printf(" ps\n",0);
 		Printf("-Pour afficher le contenu du répertoire courant tapez :",0);
 		Printf(" ls\n",0);
 		Printf("-Pour afficher le chemin du répertoire courant tapez :",0);
