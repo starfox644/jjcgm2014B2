@@ -227,6 +227,12 @@ Thread::Finish ()
 		// the main thread is the last to finish, it must be deleted
 		threadToBeDestroyed = currentThread;
 	}
+
+	if (currentProcess == NULL) {
+		printf("currentProcess == NULL, exit\n");
+		Exit(0);
+	}
+
 	AddrSpace* space = currentProcess->getAddrSpace();
 	if(space != NULL)
 	{
