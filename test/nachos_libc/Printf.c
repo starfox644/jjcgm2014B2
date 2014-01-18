@@ -107,29 +107,30 @@ void Printf(char* messageVoulu, void* variable){
 
 }
 
-int Scanf(char* typeVariable, void *variable){
-	char *tempo = (char*)malloc( 128 * sizeof(char));
-	int i;
+void* Scanf(char* typeVariable, void *variable){
 	if(typeVariable[0] == '%'){
 		switch(typeVariable[1]){
 			case 'd' :	//cas de récupération d'un int
-				GetString(tempo,32);
-				i = Atoi(tempo);
+				GetString((char*)variable,sizeof(int));
+				variable = (void*)Atoi((char*)variable);
+				return variable;
 				break;
 			case 'c' : //cas de récupération d'un char
-				GetString(tempo,StrLengh(tempo));
-				StrCpy(tempo,(char*)variable);
+				GetString(variable,2 * sizeof(char));
+				StrCpy(variable,(char*)variable);
+				return variable;
 				break;
 			case 's' : //cas de récupération d'un string
 				GetString((char*)variable,MAX_LENGH);
+				return variable;
 				break;
 			default :
 				Printf("\nType de variable non reconnu\n",0);
-				return -1;
+				return 0;
 				break;
 		}
 	}else{
-		return -1;
+		return 0;
 	}
 	return 0;
 }
