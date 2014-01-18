@@ -67,7 +67,7 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
-			printf("[ForkExec] Erreur allocation process space\n");
+			//printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
 			// relachement de la section critique de creation
@@ -173,7 +173,7 @@ StartProcess (char *filename)
 	if (executable == NULL)
 	{
 		printf ("Unable to open file %s\n", filename);
-		Exit(-1);
+		return -1;
 	}
 
 	Process* process = NULL;
