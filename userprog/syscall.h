@@ -49,6 +49,8 @@
 #define SC_WaitPid 26
 #define SC_Mmap 27
 #define SC_Unmap 28
+#define SC_GetListProcess 29
+#define SC_GetNbProcess 30
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -243,6 +245,16 @@ void* Mmap(int length);
  * 	desalloue une portion de memoire virtuelle
  */
 int Unmap();
+
+/*
+ * renvoi le nombre de processus système en cours
+ */
+int GetNbProcess();
+
+/*
+ * renvoi la liste des processus créé
+ */
+char* GetListProcess(char*);
 
 #endif // CHANGED
 

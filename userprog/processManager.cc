@@ -114,7 +114,52 @@ int ProcessManager::getNextPid()
 		return -1;
 	}
 }
+
+/*
+ * renvoi le nombre de processus
+ */
+int ProcessManager::getNbProcess(){
+	int compteur = 0;
+
+	sem_Wait->P();
+	// iterator pour trouver l'adresse dans la liste
+	std::list<Process*>::iterator it=l_process.begin();
+
+	while (it != l_process.end()){
+		it++;
+		compteur++;
+	}
+	sem_Wait->V();
+	return compteur;
+
+}
+
+/*
+ * Renvoi une liste des processus
+ */
+int ProcessManager::getListProcess(int ListeProc){
+
+	int i = 0;
+	sem_Wait->P();
+	// iterator pour trouver l'adresse dans la liste
+	std::list<Process*>::iterator it=l_process.begin();
+
+	while (it != l_process.end()){
+		printf("ProcessManager boucle \n");
+		machine->WriteMem(ListeProc + i,sizeof(int),(*it)->getPid());
+		printf("getpid done\n");
+		i++;
+		machine->WriteMem(ListeProc + i,sizeof(char),' '); //separateur d'arguments
+		i++;
+		machine->WriteMem(ListeProc + i ,sizeof(int), (*it)->processRunning);
+		printf("processRunning done\n");
+		i++;
+		machine->WriteMem(ListeProc + i,sizeof(char), '/');//separateur de processus
+		i++;
+		it++;
+	}
+	machine->WriteMem(ListeProc +i ,sizeof(char), '\0');
+	sem_Wait->V();
+	return ListeProc;
+}
 #endif //step4
-
-
-

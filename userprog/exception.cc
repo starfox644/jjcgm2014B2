@@ -279,6 +279,15 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
+			case SC_GetNbProcess:
+				machine->WriteRegister(2,processManager->getNbProcess());
+				break;
+
+			case SC_GetListProcess:
+				n = machine->ReadRegister(4);
+				machine->WriteRegister(2, processManager->getListProcess(n));
+				break;
+
 #endif // STEP4
 
 			case SC_Exit:
