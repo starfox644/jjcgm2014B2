@@ -38,6 +38,9 @@ int allocateProcessSpace (Thread *t, char *filename);
  */
 void UserStartProcess (int adr);
 
+int do_mmap(int length);
+int do_unmap(int addr);
+
 //----------------------------------------------------------------------
 // StartProcess
 //      Run a user program.  Open the executable, load it into

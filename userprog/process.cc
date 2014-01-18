@@ -84,7 +84,6 @@ void UserStartProcess (int adr)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
 	currentProcess->processRunning = true;
-	processManager->addAddrProcess(currentProcess);
 	currentProcess->semProc->P();
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
@@ -139,6 +138,19 @@ int allocateProcessSpace (Thread *t, char *filename)
 		return -1;
 	}
 	t->process = process;
+#ifdef step4
+	int pid = processManager->getNextPid();
+	if(pid == -1)
+	{
+		// erreur : plus de pid disponible
+		process->freeAddrSpace();
+		delete process;
+		delete executable;
+		return -1;
+	}
+	process->setPid(pid);
+	processManager->addAddrProcess(process);
+#endif
 	delete executable;		// close file
 	return 0;
 }
@@ -178,10 +190,10 @@ StartProcess (char *filename)
 	currentThread->process = process;
 	// le processus cree devient le processus actuel (premier processus lance)
 	currentProcess = process;
-
 #ifdef step4
-	currentProcess->processRunning = true;
+	process->setPid(processManager->getNextPid());
 	processManager->addAddrProcess(currentProcess);
+	currentProcess->processRunning = true;
 	currentProcess->semProc->P();
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
@@ -195,16 +207,28 @@ StartProcess (char *filename)
 	return -1;
 }
 
+#ifdef step4
+
+int do_mmap(int length)
+{
+	return currentProcess->getAddrSpace()->mmap(length);
+}
+int do_unmap(int addr)
+{
+	return currentProcess->getAddrSpace()->unmap(addr);
+}
+
+#endif
+
 /**
  * 	Cree un processus vide.
  * 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
  */
 Process::Process()
-{// TODO Verifier que le pid ne depasse pas MAX_INT
+{
 	addrSpace = NULL;
 	processRunning = false;
 	mainIsWaiting = false;
-	pid = nextPid; nextPid++;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 	semProc = new Semaphore("semaphore processus", 1);
@@ -244,7 +268,6 @@ void Process::freeAddrSpace()
 	delete addrSpace;
 	threadManager->deleteThreads();
 	delete threadManager;
-	//semManager->deleteSemaphores();
 	delete semManager;
 	addrSpace = NULL;
 }

@@ -9,9 +9,6 @@
 #define __PROCESSMANAGER__H__
 
 #include "synch.h"
-//class Process;
-
-//class Process;
 
 class ProcessManager{
 
@@ -19,6 +16,7 @@ class ProcessManager{
 		//constructeur
 		//creation d'un processManager
 		ProcessManager ();
+		~ProcessManager();
 		//variables
 		int nbAdrProcess;	// nombre d'adresse de processus de notre liste
 		Semaphore *sem_Wait;	//semaphore pour notre classe
@@ -31,11 +29,16 @@ class ProcessManager{
 		//récupération du nombre d'adresse de processus
 		int getNbAddrProcess();
 
+		int getNextPid();
+
 		//fonctions
 		/* permet d'attendre le pid voulu avant de continuer
 		*	retourne -1 en cas d'erreur sinon retourne 0
 		**/
 		int waitPid(int processPid);
+
+	private:
+		int nextPid;					// numero du prochain processus a creer
 
 };
 #endif // __PROCESSMANAGER__H__

@@ -138,6 +138,9 @@ public:
 	 */
 	static int getTid();
 
+	// tid given to the next thread
+	static int nextTid;
+
 #endif
 
 private:
@@ -148,7 +151,11 @@ private:
 	// NULL if this is the main thread
 	// (If NULL, don't deallocate stack)
 	ThreadStatus status;	// ready, running or blocked
+#ifdef CHANGED
+	char name[10];
+#else
 	const char *name;
+#endif
 
 	void StackAllocate (VoidFunctionPtr func, int arg);
 	// Allocate a stack for thread.
@@ -160,9 +167,6 @@ private:
 	// initial argument of the thread
 	int initArg;
 	int thread_return;
-
-	// tid given to the next thread
-	static int nextTid;
 #endif
 
 #ifdef USER_PROGRAM

@@ -17,13 +17,15 @@ int do_UserThreadCreate(int f, int arg)
 	int n;
 	bool error = false;
 	int stackAddr;
+	char buffer[10];
 	// locks this function
 	s_createProcess->P();
 	AddrSpace* space = currentProcess->getAddrSpace();
+	ASSERT(space != NULL);
 
 	// allocate the new thread
 	Thread *newThread = NULL;
-	newThread = new Thread("test");
+	newThread = new Thread((char*)buffer);
 	// allocation error
 	if (newThread == NULL)
 		error = true;

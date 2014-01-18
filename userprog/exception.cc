@@ -266,6 +266,19 @@ ExceptionHandler (ExceptionType which)
 				else
 					machine->WriteRegister(2, n);
 				break;
+
+			case SC_Mmap:
+				n = machine->ReadRegister(4);
+				n = do_mmap(n);
+				machine->WriteRegister(2, n);
+				break;
+
+			case SC_Unmap:
+				n = machine->ReadRegister(4);
+				n = do_unmap(n);
+				machine->WriteRegister(2, n);
+				break;
+
 #endif // STEP4
 
 			case SC_Exit:
@@ -296,7 +309,7 @@ ExceptionHandler (ExceptionType which)
 		// LB: Do not forget to increment the pc before returning!
 		UpdatePC ();
 	}
-	else if (which == AddressErrorException && currentThread->getIsSyscall()) {
+	else if ((which == AddressErrorException || which == PageFaultException) && currentThread->getIsSyscall()) {
 		// we do nothing, exception is ignored and current syscall will return -1
 	}
 #else

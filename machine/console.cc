@@ -65,6 +65,13 @@ Console::Console(char *readFile, char *writeFile, VoidFunctionPtr readAvail,
 
 Console::~Console()
 {
+#ifdef CHANGED
+	// this permits to empty the input, otherwise the remaining characters will be read in the terminal
+	while(GetChar() != EOF)
+	{
+		CheckCharAvail();
+	}
+#endif
     if (readFileNo != 0)
 	Close(readFileNo);
     if (writeFileNo != 1)

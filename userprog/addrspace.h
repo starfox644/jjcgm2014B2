@@ -20,6 +20,7 @@
 class Semaphore;
 class Thread;
 class threadManager;
+#include "noff.h"
 #include <list>
 
 #define UserStackSize		2048	// increase this as necessary!
@@ -80,6 +81,9 @@ class AddrSpace
      */
     bool loadInitialSections(OpenFile * executable);
 
+    /** manages the available virtual memory */
+    AddrSpaceAllocator* addrSpaceAllocator;
+
 #endif
 
     /**
@@ -127,6 +131,10 @@ class AddrSpace
 	*/
     void printMapping(unsigned int max);
 
+    int mmap(int length);
+
+    int unmap(int addr);
+
 //
 //	FOR THREADS OF STEP 4
 //	We use an allocator of virtual memory for the stacks
@@ -150,9 +158,6 @@ class AddrSpace
 	 */
 	bool setAccessRight(unsigned int beginPage, unsigned int nbPages, bool readOnly);
 
-    /** manages the available virtual memory */
-    AddrSpaceAllocator* addrSpaceAllocator;
-
 #endif
 
 #endif
@@ -170,6 +175,7 @@ class AddrSpace
 #ifdef step4
     // number of pages needed for a stack size
     int nbPagesUserStack;
+
 #endif
 	// number max of threads depending on memory for the stacks
 	// the main thread is not included in this number
@@ -190,6 +196,8 @@ class AddrSpace
      * 	for the additionnal thread's stacks
      */
     void initAvailableStackPointers();
+
+    bool mapExecutable(NoffHeader noffH, OpenFile * executable);
 
 #endif //CHANGED
 };
