@@ -362,7 +362,6 @@ AddrSpace::~AddrSpace ()
 {
 #ifdef step4
 	unsigned int i;
-	Printf("Destructeur AddrSpace\n");
 
 	DEBUG(',', "FINAL RELEASE\n");
 	//release physical pages
@@ -373,7 +372,6 @@ AddrSpace::~AddrSpace ()
 			frameProvider->ReleaseFrame(pageTable[i].physicalPage);
 		}
 	}
-	Printf("Destructeur AddrSpace : apres releaseFrame\n");
 #endif
 
 	// LB: Missing [] for delete
