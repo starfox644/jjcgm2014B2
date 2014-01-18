@@ -10,12 +10,12 @@
 
 #include "eval.h"
 
-#define MAX_CHAR 128
-#define MAX_JOB 1	//nombre maximum de jobs possible
-#define RUN 1		//etat d'un processus lors de l'affichage
-#define STOP 0		//etat d'un processus lors de l'affichage
-#define BACK 1		//si le processus est en arriere plan
-#define FIRST 0		//si le processus est au premier plan
+#define MAX_CHAR (128)
+#define MAX_JOB (1)	//nombre maximum de jobs possible
+#define RUN (1)		//etat d'un processus lors de l'affichage
+#define STOP (0)		//etat d'un processus lors de l'affichage
+#define BACK (1)		//si le processus est en arriere plan
+#define FIRST (0)		//si le processus est au premier plan
 
 
 typedef struct job{
