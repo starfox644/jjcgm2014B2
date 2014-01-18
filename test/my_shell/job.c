@@ -48,7 +48,7 @@ int premier_libre(){
 }
 
 void add_job(int pid, int plan,char* commande){
-	int numero_job = premier_libre();
+	int numero_job = premier_libre();	//on cherche le premier numéro de jobs qui soit libre
 	tab_job[numero_job].numero = numero_job;
 	tab_job[numero_job].pid = pid;
 	tab_job[numero_job].etat = RUN;
@@ -88,11 +88,17 @@ void bg(char** argv);
 
 void afficherJobs(){
 	int i = 0;
-	while(i < MAX_JOB){
+	while(i >= MAX_JOB){
 		if(tab_job[i].numero != -1){
 			Printf("Job en cours :\n",0);
 			Printf("job\t\tpid\\etat\t\tplan\n",0);
+			Printf("%s",tab_job[i].command);
+			Printf("\t\t%d",&tab_job[i].pid);
+			Printf("\t\t%d",&tab_job[i].etat);
+			Printf("\t\t%d",&tab_job[i].plan);
+			Printf("\n",0);
 		}
 	}
+	return;
 
 }
