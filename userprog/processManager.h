@@ -9,6 +9,7 @@
 #define __PROCESSMANAGER__H__
 
 #include "synch.h"
+
 //class Process;
 
 class ProcessManager{
@@ -33,7 +34,7 @@ class ProcessManager{
 		/* permet d'attendre le pid voulu avant de continuer
 		*	retourne -1 en cas d'erreur sinon retourne 0
 		**/
-		int WaitPid(int );
+		int waitPid(int processPid);
 
 };
 #endif // __PROCESSMANAGER__H__

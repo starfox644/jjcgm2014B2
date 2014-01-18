@@ -35,7 +35,7 @@ void do_exit(int returnCode)
 
 	}
 
-	printf("Program stopped with return code : %d\n", returnCode);
+	printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
 	DEBUG('a',"Program exit");
 
 #ifdef step4
@@ -45,19 +45,21 @@ void do_exit(int returnCode)
 	{
 		removeProcess();
 		//threadToBeDestroyed = currentThread;
-		currentProcess->processRunning = false;
-		//s_createProcess->V();
+		processManager->removeAddrProcess(currentProcess);
 		// currentThread->Yield();
+
 		s_createProcess->V();
+		currentProcess->semProc->V();
 		currentThread->Finish();
 	}
 	else // the current thread is the last thread
 	{
 		removeProcess();
-		currentProcess->processRunning = false;
+		processManager->removeAddrProcess(currentProcess);
 		//s_createProcess->V();
 		// stop the program
 		s_createProcess->V();
+		currentProcess->semProc->V();
 		interrupt->Halt ();
 	}
 #else

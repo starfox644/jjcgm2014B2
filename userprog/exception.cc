@@ -30,6 +30,7 @@
 #include "semaphore.h"
 #include "process.h"
 #include "machine.h"
+#include "processManager.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -246,18 +247,22 @@ ExceptionHandler (ExceptionType which)
 				adr = machine->ReadRegister(4);
 
 				// error : returns -1
-				if (do_forkExec(adr) == -1)
-				{
+				if ((n = do_forkExec(adr)) == -1)
 					machine->WriteRegister(2, -1);
-				}
 				else
-				{
-					machine->WriteRegister(2, 0);
-				}
+					machine->WriteRegister(2, n);
 				break;
 
 			case SC_GetPid:
 				machine->WriteRegister(2, currentProcess->getPid());
+				break;
+
+			case SC_WaitPid:
+				n = machine->ReadRegister(4);
+				if ((n = processManager->waitPid(n)) == -1)
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, n);
 				break;
 #endif // STEP4
 

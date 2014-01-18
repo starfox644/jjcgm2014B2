@@ -42,7 +42,7 @@ int do_forkExec(int adrExec)
 		//printf("[ForkExec] allocate reussi\n");
 		t->Fork(UserStartProcess, 0);
 		s_createProcess->V();
-		return 0;
+		return t->process->getPid();
 	}
 	else
 	{
@@ -58,7 +58,8 @@ void UserStartProcess (int adr)
 {
 	AddrSpace *space = currentProcess->getAddrSpace();
 	currentProcess->processRunning = true;
-	//processManager->addAddrProcess(space);
+	processManager->addAddrProcess(currentProcess);
+	currentProcess->semProc->P();
 	space->InitRegisters ();	// set the initial register values
 	space->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user program
@@ -76,6 +77,7 @@ void addProcess ()
 
 void removeProcess () {
 	s_nbProcess->P();
+	processManager->removeAddrProcess(currentProcess);
 	nbProcess--;
 	s_nbProcess->V();
 }
@@ -92,7 +94,6 @@ int getNbProcess () {
  */
 int allocateProcessSpace (Thread *t, char *filename)
 {
-//	printf("[allocateProcessSpace] Debut fonction\n");
 	OpenFile *executable = fileSystem->Open (filename);
 
 	if (executable == NULL)
@@ -102,7 +103,6 @@ int allocateProcessSpace (Thread *t, char *filename)
 	}
 	Process* process = NULL;
 	process = new Process();
-//	printf("[AllocateProcessSpace] Creation du processus #%i\n", process->getPid());
 	if(process == NULL || !process->allocateAddrSpace(executable))
 	{
 		delete executable;		// close file
@@ -129,6 +129,7 @@ StartProcess (char *filename)
 	}
 
 	Process* process = new Process();
+	printf("[StartProcess] pid : %i\n", process->getPid());
 	if(!process->allocateAddrSpace(executable))
 	{
 		delete executable;		// close file
@@ -138,6 +139,9 @@ StartProcess (char *filename)
 	currentThread->process = process;
 	currentProcess = process;
 #ifdef step4
+	currentProcess->processRunning = true;
+	processManager->addAddrProcess(currentProcess);
+	currentProcess->semProc->P();
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
@@ -157,6 +161,8 @@ Process::Process()
 	pid = nextPid; nextPid++;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
+	semProc = new Semaphore("semaphore processus", 1);
+
 }
 
 bool Process::allocateAddrSpace(OpenFile * executable)

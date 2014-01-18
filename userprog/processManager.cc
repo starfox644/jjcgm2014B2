@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "processManager.h"
-//#include "process.h"
+#include "system.h"
 
 ProcessManager::ProcessManager (){
 	//on initialise notre semaphore
@@ -41,24 +41,31 @@ int ProcessManager::getNbAddrProcess(){
 /*
  * Fonction en cours de réalisation
  */
-int ProcessManager::WaitPid(int processPid){
+int ProcessManager::waitPid(int processPid){
 	sem_Wait->P();
+
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
+
 	while (it != l_process.end() && (*it)->getPid() != processPid)
+	{
 		it++;
+	}
 	// si l'adresse du process n'est pas trouvee, return -1 : error
-	if ((*it)->getPid() != processPid){
+	if ((*it)->getPid() != processPid || (*it)->getPid() == currentProcess->getPid()){
 		sem_Wait->V();
 		return -1;
 	}else{
 
-		while((*it)->processRunning == true){	// On attend que le processus termine
-			sem_Wait->V();
-			sem_Wait->P();
-		}int procPid = (*it)->getPid(); 				// Recup PID pour le renvoyer
+		sem_Wait->V();
+		(*it)->semProc->P();
+		int procPid = (*it)->getPid(); 				// Recup PID pour le renvoyer
+		(*it)->semProc->V();
+		sem_Wait->P();
 		l_process.erase(it); 					// On supprime le processus de la liste
-		sem_Wait->V();							// On libere la ressource
+		sem_Wait->V();
+
+		// On libere la ressource
 		return procPid;
 
 	}
