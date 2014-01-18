@@ -5,15 +5,16 @@
  *      Author: galdween
  */
 #include "Printf.h"
+#include "syscall.h"
 
 int main(){
 
 	int d;
-	char c;
-	char* s;
+	char *c;
+	char *s;
 	Printf("Veuillez entrer un entier svp ?\n", 0);
 	Scanf("%d", &d);
-	Printf("Entier entré : %d\n",d);
+	Printf("Entier entré : %d\n",(void*)d);
 	Printf("Veuillez entrer un char svp ?\n", 0);
 	Scanf("%c", &c);
 	Printf("Char entré : %c\n",c);
@@ -21,7 +22,7 @@ int main(){
 	Scanf("%s", &s);
 	Printf("String entré : %s\n",s);
 
-	retun 0;
+	return 0;
 }
 
 

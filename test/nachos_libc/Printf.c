@@ -109,20 +109,28 @@ void Printf(char* messageVoulu, void* variable){
 }
 
 int Scanf(char* typeVariable, void * variable){
-	switch(typeVariable){
-		case '%d' :	//cas de récupération d'un int
-			(int) variable = GetInt();
-			break;
-		case '%c' : //cas de récupération d'un char
-			(char) variable = GetChar();
-			break;
-		case '%s' : //cas de récupération d'un string
-			(char*) variable = GetString();
-			break;
-		default :
-			Printf("\nType de variable non reconnu\n",0);
-			return -1;
-			break;
+
+	if(typeVariable[0] == '%'){
+		switch(typeVariable[1]){
+			case 'd' :	//cas de récupération d'un int
+				variable = (void*)((int) GetChar());
+				return 0;
+				break;
+			case 'c' : //cas de récupération d'un char
+				variable = (void*)(GetChar());
+				return 0;
+				break;
+			case 's' : //cas de récupération d'un string
+				variable = (void*)GetString(variable,256);
+				return 0;
+				break;
+			default :
+				Printf("\nType de variable non reconnu\n",0);
+				return -1;
+				break;
+		}
+	}else{
+		return -1;
 	}
 	return 0;
 }

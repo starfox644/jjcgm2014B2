@@ -94,7 +94,7 @@ char* StrCat(char *source,char *destination){
 		destination[j] = source[i];
 	}
 	//on renvoi le mot destination a l'utilisateur
-	return &destination;
+	return destination;
 }
 
 char* StrNCat(char * source, char *destination, int taille){
@@ -107,5 +107,5 @@ char* StrNCat(char * source, char *destination, int taille){
 			destination[j] = source[i];
 		}
 		//on renvoi le mot destination a l'utilisateur
-		return &destination;
+		return destination;
 }

@@ -8,7 +8,7 @@
 
 #include "job.h"
 //declaration de notre tableau des jobs
-job tab_Job[MAX_JOB + 1];
+job tab_job[MAX_JOB + 1];
 
 /*
  * initialisation du tableau des jobs
@@ -27,7 +27,7 @@ int get_premier_jobs(){
 	while(i < MAX_JOB && tab_job[i].plan != FIRST){ //tantque i est inférieur a MAX_JOB et tant qu'on ne trouve pas un job au premier plan on incrémente
 		i++;
 	}
-	if(tab_job[i].plan == first){// si celui qu'on a trouver est bien au premier plan alors on renvoi son numéro
+	if(tab_job[i].plan == FIRST){// si celui qu'on a trouver est bien au premier plan alors on renvoi son numéro
 		return tab_job[i].numero;
 	}else{	//sinon erreur on retourne -1
 		return -1;
@@ -53,14 +53,14 @@ void add_job(int pid, int plan,char* commande){
 	tab_job[numero_job].pid = pid;
 	tab_job[numero_job].etat = RUN;
 	tab_job[numero_job].plan = plan;
-	StrCpy(tab_job[numero_job].commande,commande);
+	StrCpy(tab_job[numero_job].command,commande);
 
 }
 
 void supp_job(int num){
-	tab_job[i].numero = -1;
-	tab_job[i].etat = STOP;
-	tab_job[i].plan = BACK;
+	tab_job[num].numero = -1;
+	tab_job[num].etat = STOP;
+	tab_job[num].plan = BACK;
 
 }
 void supp_job_pid(int pid){
