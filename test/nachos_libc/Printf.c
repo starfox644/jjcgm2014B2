@@ -27,7 +27,8 @@ void Printf(char* messageVoulu, void* variable){
 				case 'd'://on a un entier a afficher
 					StrNCpy(messageVoulu, buffer, i - 1);
 					PutString(buffer);
-					PutInt((int) variable);
+					variable = Itoa((int)variable);//on transforme le int en string pour pouvoir l'afficher.
+					PutString((char*) variable);
 					i = i+2;//on ce décale pour etre apres le %d
 					if(messageVoulu[i] == '\0'){// c'est la fin de notre message a afficher donc on stop
 						return;

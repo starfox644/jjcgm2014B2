@@ -5,7 +5,6 @@
  *      Author: galdween
  */
 #include "Printf.h"
-#include "util.h"
 #include "syscall.h"
 
 int main(){
@@ -18,7 +17,8 @@ int main(){
 	Printf("s = %s\n",s);
 
 	PutString("Atoi\n");
-	int at = Atoi(s);
+	int at;
+	at = Atoi("123");
 	Printf("at = %d\n",(void*)at);
 	PutString("Malloc\n");
 	char *it = (char*) malloc(32 * sizeof(char));

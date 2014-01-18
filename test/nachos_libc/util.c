@@ -7,8 +7,9 @@
 #include "util.h"
 
 int Atoi(char* chaine){
-	PutString("Debut Atoi\n");
-	int entier = 0,negatif = 0,i = 0;
+	int i = 0;
+	int entier = 0,negatif = 0;
+	PutString(chaine);
 	while(chaine[i] != '\0'){
 	    if(chaine[i] >= '0' && chaine[i] <= '9'){
 	    	entier = entier * 10 + chaine[i] -'0';
@@ -22,6 +23,7 @@ int Atoi(char* chaine){
 	if(negatif == 1){
 		entier = entier * -1;
 	}
+	PutInt(entier);
 	PutString("Fin atoi\n");
 	return entier;
 }
