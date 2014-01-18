@@ -21,19 +21,20 @@ void do_exit(int returnCode)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	currentProcess->threadManager->s_nbThreads->P();
 	// notify that the main thread is waiting for another
-	currentProcess->mainIsWaiting = true;
-	currentProcess->threadManager->s_nbThreads->V();
-	while(currentProcess->threadManager->getNbThreads() > 0)
+	if (currentThread->isMainThread())
 	{
-		// the thread waits for the others threads
-		s_createProcess->V();
-		space->s_exit->P();
-		s_createProcess->P();
+		currentProcess->mainIsWaiting = true;
+		currentProcess->threadManager->s_nbThreads->V();
+		while(currentProcess->threadManager->getNbThreads() > 0)
+		{
+			// the thread waits for the others threads
+			s_createProcess->V();
+			space->s_exit->P();
+			s_createProcess->P();
+		}
 	}
 
-//	currentThread->space->processRunning = false;
-
-	printf("Program stopped with return code : %d\n", returnCode);
+	printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
 	DEBUG('a',"Program exit");
 	currentProcess->freeAddrSpace();
 
@@ -42,17 +43,23 @@ void do_exit(int returnCode)
 	if (getNbProcess() > 1)
 	{
 		removeProcess();
+		processManager->removeAddrProcess(currentProcess);
 		s_createProcess->V();
+		currentProcess->semProc->V();
 		currentThread->Finish();
 	}
 	else // the current thread is the last thread
 	{
 		removeProcess();
+		processManager->removeAddrProcess(currentProcess);
+
+		// stop the program
 		s_createProcess->V();
-		// stop the kernel
+		currentProcess->semProc->V();
 		interrupt->Halt ();
 	}
 #else
+	printf("Avant halt\n");
 	interrupt->Halt ();
 #endif
 }

@@ -58,7 +58,7 @@ int do_forkExec(int adrExec)
 			t->Fork(UserStartProcess, 0);
 			// relachement de la section critique de creation
 			s_createProcess->V();
-			return 0;
+			return t->process->getPid();
 		}
 		else
 		{
@@ -68,49 +68,6 @@ int do_forkExec(int adrExec)
 			s_createProcess->V();
 			return -1;
 		}
-	}
-}
-
-/**
- * Alloue l'espace necessaire au processus pour son programme.
- * t : thread principal du nouveau processus
- * filename : nom du programme a executer
- * Renvoie -1 en cas d'erreur, 0 sinon
- */
-int allocateProcessSpace (Thread *t, char *filename)
-{
-	OpenFile *executable = fileSystem->Open (filename);
-
-	if (executable == NULL)
-	{
-		printf ("Unable to open file %s\n", filename);
-		return -1;
-	}
-	Process* process = NULL;
-	process = new Process();
-	if(process == NULL)
-	{
-		// erreur d'allocation du processus
-
-		delete executable;
-		return -1;
-	}
-	// allocation d'un espace d'adressage
-	else if(!process->allocateAddrSpace(executable))
-	{
-		// erreur d'allocation de l'espace
-
-		delete process;
-		delete executable;
-		return -1;
-	}
-	else
-	{
-		// assignement du processus cree au thread principal
-
-		t->process = process;
-		delete executable;
-		return 0;
 	}
 }
 
@@ -127,8 +84,8 @@ void UserStartProcess (int adr)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
 	currentProcess->processRunning = true;
-	// attribution d'un pid au processus
-	currentProcess->setPid(nbProcess);
+	processManager->addAddrProcess(currentProcess);
+	currentProcess->semProc->P();
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
@@ -144,13 +101,13 @@ void UserStartProcess (int adr)
 void addProcess ()
 {
 	s_nbProcess->P();
-	currentProcess->setPid(nbProcess);
 	nbProcess++;
 	s_nbProcess->V();
 }
 
 void removeProcess () {
 	s_nbProcess->P();
+	processManager->removeAddrProcess(currentProcess);
 	nbProcess--;
 	s_nbProcess->V();
 }
@@ -160,6 +117,31 @@ int getNbProcess () {
 }
 
 #endif // step4
+
+/**
+ * Alloue l'espace necessaire au processus pour son programme.
+ * Renvoie -1 en cas d'erreur, 0 sinon
+ */
+int allocateProcessSpace (Thread *t, char *filename)
+{
+	OpenFile *executable = fileSystem->Open (filename);
+
+	if (executable == NULL)
+	{
+		printf ("Unable to open file %s\n", filename);
+		return -1;
+	}
+	Process* process = NULL;
+	process = new Process();
+	if(process == NULL || !process->allocateAddrSpace(executable))
+	{
+		delete executable;		// close file
+		return -1;
+	}
+	t->process = process;
+	delete executable;		// close file
+	return 0;
+}
 
 //----------------------------------------------------------------------
 // StartProcess
@@ -198,6 +180,9 @@ StartProcess (char *filename)
 	currentProcess = process;
 
 #ifdef step4
+	currentProcess->processRunning = true;
+	processManager->addAddrProcess(currentProcess);
+	currentProcess->semProc->P();
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
@@ -211,21 +196,24 @@ StartProcess (char *filename)
 }
 
 /**
-* 	Cree un processus vide.
-* 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
-*/
+ * 	Cree un processus vide.
+ * 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
+ */
 Process::Process()
-{
+{// TODO Verifier que le pid ne depasse pas MAX_INT
 	addrSpace = NULL;
 	processRunning = false;
 	mainIsWaiting = false;
+	pid = nextPid; nextPid++;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
+	semProc = new Semaphore("semaphore processus", 1);
+
 }
 
 /**
-* 	alloue un espace d'adressage pour le processus en chargeant l'executable a l'interieur
-*/
+ * 	alloue un espace d'adressage pour le processus en chargeant l'executable a l'interieur
+ */
 bool Process::allocateAddrSpace(OpenFile * executable)
 {
 	bool return_value = true;
@@ -249,8 +237,8 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 }
 
 /**
-* 	libere l'espace d'adressage du processus
-*/
+ * 	libere l'espace d'adressage du processus
+ */
 void Process::freeAddrSpace()
 {
 	delete addrSpace;
@@ -262,8 +250,8 @@ void Process::freeAddrSpace()
 }
 
 /**
-* 	Renvoie un pointeur sur l'espace d'adressage du processus
-*/
+ * 	Renvoie un pointeur sur l'espace d'adressage du processus
+ */
 AddrSpace* Process::getAddrSpace()
 {
 	return addrSpace;
