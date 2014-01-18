@@ -238,6 +238,10 @@ Process::Process()
 
 }
 
+Process::~Process() {
+	delete semProc;
+}
+
 /**
  * 	alloue un espace d'adressage pour le processus en chargeant l'executable a l'interieur
  */

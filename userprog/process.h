@@ -65,6 +65,7 @@ class Process
 	     * 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
 	     */
 		Process();
+		~Process();
 
 	    // gere les semaphores utilisateurs du processus
 		SemaphoreManager *semManager;
