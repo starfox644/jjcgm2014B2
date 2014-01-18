@@ -41,6 +41,7 @@ extern Scheduler *scheduler;	// the ready list
 extern Interrupt *interrupt;	// interrupt status
 extern Statistics *stats;	// performance metrics
 extern Timer *timer;		// the hardware alarm clock
+extern int nextPid;
 #ifdef step4
 extern FrameProvider *frameProvider; // permet de gerer les cadres
 extern ProcessManager *processManager; //permet de gerer les processus

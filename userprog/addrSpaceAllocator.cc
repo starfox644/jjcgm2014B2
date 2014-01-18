@@ -113,6 +113,34 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
 }
 
 /*
+ *	Renvoie vrai si l'adresse est dans une pile, faux sinon
+ */
+bool AddrSpaceAllocator::isInStack(int addr)
+{
+	struct space* actu = busyHead;
+
+	//parcours pour recherche le bloc contenant l'adresse addr
+	while (actu != NULL && !adresseDansBloc(addr, actu))
+	{
+		actu = actu->next;
+	}
+	// addr n'est present dans aucun bloc
+	if (actu == NULL || !actu->forbiddenPage)
+		return false;
+	else
+		return true;
+}
+
+/*
+ *	Renvoie vrai si l'adresse addr passee en parametre appartient au bloc actu,
+ *	faux sinon.
+ */
+bool AddrSpaceAllocator::adresseDansBloc(int addr, struct space* actu)
+{
+	return (actu->addr <= addr && addr <= (actu->addr + actu->length));
+}
+
+/*
  * suppression du bloc libre a l'adresse addr et de taille lengthAlloc
  */
 void AddrSpaceAllocator::removeFreeSpace(int addr, int lengthAlloc)
@@ -371,7 +399,8 @@ void AddrSpaceAllocator::testFusionDroite(struct space* suiv,  struct space* new
 
 /*
  *	Allocation d'un bloc memoire, renvoie  l'adresse du bloc si elle s'est
- *	bien passee, -1 sinon.
+ *	bien passee, -1 sinon. Cette adresse represente le debut de la page interdite
+ *	s'il y a.
  *	lengthAlloc : taille du bloc a allouee (+ taille page interdite, s'il y a)
  *					cette taille n'est pas alignee selon les pages.
  *	write : si ce booleen est a vrai, les pages seront allouees en ecriture
@@ -398,7 +427,7 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		// d'une page interdite
 		if (forbiddenPage)
 		{
-			size = alignedLength-PageSize;
+			size = alignedLength - PageSize;
 			addrMap = current->addr + PageSize;
 			current->forbiddenPage = true;
 		}
@@ -418,7 +447,7 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		}
 		else
 		{
-			//printf("erreur map\n");
+			printf("erreur map\n");
 			s_alloc->V();
 			return -1;
 		}

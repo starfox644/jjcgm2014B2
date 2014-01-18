@@ -1,5 +1,4 @@
 #include "syscall.h"
-#include "syscall.h"
 
 /**
  * 	Premier test de thread join. Cree un thread qui effectue un affichage et une boucle.

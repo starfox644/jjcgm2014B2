@@ -126,15 +126,6 @@ main (int argc, char **argv)
 			// Nachos will loop forever waiting
 			// for console input
 		}
-#ifdef step4
-		else if(!strcmp (*argv, "-ta"))
-		{
-			ASSERT (argc > 1);
-			allocatorTest(*(argv + 1));
-			argCount = 2;
-			return 0;
-		}
-#endif
 #ifdef CHANGED
 		else if (!strcmp (*argv, "-sc")) {
 			if (argc == 1)
@@ -147,7 +138,29 @@ main (int argc, char **argv)
 			}
 			interrupt->Halt ();
 		}
+#endif	//changed
+#ifdef step4
+		else if(!strcmp (*argv, "-ta"))
+		{
+			ASSERT (argc > 1);
+			allocatorTest(*(argv + 1));
+			argCount = 2;
+			return 0;
+		}
+		else if (!strcmp (*argv, "-sh")){
+			if(argc == 1){
+				char program[20] = "./my_shell/my_shell";
+				StartProcess(program);
+				return -1;
+			}else{
+				printf("Erreur\n");
+				return -1;
+			}
+		}
+
+
 #endif
+
 
 #endif // USER_PROGRAM
 #ifdef FILESYS

@@ -30,10 +30,13 @@
 #include "semaphore.h"
 #include "process.h"
 #include "machine.h"
+#include "processManager.h"
+#include "addrSpaceAllocator.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
 extern void do_UserThreadExit(int status);
+//extern bool isInStack(int addr);
 #endif
 
 //----------------------------------------------------------------------
@@ -245,19 +248,23 @@ ExceptionHandler (ExceptionType which)
 				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 
-				if (do_forkExec(adr) == -1)
-				{
-					// error : returns -1
+				// error : returns -1
+				if ((n = do_forkExec(adr)) == -1)
 					machine->WriteRegister(2, -1);
-				}
 				else
-				{
-					machine->WriteRegister(2, 0);
-				}
+					machine->WriteRegister(2, n);
 				break;
 
 			case SC_GetPid:
 				machine->WriteRegister(2, currentProcess->getPid());
+				break;
+
+			case SC_WaitPid:
+				n = machine->ReadRegister(4);
+				if ((n = processManager->waitPid(n)) == -1)
+					machine->WriteRegister(2, -1);
+				else
+					machine->WriteRegister(2, n);
 				break;
 #endif // STEP4
 
@@ -273,7 +280,7 @@ ExceptionHandler (ExceptionType which)
 				// Print the exception name for practical purpose
 				switch (which) {
 				case SyscallException: 		printf("SyscallException "); 		break;
-				case PageFaultException: 	printf("PageFaultException "); 		break;
+				case PageFaultException:	printf("PageFaultException ");		break;
 				case ReadOnlyException: 	printf("ReadOnlyException "); 		break;
 				case BusErrorException: 	printf("BusErrorException "); 		break;
 				case AddressErrorException: printf("AddressErrorException "); 	break;
@@ -305,7 +312,21 @@ ExceptionHandler (ExceptionType which)
 		// Print the exception name for practical purpose
 		switch (which) {
 		case SyscallException: 		printf("SyscallException "); 		break;
-		case PageFaultException: 	printf("PageFaultException "); 		break;
+#ifdef step4
+		case PageFaultException:
+			printf("PageFaultException ");
+			// address of the user's stack pointer
+			adr = machine->ReadRegister(StackReg);
+			// if is in stack => Stzck overflow
+			if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
+			{
+				printf("STACK OVERFLOW !!\n");
+				do_exit(-1);
+			}
+			break;
+#else
+		case PageFaultException:	printf("PageFaultException ");		break;
+#endif // step4
 		case ReadOnlyException: 	printf("ReadOnlyException "); 		break;
 		case BusErrorException: 	printf("BusErrorException "); 		break;
 		case AddressErrorException: printf("AddressErrorException "); 	break;

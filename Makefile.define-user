@@ -16,10 +16,12 @@
 # List of C files that are not userspace programs (in test/ subdirectory)
 # => add here C files that are user-space libraries
 # all other C files will be compiled as a userspace nachos program
-USERPROG_NOPROGRAM=
+USERPROG_NOPROGRAM=$(NachOS_libc_SOURCES) \
+                    $(my_shell/my_shell_EXTRA_SOURCES) 
+                    $(my_notepad/my_notepad_EXTRA_SOURCES)
 
 # source files that must be included in any userspace nachos program
-USERPROG_LIBS=start.S
+USERPROG_LIBS=start.S $(NachOS_libc_SOURCES)
 
 # each program 'p' can specify extra sources in 'p'_EXTRA_SOURCES
 # => declare here program sources to add in addition to
@@ -32,6 +34,11 @@ USERPROG_LIBS=start.S
 # USERPROG_NOPROGRAM    = nachos-libc.c bigtest_extra.c
 # USERPROG_LIBS         = start.S nachos-libc.c
 # bigtest_EXTRA_SOURCES = bigtest_extra.c
+
+NachOS_libc_SOURCES=nachos_libc/Printf.c nachos_libc/String.c
+my_shell/my_shell_EXTRA_SOURCES = my_shell/eval.c my_shell/job.c my_shell/parseline.c
+my_notepad/my_notepad_EXTRA_SOURCES = my_notepad/my_notepad.c
+ 
 
 # IMPORTANT: the 4 original user programs (halt, ...) cannot have extra
 # sources and will always be linked only with start.S (USERPROG_LIBS
