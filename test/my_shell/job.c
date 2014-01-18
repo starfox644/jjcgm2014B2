@@ -76,16 +76,6 @@ void supp_job_pid(int pid){
 	}
 }
 
-/*
- * fonction de mise en premier plan du job
- */
-void fg(char** argv);
-/*
- * fonction de mise en arriere plan du job
- */
-void bg(char** argv);
-
-
 void afficherJobs(){
 	int i = 0;
 	while(i < MAX_JOB){
