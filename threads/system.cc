@@ -229,6 +229,8 @@ Cleanup ()
 	printf ("\nCleaning up...\n");
 #ifdef step4
 	delete processManager;
+	delete frameProvider;
+	delete s_nbProcess;
 #endif
 #ifdef NETWORK
 	delete postOffice;
@@ -238,6 +240,10 @@ Cleanup ()
 	delete machine;
 #ifdef CHANGED
 	delete synchconsole;
+	delete s_createProcess;
+#ifdef step3
+	delete s_create;
+#endif
 #endif // CHANGED
 #endif
 
@@ -252,6 +258,6 @@ Cleanup ()
 	delete timer;
 	delete scheduler;
 	delete interrupt;
-
+	delete stats;
 	Exit (0);
 }
