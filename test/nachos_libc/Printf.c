@@ -19,7 +19,7 @@ void Printf(char* messageVoulu, void* variable){
 		buffer[i] = messageVoulu[i];
 		i++;
 	}
-	if(variable == 0 || messageVoulu[i] == '\0'){//le mot est fini donc on affiche le message tout seul
+	if(messageVoulu[i] == '\0'){//le mot est fini donc on affiche le message tout seul
 		PutString(messageVoulu);
 	}else{
 		if(messageVoulu[i] == '%'){

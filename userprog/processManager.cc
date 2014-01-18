@@ -140,25 +140,20 @@ int ProcessManager::getNbProcess(){
 int ProcessManager::getListProcess(int ListeProc){
 
 	int i = 0;
+	int ecart = 0;
 	sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
 
 	while (it != l_process.end()){
-		printf("ProcessManager boucle \n");
-		machine->WriteMem(ListeProc + i,sizeof(int),(*it)->getPid());
-		printf("getpid done\n");
-		i++;
-		machine->WriteMem(ListeProc + i,sizeof(char),' '); //separateur d'arguments
-		i++;
-		machine->WriteMem(ListeProc + i ,sizeof(int), (*it)->processRunning);
-		printf("processRunning done\n");
-		i++;
-		machine->WriteMem(ListeProc + i,sizeof(char), '/');//separateur de processus
-		i++;
+		machine->WriteMem(ListeProc + i + ecart,sizeof(int),(*it)->getPid());
+		ecart = ecart + sizeof(int);
+		machine->WriteMem(ListeProc + i + ecart ,sizeof(int), (*it)->processRunning);
+		 ecart = ecart + sizeof(int);
 		it++;
 	}
-	machine->WriteMem(ListeProc +i ,sizeof(char), '\0');
+	ecart = ecart + sizeof(int);
+	machine->WriteMem(ListeProc + i + ecart,sizeof(int), -1);
 	sem_Wait->V();
 	return ListeProc;
 }

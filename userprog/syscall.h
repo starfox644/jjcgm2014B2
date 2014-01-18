@@ -254,7 +254,7 @@ int GetNbProcess();
 /*
  * renvoi la liste des processus créé
  */
-char* GetListProcess(char*);
+int* GetListProcess(int*);
 
 #endif // CHANGED
 
