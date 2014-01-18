@@ -32,6 +32,7 @@
 #include "machine.h"
 #include "processManager.h"
 #include "addrSpaceAllocator.h"
+#include "arguments.h"
 #include "synchconsole.h"
 
 extern int do_UserThreadCreate(int f, int arg);
@@ -284,6 +285,17 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
+			case SC_ArgStart:
+				int m, o;
+				m = machine->ReadRegister(5);
+				n = machine->ReadRegister(6);
+				o = machine->ReadRegister(7);
+				do_arg_start(m, n, o);
+				break;
+			case SC_ArgArg:
+				n = do_arg_arg();
+				machine->WriteRegister(2, n);
+				break;
 			case SC_GetNbProcess:
 				machine->WriteRegister(2,processManager->getNbProcess());
 				break;
