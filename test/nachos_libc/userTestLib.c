@@ -37,6 +37,10 @@ int main(){
 	Printf("Veuillez entrer un string svp ?\n", 0);
 	Scanf("%s",s);
 	Printf("String entré : %s\n",s);
+	//liberation des malloc
+	free(s);
+	free(it);
+
 	return 0;
 }
 

@@ -116,7 +116,7 @@ void* Scanf(char* typeVariable, void *variable){
 				return variable;
 				break;
 			case 'c' : //cas de récupération d'un char
-				GetString(variable,2 * sizeof(char));
+				GetString(variable,1 * sizeof(char));
 				StrCpy(variable,(char*)variable);
 				return variable;
 				break;
