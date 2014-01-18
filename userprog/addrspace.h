@@ -20,6 +20,7 @@
 class Semaphore;
 class Thread;
 class threadManager;
+#include "noff.h"
 #include <list>
 
 #define UserStackSize		2048	// increase this as necessary!
@@ -190,6 +191,8 @@ class AddrSpace
      * 	for the additionnal thread's stacks
      */
     void initAvailableStackPointers();
+
+    bool mapExecutable(NoffHeader noffH, OpenFile * executable);
 
 #endif //CHANGED
 };

@@ -18,7 +18,9 @@
 #include "copyright.h"
 #include "system.h"
 #include "addrspace.h"
+#ifndef CHANGED
 #include "noff.h"
+#endif
 
 #ifdef CHANGED
 #include <string>
@@ -171,7 +173,7 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		// init the physical page, but if valid is false this isn't used
 		pageTable[i].physicalPage = 0;
 	}
-	DEBUG(',', "CODE MAPPING\n");
+	/*DEBUG(',', "CODE MAPPING\n");
 	// map the code
 	success = mapMem(noffH.code.virtualAddr, noffH.code.size, true);
 	if(success)
@@ -185,7 +187,9 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		DEBUG(',', "UNINITDATA MAPPING\n");
 		// map uninit data
 		success = mapMem(noffH.uninitData.virtualAddr, noffH.uninitData.size, true);
-	}
+	}*/
+	DEBUG(',', "EXECUTABLE MAPPING\n");
+	success =  mapExecutable(noffH, executable);
 	if(success)
 	{
 		DEBUG(',', "MAIN STACK MAPPING\n");
@@ -202,27 +206,35 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 	// then, copy in the code and data segments into memory
 	if (noffH.code.size > 0)
 	{
-		DEBUG ('a', "Initializing code segment, at 0x%x, size %d\n",
+		DEBUG (',', "Initializing code segment, at %i, size %d\n",
 				noffH.code.virtualAddr, noffH.code.size);
 		ReadAtVirtual (executable, noffH.code.virtualAddr,
 				noffH.code.size, noffH.code.inFileAddr, pageTable, numPages);
 	}
 	if (noffH.initData.size > 0)
 	{
-		DEBUG ('a', "Initializing data segment, at 0x%x, size %d\n",
+		DEBUG (',', "Initializing data segment, at %i, size %d\n",
 				noffH.initData.virtualAddr, noffH.initData.size);
 		ReadAtVirtual(executable, noffH.initData.virtualAddr,
 				noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
 	}
 	DEBUG(',', "CODE READ ONLY\n");
-	if(!mapMem(noffH.code.virtualAddr, noffH.code.size, false))
+	/*if(!mapMem(noffH.code.virtualAddr, noffH.code.size, false))
 	{
 		return false;
 	}
 	else
 	{
 		return true;
-	}
+	}*/
+	return true;
+}
+
+
+bool AddrSpace::mapExecutable(NoffHeader noffH, OpenFile * executable)
+{
+	int length = noffH.code.size + noffH.initData.size + noffH.uninitData.size;
+	return mapMem(noffH.code.virtualAddr, length, true);
 }
 
 #else
@@ -514,7 +526,7 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	// copie de la table de pages du processeur pour la retablir apres
 	TranslationEntry* oldTr = machine->pageTable;
 	unsigned int ptSize = machine->pageTableSize;
-	// lecture dans la memoire virtuelle a la position donnee puis le stocke dans le buffer
+	// lecture dans l'executable a la position donnee puis le stocke dans le buffer
 	nbRead = executable->ReadAt(buffer, numBytes, position);
 	// charge la table des pages du processeur
 	machine->pageTable = pageTable;
@@ -522,6 +534,7 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	// copie du buffer en memoire a l’aide de WriteMem
 	for (i = 0 ; i < nbRead ; i++)
 	{
+		//printf("ecriture de l'octet : %i\n", virtualaddr+i);
 		machine->WriteMem(virtualaddr+i,1,buffer[i]);
 	}
 	// retablit la table des pages du processeur
@@ -534,7 +547,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 	unsigned int i;
 	int frame;
 	// number of pages needed for the given length
-	unsigned int nbPages = divRoundUp(length, PageSize);
+	unsigned int nbPages = divRoundUp(length, PageSize) + 1;
 	// index of the begining page of virtualAddr
 	unsigned int beginPage = divRoundDown(virtualAddr, PageSize);
 	// check integrity

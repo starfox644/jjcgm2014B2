@@ -103,6 +103,10 @@ Scheduler::Run (Thread * nextThread)
 		currentThread->SaveUserState ();	// to restore, do it.
 		currentProcess->getAddrSpace()->SaveState ();
 	}
+	else
+	{
+		delete currentProcess;
+	}
 #else
 	if (currentThread->space != NULL)
 	{				// if there is an address space

@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 6
+#define MAX_PROC 10
 
 int main()
 {
