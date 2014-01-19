@@ -9,9 +9,6 @@
 #define INET_H_
 
 #include "syscall.h"
-
-#define MAX_SOCKET 2;
-
 //variable
 sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en limite
 
@@ -27,10 +24,16 @@ sock_t connexion(int,int,char*);
  * retourne -1 si cela echoue
  */
 int deconnexion(sock_t);
-
-
-
-
+/*
+ * permet d'envoyer un message
+ * retourne -1 si cela echoue
+ */
+int envoiMessage(sock_t,char*);
+/*
+ * permet de recevoir un message
+ * retourne -1 si cela echoue
+ */
+int recevoirMessage(sock_t,char*);
 
 #endif /* INET_H_ */
 #endif
