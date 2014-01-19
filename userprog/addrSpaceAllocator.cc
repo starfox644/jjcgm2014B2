@@ -68,6 +68,7 @@ void AddrSpaceAllocator::printFreeList()
  */
 void AddrSpaceAllocator::printBusyList()
 {
+	printf("Entree dans printBusyList\n");
 	struct space* actu = busyHead;
 	if (actu == NULL)
 	{
@@ -463,6 +464,8 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
  */
 int AddrSpaceAllocator::free(int addr)
 {
+	printf("Free de l'adresse %d \n", addr);
+	printBusyList();
 	int length;
 	ASSERT((addr%PageSize) == 0);
 	s_alloc->P();
@@ -477,6 +480,7 @@ int AddrSpaceAllocator::free(int addr)
 	else
 	{
 		ASSERT(length%PageSize == 0);
+		printf("Dans free, appel a unMapMem pour addr = %d\n", addr);
 		if(addrspace->unMapMem(addr/PageSize, length/PageSize))
 		{
 			//ajout dand la liste des blocs libres

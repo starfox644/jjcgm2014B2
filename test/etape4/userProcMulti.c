@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 2
+#define MAX_PROC 3
 
 int main(){
 	int i;
@@ -16,6 +16,9 @@ int main(){
 		PutInt(i);
 		PutString("\n");
 		ForkExec("./etape4/userThreadMulti");
+		/*PutString("Apres forkExec du proc");
+		PutInt(i);
+		PutString("\n");*/
 	}
 	return 0;
 }

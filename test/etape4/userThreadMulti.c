@@ -5,7 +5,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_THREAD 6
+#define MAX_THREAD 3
 
 sem_t sem;
 

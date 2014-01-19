@@ -16,8 +16,8 @@ void do_exit(int returnCode)
 	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
 #endif
 	AddrSpace *space = currentProcess->getAddrSpace();
-	if (currentThread->isMainThread())
-	{
+	//if (currentThread->isMainThread())
+	//{
 		// indicates that the main thread is waiting for the others
 		currentProcess->threadManager->s_nbThreads->P();
 		space->attente = true;
@@ -29,7 +29,7 @@ void do_exit(int returnCode)
 			space->s_exit->P();
 			s_createProcess->P();
 		}
-	}
+	//}
 	printf("Program stopped with return code : %d\n", returnCode);
 	DEBUG('a',"Program exit");
 

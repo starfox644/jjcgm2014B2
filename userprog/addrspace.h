@@ -20,9 +20,12 @@
 class Semaphore;
 class Thread;
 class threadManager;
+#include "noff.h"
 #include <list>
+
 #define UserStackSize		2048	// increase this as necessary!
 #define UserStackPages		UserStackSize / PageSize;
+
 #else
 #define UserStackSize		1024	// increase this as necessary!
 #endif
@@ -47,11 +50,19 @@ class AddrSpace
 #endif
 
 #ifdef step4
-	AddrSpace();		// Create an address space
+	/**
+	 * 	STEP 4 constructor
+	 * 	We don't allocate virtual memory here
+	 * 	This is done in loadInitialSections which have to be called after
+	 * 	This permits to test allocation errors
+	 */
+	AddrSpace();
 #else
-
-    AddrSpace (OpenFile * executable);	// Create an address space,
-    // initializing it with the program
+	/**
+	 *  Constructor for all the steps except step 4
+	 * 	Allocate all the needed structures and load the program
+	 */
+    AddrSpace (OpenFile * executable);
 #endif
     // stored in the file "executable"
     ~AddrSpace ();		// De-allocate an address space
@@ -89,8 +100,6 @@ class AddrSpace
     // locks the main thread while the others are finishing
     Semaphore *s_exit;
 
-    bool attente;
-
 #ifdef step4
     static void ReadAtVirtual(OpenFile* executable, int virtualaddr, int numBytes, int position,
 	TranslationEntry *pageTable,unsigned numPages);
@@ -119,6 +128,11 @@ class AddrSpace
 	*/
     void printMapping(unsigned int max);
 
+//
+//	FOR THREADS OF STEP 4
+//	We use an allocator of virtual memory for the stacks
+//
+
     /**
      *	Allocate a stack for a thread in the virtual memory,
      *	and associate it with physical frames.
@@ -146,9 +160,8 @@ class AddrSpace
 
       TranslationEntry * pageTable;	// Assume linear page table translation
   private:
-    // for now!
-    unsigned int numPages;	// Number of pages in the virtual 
-    // address space
+
+    unsigned int numPages;	// Number of pages in the virtual address space
 #ifdef CHANGED
     // address where the memory available for threads' stacks begins
     unsigned int beginThreadsStackSpace;
@@ -156,16 +169,30 @@ class AddrSpace
     unsigned int endThreadsStackSpace;
 
 #ifdef step4
+    // number of pages needed for a stack size
     int nbPagesUserStack;
 #endif
 	// number max of threads depending on memory for the stacks
+	// the main thread is not included in this number
 	int maxThreads;
 
+//
+//	FOR THREADS OF STEP 3
+//	We use a list of available stack address
+//
+
+	// semaphore for locking the access of the stack list
     Semaphore* s_stackList;
     // list of available stack address in the address space for the threads
     std::list<int> l_availableStackAddress;
 
+    /**
+     * 	init the stack list with the initial stack pointers
+     * 	for the additionnal thread's stacks
+     */
     void initAvailableStackPointers();
+
+    bool mapExecutable(NoffHeader noffH, OpenFile * executable);
 
 #endif //CHANGED
 };
