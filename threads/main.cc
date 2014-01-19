@@ -112,7 +112,6 @@ main (int argc, char **argv)
 		if (!strcmp (*argv, "-x"))
 		{			// run a user program
 			ASSERT (argc > 1);
-			printf("option -x\n");
 			StartProcess (*(argv + 1));
 			return -1;
 			argCount = 2;
