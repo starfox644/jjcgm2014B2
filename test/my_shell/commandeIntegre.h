@@ -52,9 +52,4 @@ void do_cd(char*);
  */
 void afficherManuel(char*);
 
-/*
- * fonction permettant de gerer le reseau
- */
-void do_inet(char*);
-
 #endif /* COMMANDINTEGRE_H_ */
