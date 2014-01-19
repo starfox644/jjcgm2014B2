@@ -21,8 +21,9 @@ sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en li
  * A besoin du numero de mailBox
  * le numéro de la cible
  * le numéro de l'hote
+ * et la taille du buffer
  */
-sock_t connexion(int,int,int);
+sock_t connexion(int,int,int,char*);
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue

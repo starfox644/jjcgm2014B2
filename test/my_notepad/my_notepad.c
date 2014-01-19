@@ -58,7 +58,7 @@ void afficherMenu(){
 int creerFichier(){
 	return 0;
 }
-int ouvrirFichier(char filename){
+int ouvrirFichier(char* filename){
 
 	return 0;
 }
