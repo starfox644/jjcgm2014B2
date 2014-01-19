@@ -261,7 +261,7 @@ void List::Remove(int tid)
 
 	ListElement *ptr = first;
 	ListElement *ptr_prec = NULL;
-	Thread *th = NULL;
+	Thread* th = NULL;
 	if(first != NULL)
 		th = (Thread*) (first->item);
 	//Thread *th_prec = NULL;
@@ -270,7 +270,9 @@ void List::Remove(int tid)
 		ptr_prec = ptr;
 		ptr = ptr->next;
 		if(ptr != NULL)
+		{
 			th = (Thread*) ptr->item;
+		}
 	}
 	if (th != NULL && th->tid == tid)
 	{

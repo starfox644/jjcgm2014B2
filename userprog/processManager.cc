@@ -130,7 +130,6 @@ int ProcessManager::getNbProcess(){
 	sem_Wait->V();
 
 	return compteur;
-
 }
 
 /*

@@ -8,6 +8,6 @@
 int main()
 {
 	ForkExec("./etape4/progSimple");
-	PutString("\nFin du process principal\n");
+	PutString("\nFin de fork exec !\n");
 	return 0;
 }

@@ -84,7 +84,7 @@ int do_forkExec(int adrExec)
  */
 void UserStartProcess (int adr)
 {
-	IntStatus oldLevel = interrupt->SetLevel (IntOff);
+	IntStatus oldLevel = interrupt->SetLevel(IntOff);
 	// recuperation de l'espace d'adressage du processus
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
@@ -244,7 +244,6 @@ Process::Process()
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 	semProc = new Semaphore("semaphore processus", 0);
-
 }
 
 Process::~Process() {
@@ -281,7 +280,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
-	Printf("Dans free addrSpace\n");
+	//Printf("Dans free addrSpace\n");
 	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
 	currentProcess->semProc->V();
 	delete addrSpace;

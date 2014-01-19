@@ -19,7 +19,7 @@ FrameProvider::~FrameProvider ()
 int FrameProvider::GetEmptyFrame()
 {
 	int indexFrame;
-	s_frames->P();
+	//s_frames->P();
 	if ((indexFrame = bitmap->Find ()) == -1)
 	{
 		DEBUG(',', "Plus de frames physiques disponibles\n");
@@ -30,14 +30,14 @@ int FrameProvider::GetEmptyFrame()
 	bzero (&(machine->mainMemory[indexFrame*PageSize]), PageSize);
 	// indique que la page d’index “indexFrame” est occupee
 	bitmap->Mark(indexFrame);
-	s_frames->V();
+	//s_frames->V();
 	return indexFrame;
 }
 
 bool FrameProvider::ReleaseFrame(int indexFrame)
 {
 	bool return_value;
-	s_frames->P();
+	//s_frames->P();
 	if(!bitmap->Test(indexFrame))
 	{
 		DEBUG(',', "Echec de liberation de la frame physique %i non allouee\n", indexFrame);
@@ -51,7 +51,7 @@ bool FrameProvider::ReleaseFrame(int indexFrame)
 		bitmap->Clear(indexFrame);
 		return_value = true;
 	}
-	s_frames->V();
+	//s_frames->V();
 	return return_value;
 }
 
