@@ -403,7 +403,7 @@ SetupThreadState ()
 		currentThread->space->RestoreState ();
 	}
 #endif // changed
-#endif // FILESYS
+#endif // NETWORK#endif // FILESYS
 #endif // USER_PROGRAM
 
 	// LB: The default level for interrupts is IntOn.

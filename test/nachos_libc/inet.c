@@ -7,7 +7,7 @@
 #ifdef CHANGED
 #include "inet.h"
 
-sock_t initSocket(int numBox, int to ,int from ,char* buffer){
+sock_t InitSocket(int numBox, int to ,int from ,char* buffer){
 
 	//envoir de l'appel systeme pour la création du socket
 	//socket = SockInit(to,from, buffer);
@@ -16,7 +16,7 @@ sock_t initSocket(int numBox, int to ,int from ,char* buffer){
 }
 
 
-int deleteSocket(sock_t socketUser){
+int DeleteSocket(sock_t socketUser){
 	int erreur = 0;
 	//envoi de l'appel système pour la fermeture du socket
 	//erreur = SockClose(socketUser);
@@ -24,14 +24,14 @@ int deleteSocket(sock_t socketUser){
 	return erreur;
 }
 
-int envoiMessage(sock_t socketUser,char* message){
+int EnvoiMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
 	//envoi de l'appel système pour envoyé le message
 	//nbChar = Send(socketUser, message);
 	//on retourne le nombre de char envoyé et -1 si cela échoue
 	return nbChar;
 }
-int recevoirMessage(sock_t socketUser,char* message){
+int RecevoirMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
 	//envoi de l'appel système pour recevoir le message
 //	nbChar = Receive(socketUser, message);

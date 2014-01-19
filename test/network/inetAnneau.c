@@ -28,33 +28,33 @@ void machine(void * arg){
 	ts *s = (ts*) arg;
 	int numBox = 1;
 	//connexion de notre machine
-	Socket = initSocket(numBox,s->idMachine+1 ,s->idMachine,s->message);
+	Socket = InitSocket(numBox,s->idMachine+1 ,s->idMachine,s->message);
 	//si on est la première machin on envoi le message
 	if(s->idMachine == 0){
 		//on crée notre message et on rajoute l'id de la machine
 		StrCpy("bonjour",s->message);
 		StrCat(s->message,Itoa(s->idMachine));
 
-		if(envoiMessage(Socket,s->message) ==-1){
+		if(EnvoiMessage(Socket,s->message) ==-1){
 			Printf("Erreur d'envoi de Message depuis la machine %d\n",s->idMachine);
 		}
-		if(recevoirMessage(Socket,s->message) == -1){
+		if(RecevoirMessage(Socket,s->message) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",s->idMachine);
 		}
 
 	}else{//sinon on recois le message et apres on envois un message
-		if(recevoirMessage(Socket,s->message) == -1){
+		if(RecevoirMessage(Socket,s->message) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",s->idMachine);
 		}
 		//on rajoute l'id de la machine a notre message
 		StrCat(s->message,Itoa(s->idMachine));
-		if(envoiMessage(Socket,s->message) == -1){
+		if(EnvoiMessage(Socket,s->message) == -1){
 			Printf("Erreur d'envoi de message depuis la machine %d\n",s->idMachine);
 		}
 	}
 
 	//on a finis on ce déconnecte
-	deleteSocket(Socket);
+	DeleteSocket(Socket);
 }
 
 

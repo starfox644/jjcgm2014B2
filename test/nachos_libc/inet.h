@@ -23,22 +23,22 @@ sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en li
  * le numéro de l'hote
  * et la taille du buffer
  */
-sock_t initSocket(int,int,int,char*);
+sock_t InitSocket(int,int,int,char*);
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue
  */
-int deleteSocket(sock_t);
+int DeleteSocket(sock_t);
 /*
  * permet d'envoyer un message
  * retourne -1 si cela echoue
  */
-int envoiMessage(sock_t,char*);
+int EnvoiMessage(sock_t,char*);
 /*
  * permet de recevoir un message
  * retourne -1 si cela echoue
  */
-int recevoirMessage(sock_t,char*);
+int RecevoirMessage(sock_t,char*);
 
 #endif /* INET_H_ */
 #endif
