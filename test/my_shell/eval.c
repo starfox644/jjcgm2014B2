@@ -82,32 +82,39 @@ int commandIntegre(char **argv){
 	}
 	/* utile pour lorsqu'il y aura le fileSys*/
 	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
-			PutString("Non implémenté :D\n");
-			return 0;
+		PutString("Non implémenté :D\n");
+		//do_ls();
+		return 0;
 	}
 	if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
 		PutString("Non implémenté :D\n");
+		//do_pwd();
 		return 0;
 	}
 	if(StrCmp(argv[0],"cp") == 1){//copie un fichier unix vers un fichier nachOS
-			PutString("Non implémenté :D\n");
-			return 0;
+		PutString("Non implémenté :D\n");
+		//do_copie(argv[1],arg[2]);
+		return 0;
 	}
 	if(StrCmp(argv[0],"rm") == 1){//supprime un fichier nachOS
-			PutString("Non implémenté :D\n");
-			return 0;
+		PutString("Non implémenté :D\n");
+		//do_remove(argv[1]);
+		return 0;
 	}
 	if(StrCmp(argv[0],"Dir") == 1){//affiche l'integralité du filesystem
-			PutString("Non implémenté :D\n");
-			return 0;
+		PutString("Non implémenté :D\n");
+		//afficherSysteme();
+		return 0;
 	}
 	if(StrCmp(argv[0],"cd") == 1){//permet de naviger dans le système de fichier
-			PutString("Non implémenté :D\n");
-			return 0;
+		PutString("Non implémenté :D\n");
+		//do_cd(argv[1]);
+		return 0;
 	}
-	if(StrCmp(argv[0],"man") == 1){//affiche l'integralité du filesystem
-			PutString("Non implémenté :D\n");
-			return 0;
+	if(StrCmp(argv[0],"man") == 1){//affiche des pages d'aide
+		PutString("Non implémenté :D\n");
+		//afficherManuel(argv[1]);
+		return 0;
 	}
 	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
