@@ -62,7 +62,7 @@ void machine(void * arg){
 int main(){
 	Printf("\n-----------------------------------------\n");
 	Printf("Lancement du test inetAnneau : \n");
-	Printf("Cree plusieurs machine qui ce passe un message qui doit faire le tour de l'anneau\n");
+	Printf("Crée plusieurs machines qui se passent un message qui doit faire le tour de l'anneau\n");
 	Printf("-----------------------------------------\n");
 	int numMachine = 0;
 	int tid[NB_MACHINE];
