@@ -1,7 +1,21 @@
 SCANF
 
 NOM
-
+	scanf - recupère les données entrées sur la console
+	
 SYNOPSIS
-
+	#include "Printf.h"
+	int Scanf(char* format, ...);
+	
 DESCRIPTION
+	La fonction scanf() permet de récupérer les données entrées sur la console
+	suivant le type des variables voulus
+	
+	Cette fonction est limité à 3 arguments maximum
+	
+	'%d' récupère un entier.
+	'%i' récupère un entier.
+	'%c' récupère un caractère.
+	'%s' récupère une chaine de caractères
+	
+	Si la fonction échoue, elle renvoie -1;
