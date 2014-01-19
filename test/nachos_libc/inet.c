@@ -7,10 +7,10 @@
 #ifdef CHANGED
 #include "inet.h"
 
-sock_t connexion(int numBox, int to ,int from ,char* buffer){
+sock_t connexion(int numBox, int to ,int from){
 
 	//envoir de l'appel systeme pour la création du socket
-	socket = SockInit(to,from, buffer);
+	socket = SockInit(to,from);
 	//on renvoi la socket crée/-1 si cela à échoué
 	return socket;
 }

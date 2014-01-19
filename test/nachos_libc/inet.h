@@ -17,8 +17,12 @@ sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en li
  * Fonction permettant d'initialiser la socket
  * Retourne l'identifiant de la socket
  * -1 si jamais cela echoue
+ *
+ * A besoin du numero de mailBox
+ * le numéro de la cible
+ * le numéro de l'hote
  */
-sock_t connexion(int,int,int,char*);
+sock_t connexion(int,int,int);
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue
