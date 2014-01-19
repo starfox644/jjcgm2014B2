@@ -34,9 +34,7 @@ int do_SemWait(int id)
 	sem = currentProcess->semManager->getSemaphore(id);
 	if (sem != NULL)
 	{
-		printf("[SemWait] Mis en attente du thread #%i du proc #%i sur le semaphore #%i\n", currentThread->getTid(), currentProcess->getPid(), id);
 		sem->P();
-		printf("[SemWait] Attente terminee du thread #%i du proc #%i sur le semaphore #%i\n", currentThread->getTid(), currentProcess->getPid(), id);
 		return 0;
 	}
 	else
@@ -50,14 +48,14 @@ int do_SemWait(int id)
 int do_SemPost(int id)
 {
 	Semaphore *sem;
-		sem = currentProcess->semManager->getSemaphore(id);
-		if (sem != NULL)
-		{
-			sem->V();
-			return 0;
-		}
-		else
-			return -1;
+	sem = currentProcess->semManager->getSemaphore(id);
+	if (sem != NULL)
+	{
+		sem->V();
+		return 0;
+	}
+	else
+		return -1;
 }
 
 /**

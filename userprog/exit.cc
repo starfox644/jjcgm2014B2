@@ -21,18 +21,18 @@ void do_exit(int returnCode)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	currentProcess->threadManager->s_nbThreads->P();
 	// notify that the main thread is waiting for another
-	if (currentThread->isMainThread())
+	/*if (currentThread->isMainThread())
+	{*/
+	currentProcess->mainIsWaiting = true;
+	currentProcess->threadManager->s_nbThreads->V();
+	while(currentProcess->threadManager->getNbThreads() > 0)
 	{
-		currentProcess->mainIsWaiting = true;
-		currentProcess->threadManager->s_nbThreads->V();
-		while(currentProcess->threadManager->getNbThreads() > 0)
-		{
-			// the thread waits for the others threads
-			s_createProcess->V();
-			space->s_exit->P();
-			s_createProcess->P();
-		}
+		// the thread waits for the others threads
+		s_createProcess->V();
+		space->s_exit->P();
+		s_createProcess->P();
 	}
+	//}
 
 	printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
 	DEBUG('a',"Program exit");

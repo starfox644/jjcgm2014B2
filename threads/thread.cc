@@ -64,7 +64,11 @@ int Thread::getNbThreadsCreated() {
 
 Thread::Thread (const char *threadName)
 {
+#ifdef CHANGED
+	strncpy(name, threadName, 10);
+#else
 	name = threadName;
+#endif
 	stackTop = NULL;
 	stack = NULL;
 	status = JUST_CREATED;
@@ -239,7 +243,9 @@ Thread::Finish ()
 		// free the stack of the thread
 #ifdef step4
 		if(!currentThread->isMainThread())
+		{
 			space->freeThreadStack(userStackAddr);
+		}
 #else
 		if(!currentThread->isMainThread())
 			space->addAvailableStackAddress(userStackAddr);

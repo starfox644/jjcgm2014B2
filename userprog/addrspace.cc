@@ -286,7 +286,7 @@ AddrSpace::AddrSpace (OpenFile * executable)
 	numPages = divRoundUp (size, PageSize);
 	size = numPages * PageSize;
 	// handle the space available for threads stacks
-	availableStackSize = (size - beginThreadsStackSpace) - 1;
+	availableStackSize = size - beginThreadsStackSpace;
 	// handle the maximum of threads which can beeing running at the same time
 	// this number depends on how many stacks can be allocated
 	// the main thread is not included in this number
@@ -534,7 +534,6 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	// copie du buffer en memoire a l’aide de WriteMem
 	for (i = 0 ; i < nbRead ; i++)
 	{
-		//printf("ecriture de l'octet : %i\n", virtualaddr+i);
 		machine->WriteMem(virtualaddr+i,1,buffer[i]);
 	}
 	// retablit la table des pages du processeur
@@ -547,7 +546,7 @@ bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
 	unsigned int i;
 	int frame;
 	// number of pages needed for the given length
-	unsigned int nbPages = divRoundUp(length, PageSize) + 1;
+	unsigned int nbPages = divRoundUp(length, PageSize);
 	// index of the begining page of virtualAddr
 	unsigned int beginPage = divRoundDown(virtualAddr, PageSize);
 	// check integrity
@@ -646,7 +645,7 @@ int AddrSpace::allocThreadStack()
 
 void AddrSpace::freeThreadStack(unsigned int stackAddr)
 {
-	addrSpaceAllocator->free(stackAddr - PageSize - UserStackSize + 4);
+	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
 }
 
 void AddrSpace::printMapping(unsigned int max)

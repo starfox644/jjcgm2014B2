@@ -414,7 +414,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 	struct space* current = canAllocate(alignedLength);
 	int size, addrMap = 0;
 	s_alloc->P();
-
 	if (current == NULL)
 	{
 		//printf("IMPOSSIBLE D'ALLOUER\n");
