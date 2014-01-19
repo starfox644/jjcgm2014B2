@@ -24,6 +24,7 @@ typedef struct File{	//structure de definition d'un ficher pour l'utilisateur
 	char* name;
 	int fileDescriptor;
 	int size;
+	char* contenu;
 }File;
 
 /*
