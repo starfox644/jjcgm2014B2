@@ -83,3 +83,21 @@ void afficherManuel(char* element){
 
 }
 
+/*
+ * fonction permettant de gerer le reseau
+ */
+void do_inet(char* option){
+	//suivant l'option entrée
+	switch(option){
+		case 'a' :	//activation du reseau
+			break;
+		case 'd' :	//desactivation du reseau
+			break;
+		case 'p' :	//affichage des options réseaux
+			break;
+		case "s" :	//envoi d'un message
+			break;
+		default :	//par défaut on affiche les options possible
+			break;
+	}
+}

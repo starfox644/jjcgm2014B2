@@ -72,6 +72,7 @@ int commandIntegre(char **argv){
 		Printf("-Pour supprimer un fichier NachOS tapez : rm\n");
 		Printf("-Pour afficher le système de fichier dans son ensemble tapez : Dir\n");
 		Printf("-Pour naviguer dans le système de fichier tapez : cd\n");
+		Printf("-Pour gérer le réseau tapez : inet\n");
 		Printf("-Pour avoir un fichier d'aide sur les commandes tapez : man\n");
 		Printf("-Pour quitter NachOS tapez : quit\n\n");
 		Printf("Merci d'utiliser NachOS_Shell!\n");
