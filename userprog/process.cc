@@ -207,6 +207,19 @@ StartProcess (char *filename)
 	return -1;
 }
 
+#ifdef step4
+
+int do_mmap(int length)
+{
+	return currentProcess->getAddrSpace()->mmap(length);
+}
+int do_unmap(int addr)
+{
+	return currentProcess->getAddrSpace()->unmap(addr);
+}
+
+#endif
+
 /**
  * 	Cree un processus vide.
  * 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.

@@ -3,7 +3,7 @@
 // decalage en nombre de pages de la pile par rapport au code
 #define STACK_OFFSET 2
 // adresse de debut de la fonction startThread (dans start.s)
-#define THREAD_START_OFFSET 12
+#define THREAD_START_OFFSET 128 + 12
 
 class Semaphore;
 
