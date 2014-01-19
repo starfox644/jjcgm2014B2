@@ -108,7 +108,6 @@ main (int argc, char **argv)
 		if (!strcmp (*argv, "-z"))	// print copyright
 			printf ("%s", copyright);
 #ifdef USER_PROGRAM
-
 		if (!strcmp (*argv, "-x"))
 		{			// run a user program
 			ASSERT (argc > 1);
@@ -232,6 +231,7 @@ main (int argc, char **argv)
 		}
 #endif // FILESYS
 #ifdef NETWORK
+#ifndef CHANGED
 		if (!strcmp (*argv, "-o"))
 		{
 			ASSERT (argc > 1);
@@ -241,6 +241,7 @@ main (int argc, char **argv)
 			MailTest (atoi (*(argv + 1)));
 			argCount = 2;
 		}
+#endif // CHANGED
 #endif // NETWORK
 	}
 
