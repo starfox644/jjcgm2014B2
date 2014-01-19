@@ -18,7 +18,7 @@ sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en li
  * Retourne l'identifiant de la socket
  * -1 si jamais cela echoue
  */
-sock_t connexion(int,int,char*);
+sock_t connexion(int,int,int,char*);
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue
