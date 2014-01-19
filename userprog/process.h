@@ -45,6 +45,7 @@ class Process
 	    int pid;
 	public:
 		SemaphoreManager *semManager;
+		Semaphore *semProc;
 		ThreadManager *threadManager;
 		Process();
 		bool allocateAddrSpace(OpenFile * executable);

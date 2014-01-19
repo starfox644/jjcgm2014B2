@@ -6,16 +6,17 @@
  *      Author: galdween
  */
 #include "processManager.h"
+#include "system.h"
 
 ProcessManager::ProcessManager (){
 	//on initialise notre semaphore
-	/*sem_Wait = new Semaphore("WaitPid semaphore", 1);
-	nbAdrProcess = 0;*/
+	sem_Wait = new Semaphore("WaitPid semaphore", 1);
+	nbAdrProcess = 0;
 }
 
 int ProcessManager::addAddrProcess(Process *proc){
-	/*sem_Wait->P();
-	if(adr->processRunning){ // si le programme est en cours d'execution on le rajoute
+	sem_Wait->P();
+	if(proc->processRunning){ // si le programme est en cours d'execution on le rajoute
 		nbAdrProcess++;
 		//rajout de notre adresse de processus dans la liste
 		l_process.push_back(proc);
@@ -24,14 +25,14 @@ int ProcessManager::addAddrProcess(Process *proc){
 		return -1;
 	}
 
-	sem_Wait->V();*/
+	sem_Wait->V();
 	return 0;
 }
 void ProcessManager::removeAddrProcess(Process *proc){
-	/*sem_Wait->P();
+	sem_Wait->P();
 	nbAdrProcess--;
-	proc->RunningStatus = false;
-	sem_Wait->V();*/
+	proc->processRunning = false;
+	sem_Wait->V();
 }
 int ProcessManager::getNbAddrProcess(){
 	return nbAdrProcess;
@@ -39,29 +40,35 @@ int ProcessManager::getNbAddrProcess(){
 
 /*
  * Fonction en cours de réalisation
- * Je suis pas fan de l'attente active que j'ai faite pour le moment. Faut que je change ca >_<
  */
-int ProcessManager::WaitPid(int processPid){
-	/*sem_Wait->P();
+int ProcessManager::waitPid(int processPid){
+	sem_Wait->P();
+
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
-	while (it != l_process.end() && (*it)->pid != processPid)
+
+	while (it != l_process.end() && (*it)->getPid() != processPid)
+	{
 		it++;
+	}
 	// si l'adresse du process n'est pas trouvee, return -1 : error
-	if ((*it)->pid != processPid){
+	if ((*it)->getPid() != processPid || (*it)->getPid() == currentProcess->getPid()){
 		sem_Wait->V();
 		return -1;
 	}else{
 
-		while((*it)->processRunning == true){	// On attend que le processus termine
-			sem_Wait->V();
-			sem_Wait->P();
-		}int procPid = (*it)->pid; 				// Recup PID pour le renvoyer
+		sem_Wait->V();
+		(*it)->semProc->P();
+		int procPid = (*it)->getPid(); 				// Recup PID pour le renvoyer
+		(*it)->semProc->V();
+		sem_Wait->P();
 		l_process.erase(it); 					// On supprime le processus de la liste
-		sem_Wait->V();							// On libere la ressource
+		sem_Wait->V();
+
+		// On libere la ressource
 		return procPid;
 
-	}*/
+	}
 	return 0;
 }
 #endif //step4
