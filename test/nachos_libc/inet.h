@@ -23,12 +23,12 @@ sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en li
  * le numéro de l'hote
  * et la taille du buffer
  */
-sock_t connexion(int,int,int,char*);
+sock_t initSocket(int,int,int,char*);
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue
  */
-int deconnexion(sock_t);
+int deleteSocket(sock_t);
 /*
  * permet d'envoyer un message
  * retourne -1 si cela echoue

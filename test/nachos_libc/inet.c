@@ -7,7 +7,7 @@
 #ifdef CHANGED
 #include "inet.h"
 
-sock_t connexion(int numBox, int to ,int from ,char* buffer){
+sock_t initSocket(int numBox, int to ,int from ,char* buffer){
 
 	//envoir de l'appel systeme pour la création du socket
 	//socket = SockInit(to,from, buffer);
@@ -16,7 +16,7 @@ sock_t connexion(int numBox, int to ,int from ,char* buffer){
 }
 
 
-int deconnexion(sock_t socketUser){
+int deleteSocket(sock_t socketUser){
 	int erreur = 0;
 	//envoi de l'appel système pour la fermeture du socket
 	//erreur = SockClose(socketUser);

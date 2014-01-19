@@ -28,7 +28,7 @@ void machine(void * arg){
 	ts *s = (ts*) arg;
 	int numBox = 1;
 	//connexion de notre machine
-	Socket = connexion(numBox,s->idMachine+1 ,s->idMachine,s->message);
+	Socket = initSocket(numBox,s->idMachine+1 ,s->idMachine,s->message);
 	//si on est la première machin on envoi le message
 	if(s->idMachine == 0){
 		//on crée notre message et on rajoute l'id de la machine
@@ -54,7 +54,7 @@ void machine(void * arg){
 	}
 
 	//on a finis on ce déconnecte
-	deconnexion(Socket);
+	deleteSocket(Socket);
 }
 
 
