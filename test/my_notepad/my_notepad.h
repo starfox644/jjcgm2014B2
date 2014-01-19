@@ -13,6 +13,13 @@
 #include "../nachos_libc/util.h"
 #include "syscall.h"
 
+//on définie une limite au nombre de caractère que nous pouvons entrée dans un fichier
+//pour éviter des problèmes d'espace mémoire qui son limité pour le moment
+
+#define MAX_CHAR (2048)
+
+//définition de notre buffer
+char Buffer[MAX_CHAR];
 /*
  * Fonction permettant de créer un fichier
  * Retourne -1 sir la création à échoué
@@ -24,7 +31,7 @@ int creerFichier();
   * Retourne -1 si l'ouverture ne marche pas.
   * Sinon retourne le file Descripteur
   */
-int ouvrirFichier();
+int ouvrirFichier(char*);
 /*
  * Fonction servant a afficher le menu de notre notepad
  *

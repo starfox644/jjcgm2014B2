@@ -1,6 +1,6 @@
 /*
  * my_notepad.c
- * Le but de ce programme est d'avoir un éditeur de texte sous NachOS
+ * Le but de ce programme est d'avoir un éditeur de texte sous NachOS (style cat >.>)
  *  Created on: 17 janv. 2014
  *      Author: galdween
  */
@@ -8,17 +8,19 @@
 
 int main(/*int argc, char* argv[]*/){
 	char selection;
+	char filename[10];
 	//if(argc == 0){// si le programme est lancé sans un fichier on affiche le menu
 		while(1){
 			afficherMenu();
 			selection = GetChar();
 			switch (selection){
 				case '1':// creation du fichier
-					//creerFichier();
+					creerFichier();
 					break;
 				case '2' :// ouverture d'un fichier existant
 					Printf("Quel fichier voulez vous ouvrir ?\n",0);
-					//ouvrirFichier();
+					Scanf("%s",filename);
+					ouvrirFichier(filename);
 					break;
 				case '3' : //on quitte l'application
 					Printf("Au Revoir\n",0);
@@ -26,7 +28,7 @@ int main(/*int argc, char* argv[]*/){
 					break;
 				default : // au cas ou on rentre une commande qui n'est pas dans le menu
 					Printf("Commande non reconnu\n",0);
-					Printf("Fonctionnement : my_notepad FILE...\n",0);
+					Printf("Fonctionnement : my_notepad <FILE>...\n",0);
 					break;
 			}
 		}
@@ -53,5 +55,11 @@ void afficherMenu(){
 	return;
 }
 
+int creerFichier(){
+	return 0;
+}
+int ouvrirFichier(char filename){
 
+	return 0;
+}
 
