@@ -16,7 +16,7 @@ sock_t InitSocket(int numBox, int to ,int from ,char* buffer){
 }
 
 
-int DeleteSocket(sock_t socketUser){
+int CloseSocket(sock_t socketUser){
 	int erreur = 0;
 	//envoi de l'appel système pour la fermeture du socket
 	//erreur = SockClose(socketUser);
@@ -24,14 +24,14 @@ int DeleteSocket(sock_t socketUser){
 	return erreur;
 }
 
-int EnvoiMessage(sock_t socketUser,char* message){
+int Send(sock_t socketUser,char* message){
 	int nbChar = 0;
 	//envoi de l'appel système pour envoyé le message
 	//nbChar = Send(socketUser, message);
 	//on retourne le nombre de char envoyé et -1 si cela échoue
 	return nbChar;
 }
-int RecevoirMessage(sock_t socketUser,char* message){
+int Receive(sock_t socketUser,char* message){
 	int nbChar = 0;
 	//envoi de l'appel système pour recevoir le message
 //	nbChar = Receive(socketUser, message);

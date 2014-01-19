@@ -28,17 +28,17 @@ sock_t InitSocket(int,int,int,char*);
  * permet de fermer la socket
  * retourne -1 si cela echoue
  */
-int DeleteSocket(sock_t);
+int CloseSocket(sock_t);
 /*
  * permet d'envoyer un message
  * retourne -1 si cela echoue
  */
-int EnvoiMessage(sock_t,char*);
+int Send(sock_t,char*);
 /*
  * permet de recevoir un message
  * retourne -1 si cela echoue
  */
-int RecevoirMessage(sock_t,char*);
+int Receive(sock_t,char*);
 
 #endif /* INET_H_ */
 #endif

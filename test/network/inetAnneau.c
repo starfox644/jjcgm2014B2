@@ -35,26 +35,26 @@ void machine(void * arg){
 		StrCpy("bonjour",s->message);
 		StrCat(s->message,Itoa(s->idMachine));
 
-		if(EnvoiMessage(Socket,s->message) ==-1){
+		if(Send(Socket,s->message) ==-1){
 			Printf("Erreur d'envoi de Message depuis la machine %d\n",s->idMachine);
 		}
-		if(RecevoirMessage(Socket,s->message) == -1){
+		if(Receive(Socket,s->message) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",s->idMachine);
 		}
 
 	}else{//sinon on recois le message et apres on envois un message
-		if(RecevoirMessage(Socket,s->message) == -1){
+		if(Receive(Socket,s->message) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",s->idMachine);
 		}
 		//on rajoute l'id de la machine a notre message
 		StrCat(s->message,Itoa(s->idMachine));
-		if(EnvoiMessage(Socket,s->message) == -1){
+		if(Send(Socket,s->message) == -1){
 			Printf("Erreur d'envoi de message depuis la machine %d\n",s->idMachine);
 		}
 	}
 
 	//on a finis on ce déconnecte
-	DeleteSocket(Socket);
+	CloseSocket(Socket);
 }
 
 
