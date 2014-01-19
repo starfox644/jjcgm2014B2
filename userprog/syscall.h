@@ -273,7 +273,27 @@ int GetNbProcessTotal();
  * renvoi la liste des processus créé
  */
 int* GetListProcess(int*);
-
+#ifdef NETWORK
+/*
+ * reseau
+ */
+sock_t InitSocket(int,int,int,char*);
+/*
+ * permet de fermer la socket
+ * retourne -1 si cela echoue
+ */
+int CloseSocket(sock_t);
+/*
+ * permet d'envoyer un message
+ * retourne -1 si cela echoue
+ */
+int Send(sock_t,char*);
+/*
+ * permet de recevoir un message
+ * retourne -1 si cela echoue
+ */
+int Receive(sock_t,char*);
+#endif // NETWORK
 #endif // CHANGED
 
 #endif // IN_USER_MODE

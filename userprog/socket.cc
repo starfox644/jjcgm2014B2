@@ -16,7 +16,10 @@
  */
 int do_SockInit(int numBox, int to, int from, int adrBuffer)
 {
-	return currentProcess->socketManager->addSocket(numBox, to, from, (char *) adrBuffer);
+	printf("do_SockInit\n");
+	int id = currentProcess->socketManager->addSocket(numBox, to, from, (char *) adrBuffer);
+	Delay(5);
+	return id;
 }
 
 Socket::Socket(int newId, int newNumBox, int newTo, int newFrom, char* newBuffer)
