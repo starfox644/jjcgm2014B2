@@ -14,7 +14,7 @@ void afficherProcess(){
 	int nbProcessus = GetNbProcessTotal(), i = 0 ;
 	int compteur = 0;
 	//on alloue la mémoire et on recupere la liste des processus
-	liste_Process = (int*) malloc((nbProcessus * 10) * sizeof(int));
+	liste_Process = (int*) malloc(nbProcessus * (2 * sizeof(int)));
 	if(liste_Process == 0){
 		Printf("arf\n",0);
 	}
@@ -28,6 +28,7 @@ void afficherProcess(){
 		i++;
 		compteur++;
 	}
+	//liberation de la mémoire
 	free(liste_Process);
 	return;
 }
@@ -63,7 +64,23 @@ void do_cd(char* destination);
 /*
  * fonction permettant d'afficher le manuel d'aide des commandes
  */
-void afficherManuel(char*element){
+void afficherManuel(char* element){
+	char quit;
+	char * texte;
+	char *extension = ".txt";
+	int fileDescripteur;
+	element = realloc(element, StrLengh(element) + StrLengh(extension));
+	StrCat(extension,element);
+	//ouverture du fichier
+	fileDescripteur = OpenFile(element, SEEK_SET, O_RDONLY); // on ouvre les pages du manuel en lecture seule
+	// copie du texte du fichier dans la variable texte
+	while((quit = GetChar()) != 'q'){ // temps qu'on ne tape pas Q on affiche le manuel
+		//affichage du texte
+		Printf("%s",texte);
+	}
+	//liberation de la mémoire
+	free(element);
+	return;
 
 }
 

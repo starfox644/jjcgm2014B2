@@ -20,6 +20,12 @@
 #define SEEK_CUR (21)	//a partir de la position ou on ce trouve
 #define SEEK_END (22)	//a partir de la fin du fichier
 
+typedef struct File{	//structure de definition d'un ficher pour l'utilisateur
+	char* name;
+	int fileDescriptor;
+	int size;
+}File;
+
 /*
  * Fonction permettant d'ouvrir un fichier
  * suivant le flag choisi on l'ouvre en ecriture ou lecture
