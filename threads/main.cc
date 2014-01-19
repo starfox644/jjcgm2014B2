@@ -58,6 +58,7 @@
 extern void StartProcess (char *file);
 #endif
 
+
 // External functions used by this file
 
 extern void ThreadTest (void), Copy (const char *unixFile, const char *nachosFile);
@@ -70,9 +71,11 @@ extern void Print (char *file), PerformanceTest (void);
 extern void ConsoleTest (char *in, char *out);
 #ifdef CHANGED
 	extern void SynchConsoleTest (char *in, char *out);
-#endif
-extern void MailTest (int networkID);
 
+#endif
+#ifdef NETWORK
+	extern void MailTest (int networkID);
+#endif
 //----------------------------------------------------------------------
 // main
 //      Bootstrap the operating system kernel.  

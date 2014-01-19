@@ -11,7 +11,7 @@
  */
 void afficherProcess(){
 	int *liste_Process;
-	int nbProcessus = GetNbProcessTotal(), i = 0 ;
+	int nbProcessus = GetNbProcess(), i = 0 ;
 	int compteur = 0;
 	//on alloue la mémoire et on recupere la liste des processus
 	liste_Process = (int*) malloc(nbProcessus * (2 * sizeof(int)));
@@ -66,7 +66,6 @@ void do_cd(char* destination);
  */
 void afficherManuel(char* element){
 	char quit;
-	char * texte;
 	char *extension = ".txt";
 	int fileDescripteur;
 	element = realloc(element, StrLengh(element) + StrLengh(extension));
@@ -76,7 +75,7 @@ void afficherManuel(char* element){
 	// copie du texte du fichier dans la variable texte
 	while((quit = GetChar()) != 'q'){ // temps qu'on ne tape pas Q on affiche le manuel
 		//affichage du texte
-		Printf("%s",texte);
+		//Printf("%s",getContent(fileDescripteur);
 	}
 	//liberation de la mémoire
 	free(element);
