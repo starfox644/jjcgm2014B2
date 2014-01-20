@@ -27,7 +27,8 @@ void Printf(char* messageVoulu, void* variable){
 				case 'd'://on a un entier a afficher
 					StrNCpy(messageVoulu, buffer, i - 1);
 					PutString(buffer);
-					PutInt((int) variable);
+					variable = Itoa((int)variable);//on transforme le int en string pour pouvoir l'afficher.
+					PutString((char*) variable);
 					i = i+2;//on ce décale pour etre apres le %d
 					if(messageVoulu[i] == '\0'){// c'est la fin de notre message a afficher donc on stop
 						return;
@@ -106,29 +107,30 @@ void Printf(char* messageVoulu, void* variable){
 
 }
 
-int Scanf(char* typeVariable, void *variable){
-	char *tempo = (char*)malloc( 128 * sizeof(char));
-	int i;
+void* Scanf(char* typeVariable, void *variable){
 	if(typeVariable[0] == '%'){
 		switch(typeVariable[1]){
 			case 'd' :	//cas de récupération d'un int
-				GetString(tempo,32);
-				i = Atoi(tempo);
+				GetString((char*)variable,sizeof(int));
+				variable = (void*)Atoi((char*)variable);
+				return variable;
 				break;
 			case 'c' : //cas de récupération d'un char
-				GetString(tempo,StrLengh(tempo));
-				StrCpy(tempo,(char*)variable);
+				GetString(variable,1 * sizeof(char));
+				StrCpy(variable,(char*)variable);
+				return variable;
 				break;
 			case 's' : //cas de récupération d'un string
 				GetString((char*)variable,MAX_LENGH);
+				return variable;
 				break;
 			default :
 				Printf("\nType de variable non reconnu\n",0);
-				return -1;
+				return 0;
 				break;
 		}
 	}else{
-		return -1;
+		return 0;
 	}
 	return 0;
 }

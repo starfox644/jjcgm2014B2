@@ -13,7 +13,6 @@ void evalLine(char* cmdLine){
 	//tableau d'argument
 	char* argv[MAXARGS];	//argv pour la création de nos programme
 	int background;
-	int pid;
 	background = parseline(cmdLine,argv);
 	if(argv[0] == 0){// on ne tient pas compte des lignes vide
 			return ;
@@ -25,19 +24,24 @@ void evalLine(char* cmdLine){
 		 * Partie a modifier pour gérer les arguments.
 		 */
 		newProc = ForkExec(cmdLine); //on crée notre executable
-		pid = GetPid();
-		add_job(pid,background,cmdLine);	//on l'ajoue a notre tableau
 		if(newProc == -1){
 			PutString("Programme non connu\n");
 			return;
 		}
-		//on attend que l'executable ce finisse pour retourne au shell.
-		error = WaitPid (newProc);
-		supp_job_pid(newProc);	//on enleve le job de notre tableau
-		if(error == -1){
-			PutString("Erreur lors de l'attente du processus fils\n");
-			return;
+		add_job(newProc,background,cmdLine);	//on l'ajoute a notre tableau
+
+		if(!background){// travaille de premier plan on attend le fils
+			//on attend que l'executable ce finisse pour retourne au shell.
+			error = WaitPid (newProc);
+			if(error == -1){
+				PutString("Erreur lors de l'attente du processus fils\n");
+				return;
+			}
+		}else{
+			Printf("Travail d'arriere plan %s\n",cmdLine);	//travail d'arriere plan on affiche sa commande
 		}
+		supp_job_pid(newProc);	//on enleve le job de notre tableau
+
 	}
 	return;
 }
@@ -45,6 +49,9 @@ void evalLine(char* cmdLine){
 int commandIntegre(char **argv){
 	if(StrCmp(argv[0],"quit") == 1){ //commande pour arreter le shell
 		Exit(0);
+	}
+	if(StrCmp(argv[0],"&") == 1){ //on ignore le & tout seul
+		return 1;
 	}
 	if(StrCmp(argv[0],"jobs") == 1){// on fait l'affichage des processus actif
 		afficherJobs();
@@ -72,7 +79,8 @@ int commandIntegre(char **argv){
 		Printf("\t\tA bientôt.\n",0);
 		return 0;
 
+
 	}
-	//pour le moment pas de ligne intégré autre que la commande quitter
+	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
 }

@@ -27,7 +27,7 @@ void Printf(char* messageVoulu, void* variable);
 /*
  * Fonction permettant de récupérer une valeur de variable écris sur la console
  */
-int Scanf(char* typeVariable, void * variable);
+void* Scanf(char* typeVariable, void * variable);
 
 
 
