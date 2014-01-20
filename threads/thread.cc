@@ -115,16 +115,16 @@ Thread::~Thread ()
 {
 	DEBUG ('t', "Deleting thread \"%s\"\n", name);
 
+#ifdef countNew
+	nbNewThread--;
+	displayNew(nbNewThread, "Thread");
+#endif
+
 	ASSERT (this != currentThread);
 	if (stack != NULL)
 		DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
 #ifdef CHANGED
 	delete s_join;
-#endif
-
-#ifdef countNew
-	nbNewThread--;
-	displayNew(nbNewThread, "Thread");
 #endif
 }
 

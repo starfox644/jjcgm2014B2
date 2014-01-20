@@ -14,6 +14,7 @@ ThreadManager::ThreadManager ()
 ThreadManager::~ThreadManager ()
 {
 	delete s_nbThreads;
+	delete s_userJoin;
 }
 
 void ThreadManager::addThread(Thread *th)

@@ -360,7 +360,6 @@ AddrSpace::AddrSpace (OpenFile * executable)
 
 AddrSpace::~AddrSpace ()
 {
-
 #ifdef step4
 	unsigned int i;
 	DEBUG(',', "FINAL RELEASE\n");
@@ -386,6 +385,12 @@ AddrSpace::~AddrSpace ()
 	nbNewAddrspace--;
 	displayNew(nbNewAddrspace, "AddrSpace");
 #endif
+
+#ifdef step4
+	//TODO: bug a résoudre avant de decommenter
+	//delete addrSpaceAllocator;
+#endif
+
 #endif
 }
 
@@ -546,6 +551,8 @@ void AddrSpace::ReadAtVirtual(OpenFile* executable, int virtualaddr, int numByte
 	// retablit la table des pages du processeur
 	machine->pageTable = oldTr;
 	machine->pageTableSize = ptSize;
+
+	delete buffer;
 }
 
 bool AddrSpace::mapMem(int virtualAddr, int length, bool write)
