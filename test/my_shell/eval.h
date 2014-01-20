@@ -13,8 +13,8 @@
 #include "../nachos_libc/Printf.h"
 #include "parseline.h"
 
-#define MAX_CHAR 128
-#define MAXARGS 128
+#define MAX_CHAR (128)
+#define MAXARGS (128)
 //fonction
 void evalLine(char*);
 int commandIntegre(char**);

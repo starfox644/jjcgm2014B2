@@ -5,6 +5,7 @@
  *      Author: galdween
  */
 #include "Printf.h"
+#include "util.h"
 #include "syscall.h"
 
 int main(){
@@ -16,10 +17,25 @@ int main(){
 	Printf("c = %c\n",&c);
 	Printf("s = %s\n",s);
 
-	Printf("Veuillez entrer un entier svp ?\n", 0);
+	PutString("Atoi\n");
+	int at = Atoi(s);
+	Printf("at = %d\n",(void*)at);
+	PutString("Malloc\n");
+	char *it = (char*) malloc(32 * sizeof(char));
+	PutString("Itoa\n");
+	it = Itoa(d);
+	Printf("it = %s\n",it);
+
+
+
+	d = 0;
+	c = 0;
+	s = malloc(MAX_LENGH * sizeof(int));
+
+	/*Printf("Veuillez entrer un entier svp ?\n", 0);
 	Scanf("%d", (void*)d);
 	Printf("Entier entré : %d\n",(void*)d);
-	Printf("Veuillez entrer un char svp ?\n", 0);
+	*/Printf("Veuillez entrer un char svp ?\n", 0);
 	Scanf("%c",&c);
 	Printf("Char entré : %c\n",&c);
 	Printf("Veuillez entrer un string svp ?\n", 0);

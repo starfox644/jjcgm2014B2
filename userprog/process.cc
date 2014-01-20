@@ -43,6 +43,7 @@ int do_forkExec(int adrExec)
 	t = new Thread("ThreadForkExec");
 	if(t == NULL)
 	{
+		printf("[ForkExec] Erreur creation thread\n");
 		// relachement de la section critique de creation
 		s_createProcess->V();
 		return -1;
@@ -62,6 +63,7 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
+			printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
 			// relachement de la section critique de creation
@@ -229,6 +231,7 @@ Process::Process()
 	addrSpace = NULL;
 	processRunning = false;
 	mainIsWaiting = false;
+	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 	semProc = new Semaphore("semaphore processus", 1);
@@ -293,6 +296,16 @@ int Process::getPid()
 void Process::setPid(int newPid)
 {
 	pid = newPid;
+}
+
+bool Process::getEstAttendu()
+{
+	return estAttendu;
+}
+
+void Process::setEstAttendu(bool b)
+{
+	estAttendu = b;
 }
 
 #endif // CHANGED

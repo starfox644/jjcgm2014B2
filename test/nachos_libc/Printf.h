@@ -12,7 +12,8 @@
 #define PRINTF_H_
 #include "syscall.h"
 #include "String.h"
-#define MAX_LENGH 256
+#include "util.h"
+#define MAX_LENGH (256)
 
 
 /*

@@ -55,6 +55,8 @@ class Process
 		AddrSpace *addrSpace;
 		// identifiant unique du processus
 	    int pid;
+	    // true si un processus quelconque attend ce processus, false sinon
+		bool estAttendu;
 
 	public:
 
@@ -87,6 +89,8 @@ class Process
 		AddrSpace* getAddrSpace();
 	    void setPid(int newPid);
 	    int getPid();
+		bool getEstAttendu();
+		void setEstAttendu(bool b);
 
 	    // vaut true si le processus a ete lance, false s'il s'est termine
 		bool processRunning;
