@@ -354,6 +354,14 @@ CloseSocket:
 	j	$31
 	.end CloseSocket
 /* ********************************* */
+.globl Sleep
+	.ent	Sleep
+Sleep:
+	addiu $2,$0,SC_Sleep
+	syscall
+	j	$31
+	.end Sleep
+/* ********************************* */
 #endif /* CHANGED */
 
 /* dummy function to keep gcc happy */

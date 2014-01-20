@@ -18,7 +18,6 @@ int do_SockInit(int numBox, int to, int from, int adrBuffer)
 {
 	printf("do_SockInit\n");
 	int id = currentProcess->socketManager->addSocket(numBox, to, from, (char *) adrBuffer);
-	Delay(5);
 	return id;
 }
 
@@ -44,6 +43,7 @@ Socket::~Socket()
  */
 int Socket::do_SendSocket(char *message)
 {
+	printf("do_SendSocket\n");
 	PacketHeader outPktHdr;
 	MailHeader outMailHdr;
 	// construct packet, mail header for original message
@@ -77,7 +77,6 @@ int Socket::do_ReceiveSocket(int adrMessage)
 		buffer[i-1] = '\0';
 	else if (!isSuccess)
 		return -1;
-
 	return strlen(buffer);
 }
 

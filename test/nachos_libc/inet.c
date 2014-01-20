@@ -23,8 +23,9 @@ int fermerSocket(sock_t socketUser){
 	return erreur;
 }
 
-int envoiMessage(sock_t socketUser,char* message){
+int envoyerMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
+	Printf("Send inet\n");
 	//envoi de l'appel système pour envoyé le message
 	nbChar = Send(socketUser, message);
 	//on retourne le nombre de char envoyé et -1 si cela échoue

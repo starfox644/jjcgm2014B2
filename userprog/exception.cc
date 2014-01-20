@@ -344,6 +344,11 @@ ExceptionHandler (ExceptionType which)
 				n = machine->ReadRegister(4);		// Id de la socket
 				currentProcess->socketManager->removeSocket(n);
 				break;
+
+			case SC_Sleep:
+				n = machine->ReadRegister(4);
+				Delay(n);
+				break;
 #endif // NETWORK
 			case SC_Exit:
 				// read return code in r4 register

@@ -58,7 +58,7 @@
 #define SC_Send 35
 #define SC_Receive 36
 #define SC_CloseSocket 37
-
+#define SC_Sleep 38
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -292,6 +292,10 @@ int Send(sock_t,char*);
  * retourne -1 si cela echoue
  */
 int Receive(sock_t,char*);
+/*
+ * Fonction qui permet de faire une pause du temps voulu
+ */
+void Sleep(int);
 #endif // CHANGED
 
 #endif // IN_USER_MODE

@@ -17,23 +17,23 @@ int main(){
 	Printf("Lancement du test inetAnneau : \n");
 	Printf("envoi un message a une machine qui l'envoi a la suivante\n");
 	Printf("-----------------------------------------\n");
-	int to = 0,from = 0, numBox = 0;
+	int to = 0,from = 1, numBox = 1;
 	char* message = (char*) malloc(10 * sizeof(char));
 	char* reception = (char*) malloc(10 * sizeof(char));
 	sock_t Socket;
 	//demande a l'utilisateur les informations pour créer la socket
-	Printf("Numéro de la machine :\n");
-	Scanf("%d",&from);
-	Printf("Numéro de la machine cible : \n");
-	Scanf("%d",&to);
+	//Printf("Numéro de la machine :\n");
+	//Scanf("%d",&netname);
+	//Printf("Numéro de la machine cible : \n");
+	//Scanf("%d",&numbox);
 
+	Sleep(5);
 	//connexion de notre machine
 	Socket = creerSocket(numBox,to ,from,message);
 	Printf("Socket : %d\n",Socket);
 	//si on est la première machine on envoi le message
-
 	Printf("Itoa\n");
-	message = Itoa(from); //on donne le numero de la machine de départ
+	message = Itoa(numBox); //on donne le numero de la machine de départ
 
 	Printf("EnvoiMessage\n");
 	if(envoyerMessage(Socket,message) ==-1){
