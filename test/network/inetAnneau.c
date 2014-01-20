@@ -5,13 +5,10 @@
  *  Created on: 19 janv. 2014
  *      Author: galdween
  */
-
 #include "syscall.h"
 #include "../nachos_libc/inet.h"
 #include "../nachos_libc/Printf.h"
 #include "../nachos_libc/String.h"
-#include "../nachos_libc/util.h"
-
 
 //programme principal
 int main(){
@@ -30,36 +27,35 @@ int main(){
 	Scanf("%d",&to);
 
 	//connexion de notre machine
-	Socket = InitSocket(numBox,to ,from,message);
+	Socket = creerSocket(numBox,to ,from,message);
 	Printf("Socket : %d\n",Socket);
 	//si on est la première machin on envoi le message
 	if(from == 0){
 		Printf("Message à envoyer : \n");
 		Scanf("%s",&message);
-		if(Send(Socket,message) ==-1){
+		if(envoyerMessage(Socket,message) ==-1){
 			Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
 		}
-		if(Receive(Socket,reception) == -1){
+		if(recevoirMessage(Socket,reception) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 		}
 		Printf("Message reçu : %s\n",reception);
 
 	}else{//sinon on recois le message et apres on envois un message
-		if(Receive(Socket,reception) == -1){
+		if(recevoirMessage(Socket,reception) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 		}
 		Printf("Message reçu : %s\n",reception);
 		Printf("Message à envoyer : \n");
 		Scanf("%s",&message);
-		if(Send(Socket,message) == -1){
+		if(envoyerMessage(Socket,message) == -1){
 			Printf("Erreur d'envoi de message depuis la machine %d\n",from);
 		}
 	}
 
 	//on a finis on ce déconnecte
-	CloseSocket(Socket);
+	fermerSocket(Socket);
 
 	Printf("Fin du main\n");
 	return 0;
 }
-

@@ -273,7 +273,6 @@ int GetNbProcessTotal();
  * renvoi la liste des processus créé
  */
 int* GetListProcess(int*);
-#ifdef NETWORK
 /*
  * reseau
  */
@@ -293,7 +292,6 @@ int Send(sock_t,char*);
  * retourne -1 si cela echoue
  */
 int Receive(sock_t,char*);
-#endif // NETWORK
 #endif // CHANGED
 
 #endif // IN_USER_MODE
