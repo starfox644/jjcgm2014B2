@@ -128,6 +128,9 @@ class PostOffice {
 				// off of network (i.e., time to call 
 				// PostalDelivery)
 
+    NetworkAddress getNetAddr();
+    void setNetAddr(NetworkAddress addr);
+
   private:
     Network *network;		// Physical network connection
     NetworkAddress netAddr;	// Network address of this machine
