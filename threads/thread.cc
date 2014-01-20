@@ -78,6 +78,7 @@ Thread::Thread (const char *threadName)
 	wait = false;
 	s_join = new Semaphore("semaphore for join", 1);
 	isFinished = false;
+	mustFinish = false;
 #else
 
 #ifdef USER_PROGRAM
@@ -221,7 +222,6 @@ Thread::Finish ()
 {
 	(void) interrupt->SetLevel (IntOff);
 	ASSERT (this == currentThread);
-
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
 	// release the semaphore for threads which are waiting the end
@@ -288,12 +288,12 @@ Thread::Yield ()
 	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 
 	ASSERT (this == currentThread);
-
 	DEBUG ('t', "Yielding thread \"%s\"\n", getName ());
 
 	nextThread = scheduler->FindNextToRun ();
 	if (nextThread != NULL)
 	{
+		//printf("\n\n\n\nYield  : NextThread != NULL\n");
 		scheduler->ReadyToRun (this);
 		scheduler->Run (nextThread);
 	}
@@ -416,6 +416,13 @@ ThreadPrint (int arg)
 	Thread *t = (Thread *) arg;
 	t->Print ();
 }
+
+#ifdef CHANGED
+void Thread::setName(char* newName)
+{
+	strncpy(name, newName, 10);
+}
+#endif
 
 //----------------------------------------------------------------------
 // Thread::StackAllocate

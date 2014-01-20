@@ -130,8 +130,8 @@ Scheduler::Run (Thread * nextThread)
 	// in switch.s.  You may have to think
 	// a bit to figure out what happens after this, both from the point
 	// of view of the thread and from the perspective of the "outside world".
-	SWITCH (oldThread, nextThread);
 
+	SWITCH (oldThread, nextThread);
 	DEBUG ('t', "Now in thread \"%s\"\n", currentThread->getName ());
 
 	// If the old thread gave up the processor because it was finishing,
@@ -172,3 +172,14 @@ Scheduler::Print ()
 	printf ("Ready list contents:\n");
 	readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
 }
+#ifdef CHANGED
+void Scheduler::RemoveTid(int tid)
+{
+	readyList->Remove(tid);
+}
+
+bool Scheduler::isReadyListEmpty()
+{
+	return readyList->IsEmpty();
+}
+#endif

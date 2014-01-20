@@ -18,11 +18,12 @@ void do_exit(int returnCode)
 	printf("threads : created %d / destroyed %d / remaining %d\n", Thread::getNbThreadsCreated(), Thread::getNbThreadsCreated() - Thread::getNbNewThread(), Thread::getNbNewThread());
 	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
 #endif
+	//if (currentThread->isMainThread())
+	//{
 	AddrSpace *space = currentProcess->getAddrSpace();
 	currentProcess->threadManager->s_nbThreads->P();
 	// notify that the main thread is waiting for another
-	/*if (currentThread->isMainThread())
-	{*/
+
 	currentProcess->mainIsWaiting = true;
 	currentProcess->threadManager->s_nbThreads->V();
 	while(currentProcess->threadManager->getNbThreads() > 0)
@@ -59,9 +60,9 @@ void do_exit(int returnCode)
 		interrupt->Halt ();
 	}
 #else
-	printf("Avant halt\n");
 	interrupt->Halt ();
 #endif
+	//}
 }
 
 #endif

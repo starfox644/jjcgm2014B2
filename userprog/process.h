@@ -88,6 +88,11 @@ class Process
 		bool processRunning;
 		// indique si le thread main attend la terminaison des autres
 	    bool mainIsWaiting;
+
+	    /**
+	     * Demande aux threads du processus de se terminer
+	     */
+	    void killProcess();
 };
 
 #endif // CHANGED

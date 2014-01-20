@@ -51,7 +51,8 @@ void ThreadManager::deleteThreads()
 	std::list<Thread*>::iterator it;
 	for(it = l_threads.begin() ; it != l_threads.end() ; it++)
 	{
-		delete *it;
+		if(*it != currentThread)
+			delete *it;
 	}
 }
 

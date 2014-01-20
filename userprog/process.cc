@@ -4,6 +4,10 @@
 #include "system.h"
 #include "semaphoreManager.h"
 #include "threadManager.h"
+#include <list>
+
+extern void do_exit(int returnCode);
+class Thread;
 
 #ifdef step4
 
@@ -278,4 +282,28 @@ void Process::setPid(int newPid)
 	pid = newPid;
 }
 
+/**
+ * Demande aux threads du processus de se terminer
+ */
+void Process::killProcess()
+{
+	interrupt->SetLevel (IntOff);
+	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
+	scheduler->RemoveTid(0);
+	while (it != threadManager->l_threads.end())
+	{
+		scheduler->RemoveTid((*it)->tid);
+		++it;
+	}
+	freeAddrSpace();
+	if(scheduler->isReadyListEmpty())
+	{
+		interrupt->Halt();
+	}
+	else
+	{
+		currentThread->Finish();
+	}
+
+}
 #endif // CHANGED

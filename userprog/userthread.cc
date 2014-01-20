@@ -25,7 +25,7 @@ int do_UserThreadCreate(int f, int arg)
 
 	// allocate the new thread
 	Thread *newThread = NULL;
-	newThread = new Thread((char*)buffer);
+	newThread = new Thread("thread");
 	// allocation error
 	if (newThread == NULL)
 		error = true;
@@ -57,6 +57,8 @@ int do_UserThreadCreate(int f, int arg)
 		error = (newThread->tid == -1);
 		if(!error)
 		{
+			snprintf(buffer, 10, "t%i", newThread->tid);
+			newThread->setName(buffer);
 			// the new thread is in same process
 			newThread->process = currentThread->process;
 			currentProcess->threadManager->s_nbThreads->P();

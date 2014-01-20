@@ -17,6 +17,9 @@
 
 #include "copyright.h"
 #include "list.h"
+/*#ifdef CHANGED
+class Thread;
+#endif*/
 
 //----------------------------------------------------------------------
 // ListElement::ListElement
@@ -252,3 +255,36 @@ List::SortedRemove (long long *keyPtr)
     delete element;
     return thing;
 }
+#ifdef CHANGED
+void List::Remove(int tid)
+{
+
+	ListElement *ptr = first;
+	ListElement *ptr_prec = NULL;
+	Thread *th = (Thread*) (first->item);
+	//Thread *th_prec = NULL;
+	while (ptr != NULL && th->tid != tid)
+	{
+		ptr_prec = ptr;
+		ptr = ptr->next;
+		th = (Thread*) ptr;
+	}
+	if (th != NULL && th->tid == tid)
+	{
+		// element a supp est la tete
+		if (ptr_prec == NULL)
+		{
+			first = ptr->next;
+		}
+		// dernier element
+		else if (ptr->next == NULL)
+		{
+			ptr_prec->next = NULL;
+		}
+		else
+		{
+			ptr_prec->next = ptr->next;
+		}
+	}
+}
+#endif

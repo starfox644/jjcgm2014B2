@@ -79,7 +79,7 @@ void AddrSpaceAllocator::printBusyList()
 		printf("Contenu de la liste des blocs occupes : \n ");
 		while (actu != NULL)
 		{
-			printf("(addr = %d, length = %d, fp = %d)  " , actu->addr, actu->length, actu->forbiddenPage);
+			printf("(addr = %d, length = %d, fp = %d)  \n" , actu->addr, actu->length, actu->forbiddenPage);
 			actu = actu->next;
 		}
 	}
@@ -176,7 +176,7 @@ void AddrSpaceAllocator::removeFreeSpace(int addr, int lengthAlloc)
 			// suppresion du bloc
 			prec->next = actu->next;
 		}
-		delete actu;
+		//delete actu;
 	}
 }
 
@@ -253,31 +253,34 @@ void AddrSpaceAllocator::addFreeSpace(int addr, int length)
  *	Renvoie la taille du bloc libere, -1 en cas d'erreur.
  *	addr = debut page interdite s'il y a
  */
-int AddrSpaceAllocator::removeBusySpace(int addr)
+struct space* AddrSpaceAllocator::removeBusySpace(int addr)
 {
 	struct space* actu = busyHead;
 	struct space* prec = NULL;
-	int length = 0;
+	struct space* res = NULL;
 
 	// la liste des blocs occupes est vide : erreur
 	if (actu == NULL)
-		return -1;
+		return NULL;
 
 	while(actu != NULL && (actu->addr < addr))
 	{
 		prec = actu;
 		actu = actu->next;
 	}
-
 	// si la liste est vide ou que l'element n'est pas present dans la liste
 	if(actu == NULL || actu->addr != addr)
 	{
 		printf("Bloc d'adresse %d pas trouve\n", addr);
-		return -1;
+		return NULL;
+	}
+	else if (actu != NULL && actu == busyHead && actu->addr < addr)
+	{
+		return NULL;
 	}
 	else
 	{
-		length = actu->length;
+		res = actu;
 		// l'element a supprimer est en tete
 		if(prec == NULL)
 		{
@@ -300,8 +303,8 @@ int AddrSpaceAllocator::removeBusySpace(int addr)
 		{
 			prec->next = actu->next;
 		}
-		delete actu;
-		return length;
+		//delete actu;
+		return res;
 	}
 }
 
@@ -321,6 +324,7 @@ void AddrSpaceAllocator::addBusySpace(int addr, int lengthAlloc, bool forbiddenP
 	newSpace->addr = addr;
 	newSpace->length = lengthAlloc;
 	newSpace->forbiddenPage = forbiddenPage;
+	newSpace->next = NULL;
 
 	while (actu != NULL && actu->addr < addr)
 	{
@@ -416,7 +420,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 	s_alloc->P();
 	if (current == NULL)
 	{
-		//printf("IMPOSSIBLE D'ALLOUER\n");
 		s_alloc->V();
 		return -1;
 	}
@@ -446,7 +449,6 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
 		}
 		else
 		{
-			printf("erreur map\n");
 			s_alloc->V();
 			return -1;
 		}
@@ -464,25 +466,34 @@ int AddrSpaceAllocator::allocateFirst(int lengthAlloc, bool write, bool forbidde
  */
 int AddrSpaceAllocator::free(int addr)
 {
-	int length;
+	struct space* actu = NULL;
+	int addrBloc;
 	ASSERT((addr%PageSize) == 0);
 	s_alloc->P();
-	// suppression dans la liste des bloc occupes
-	if ((length = removeBusySpace(addr)) == -1)
+	// suppression dans la liste des bloc occupes (addr = debut page interdite s'il y a)
+	if ((actu = removeBusySpace(addr)) == NULL)
 	{
-		//printf("erreur de suppression d'un espace occupe\n");
 		s_alloc->V();
 		ASSERT(FALSE);
 		return -1;
 	}
 	else
 	{
-		ASSERT(length%PageSize == 0);
+		ASSERT(actu->length%PageSize == 0);
 		DEBUG(',', "UNMAP STACK\n");
-		if(addrspace->unMapMem(addr/PageSize, length/PageSize))
+		if (actu->forbiddenPage)
+		{
+			addrBloc = actu->addr+PageSize;
+		}
+		else
+		{
+			addrBloc = actu->addr;
+		}
+		// appel a unMapMem avec l'adresse du debut du bloc et la taille sans la page interdite
+		if(addrspace->unMapMem(addrBloc/PageSize, (actu->length - PageSize)/PageSize))
 		{
 			//ajout dand la liste des blocs libres
-			addFreeSpace(addr,length);
+			addFreeSpace(addr,actu->length);
 			s_alloc->V();
 			return 0;
 		}

@@ -636,16 +636,18 @@ int AddrSpace::allocThreadStack()
 {
 	int return_value;
 	// allocate a stack with the virtual memory allocator
-	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize, true, false));
+	return_value = (addrSpaceAllocator->allocateFirst(UserStackSize+PageSize, true, true));
 	if(return_value == -1)
 		return -1;
 	else
-		return return_value + UserStackSize - 4;
+		return return_value + UserStackSize -16;
+	//return_value => debut bloc
 }
 
 void AddrSpace::freeThreadStack(unsigned int stackAddr)
 {
-	addrSpaceAllocator->free(stackAddr - UserStackSize + 4);
+	// DONNER DEBUT DE LA PAGE INTERDITE
+	addrSpaceAllocator->free(stackAddr - UserStackSize + 16 - PageSize);
 }
 
 void AddrSpace::printMapping(unsigned int max)

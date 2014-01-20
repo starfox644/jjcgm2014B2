@@ -8,7 +8,7 @@ class Semaphore;
 	struct space
 	{
 		int addr;	// debut de bloc ou debut de la page interdite
-		int length;
+		int length;	// taille + pageSize
 		bool forbiddenPage;
 		struct space* next;
 	};
@@ -95,7 +95,7 @@ class AddrSpaceAllocator
 		 *	Renvoie la taille du bloc libere, -1 en cas d'erreur.
 		 *	addr = debut page interdite s'il y a
 		 */
-		int removeBusySpace(int addr);
+		struct space* removeBusySpace(int addr);
 
 		/*
 		 *	Ajout d'un bloc occupe a l'adresse addr, de taille lengthAlloc

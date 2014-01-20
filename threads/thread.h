@@ -119,6 +119,10 @@ public:
 	}
 
 #ifdef CHANGED
+	void setName(char* newName);
+#endif
+
+#ifdef CHANGED
 	void setIsSyscall(bool b);
 	bool getIsSyscall();
 
@@ -141,6 +145,7 @@ public:
 	// tid given to the next thread
 	static int nextTid;
 
+	bool mustFinish;
 #endif
 
 private:
