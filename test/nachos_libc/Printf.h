@@ -12,7 +12,9 @@
 #define PRINTF_H_
 #include "syscall.h"
 #include "String.h"
+#include "util.h"
 #define MAX_LENGH 256
+
 
 /*
  * Fonction permettant d'afficher un message sur la console avec une variable

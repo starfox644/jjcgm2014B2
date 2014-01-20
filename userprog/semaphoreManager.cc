@@ -74,6 +74,8 @@ Semaphore* SemaphoreManager::getSemaphore(int id)
 	std::list<Semaphore*>::iterator it=semList.begin();
 	while (it != semList.end() && (*it)->id != id)
 		it++;
+	if(it == semList.end())
+		return NULL;
 	// If semaphore not found, return -1 : error
 	if ((*it)->id != id)
 		return NULL;
