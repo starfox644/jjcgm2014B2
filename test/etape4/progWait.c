@@ -5,10 +5,19 @@
  *      Author: Sarkal
  */
 #include "syscall.h"
+#define CPT 500000
 
 int main(){
 	int i;
-	for(i = 0; i < 500000; i++);
+	for(i = CPT; i >= 0; i--)
+	{
+		if (i%(CPT/5) == 0)
+		{
+			PutInt(i/(CPT/5));
+			PutChar(' ');
+		}
+	}
+	PutChar('\n');
 	return 0;
 }
 

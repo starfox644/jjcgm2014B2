@@ -5,7 +5,7 @@
  *      Author: Sarkal
  */
 #include "syscall.h"
-#define NB_PROCESS 4
+#define NB_PROCESS 10
 
 int main(){
 	int pid[NB_PROCESS], error, i;
@@ -16,7 +16,7 @@ int main(){
 		pid[i] = ForkExec("./etape4/progWait");
 		if(pid[i] == -1){
 			PutString("Erreur de création du processus #");
-			PutInt(i);
+			PutInt(i+1);
 			PutChar('\n');
 			return -1;
 		}
