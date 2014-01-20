@@ -7,7 +7,7 @@
 #include "inet.h"
 
 sock_t creerSocket(int numBox, int to ,int from ,char* buffer){
-
+	sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en limite
 	//envoir de l'appel systeme pour la création du socket
 	socket = InitSocket(numBox,to,from, buffer);
 	//on renvoi la socket crée/-1 si cela à échoué

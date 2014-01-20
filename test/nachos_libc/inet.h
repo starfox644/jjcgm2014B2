@@ -8,8 +8,8 @@
 #define INET_H_
 
 #include "syscall.h"
+#include "../nachos_libc/Printf.h"
 //variable
-sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en limite
 
 //fonction
 /*

@@ -5,11 +5,12 @@
  *  Created on: 19 janv. 2014
  *      Author: galdween
  */
+#ifdef NETWORK
 #include "syscall.h"
 #include "../nachos_libc/inet.h"
 #include "../nachos_libc/Printf.h"
 #include "../nachos_libc/String.h"
-
+#include "..nachos_libc/util.h"
 //programme principal
 int main(){
 
@@ -29,25 +30,27 @@ int main(){
 	//connexion de notre machine
 	Socket = creerSocket(numBox,to ,from,message);
 	Printf("Socket : %d\n",Socket);
-	//si on est la première machin on envoi le message
+	//si on est la première machine on envoi le message
+
+	message = Itoa(from); //on donne le numero de la machine de départ
+
 	if(from == 0){
-		Printf("Message à envoyer : \n");
-		Scanf("%s",&message);
 		if(envoyerMessage(Socket,message) ==-1){
 			Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
 		}
 		if(recevoirMessage(Socket,reception) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 		}
-		Printf("Message reçu : %s\n",reception);
-
+		if(Atoi(reception) == from){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
+			Printf("boucle faite\n");
+		}else{
+			Printf("Message reçu : %s\n",reception);
+		}
 	}else{//sinon on recois le message et apres on envois un message
 		if(recevoirMessage(Socket,reception) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 		}
-		Printf("Message reçu : %s\n",reception);
-		Printf("Message à envoyer : \n");
-		Scanf("%s",&message);
+		Printf("Message reçu : %s\n", reception);
 		if(envoyerMessage(Socket,message) == -1){
 			Printf("Erreur d'envoi de message depuis la machine %d\n",from);
 		}

@@ -322,7 +322,6 @@ GetNbProcessTotal:
 	j	$31
 	.end GetNbProcessTotal
 /* ********************************* */
-#ifdef NETWORK
 	.globl InitSocket
 	.ent	InitSocket
 InitSocket:
@@ -355,7 +354,6 @@ CloseSocket:
 	j	$31
 	.end CloseSocket
 /* ********************************* */
-#endif /* NETWORK */
 #endif /* CHANGED */
 
 /* dummy function to keep gcc happy */
