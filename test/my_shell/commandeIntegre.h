@@ -52,4 +52,8 @@ void do_cd(char*);
  */
 void afficherManuel(char*);
 
+/*
+ * fonction permettant d'afficher les infos concernant le reseau de la machine
+ */
+void ifconfig();
 #endif /* COMMANDINTEGRE_H_ */

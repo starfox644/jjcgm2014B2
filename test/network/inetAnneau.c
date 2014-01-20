@@ -17,16 +17,17 @@ int main(){
 	Printf("Lancement du test inetAnneau : \n");
 	Printf("envoi un message a une machine qui l'envoi a la suivante\n");
 	Printf("-----------------------------------------\n");
-	int to = 0,from = 1, numBox = 1;
+	int to = 0,from = 1, numBox = 0, netname = 0;
 	char* message = (char*) malloc(10 * sizeof(char));
 	char* reception = (char*) malloc(10 * sizeof(char));
 	sock_t Socket;
-	//demande a l'utilisateur les informations pour créer la socket
-	//Printf("Numéro de la machine :\n");
-	//Scanf("%d",&netname);
-	//Printf("Numéro de la machine cible : \n");
-	//Scanf("%d",&numbox);
 
+	//demande a l'utilisateur les informations pour créer la socket
+	Printf("Numéro de la machine :\n");
+	Scanf("%d",&netname);
+	setNetAddr(netname);
+	Printf("Numéro de la machine cible : \n");
+	Scanf("%d",&numBox);
 	Sleep(5);
 	//connexion de notre machine
 	Socket = creerSocket(numBox,to ,from,message);
@@ -45,7 +46,7 @@ int main(){
 		Printf("Erreur de réception de message avec la machine %d\n",to);
 	}
 
-	if(Atoi(reception) == from){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
+	if(Atoi(reception) == netname){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
 		Printf("boucle faite\n");
 	}else{
 		Printf("Message reçu : %s\n",reception);

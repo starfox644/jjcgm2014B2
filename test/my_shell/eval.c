@@ -116,6 +116,10 @@ int commandIntegre(char **argv){
 		//afficherManuel(argv[1]);
 		return 0;
 	}
+	if(StrCmp(argv[0],"ifconfig") == 1){//permet d'afficher les informations concernant le réseau
+		ifconfig();
+		return 0;
+	}
 	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
 }
