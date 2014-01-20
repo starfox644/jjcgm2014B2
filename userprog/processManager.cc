@@ -47,7 +47,7 @@ int ProcessManager::addAddrProcess(Process *proc){
 void ProcessManager::removeAddrProcess(Process *proc){
 	sem_Wait->P();
 	nbAdrProcess--;
-	//proc->processRunning = false;
+	proc->processRunning = false;
 	sem_Wait->V();
 }
 int ProcessManager::getNbAddrProcess(){
