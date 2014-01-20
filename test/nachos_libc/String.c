@@ -82,3 +82,30 @@ char* StrChr(char *element, char elementATrouve){
 		return 0;
 	}
 }
+
+char* StrCat(char *source,char *destination){
+	int tailleSource = StrLengh(source);
+	int i = 0,j;
+	while(destination[i] != '\0'){//on cherche la fin du mot destination
+		i++;
+	}
+	//a partir de la fin du mot on efface le '\0' et on commence a ecrire le mot source
+	for(j = i; j < i+tailleSource; j++){
+		destination[j] = source[i];
+	}
+	//on renvoi le mot destination a l'utilisateur
+	return destination;
+}
+
+char* StrNCat(char * source, char *destination, int taille){
+		int i = 0,j;
+		while(destination[i] != '\0'){//oncherche la fin du mot destination
+			i++;
+		}
+		//a parti de la fin du mot destination on efface le'\0' et on ecrit le nombre de lettre voulu par l'utilisateur venant du mot source
+		for(j = i; j < i+taille; j++){
+			destination[j] = source[i];
+		}
+		//on renvoi le mot destination a l'utilisateur
+		return destination;
+}

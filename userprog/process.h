@@ -38,6 +38,9 @@ int allocateProcessSpace (Thread *t, char *filename);
  */
 void UserStartProcess (int adr);
 
+int do_mmap(int length);
+int do_unmap(int addr);
+
 //----------------------------------------------------------------------
 // StartProcess
 //      Run a user program.  Open the executable, load it into
@@ -52,6 +55,8 @@ class Process
 		AddrSpace *addrSpace;
 		// identifiant unique du processus
 	    int pid;
+	    // true si un processus quelconque attend ce processus, false sinon
+		bool estAttendu;
 
 	public:
 
@@ -60,6 +65,7 @@ class Process
 	     * 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
 	     */
 		Process();
+		~Process();
 
 	    // gere les semaphores utilisateurs du processus
 		SemaphoreManager *semManager;
@@ -83,6 +89,8 @@ class Process
 		AddrSpace* getAddrSpace();
 	    void setPid(int newPid);
 	    int getPid();
+		bool getEstAttendu();
+		void setEstAttendu(bool b);
 
 	    // vaut true si le processus a ete lance, false s'il s'est termine
 		bool processRunning;

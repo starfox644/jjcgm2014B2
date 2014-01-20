@@ -274,6 +274,23 @@ WaitPid:
 	j	$31
 	.end WaitPid
 
+.globl Mmap
+	.ent	Mmap
+Mmap:
+	addiu $2,$0,SC_Mmap
+	syscall
+	j	$31
+	.end Mmap
+
+	.globl Unmap
+	.ent	Unmap
+Unmap:
+	addiu $2,$0,SC_Unmap
+	syscall
+	j	$31
+	.end Unmap
+
+
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */

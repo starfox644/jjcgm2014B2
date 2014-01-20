@@ -47,6 +47,8 @@
 #define SC_ForkExec 24
 #define SC_GetPid 25
 #define SC_WaitPid 26
+#define SC_Mmap 27
+#define SC_Unmap 28
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -231,6 +233,16 @@ int GetPid();
  *  attend qu'un processus soit fini pour continuer a executer le processus courant
  */
 int WaitPid(int processPid);
+
+/*
+ * 	alloue une portion de memoire virtuelle
+ */
+void* Mmap(int length);
+
+/**
+ * 	desalloue une portion de memoire virtuelle
+ */
+int Unmap();
 
 #endif // CHANGED
 

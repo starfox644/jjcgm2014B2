@@ -9,6 +9,7 @@ class FrameProvider
 {
   public:
     FrameProvider ();	    // create a frame provider
+    ~FrameProvider ();	    // destroy a frame provider
     int GetEmptyFrame();  	// renvoie le numero du premier cadre libre (apres l’avoir initialise) ou -1 s’il n’y en a plus
     // libère la page de numero indexFrame, retourne false si la page n'a pas ete allouee
     bool ReleaseFrame(int indexFrame);

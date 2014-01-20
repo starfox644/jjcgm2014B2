@@ -24,19 +24,11 @@ ProcessManager::~ProcessManager()
 	{
 		delete (*it);
 	}
+	delete sem_Wait;
 }
 
 int ProcessManager::addAddrProcess(Process *proc){
 	sem_Wait->P();
-
-	/*if(proc->processRunning){ // si le programme est en cours d'execution on le rajoute
-		nbAdrProcess++;
-		//rajout de notre adresse de processus dans la liste
-		l_process.push_back(proc);
-	}else{ //le programme n'est pas en cours d'execution donc on a une erreur
-		sem_Wait->V();
-		return -1;
-	}*/
 
 	nbAdrProcess++;
 	//rajout de notre adresse de processus dans la liste
@@ -47,7 +39,7 @@ int ProcessManager::addAddrProcess(Process *proc){
 void ProcessManager::removeAddrProcess(Process *proc){
 	sem_Wait->P();
 	nbAdrProcess--;
-	//proc->processRunning = false;
+	proc->processRunning = false;
 	sem_Wait->V();
 }
 int ProcessManager::getNbAddrProcess(){
@@ -55,7 +47,11 @@ int ProcessManager::getNbAddrProcess(){
 }
 
 /*
- * Fonction en cours de réalisation
+ * Met le processus courant en attente du processus dont le pid est passe en parametre.
+ * Renvoie -1 si le processus a attendre est le processus courant, si le pid n'est pas dans la liste
+ * ou si le processus est deja attendu par un autre.
+ * Renvoie le pid du processus attendu jusqu'a terminaison sinon.
+ *
  */
 int ProcessManager::waitPid(int processPid){
 	sem_Wait->P();
@@ -63,20 +59,32 @@ int ProcessManager::waitPid(int processPid){
 	std::list<Process*>::iterator it=l_process.begin();
 
 	while (it != l_process.end() && (*it)->getPid() != processPid)
-	{
 		it++;
-	}
-	if(it == l_process.end())
-	{
-		sem_Wait->V();
-		return -1;
-	}
-	// si l'adresse du process n'est pas trouvee, return -1 : error
-	if ((*it)->getPid() != processPid || (*it)->getPid() == currentProcess->getPid()){
-		sem_Wait->V();
-		return -1;
-	}else{
 
+	// si le pid du process n'est pas trouve, return -1 : error
+	if (it == l_process.end())
+	{
+//		printf("[WaitPid - Process #%i] Erreur - Processus #%i introuvable dans la liste\n", currentProcess->getPid(), processPid);
+		sem_Wait->V();
+		return -1;
+	}
+	// si le process a attendre est le process courant : -1
+	else if ((*it)->getPid() == currentProcess->getPid())
+	{
+//		printf("[WaitPid] Erreur - Un processus ne peut s'attendre lui-meme\n");
+		sem_Wait->V();
+		return -1;
+	}
+	// Si le process est deja attendu TODO : a tester, on ne peut pas pour l'instant
+	else if ((*it)->getEstAttendu())
+	{
+//		printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
+		sem_Wait->V();
+		return -1;
+	}
+	else
+	{
+		(*it)->setEstAttendu(true);
 		sem_Wait->V();
 		(*it)->semProc->P();
 		int procPid = (*it)->getPid(); 				// Recup PID pour le renvoyer
@@ -92,6 +100,9 @@ int ProcessManager::waitPid(int processPid){
 	return 0;
 }
 
+/**
+ * Renvoie le prochain PID non utilise, jusqu'a MAX_INT
+ */
 int ProcessManager::getNextPid()
 {
 	if(nextPid <= INT_MAX)

@@ -83,6 +83,12 @@ Thread::Thread (const char *threadName)
 
 #ifdef USER_PROGRAM
 	space = NULL;
+	// FBT: Need to initialize special registers of simulator to 0
+	// in particular LoadReg or it could crash when switching
+	// user threads.
+	int r;
+	for (r=NumGPRegs; r<NumTotalRegs; r++)
+		userRegisters[r] = 0;
 #endif
 
 #endif
@@ -110,16 +116,16 @@ Thread::~Thread ()
 {
 	DEBUG ('t', "Deleting thread \"%s\"\n", name);
 
+#ifdef countNew
+	nbNewThread--;
+	displayNew(nbNewThread, "Thread");
+#endif
+
 	ASSERT (this != currentThread);
 	if (stack != NULL)
 		DeallocBoundedArray ((char *) stack, StackSize * sizeof (int));
 #ifdef CHANGED
 	delete s_join;
-#endif
-
-#ifdef countNew
-	nbNewThread--;
-	displayNew(nbNewThread, "Thread");
 #endif
 }
 

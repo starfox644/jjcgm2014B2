@@ -266,6 +266,19 @@ ExceptionHandler (ExceptionType which)
 				else
 					machine->WriteRegister(2, n);
 				break;
+
+			case SC_Mmap:
+				n = machine->ReadRegister(4);
+				n = do_mmap(n);
+				machine->WriteRegister(2, n);
+				break;
+
+			case SC_Unmap:
+				n = machine->ReadRegister(4);
+				n = do_unmap(n);
+				machine->WriteRegister(2, n);
+				break;
+
 #endif // STEP4
 
 			case SC_Exit:

@@ -631,9 +631,12 @@ Machine::OneInstruction(Instruction *instr)
 void
 Machine::DelayedLoad(int nextReg, int nextValue)
 {
+	/*printf("delayed load\n");
+	printf("load reg : %i\n", registers[LoadReg]);*/
     registers[registers[LoadReg]] = registers[LoadValueReg];
     registers[LoadReg] = nextReg;
     registers[LoadValueReg] = nextValue;
+	//printf("next reg : %i\n", nextReg);
     registers[0] = 0; 	// and always make sure R0 stays zero.
 }
 
