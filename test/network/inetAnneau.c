@@ -25,7 +25,7 @@ int main(){
 	//demande a l'utilisateur les informations pour créer la socket
 	Printf("Numéro de la machine :\n");
 	Scanf("%d",&netname);
-	setNetAddr(netname);
+	SetHostname(netname);
 	Printf("Numéro de la machine cible : \n");
 	Scanf("%d",&numBox);
 	Sleep(5);

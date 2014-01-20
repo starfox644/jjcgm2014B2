@@ -349,6 +349,15 @@ ExceptionHandler (ExceptionType which)
 				n = machine->ReadRegister(4);
 				Delay(n);
 				break;
+
+			case SC_SetHostname:
+				n = machine->ReadRegister(4);
+				postOffice->setNetAddr(n);
+				break;
+
+			case SC_GetHostname:
+				machine->WriteRegister(2,postOffice->getNetAddr());
+				break;
 #endif // NETWORK
 			case SC_Exit:
 				// read return code in r4 register

@@ -362,6 +362,22 @@ Sleep:
 	j	$31
 	.end Sleep
 /* ********************************* */
+.globl SetHostname
+	.ent	SetHostname
+SetHostname:
+	addiu $2,$0,SC_SetHostname
+	syscall
+	j	$31
+	.end SetHostname
+/* ********************************* */
+.globl GetHostname
+	.ent	GetHostname
+GetHostname:
+	addiu $2,$0,SC_GetHostname
+	syscall
+	j	$31
+	.end GetHostname
+/* ********************************* */
 #endif /* CHANGED */
 
 /* dummy function to keep gcc happy */
