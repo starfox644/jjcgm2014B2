@@ -24,6 +24,7 @@ ProcessManager::~ProcessManager()
 	{
 		delete (*it);
 	}
+	delete sem_Wait;
 }
 
 int ProcessManager::addAddrProcess(Process *proc){

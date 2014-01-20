@@ -10,6 +10,12 @@ FrameProvider::FrameProvider ()
 	s_frames = new Semaphore("frames", 1);
 }
 
+FrameProvider::~FrameProvider ()
+{
+	delete bitmap;
+	delete s_frames;
+}
+
 int FrameProvider::GetEmptyFrame()
 {
 	int indexFrame;
