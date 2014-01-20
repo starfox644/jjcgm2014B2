@@ -5,7 +5,7 @@
  *      Author: Sarkal
  */
 #include "syscall.h"
-#define NB_PROCESS 5
+#define NB_PROCESS 4
 
 int main(){
 	int pid[NB_PROCESS], error, i;

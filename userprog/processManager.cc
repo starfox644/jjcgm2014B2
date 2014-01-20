@@ -48,7 +48,8 @@ int ProcessManager::getNbAddrProcess(){
 
 /*
  * Met le processus courant en attente du processus dont le pid est passe en parametre.
- * Renvoie -1 si le processus a attendre est le processus courant ou si le pid n'est pas dans la liste.
+ * Renvoie -1 si le processus a attendre est le processus courant, si le pid n'est pas dans la liste
+ * ou si le processus est deja attendu par un autre.
  * Renvoie le pid du processus attendu jusqu'a terminaison sinon.
  *
  */
@@ -63,21 +64,21 @@ int ProcessManager::waitPid(int processPid){
 	// si le pid du process n'est pas trouve, return -1 : error
 	if (it == l_process.end())
 	{
-		printf("[WaitPid] Erreur - Processus introuvable dans la liste\n");
+//		printf("[WaitPid - Process #%i] Erreur - Processus #%i introuvable dans la liste\n", currentProcess->getPid(), processPid);
 		sem_Wait->V();
 		return -1;
 	}
 	// si le process a attendre est le process courant : -1
 	else if ((*it)->getPid() == currentProcess->getPid())
 	{
-		printf("[WaitPid] Erreur - Un processus ne peut s'attendre lui-meme\n");
+//		printf("[WaitPid] Erreur - Un processus ne peut s'attendre lui-meme\n");
 		sem_Wait->V();
 		return -1;
 	}
 	// Si le process est deja attendu TODO : a tester, on ne peut pas pour l'instant
 	else if ((*it)->getEstAttendu())
 	{
-		printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
+//		printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
 		sem_Wait->V();
 		return -1;
 	}
