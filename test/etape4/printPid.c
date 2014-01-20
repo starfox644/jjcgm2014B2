@@ -1,9 +1,10 @@
 #include "syscall.h"
 
-// ecrit le nombre 546 et affiche le nombre de caracteres ecrits
+// ecrit le pid du processus courant
 int main()
 {
 	PutString("PID : ");
 	PutInt(GetPid());
+	PutString("\n");
     return 0;
 }
