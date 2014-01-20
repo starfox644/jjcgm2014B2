@@ -318,7 +318,6 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef NETWORK
 			case SC_InitSocket:
-				printf("SC_InitSocket exception\n");
 				n = machine->ReadRegister(4);		// Numero de la box
 				to = machine->ReadRegister(5); 		// Adresse destination de la socket
 				from = machine->ReadRegister(6); 	// Adresse de la machine

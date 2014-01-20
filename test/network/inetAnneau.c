@@ -5,12 +5,11 @@
  *  Created on: 19 janv. 2014
  *      Author: galdween
  */
-#ifdef NETWORK
 #include "syscall.h"
 #include "../nachos_libc/inet.h"
 #include "../nachos_libc/Printf.h"
 #include "../nachos_libc/String.h"
-#include "..nachos_libc/util.h"
+#include "../nachos_libc/util.h"
 //programme principal
 int main(){
 
@@ -19,7 +18,8 @@ int main(){
 	Printf("envoi un message a une machine qui l'envoi a la suivante\n");
 	Printf("-----------------------------------------\n");
 	int to = 0,from = 0, numBox = 0;
-	char message[256], reception[256];
+	char* message = (char*) malloc(10 * sizeof(char));
+	char* reception = (char*) malloc(10 * sizeof(char));
 	sock_t Socket;
 	//demande a l'utilisateur les informations pour créer la socket
 	Printf("Numéro de la machine :\n");
@@ -32,33 +32,30 @@ int main(){
 	Printf("Socket : %d\n",Socket);
 	//si on est la première machine on envoi le message
 
+	Printf("Itoa\n");
 	message = Itoa(from); //on donne le numero de la machine de départ
 
-	if(from == 0){
-		if(envoyerMessage(Socket,message) ==-1){
-			Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
-		}
-		if(recevoirMessage(Socket,reception) == -1){
-			Printf("Erreur de réception de message avec la machine %d\n",to);
-		}
-		if(Atoi(reception) == from){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
-			Printf("boucle faite\n");
-		}else{
-			Printf("Message reçu : %s\n",reception);
-		}
-	}else{//sinon on recois le message et apres on envois un message
-		if(recevoirMessage(Socket,reception) == -1){
-			Printf("Erreur de réception de message avec la machine %d\n",to);
-		}
-		Printf("Message reçu : %s\n", reception);
-		if(envoyerMessage(Socket,message) == -1){
-			Printf("Erreur d'envoi de message depuis la machine %d\n",from);
-		}
+	Printf("EnvoiMessage\n");
+	if(envoyerMessage(Socket,message) ==-1){
+		Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
 	}
+
+	Printf("recevoirMessage\n");
+	if(recevoirMessage(Socket,reception) == -1){
+		Printf("Erreur de réception de message avec la machine %d\n",to);
+	}
+
+	if(Atoi(reception) == from){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
+		Printf("boucle faite\n");
+	}else{
+		Printf("Message reçu : %s\n",reception);
+	}
+
 
 	//on a finis on ce déconnecte
 	fermerSocket(Socket);
-
+	free(reception);
+	free(message);
 	Printf("Fin du main\n");
 	return 0;
 }
