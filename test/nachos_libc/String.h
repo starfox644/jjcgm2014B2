@@ -7,7 +7,7 @@
 
 #ifndef STRING_H_
 #define STRING_H_
-
+#include "syscall.h"
 /*
  * Le but de cette fonction et de pouvoir comparer si 2 string sont bien égaux.
  */

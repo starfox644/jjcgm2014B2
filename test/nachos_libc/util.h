@@ -10,6 +10,7 @@
 #include "String.h"
 #include "syscall.h"
 #include "Printf.h"
+#include "../malloc/malloc_stub.h"
 
 /*
  * Cette fonction permet de transformer un string en entier

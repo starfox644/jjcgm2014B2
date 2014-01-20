@@ -6,32 +6,30 @@
  */
 #include "util.h"
 
-int Atoi(char* variable){
-	int num = 0,flag = 0,i;
-	for(i=0;i<=StrLengh(variable);i++)
-	{
-	    if(variable[i] >= '0' && variable[i] <= '9'){
-	    	num = num * 10 + variable[i] -'0';
-
-	    }else if(variable[0] == '-' && i==0){
-	        flag =1;
+int Atoi(char* chaine){
+	PutString("Debut Atoi\n");
+	int entier = 0,negatif = 0,i = 0;
+	while(chaine[i] != '\0'){
+	    if(chaine[i] >= '0' && chaine[i] <= '9'){
+	    	entier = entier * 10 + chaine[i] -'0';
+	    }else if(chaine[0] == '-' && i==0){
+	        negatif = 1;
 	    }else{
 	        break;
 	    }
+	    i++;
 	}
-	if(flag == 1){
-		num = num * -1;
+	if(negatif == 1){
+		entier = entier * -1;
 	}
-
-	return num;
-
+	PutString("Fin atoi\n");
+	return entier;
 }
-/* reverse:  reverse string s in place */
+
  char* reverse(char s[])
  {
      int i, j;
      char c;
-
      for (i = 0, j = StrLengh(s)-1; i<j; i++, j--) {
          c = s[i];
          s[i] = s[j];
@@ -39,19 +37,24 @@ int Atoi(char* variable){
      }
      return s;
  }
+
 char* Itoa(int variable){
 	 	 int i,sign;
-	 	 char *s = 0;
-	     if ((sign = variable) < 0)  /* record sign */
-	         variable = -variable;          /* make n positive */
+	 	 char *s = malloc(MAX_LENGH * sizeof(char));
+	 	 if(s == 0){
+	 		 PutString("Erreur Malloc\n");
+	 		 Exit(0);
+	 	 }
+	     if ((sign = variable) < 0)
+	         variable = -variable;  // on met notre variable positive pour faire notre transformation
 	     i = 0;
-	     do {       /* generate digits in reverse order */
-	         s[i++] = variable % 10 + '0';   /* get next digit */
-	     } while ((variable /= 10) > 0);     /* delete it */
+	     do {  //on crée les variables mais dans l'autre sens
+	         s[i++] = variable % 10 + '0';
+	     } while ((variable /= 10) > 0);
 	     if (sign < 0)
 	         s[i++] = '-';
 	     s[i] = '\0';
-	     s = reverse(s);
+	     s = reverse(s);	//on le remet dans le bon sens
 	     return s;
 }
 
