@@ -8,6 +8,7 @@ int main (){
 	char buffer[MAX_CHAR];
 	char *tabBuffer[MAX_CHAR];
 	int i,j = 0,k = 0;
+	init_jobs();	//on initialise le tableau des jobs
     while (1){
     	if(j == MAX_CHAR){
     		j = 0;

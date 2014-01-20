@@ -24,12 +24,14 @@ void evalLine(char* cmdLine){
 		 * Partie a modifier pour gérer les arguments.
 		 */
 		newProc = ForkExec(cmdLine); //on crée notre executable
+		add_job(newProc,background,cmdLine);	//on l'ajoue a notre tableau
 		if(newProc == -1){
 			PutString("Programme non connu\n");
 			return;
 		}
 		//on attend que l'executable ce finisse pour retourne au shell.
 		error = WaitPid (newProc);
+		supp_job_pid(newProc);	//on enleve le job de notre tableau
 		if(error == -1){
 			PutString("Erreur lors de l'attente du processus fils\n");
 			return;
