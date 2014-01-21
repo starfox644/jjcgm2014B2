@@ -32,22 +32,34 @@ int main(){
 	SocketEnvoi = creerSocket(to, 0, 1, message);
 	SocketReception = creerSocket(to, 1, 0, reception);
 	//si on est la première machine on envoi le message
-	message = "Hello"; //on donne le numero de la machine de départ
 
-	if(envoyerMessage(SocketEnvoi,message) ==-1){
-		Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
+
+	if(GetHostname() == 0){
+		message = Itoa(from); //on donne le numero de la machine de départ
+		if(envoyerMessage(SocketEnvoi,message) ==-1){
+			Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
+		}
+
+		Printf("\nrecevoirMessage\n");
+		if(recevoirMessage(SocketReception,reception) == -1){
+			Printf("Erreur de réception de message avec la machine %d\n",to);
+		}
+	}else{
+		Printf("\nrecevoirMessage\n");
+		if(recevoirMessage(SocketReception,reception) == -1){
+			Printf("Erreur de réception de message avec la machine %d\n",to);
+		}
+		StrCpy(reception,message);
+		if(envoyerMessage(SocketEnvoi,message) ==-1){
+			Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
+		}
 	}
-
-	Printf("recevoirMessage\n");
-	if(recevoirMessage(SocketReception,reception) == -1){
-		Printf("Erreur de réception de message avec la machine %d\n",to);
+	if(Atoi(reception) == from){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
+		Printf("\nMessage reçu : %s\n",reception);
+		Printf("\nboucle faite\n");
+	}else{
+		Printf("\nMessage reçu : %s\n",reception);
 	}
-
-//	if(Atoi(reception) == netname){	//si le message recu correspond au numéro d'hote alors on a fait la boucle
-//		Printf("boucle faite\n");
-//	}else{
-		Printf("Message reçu : %s\n",reception);
-//	}
 
 
 	//on a fini on se déconnecte
