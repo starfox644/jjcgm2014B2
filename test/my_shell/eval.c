@@ -57,14 +57,6 @@ int commandIntegre(char **argv){
 		afficherJobs();
 		return 0;
 	}
-	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
-		PutString("Non implémenté :D\n");
-		return 0;
-	}
-	if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
-		PutString("Non implémenté :D\n");
-		return 0;
-	}
 	if(StrCmp(argv[0],"help") == 1){//on affiche l'aide de notre shell
 		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
 		Printf("-Pour afficher les programmes en cours tapez :",0);
@@ -81,6 +73,15 @@ int commandIntegre(char **argv){
 
 
 	}
+	/* utile pour lorsqu'il y aura le fileSys*/
+	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
+			PutString("Non implémenté :D\n");
+			return 0;
+		}
+		if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
+			PutString("Non implémenté :D\n");
+			return 0;
+		}
 	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
 }

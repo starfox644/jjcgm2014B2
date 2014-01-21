@@ -19,7 +19,6 @@
 USERPROG_NOPROGRAM=$(NachOS_libc_SOURCES) \
                     $(my_shell/my_shell_EXTRA_SOURCES) 
                     $(my_notepad/my_notepad_EXTRA_SOURCES)
-                    $(my_notepad/my_notepad_EXTRA_SOURCES)
 
 # source files that must be included in any userspace nachos program
 USERPROG_LIBS=start.S $(NachOS_libc_SOURCES)
