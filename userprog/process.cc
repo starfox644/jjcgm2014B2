@@ -67,7 +67,6 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
-
 			//printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
@@ -323,11 +322,7 @@ void Process::killProcess()
 	}
 	Printf("apres boucle\n");
 	freeAddrSpace();
-<<<<<<< HEAD
 
-=======
-	Printf("apres freeAddrSpace\n");
->>>>>>> 8af961c93aef005ee8c9928c548aaee417d2a543
 	if(scheduler->isReadyListEmpty())
 	{
 		Printf("La liste est vide\n");
