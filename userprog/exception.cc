@@ -32,6 +32,7 @@
 #include "machine.h"
 #include "processManager.h"
 #include "addrSpaceAllocator.h"
+#include "synchconsole.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -279,6 +280,15 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
+			case SC_GetNbProcess:
+				machine->WriteRegister(2,processManager->getNbProcess());
+				break;
+
+			case SC_GetListProcess:
+				n = machine->ReadRegister(4);
+				machine->WriteRegister(2, processManager->getListProcess(n));
+				break;
+
 #endif // STEP4
 
 			case SC_Exit:
@@ -286,7 +296,6 @@ ExceptionHandler (ExceptionType which)
 				codeErreur = machine->ReadRegister(4);
 				do_exit(codeErreur);
 				break;
-
 
 			default:
 				printf("Unknown syscall\n");
@@ -308,8 +317,8 @@ ExceptionHandler (ExceptionType which)
 #endif // CHANGED
 	else
 	{
-		//printf ("Unexpected user mode exception (%d:", which);
 				// Print the exception name for practical purpose
+#ifdef CHANGED
 		switch (which) {
 		#ifdef step4
 				case PageFaultException:
@@ -318,37 +327,44 @@ ExceptionHandler (ExceptionType which)
 					// if is in stack => Stzck overflow
 					if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
 					{
-						printf("STACK OVERFLOW !!\n");
+						//#ifdef CHANGED
+						Printf("STACK OVERFLOW !!\n");
+						//#endif // CHANGED
 					}
 					else
 					{
-						printf("PageFaultException\n");
+						//#ifdef CHANGED
+						Printf("PageFaultException ");
+						//#endif // CHANGED
 					}
 					break;
 		#else
-				printf ("Unexpected user mode exception (%d:", which);
-				case PageFaultException:	printf("PageFaultException ");		break;
+				//#ifdef CHANGED
+				Printf ("Unexpected user mode exception (%d:", which);
+				case PageFaultException:	Printf("PageFaultException ");		break;
+				//#endif //CHANGED
 		#endif // step4
-				printf ("Unexpected user mode exception (%d:", which);
-				case SyscallException: 		printf("SyscallException "); 		break;
-				case ReadOnlyException: 	printf("ReadOnlyException "); 		break;
-				case BusErrorException: 	printf("BusErrorException "); 		break;
-				case AddressErrorException: printf("AddressErrorException "); 	break;
-				case OverflowException: 	printf("OverflowException "); 		break;
-				case IllegalInstrException: printf("IllegalInstrException "); 	break;
-				default: 					printf("Unknown "); 				break;
-				}
+//#ifdef CHANGED
+				Printf ("Unexpected user mode exception (%d:", which);
+				case SyscallException: 		Printf("SyscallException "); 		break;
+				case ReadOnlyException: 	Printf("ReadOnlyException "); 		break;
+				case BusErrorException: 	Printf("BusErrorException "); 		break;
+				case AddressErrorException: Printf("AddressErrorException "); 	break;
+				case OverflowException: 	Printf("OverflowException "); 		break;
+				case IllegalInstrException: Printf("IllegalInstrException "); 	break;
+				default: 					Printf("Unknown "); 				break;
+			}
+#endif //CHANGED
 #ifndef step4
-				printf("type:%d)\n", type);
-#endif
 #ifdef CHANGED
+				Printf("type:%d)\n", type);
 				currentProcess->killProcess();
+#endif //CHANGED
 #endif
+
 			}
 			// End of addition
 		#ifndef CHANGED
 			UpdatePC ();
 		#endif
-
-
-		}
+}

@@ -290,7 +290,21 @@ Unmap:
 	j	$31
 	.end Unmap
 
+	.globl GetListProcess
+	.ent	GetListProcess
+GetListProcess:
+	addiu $2,$0,SC_GetListProcess
+	syscall
+	j	$31
+	.end GetListProcess
 
+	.globl GetNbProcess
+	.ent	GetNbProcess
+GetNbProcess:
+	addiu $2,$0,SC_GetNbProcess
+	syscall
+	j	$31
+	.end GetNbProcess
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */

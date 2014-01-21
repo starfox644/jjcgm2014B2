@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 10
+#define MAX_PROC 14
 
 int main()
 {
@@ -14,8 +14,6 @@ int main()
 	PutString("Lancement du programme de test userProcMulti\n");
 	for(i = 0; i < MAX_PROC; i++)
 	{
-		PutInt(i);
-		PutString("\n");
 		if(ForkExec("./etape4/userThreadMulti") == -1)
 		{
 			PutString("echec de lancement de processus\n");

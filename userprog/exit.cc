@@ -6,6 +6,7 @@
 #include "process.h"
 #include "addrspace.h"
 #include "threadManager.h"
+#include "synchconsole.h"
 #endif
 
 void do_UserThreadExit(int);
@@ -35,7 +36,7 @@ void do_exit(int returnCode)
 			space->s_exit->P();
 			s_createProcess->P();
 		}
-		printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
+		Printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
 		DEBUG('a',"Program exit");
 		currentProcess->freeAddrSpace();
 
@@ -53,7 +54,6 @@ void do_exit(int returnCode)
 		{
 			removeProcess();
 			processManager->removeAddrProcess(currentProcess);
-
 			// stop the program
 			s_createProcess->V();
 			currentProcess->semProc->V();
@@ -73,8 +73,10 @@ void do_exit(int returnCode)
 #endif
 
 #ifdef countNew
-	printf("threads : created %d / destroyed %d / remaining %d\n", Thread::getNbThreadsCreated(), Thread::getNbThreadsCreated() - Thread::getNbNewThread(), Thread::getNbNewThread());
-	printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
+#ifdef CHANGED
+	Printf("threads : created %d / destroyed %d / remaining %d\n", Thread::getNbThreadsCreated(), Thread::getNbThreadsCreated() - Thread::getNbNewThread(), Thread::getNbNewThread());
+	Printf("addrspace : created %d / destroyed %d / remaining %d\n", AddrSpace::getNbAddrspaceCreated(), AddrSpace::getNbAddrspaceCreated() - AddrSpace::getNbNewAddrspace(), AddrSpace::getNbNewAddrspace());
+#endif
 #endif
 }
 

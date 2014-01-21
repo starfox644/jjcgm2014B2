@@ -89,6 +89,7 @@ int do_UserThreadCreate(int f, int arg)
  */
 static void StartUserThread(int f)
 {
+	interrupt->SetLevel(IntOff);
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
 	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC to the function __startThread (in start.s)
