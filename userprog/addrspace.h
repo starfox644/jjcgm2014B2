@@ -131,8 +131,17 @@ class AddrSpace
 	*/
     void printMapping(unsigned int max);
 
+    /**
+     *  Allocate length bytes in the virtual memory.
+     *  The address is chosen by the addrSpaceAllocator.
+     *  Return -1 in case of failure, else the address of the mapping.
+     */
     int mmap(int length);
 
+    /**
+     * 	Free the memory allocated at the given address.
+     * 	Return -1 if the address wasn't allocated else 0.
+     */
     int unmap(int addr);
 
 //
@@ -173,8 +182,14 @@ class AddrSpace
     unsigned int endThreadsStackSpace;
 
 #ifdef step4
-    // number of pages needed for a stack size
+    // number of pages needed for a stack
     int nbPagesUserStack;
+
+    /**
+     *	Map code and data of executable using the noff header.
+     *	Returns false if this is impossible (no ressources)
+     */
+    bool mapExecutable(NoffHeader noffH, OpenFile * executable);
 
 #endif
 	// number max of threads depending on memory for the stacks
@@ -196,8 +211,6 @@ class AddrSpace
      * 	for the additionnal thread's stacks
      */
     void initAvailableStackPointers();
-
-    bool mapExecutable(NoffHeader noffH, OpenFile * executable);
 
 #endif //CHANGED
 };

@@ -173,27 +173,14 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		// init the physical page, but if valid is false this isn't used
 		pageTable[i].physicalPage = 0;
 	}
-	/*DEBUG(',', "CODE MAPPING\n");
-	// map the code
-	success = mapMem(noffH.code.virtualAddr, noffH.code.size, true);
-	if(success)
-	{
-		DEBUG(',', "INITDATA MAPPING\n");
-		// map init data
-		success = mapMem(noffH.initData.virtualAddr, noffH.initData.size, true);
-	}
-	if(success)
-	{
-		DEBUG(',', "UNINITDATA MAPPING\n");
-		// map uninit data
-		success = mapMem(noffH.uninitData.virtualAddr, noffH.uninitData.size, true);
-	}*/
+
+	// mapping executable in the address space
 	DEBUG(',', "EXECUTABLE MAPPING\n");
 	success =  mapExecutable(noffH, executable);
 	if(success)
 	{
 		DEBUG(',', "MAIN STACK MAPPING\n");
-		// map main thread stack
+		// mapping main thread stack
 		success = mapMem(beginThreadsStackSpace - UserStackSize, UserStackSize, true);
 	}
 	if(!success)
@@ -218,20 +205,13 @@ bool AddrSpace::loadInitialSections(OpenFile * executable)
 		ReadAtVirtual(executable, noffH.initData.virtualAddr,
 				noffH.initData.size, noffH.initData.inFileAddr, pageTable, numPages);
 	}
-	/*if(!mapMem(noffH.code.virtualAddr, noffH.code.size, false))
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}*/
 	return true;
 }
 
 
 bool AddrSpace::mapExecutable(NoffHeader noffH, OpenFile * executable)
 {
+	// just use mapMam with the needed length
 	int length = noffH.code.size + noffH.initData.size + noffH.uninitData.size;
 	return mapMem(noffH.code.virtualAddr, length, true);
 }
@@ -388,8 +368,7 @@ AddrSpace::~AddrSpace ()
 #endif
 
 #ifdef step4
-	//TODO: bug a résoudre avant de decommenter
-	//delete addrSpaceAllocator;
+	delete addrSpaceAllocator;
 #endif
 
 #endif
@@ -670,14 +649,13 @@ void AddrSpace::printMapping(unsigned int max)
 	unsigned int i;
 	for(i = 0 ; i < max && i < numPages ; i++)
 	{
-#ifdef CHANGED
 		Printf("virtual : %i physique : %i\n", i, pageTable[i].physicalPage);
-#endif //CHANGED
 	}
 }
 
 int AddrSpace::mmap(int length)
 {
+	// using the address space allocator for finding a free space
 	int addr = addrSpaceAllocator->allocateFirst(length, true, false);
 	if(addr == -1)
 		return 0;
@@ -687,7 +665,11 @@ int AddrSpace::mmap(int length)
 
 int AddrSpace::unmap(int addr)
 {
-	return addrSpaceAllocator->free(addr);
+	// address must be aligned
+	if(addr % PageSize != 0)
+		return -1;
+	else
+		return addrSpaceAllocator->free(addr);
 }
 
 #endif // step4

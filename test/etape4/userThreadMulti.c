@@ -36,7 +36,6 @@ int main(){
 	{
 		if(UserThreadCreate(f, 0) == -1)
 		{
-
 			//SemWait(&sem);
 			PutString("Erreur de lancement de thread\n");
 			//SemPost(&sem);
