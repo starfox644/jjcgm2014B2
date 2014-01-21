@@ -144,15 +144,19 @@ ExceptionHandler (ExceptionType which)
 				{
 					// allocation successfull
 					n = synchconsole->SynchGetString(dynBuffer, maxSize);
-					if (copyStringToMachine(dynBuffer, adr))
-					{
-						// writes the number of characters read in return register
-						machine->WriteRegister(2, n);
-					}
-					else
-					{
-						// copy error, writes -1 in return register
+					if(n == -1){
 						machine->WriteRegister(2, -1);
+					}else{
+						if (copyStringToMachine(dynBuffer, adr))
+						{
+							// writes the number of characters read in return register
+							machine->WriteRegister(2, n);
+						}
+						else
+						{
+							// copy error, writes -1 in return register
+							machine->WriteRegister(2, -1);
+						}
 					}
 					delete dynBuffer;
 				}
