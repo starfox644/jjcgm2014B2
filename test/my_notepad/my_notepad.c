@@ -14,11 +14,11 @@ int main(/*int argc, char* argv[]*/){
 			selection = GetChar();
 			switch (selection){
 				case '1':// creation du fichier
-					creerFichier();
+					//creerFichier();
 					break;
 				case '2' :// ouverture d'un fichier existant
 					Printf("Quel fichier voulez vous ouvrir ?\n",0);
-					ouvrirFichier();
+					//ouvrirFichier();
 					break;
 				case '3' : //on quitte l'application
 					Printf("Au Revoir\n",0);
@@ -30,7 +30,7 @@ int main(/*int argc, char* argv[]*/){
 					break;
 			}
 		}
-			return 0;
+		return 0;
 	/*}else{ // si le programme est lancé avec un fichier alors on l'affiche
 
 		// si le fichier existe on l'ouvre
@@ -40,7 +40,7 @@ int main(/*int argc, char* argv[]*/){
 
 
 	}*/
-	return 0;
+	//return 0;
 }
 
 //fonction qui affiche le menu de notre programme
