@@ -66,6 +66,8 @@ int commandIntegre(char **argv){
 		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
 		Printf("-Pour afficher les programmes en cours tapez :",0);
 		Printf(" jobs\n",0);
+		Printf("-Pour afficher les processus système en cours tapez :",0);
+				Printf(" ps\n",0);
 		Printf("-Pour afficher le contenu du répertoire courant tapez :",0);
 		Printf(" ls\n",0);
 		Printf("-Pour afficher le chemin du répertoire courant tapez :",0);
@@ -92,27 +94,23 @@ int commandIntegre(char **argv){
 }
 
 void afficherProcess(){
-	char *liste_Process;
-	char *processus = (char*) malloc(10 * sizeof(char));
-	PutString("Recuperation du nb process\n");
-	int nbProcessus = GetNbProcess(), i = 0, j = 0;
-	PutInt(nbProcessus);
+	int *liste_Process;
+	int nbProcessus = GetNbProcess(), i = 0 ;
+	int compteur = 0;
 	//on alloue la mémoire et on recupere la liste des processus
-	liste_Process = (char*) malloc((nbProcessus * 100) * sizeof(char));
-	PutString("\nRecuperation de la liste des process\n");
+	liste_Process = (int*) malloc((nbProcessus * 100) * sizeof(int));
+	if(liste_Process == 0){
+		Printf("arf\n",0);
+	}
 	liste_Process = GetListProcess(liste_Process);
-
-	Printf("\nListe des processus sytème\n",0);
-	while(liste_Process[i] != '\0'){
-			j = 0;
-			PutString("Boucle 1\n");
-		while(liste_Process[i] != '/'){// pour chaque processus
-				processus[j] = liste_Process[i];
-				i++;
-				j++;
-				PutString("boucle 2\n");
-		}
-		Printf("Etat du Processus : %s\n",processus);
+	//on réalise l'affichage
+	Printf("Liste des processus sytème\n",0);
+	while(compteur < nbProcessus){ //pour chaque processus faire
+		Printf("Pid du processus : %d",(void*)liste_Process[i]);
+		i++;
+		Printf("\t\t Etat : %d\n",(void*)liste_Process[i]);
+		i++;
+		compteur++;
 	}
 	return;
 }

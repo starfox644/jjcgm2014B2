@@ -49,8 +49,12 @@
 #define SC_WaitPid 26
 #define SC_Mmap 27
 #define SC_Unmap 28
-#define SC_GetListProcess 29
-#define SC_GetNbProcess 30
+#define SC_ArgStart 29
+#define SC_ArgArg 30
+#define SC_ArgEnd 31
+#define SC_GetListProcess 32
+#define SC_GetNbProcess 33
+
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -246,6 +250,12 @@ void* Mmap(int length);
  */
 int Unmap();
 
+/**
+ * fonctions et structures de gestion de liste d'arguments
+ * maximum 3 arguments peuvent etres traites
+ */
+void arg_start();
+int arg_arg();
 /*
  * renvoi le nombre de processus système en cours
  */
@@ -254,7 +264,7 @@ int GetNbProcess();
 /*
  * renvoi la liste des processus créé
  */
-char* GetListProcess(char*);
+int* GetListProcess(int*);
 
 #endif // CHANGED
 
