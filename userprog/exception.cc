@@ -32,6 +32,7 @@
 #include "machine.h"
 #include "processManager.h"
 #include "addrSpaceAllocator.h"
+#include "arguments.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -279,6 +280,20 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
+			case SC_ArgStart:
+				int m, o;
+				m = machine->ReadRegister(5);
+				n = machine->ReadRegister(6);
+				o = machine->ReadRegister(7);
+				do_arg_start(m, n, o);
+				break;
+			case SC_ArgArg:
+				n = do_arg_arg();
+				machine->WriteRegister(2, n);
+				break;
+			case SC_ArgEnd:
+				printf("appel de SC_VaEnd\n");
+				break;
 #endif // STEP4
 
 			case SC_Exit:

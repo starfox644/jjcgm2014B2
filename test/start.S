@@ -274,7 +274,7 @@ WaitPid:
 	j	$31
 	.end WaitPid
 
-.globl Mmap
+	.globl Mmap
 	.ent	Mmap
 Mmap:
 	addiu $2,$0,SC_Mmap
@@ -290,6 +290,30 @@ Unmap:
 	j	$31
 	.end Unmap
 
+
+	.globl arg_start
+	.ent	arg_start
+arg_start:
+	addiu $2,$0,SC_ArgStart
+	syscall
+	j	$31
+	.end arg_start
+
+	.globl arg_arg
+	.ent	arg_arg
+arg_arg:
+	addiu $2,$0,SC_ArgArg
+	syscall
+	j	$31
+	.end arg_arg
+
+	.globl arg_end
+	.ent	arg_end
+arg_end:
+	addiu $2,$0,SC_ArgEnd
+	syscall
+	j	$31
+	.end arg_end
 
 #endif /*CHANGED*/
 
