@@ -75,7 +75,10 @@ extern void ConsoleTest (char *in, char *out);
 #endif
 #ifdef NETWORK
 	extern void MailTest (int networkID);
-#endif
+#ifdef CHANGED
+	extern void testCond();
+#endif //CHANGED
+#endif//NETWORK
 //----------------------------------------------------------------------
 // main
 //      Bootstrap the operating system kernel.  
@@ -242,6 +245,10 @@ main (int argc, char **argv)
 			argCount = 2;
 		}
 #endif // CHANGED
+
+		if(!strcmp(*argv,"-co")){
+			testCond();
+		}
 #endif // NETWORK
 	}
 
