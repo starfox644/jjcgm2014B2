@@ -13,7 +13,6 @@ typedef struct lecteur_redacteur lecteur_redacteur_t;
 struct lecteur_redacteur{
 		int nb_Writer;
 		int nb_Reader;
-		Semaphore *fifo;
 		Lock *verrou;
 		Condition *cond_Lecteur;
 		Condition *cond_ecriture;

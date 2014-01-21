@@ -20,7 +20,7 @@ int main(){
 	int to = 0,from = 1;
 	char* message = (char*) malloc(10 * sizeof(char));
 	char* reception = (char*) malloc(10 * sizeof(char));
-	sock_t Socket;
+	sock_t SocketEnvoi, SocketReception;
 
 	//demande a l'utilisateur les informations pour créer la socket
 	Printf("FROM : \n");
@@ -29,16 +29,17 @@ int main(){
 	Scanf("%d",&to);
 	Sleep(5);
 	//connexion de notre machine
-	Socket = creerSocket(to, to ,from,message);
+	SocketEnvoi = creerSocket(to, 0, 1, message);
+	SocketReception = creerSocket(to, 1, 0, reception);
 	//si on est la première machine on envoi le message
 	message = "Hello"; //on donne le numero de la machine de départ
 
-	if(envoyerMessage(Socket,message) ==-1){
+	if(envoyerMessage(SocketEnvoi,message) ==-1){
 		Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
 	}
 
 	Printf("recevoirMessage\n");
-	if(recevoirMessage(Socket,reception) == -1){
+	if(recevoirMessage(SocketReception,reception) == -1){
 		Printf("Erreur de réception de message avec la machine %d\n",to);
 	}
 
@@ -50,7 +51,6 @@ int main(){
 
 
 	//on a fini on se déconnecte
-	fermerSocket(Socket);
 	free(reception);
 	free(message);
 	Printf("Fin du main\n");
