@@ -5,7 +5,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_THREAD 10
+#define MAX_THREAD 12
 
 sem_t sem;
 
@@ -23,7 +23,7 @@ void f(void* arg)
 
 int main(){
 
-	int i, error;
+	int i, error, tid;
 	if((error = SemInit(&sem,1)) == -1){
 		return -1;
 	}
@@ -31,9 +31,13 @@ int main(){
 	PutString("\n Lancement du programme de test userThreadMulti\n");
 	for(i = 0; i < MAX_THREAD; i++)
 	{
-		if(UserThreadCreate(f, 0) == -1)
+		if((tid = UserThreadCreate(f, 0)) == -1)
 		{
+			SemWait(&sem);
 			PutString("Erreur de lancement de thread\n");
+			PutInt(tid);
+			PutChar('\n');
+			SemPost(&sem);
 		}
 	}
 	return 0;

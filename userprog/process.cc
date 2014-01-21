@@ -156,6 +156,10 @@ int allocateProcessSpace (Thread *t, char *filename)
 	}
 	process->setPid(pid);
 	processManager->addAddrProcess(process);
+	process->threadManager->s_nbThreads->P();
+	// add the thread to the process
+	process->threadManager->addThread(t);
+	process->threadManager->s_nbThreads->V();
 #endif
 	delete executable;		// close file
 	return 0;
@@ -204,6 +208,10 @@ StartProcess (char *filename)
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
+	process->threadManager->s_nbThreads->P();
+	// add the thread to the process
+	process->threadManager->addThread(currentThread);
+	process->threadManager->s_nbThreads->V();
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user progam
@@ -234,7 +242,7 @@ Process::Process()
 {
 	addrSpace = NULL;
 	processRunning = false;
-	mainIsWaiting = false;
+	threadWaiting = false;
 	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();

@@ -230,13 +230,11 @@ Thread::Finish ()
 	ASSERT (this == currentThread);
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
-	// release the semaphore for threads which are waiting the end
-	s_join->V();
-	if(currentThread->isMainThread())
+	/*if(currentThread->isMainThread())
 	{
 		// the main thread is the last to finish, it must be deleted
 		threadToBeDestroyed = currentThread;
-	}
+	}*/
 
 	if (currentProcess == NULL) {
 		printf("currentProcess == NULL, exit\n");

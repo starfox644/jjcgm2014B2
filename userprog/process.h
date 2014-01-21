@@ -95,7 +95,7 @@ class Process
 	    // vaut true si le processus a ete lance, false s'il s'est termine
 		bool processRunning;
 		// indique si le thread main attend la terminaison des autres
-	    bool mainIsWaiting;
+	    bool threadWaiting;
 
 	    /**
 	     * Demande aux threads du processus de se terminer

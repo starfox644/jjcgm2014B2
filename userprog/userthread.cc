@@ -155,7 +155,8 @@ int do_UserThreadJoin(int tid, int addrUser)
  */
 void do_UserThreadExit(int status)
 {
-	if(!currentThread->isMainThread())
+	// main thread or another thread has called exit
+	if(!currentThread->isMainThread() || currentProcess->threadWaiting)
 	{
 		s_createProcess->P();
 		AddrSpace* space = currentProcess->getAddrSpace();
@@ -165,11 +166,13 @@ void do_UserThreadExit(int status)
 		// remove the thread in the process
 		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
-		if(currentProcess->mainIsWaiting)
+		if(currentProcess->threadWaiting)
 			space->s_exit->V();
 		// save the return status of the thread if another calls UserThreadJoin
 		currentThread->setThreadReturn(status);
 		currentProcess->threadManager->s_nbThreads->V();
+		currentThread->s_join->V();
+		// release the semaphore for threads which are waiting the end
 	    s_createProcess->V();
 		// terminates this thread
 		currentThread->Finish();
