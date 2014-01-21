@@ -52,6 +52,9 @@
 #define SC_ArgStart 29
 #define SC_ArgArg 30
 #define SC_ArgEnd 31
+#define SC_GetListProcess 32
+#define SC_GetNbProcess 33
+
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -253,6 +256,15 @@ int Unmap();
  */
 void arg_start();
 int arg_arg();
+/*
+ * renvoi le nombre de processus système en cours
+ */
+int GetNbProcess();
+
+/*
+ * renvoi la liste des processus créé
+ */
+int* GetListProcess(int*);
 
 #endif // CHANGED
 

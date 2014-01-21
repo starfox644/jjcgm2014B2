@@ -8,6 +8,7 @@
 
 #include "eval.h"
 
+
 void evalLine(char* cmdLine){
 	int newProc, error;
 	//tableau d'argument
@@ -57,14 +58,10 @@ int commandIntegre(char **argv){
 		afficherJobs();
 		return 0;
 	}
-	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
-		PutString("Non implémenté :D\n");
-		return 0;
-	}
-	if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
-		PutString("Non implémenté :D\n");
-		return 0;
-	}
+	if(StrCmp(argv[0],"ps") == 1){// on fait l'affichage des processus actif
+			afficherProcess();
+			return 0;
+		}
 	if(StrCmp(argv[0],"help") == 1){//on affiche l'aide de notre shell
 		Printf("Bienvenue dans l'aide de NachOS_Shell\n\n",0);
 		Printf("-Pour afficher les programmes en cours tapez :",0);
@@ -81,6 +78,37 @@ int commandIntegre(char **argv){
 
 
 	}
+	/* utile pour lorsqu'il y aura le fileSys*/
+	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
+			PutString("Non implémenté :D\n");
+			return 0;
+		}
+		if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
+			PutString("Non implémenté :D\n");
+			return 0;
+		}
 	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
+}
+
+void afficherProcess(){
+	int *liste_Process;
+	int nbProcessus = GetNbProcess(), i = 0 ;
+	int compteur = 0;
+	//on alloue la mémoire et on recupere la liste des processus
+	liste_Process = (int*) malloc((nbProcessus * 100) * sizeof(int));
+	if(liste_Process == 0){
+		Printf("arf\n",0);
+	}
+	liste_Process = GetListProcess(liste_Process);
+	//on réalise l'affichage
+	Printf("Liste des processus sytème\n",0);
+	while(compteur < nbProcessus){ //pour chaque processus faire
+		Printf("Pid du processus : %d",(void*)liste_Process[i]);
+		i++;
+		Printf("\t\t Etat : %d\n",(void*)liste_Process[i]);
+		i++;
+		compteur++;
+	}
+	return;
 }

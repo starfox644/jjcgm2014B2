@@ -1,3 +1,4 @@
+#ifdef CHANGED
 #ifdef step4
 #include "addrSpaceAllocator.h"
 #include "copyright.h"
@@ -50,18 +51,18 @@ void AddrSpaceAllocator::printFreeList()
 	struct space* actu = freeHead;
 	if (actu == NULL)
 	{
-		printf("La liste des bloc libre est vide\n");
+		Printf("La liste des bloc libre est vide\n");
 	}
 	else
 	{
-		printf("Contenu de la liste des blocs libres : \n ");
+		Printf("Contenu de la liste des blocs libres : \n ");
 		while (actu != NULL)
 		{
-			printf("(addr = %d, length = %d)  " , actu->addr, actu->length);
+			Printf("(addr = %d, length = %d)  " , actu->addr, actu->length);
 			actu = actu->next;
 		}
 	}
-	printf("\n\n");
+	Printf("\n\n");
 }
 
 /*
@@ -72,18 +73,18 @@ void AddrSpaceAllocator::printBusyList()
 	struct space* actu = busyHead;
 	if (actu == NULL)
 	{
-		printf("La liste des bloc occupes est vide\n");
+		Printf("La liste des bloc occupes est vide\n");
 	}
 	else
 	{
-		printf("Contenu de la liste des blocs occupes : \n ");
+		Printf("Contenu de la liste des blocs occupes : \n ");
 		while (actu != NULL)
 		{
-			printf("(addr = %d, length = %d, fp = %d)  \n" , actu->addr, actu->length, actu->forbiddenPage);
+			Printf("(addr = %d, length = %d, fp = %d)  \n" , actu->addr, actu->length, actu->forbiddenPage);
 			actu = actu->next;
 		}
 	}
-	printf("\n\n");
+	Printf("\n\n");
 }
 
 /*
@@ -271,7 +272,7 @@ struct space* AddrSpaceAllocator::removeBusySpace(int addr)
 	// si la liste est vide ou que l'element n'est pas present dans la liste
 	if(actu == NULL || actu->addr != addr)
 	{
-		printf("Bloc d'adresse %d pas trouve\n", addr);
+		Printf("Bloc d'adresse %d pas trouve\n", addr);
 		return NULL;
 	}
 	else if (actu != NULL && actu == busyHead && actu->addr < addr)
@@ -499,11 +500,11 @@ int AddrSpaceAllocator::free(int addr)
 		}
 		else
 		{
-			//printf("erreur de unmap dans addrSpaceAllocator\n");
 			ASSERT(FALSE);
 			s_alloc->V();
 			return -1;
 		}
 	}
 }
-#endif
+#endif // step 4
+#endif // CHANGED

@@ -1,5 +1,6 @@
 #ifdef CHANGED
 
+//class SynchConsole;
 /**
  * 	Execute l'appel systeme Exit.
  */

@@ -290,6 +290,13 @@ Unmap:
 	j	$31
 	.end Unmap
 
+	.globl GetListProcess
+	.ent	GetListProcess
+GetListProcess:
+	addiu $2,$0,SC_GetListProcess
+	syscall
+	j	$31
+	.end GetListProcess
 
 	.globl arg_start
 	.ent	arg_start
@@ -314,6 +321,14 @@ arg_end:
 	syscall
 	j	$31
 	.end arg_end
+
+	.globl GetNbProcess
+	.ent	GetNbProcess
+GetNbProcess:
+	addiu $2,$0,SC_GetNbProcess
+	syscall
+	j	$31
+	.end GetNbProcess
 
 #endif /*CHANGED*/
 
