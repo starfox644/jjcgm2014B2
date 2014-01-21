@@ -50,7 +50,7 @@ void do_exit(int returnCode)
 
 		// stop the program
 		s_createProcess->V();
-		currentProcess->semProc->V();
+//		currentProcess->semProc->V();
 		interrupt->Halt ();
 	}
 #else

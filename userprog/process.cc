@@ -90,7 +90,6 @@ void UserStartProcess (int adr)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
 	currentProcess->processRunning = true;
-	currentProcess->semProc->P();
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
@@ -200,7 +199,6 @@ StartProcess (char *filename)
 	process->setPid(processManager->getNextPid());
 	processManager->addAddrProcess(currentProcess);
 	currentProcess->processRunning = true;
-	currentProcess->semProc->P();
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
@@ -238,7 +236,7 @@ Process::Process()
 	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
-	semProc = new Semaphore("semaphore processus", 1);
+	semProc = new Semaphore("semaphore processus", 0);
 
 }
 
@@ -276,6 +274,8 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
+	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
+	currentProcess->semProc->V();
 	delete addrSpace;
 	threadManager->deleteThreads();
 	delete threadManager;
@@ -316,6 +316,7 @@ void Process::killProcess()
 		++it;
 	}
 	freeAddrSpace();
+
 	if(scheduler->isReadyListEmpty())
 	{
 		interrupt->Halt();
