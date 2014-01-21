@@ -11,17 +11,19 @@
  */
 void afficherProcess(){
 	int *liste_Process;
-	int nbProcessus = GetNbProcessTotal(), i = 0 ;
+	int nbProcessus = GetNbProcessTotal()+1, i = 0 ;
 	int compteur = 0;
 	//on alloue la mémoire et on recupere la liste des processus
 	liste_Process = (int*) malloc(nbProcessus * (3 * sizeof(int)));
 	if(liste_Process == 0){
-		Printf("arf\n",0);
+		Printf("Liste vide.\n");
+		free(liste_Process);
+		return;
 	}
 	liste_Process = GetListProcess(liste_Process);
 	//on réalise l'affichage
 	Printf("Liste des processus sytème\n",0);
-	while(compteur < nbProcessus){ //pour chaque processus faire
+	while(compteur < (nbProcessus-1)){ //pour chaque processus faire
 		Printf("Pid du processus : %d",(void*)liste_Process[i]);
 		i++;
 		Printf("\t\t Etat : %d\n",(void*)liste_Process[i]);
