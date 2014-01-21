@@ -342,6 +342,7 @@ AddrSpace::~AddrSpace ()
 {
 #ifdef step4
 	unsigned int i;
+
 	DEBUG(',', "FINAL RELEASE\n");
 	//release physical pages
 	for (i = 0; i < numPages; i++)
@@ -648,9 +649,7 @@ void AddrSpace::printMapping(unsigned int max)
 	unsigned int i;
 	for(i = 0 ; i < max && i < numPages ; i++)
 	{
-#ifdef CHANGED
 		Printf("virtual : %i physique : %i\n", i, pageTable[i].physicalPage);
-#endif //CHANGED
 	}
 }
 
@@ -666,7 +665,11 @@ int AddrSpace::mmap(int length)
 
 int AddrSpace::unmap(int addr)
 {
-	return addrSpaceAllocator->free(addr);
+	// address must be aligned
+	if(addr % PageSize != 0)
+		return -1;
+	else
+		return addrSpaceAllocator->free(addr);
 }
 
 #endif // step4

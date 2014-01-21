@@ -101,9 +101,7 @@ int SynchConsole::SynchGetString(char *s, int n)
 
 		// wait for character to arrive
 		readAvail->P ();
-		if(i >= (int)strlen(s)){//plus de caratère entré que la taille allouée au char*
-				return -1;
-		}
+
 		ch = console->GetChar ();
 
 		if (ch != EOF)

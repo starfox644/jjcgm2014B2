@@ -134,14 +134,13 @@ class AddrSpace
     /**
      *  Allocate length bytes in the virtual memory.
      *  The address is chosen by the addrSpaceAllocator.
-     *  Return -1 in cas of failure, else the address of the mapping.
+     *  Return -1 in case of failure, else the address of the mapping.
      */
     int mmap(int length);
 
     /**
      * 	Free the memory allocated at the given address.
-     * 	Return -1 if the address wasn't allocated.
-     *
+     * 	Return -1 if the address wasn't allocated else 0.
      */
     int unmap(int addr);
 

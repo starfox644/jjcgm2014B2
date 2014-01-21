@@ -314,7 +314,8 @@ void Process::setPid(int newPid)
  */
 void Process::killProcess()
 {
-	interrupt->SetLevel (IntOff);
+	//interrupt->SetLevel (IntOff);
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
 	while (it != threadManager->l_threads.end())
@@ -329,6 +330,8 @@ void Process::killProcess()
 	}
 	else
 	{
+		(void) interrupt->SetLevel (oldLevel);
+		//interrupt->Halt();
 		currentThread->Finish();
 	}
 
