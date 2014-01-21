@@ -245,10 +245,11 @@ main (int argc, char **argv)
 			argCount = 2;
 		}
 #endif // CHANGED
-
+#ifdef CHANGED
 		if(!strcmp(*argv,"-co")){
 			testCond();
 		}
+#endif// CHANGED
 #endif // NETWORK
 	}
 

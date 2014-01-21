@@ -153,14 +153,12 @@ void Lock::Release ()
 		printf("[Lock::Release] Erreur - Ce lock n'est pas pris par le thread courant.\n");
 #endif
 }
-
+#ifdef CHANGED
 bool Lock::isHeldByCurrentThread ()
 {
-#ifdef CHANGED
-	return holder == currentThread;
-#endif
+	return holder == (currentThread);
 }
-
+#endif
 Condition::Condition (const char *debugName)
 {
 	name = debugName;
@@ -178,8 +176,10 @@ Condition::~Condition ()
 #endif
 }
 
+
 void Condition::Wait (Lock * conditionLock)
 {
+#ifdef CHANGED
 #ifdef NETWORK
 	if (conditionLock->isHeldByCurrentThread())
 	{
@@ -202,10 +202,12 @@ void Condition::Wait (Lock * conditionLock)
 		Exit(-1);
 	}
 #endif//network
+#endif //changed
 }
 
 void Condition::Signal (Lock * conditionLock)
 {
+#ifdef CHANGED
 #ifdef NETWORK
 	if (conditionLock->isHeldByCurrentThread())
 	{
@@ -226,10 +228,12 @@ void Condition::Signal (Lock * conditionLock)
 		Exit(-1);
 	}
 #endif //network
+#endif //changed
 }
 
 void Condition::Broadcast (Lock * conditionLock)
 {
+#ifdef CHANGED
 #ifdef NETWORK
 	if (conditionLock->isHeldByCurrentThread())
 	{
@@ -248,5 +252,6 @@ void Condition::Broadcast (Lock * conditionLock)
 		printf("[Condition::Signal] Erreur - Ce lock n'est pas pris par le thread courant.\n");
 		Exit(-1);
 	}
-#endif
+#endif//network
+#endif//changed
 }

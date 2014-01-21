@@ -48,7 +48,9 @@ MailTest(int farAddr)
 		// To: destination machine, mailbox 0
 		// From: our machine, reply to: mailbox 1
 		outPktHdr.to = farAddr;
+#ifdef CHANGED
 		outPktHdr.from = postOffice->getNetAddr();
+#endif
 		outMailHdr.to = 0;
 		outMailHdr.from = 1;
 		outMailHdr.length = strlen(data) + 1;

@@ -11,7 +11,7 @@
 #include "../nachos_libc/Printf.h"
 //variable
 
-//fonction
+//fonctioner
 /*
  * Fonction permettant d'initialiser la socket
  * Retourne l'identifiant de la socket
@@ -38,5 +38,16 @@ int envoyerMessage(sock_t,char*);
  * retourne -1 si cela echoue
  */
 int recevoirMessage(sock_t,char*);
+
+/*
+ * permet d'envoyer un message en étant sur qu'il soit bien arrivé
+ * ou alors affiche un message pour dire qu'il n'est pas arrivé
+ */
+int envoyerMessageSecurise(sock_t,char*);
+
+/*
+ * permet de recevoir un message et d'envoyer une confirmation de la reception
+ */
+int recevoirMessageSecurise(sock_t,char*);
 
 #endif /* INET_H_ */
