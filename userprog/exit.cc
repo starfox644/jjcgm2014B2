@@ -14,6 +14,10 @@
  */
 void do_exit(int returnCode)
 {
+#ifdef step4
+	IntStatus oldLevel = interrupt->SetLevel (IntOff); /*****************************************/
+#endif
+	Printf("Tentative exit pid = %d name = %s\n", currentProcess->getPid(), currentThread->getName());
 	s_createProcess->P();
 	AddrSpace *space = currentProcess->getAddrSpace();
 	currentProcess->threadManager->s_nbThreads->P();
@@ -39,20 +43,24 @@ void do_exit(int returnCode)
 	// currentThread isn't the last main thread
 	if (getNbProcess() > 1)
 	{
+		Printf("[do_exit] Pas le dernier thread\n");
 		removeProcess();
 		processManager->removeAddrProcess(currentProcess);
 		s_createProcess->V();
 		currentProcess->semProc->V();
+		(void) interrupt->SetLevel (oldLevel);/*****************************************/
 		currentThread->Finish();
 	}
 	else // the current thread is the last thread
 	{
+		Printf("[do_exit] Dernier thread\n");
 		removeProcess();
 		processManager->removeAddrProcess(currentProcess);
 
 		// stop the program
 		s_createProcess->V();
 		currentProcess->semProc->V();
+		(void) interrupt->SetLevel (oldLevel);/*****************************************/
 		interrupt->Halt ();
 	}
 #else
