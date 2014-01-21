@@ -226,7 +226,9 @@ Initialize (int argc, char **argv)
 void
 Cleanup ()
 {
-	printf ("\nCleaning up...\n");
+#ifdef CHANGED
+	Printf ("\nCleaning up...\n");
+#endif
 #ifdef step4
 	delete processManager;
 	delete frameProvider;

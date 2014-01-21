@@ -32,6 +32,8 @@
 #include "machine.h"
 #include "processManager.h"
 #include "addrSpaceAllocator.h"
+#include "arguments.h"
+#include "synchconsole.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -142,15 +144,19 @@ ExceptionHandler (ExceptionType which)
 				{
 					// allocation successfull
 					n = synchconsole->SynchGetString(dynBuffer, maxSize);
-					if (copyStringToMachine(dynBuffer, adr))
-					{
-						// writes the number of characters read in return register
-						machine->WriteRegister(2, n);
-					}
-					else
-					{
-						// copy error, writes -1 in return register
+					if(n == -1){
 						machine->WriteRegister(2, -1);
+					}else{
+						if (copyStringToMachine(dynBuffer, adr))
+						{
+							// writes the number of characters read in return register
+							machine->WriteRegister(2, n);
+						}
+						else
+						{
+							// copy error, writes -1 in return register
+							machine->WriteRegister(2, -1);
+						}
 					}
 					delete dynBuffer;
 				}
@@ -279,6 +285,26 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
+			case SC_ArgStart:
+				int m, o;
+				m = machine->ReadRegister(5);
+				n = machine->ReadRegister(6);
+				o = machine->ReadRegister(7);
+				do_arg_start(m, n, o);
+				break;
+			case SC_ArgArg:
+				n = do_arg_arg();
+				machine->WriteRegister(2, n);
+				break;
+			case SC_GetNbProcess:
+				machine->WriteRegister(2,processManager->getNbProcess());
+				break;
+
+			case SC_GetListProcess:
+				n = machine->ReadRegister(4);
+				machine->WriteRegister(2, processManager->getListProcess(n));
+				break;
+
 #endif // STEP4
 
 			case SC_Exit:
@@ -289,20 +315,22 @@ ExceptionHandler (ExceptionType which)
 
 
 			default: {
-				printf ("Unexpected user mode exception (%d:", which);
+#ifdef CHANGED
+				Printf ("Unexpected user mode exception (%d:", which);
 				// Print the exception name for practical purpose
 				switch (which) {
-				case SyscallException: 		printf("SyscallException "); 		break;
-				case PageFaultException:	printf("PageFaultException ");		break;
-				case ReadOnlyException: 	printf("ReadOnlyException "); 		break;
-				case BusErrorException: 	printf("BusErrorException "); 		break;
-				case AddressErrorException: printf("AddressErrorException "); 	break;
-				case OverflowException: 	printf("OverflowException "); 		break;
-				case IllegalInstrException: printf("IllegalInstrException "); 	break;
-				default: 					printf("Unknown "); 				break;
+				case SyscallException: 		Printf("SyscallException "); 		break;
+				case PageFaultException:	Printf("PageFaultException ");		break;
+				case ReadOnlyException: 	Printf("ReadOnlyException "); 		break;
+				case BusErrorException: 	Printf("BusErrorException "); 		break;
+				case AddressErrorException: Printf("AddressErrorException "); 	break;
+				case OverflowException: 	Printf("OverflowException "); 		break;
+				case IllegalInstrException: Printf("IllegalInstrException "); 	break;
+				default: 					Printf("Unknown "); 				break;
 				}
-				printf("type:%d)\n", type);
+				Printf("type:%d)\n", type);
 				ASSERT (FALSE);
+#endif	//CHANGED
 			}
 		}
 		currentThread->setIsSyscall(false);
@@ -321,47 +349,49 @@ ExceptionHandler (ExceptionType which)
 #endif // CHANGED
 	else
 	{
-		//printf ("Unexpected user mode exception (%d:", which);
 				// Print the exception name for practical purpose
-		switch (which) {
-		#ifdef step4
-				case PageFaultException:
-					// address of the user's stack pointer
-					adr = machine->ReadRegister(StackReg);
-					// if is in stack => Stzck overflow
-					if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
-					{
-						printf("STACK OVERFLOW !!\n");
-					}
-					else
-					{
-						printf("PageFaultException ");
-					}
-					break;
-		#else
-				printf ("Unexpected user mode exception (%d:", which);
-				case PageFaultException:	printf("PageFaultException ");		break;
-		#endif // step4
-				printf ("Unexpected user mode exception (%d:", which);
-				case SyscallException: 		printf("SyscallException "); 		break;
-				case ReadOnlyException: 	printf("ReadOnlyException "); 		break;
-				case BusErrorException: 	printf("BusErrorException "); 		break;
-				case AddressErrorException: printf("AddressErrorException "); 	break;
-				case OverflowException: 	printf("OverflowException "); 		break;
-				case IllegalInstrException: printf("IllegalInstrException "); 	break;
-				default: 					printf("Unknown "); 				break;
-				}
-#ifndef step4
-				printf("type:%d)\n", type);
-#endif
 #ifdef CHANGED
-				currentProcess->killProcess();
-#endif
-			}
-			// End of addition
-		#ifndef CHANGED
-			UpdatePC ();
-		#endif
+		switch (which)
+		{
+#ifdef step4
+			case PageFaultException:
+				// address of the user's stack pointer
+				adr = machine->ReadRegister(StackReg);
+				// if is in stack => Stzck overflow
+				if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
+				{
+					Printf("STACK OVERFLOW !!\n");
+				}
+				else
+				{
+					Printf("PageFaultException ");
+				}
+				break;
+#else
+			Printf ("Unexpected user mode exception (%d:", which);
+			case PageFaultException:	Printf("PageFaultException ");		break;
+#endif // step4
 
-
+			Printf ("Unexpected user mode exception (%d:", which);
+			case SyscallException: 		Printf("SyscallException "); 		break;
+			case ReadOnlyException: 	Printf("ReadOnlyException "); 		break;
+			case BusErrorException: 	Printf("BusErrorException "); 		break;
+			case AddressErrorException: Printf("AddressErrorException "); 	break;
+			case OverflowException: 	Printf("OverflowException "); 		break;
+			case IllegalInstrException: Printf("IllegalInstrException "); 	break;
+			default: 					Printf("Unknown "); 				break;
 		}
+#endif //CHANGED
+
+#ifdef CHANGED
+#ifndef step4
+		Printf("type:%d)\n", type);
+#endif // step4
+		currentProcess->killProcess();
+#endif //CHANGED
+
+	} // fin else
+#ifndef CHANGED
+	UpdatePC ();
+#endif
+}

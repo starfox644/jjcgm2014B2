@@ -5,6 +5,7 @@
 #include "synchconsole.h"
 #include "synch.h"
 
+
 static Semaphore *readAvail;
 
 static Semaphore *writeDone;
@@ -54,9 +55,9 @@ void SynchConsole::SynchPutChar(const char ch)
  */
 int SynchConsole::SynchGetChar()
 {
+	semRead->P ();
 	int ch;
 
-	semRead->P ();
 
 	readAvail->P ();		// wait for character to arrive
 	ch = console->GetChar ();
@@ -71,9 +72,8 @@ int SynchConsole::SynchGetChar()
  */
 int SynchConsole::SynchPutString(const char s[])
 {
-	int i = 0;
-
 	semWrite->P ();
+	int i = 0;
 
 	// on traite chaque caractere jusqu'au caractere '\0'
 	while (s[i] != '\0') {
@@ -101,6 +101,7 @@ int SynchConsole::SynchGetString(char *s, int n)
 
 		// wait for character to arrive
 		readAvail->P ();
+
 		ch = console->GetChar ();
 
 		if (ch != EOF)
@@ -109,6 +110,10 @@ int SynchConsole::SynchGetString(char *s, int n)
 			i++;
 		}
 	}
+	if(i > n){//plus de caractère entré que le max demandé
+		return -1;
+	}
+
 	s[i] = '\0';
 
 	semRead->V ();
@@ -168,5 +173,4 @@ bool copyStringToMachine(char* from, int to)
 	return err;
 }
 
-
-#endif // CHANGED
+#endif // CHANGED*

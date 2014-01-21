@@ -37,6 +37,15 @@ class ProcessManager{
 		**/
 		int waitPid(int processPid);
 
+		/*
+		 * Fonction permettant de renvoyer le nombre de processus systeme en cours
+		 */
+		int getNbProcess();
+		/*
+		 * fonction permettant de retourner la list des processus
+		 */
+		int getListProcess(int);
+
 	private:
 		int nextPid;		// numero du prochain processus a creer
 

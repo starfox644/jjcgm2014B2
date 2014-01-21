@@ -47,7 +47,7 @@ int do_forkExec(int adrExec)
 	t = new Thread("ThreadForkExec");
 	if(t == NULL)
 	{
-		printf("[ForkExec] Erreur creation thread\n");
+		Printf("[ForkExec] Erreur creation thread\n");
 		// relachement de la section critique de creation
 		s_createProcess->V();
 		return -1;
@@ -67,7 +67,8 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
-			printf("[ForkExec] Erreur allocation process space\n");
+
+			//printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
 			// relachement de la section critique de creation
@@ -132,7 +133,7 @@ int allocateProcessSpace (Thread *t, char *filename)
 
 	if (executable == NULL)
 	{
-		printf ("Unable to open file %s\n", filename);
+		Printf ("Unable to open file %s\n", filename);
 		return -1;
 	}
 	Process* process = NULL;
@@ -171,8 +172,9 @@ StartProcess (char *filename)
 	OpenFile *executable = fileSystem->Open (filename);
 	if (executable == NULL)
 	{
+
 		printf ("Unable to open file %s\n", filename);
-		Exit(-1);
+		return -1;
 	}
 
 	Process* process = NULL;
@@ -277,6 +279,7 @@ void Process::freeAddrSpace()
 	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
 	currentProcess->semProc->V();
 	delete addrSpace;
+	Printf("apres delete addrSpace\n");
 	threadManager->deleteThreads();
 	delete threadManager;
 	delete semManager;
@@ -307,7 +310,10 @@ void Process::setPid(int newPid)
  */
 void Process::killProcess()
 {
-	interrupt->SetLevel (IntOff);
+	//interrupt->SetLevel (IntOff);
+
+	Printf("Debut KillPorcess\n");
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
 	while (it != threadManager->l_threads.end())
@@ -315,14 +321,23 @@ void Process::killProcess()
 		scheduler->RemoveTid((*it)->tid);
 		++it;
 	}
+	Printf("apres boucle\n");
 	freeAddrSpace();
+<<<<<<< HEAD
 
+=======
+	Printf("apres freeAddrSpace\n");
+>>>>>>> 8af961c93aef005ee8c9928c548aaee417d2a543
 	if(scheduler->isReadyListEmpty())
 	{
+		Printf("La liste est vide\n");
 		interrupt->Halt();
 	}
 	else
 	{
+		Printf("avant finish\n");
+		(void) interrupt->SetLevel (oldLevel);
+		//interrupt->Halt();
 		currentThread->Finish();
 	}
 

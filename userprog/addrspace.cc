@@ -362,6 +362,7 @@ AddrSpace::~AddrSpace ()
 {
 #ifdef step4
 	unsigned int i;
+
 	DEBUG(',', "FINAL RELEASE\n");
 	//release physical pages
 	for (i = 0; i < numPages; i++)
@@ -669,7 +670,9 @@ void AddrSpace::printMapping(unsigned int max)
 	unsigned int i;
 	for(i = 0 ; i < max && i < numPages ; i++)
 	{
-		printf("virtual : %i physique : %i\n", i, pageTable[i].physicalPage);
+#ifdef CHANGED
+		Printf("virtual : %i physique : %i\n", i, pageTable[i].physicalPage);
+#endif //CHANGED
 	}
 }
 

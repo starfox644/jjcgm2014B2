@@ -18,5 +18,9 @@
 //fonction
 void evalLine(char*);
 int commandIntegre(char**);
+/*
+ * fonction permettant d'afficher les processus systeme en cours
+ */
+void afficherProcess();
 
 #endif
