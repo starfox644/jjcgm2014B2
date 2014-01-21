@@ -34,7 +34,6 @@
 // the first thread has 0 as tid
 int Thread::nextTid = 1;
 
-
 #ifdef countNew
 int Thread::nbNewThread = 0;
 int Thread::nbThreadsCreated = 0;
@@ -239,7 +238,7 @@ Thread::Finish ()
 	}
 
 	if (currentProcess == NULL) {
-		printf("currentProcess == NULL, exit\n");
+		Printf("currentProcess == NULL, exit\n");
 		Exit(0);
 	}
 
@@ -299,7 +298,6 @@ Thread::Yield ()
 	nextThread = scheduler->FindNextToRun ();
 	if (nextThread != NULL)
 	{
-		//printf("\n\n\n\nYield  : NextThread != NULL\n");
 		scheduler->ReadyToRun (this);
 		scheduler->Run (nextThread);
 	}

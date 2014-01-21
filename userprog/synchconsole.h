@@ -10,6 +10,11 @@
 #include "console.h"
 #include "synch.h"
 
+#define Printf(args...) \
+	synchconsole->semWrite->P(); \
+    printf(args); \
+    synchconsole->semWrite->V(); \
+
 class SynchConsole {
 public:
 	SynchConsole(char *readFile, char *writeFile);
@@ -30,11 +35,10 @@ public:
 	 */
 	int SynchPutInt(int n);
 
-
-private:
-	Console *console;
 	Semaphore *semRead;
 	Semaphore *semWrite;
+private:
+	Console *console;
 };
 
 /**
