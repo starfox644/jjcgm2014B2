@@ -75,7 +75,7 @@ int ProcessManager::waitPid(int processPid){
 		sem_Wait->V();
 		return -1;
 	}
-	// Si le process est deja attendu TODO : a tester, on ne peut pas pour l'instant
+	// Si le process est deja attendu
 	else if ((*it)->getEstAttendu())
 	{
 //		Printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
@@ -89,9 +89,7 @@ int ProcessManager::waitPid(int processPid){
 		(*it)->semProc->P();
 		int procPid = (*it)->getPid(); 				// Recup PID pour le renvoyer
 		(*it)->semProc->V();
-		sem_Wait->P();
-		l_process.erase(it); 					// On supprime le processus de la liste
-		sem_Wait->V();
+		(*it)->setEstAttendu(false);
 
 		// On libere la ressource
 		return procPid;

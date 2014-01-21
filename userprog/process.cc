@@ -67,7 +67,6 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
-
 			//printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
@@ -91,7 +90,6 @@ void UserStartProcess (int adr)
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
 	currentProcess->processRunning = true;
-	currentProcess->semProc->P();
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
@@ -202,7 +200,6 @@ StartProcess (char *filename)
 	process->setPid(processManager->getNextPid());
 	processManager->addAddrProcess(currentProcess);
 	currentProcess->processRunning = true;
-	currentProcess->semProc->P();
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
@@ -240,7 +237,7 @@ Process::Process()
 	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
-	semProc = new Semaphore("semaphore processus", 1);
+	semProc = new Semaphore("semaphore processus", 0);
 
 }
 
@@ -278,8 +275,9 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
-	//s_createProcess->P();	/*****************************************/
 	Printf("Dans free addrSpace\n");
+	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
+	currentProcess->semProc->V();
 	delete addrSpace;
 	Printf("apres delete addrSpace\n");
 	threadManager->deleteThreads();
@@ -316,7 +314,7 @@ void Process::setPid(int newPid)
 void Process::killProcess()
 {
 
-	IntStatus oldLevel = interrupt->SetLevel (IntOff);
+	interrupt->SetLevel (IntOff);
 	Printf("Debut KillPorcess pid = %d\n", pid);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
@@ -327,11 +325,11 @@ void Process::killProcess()
 	}
 	//Printf("apres boucle\n");
 	freeAddrSpace();
-	Printf("apres freeAddrSpace\n");
+
 	if(scheduler->isReadyListEmpty())
 	{
 		Printf("La liste est vide\n");
-		(void) interrupt->SetLevel (oldLevel);
+		//(void) interrupt->SetLevel (oldLevel);
 		interrupt->Halt();
 	}
 	else
