@@ -563,6 +563,11 @@ int Thread::getTid()
 	}
 }
 
+void Thread::Print ()
+{
+	Printf ("%s, ", name);
+}
+
 #endif
 #endif
 
