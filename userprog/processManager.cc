@@ -126,21 +126,17 @@ int ProcessManager::getNextPid()
  */
 int ProcessManager::getListProcess(int ListeProc){
 
-	int i = 0;
 	int ecart = 0;
 	sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
 
 	while (it != l_process.end()){
-		machine->WriteMem(ListeProc + i + ecart,sizeof(int),(*it)->getPid());
+		machine->WriteMem(ListeProc + ecart,sizeof(int),(*it)->getPid());
 		ecart = ecart + sizeof(int);
-		machine->WriteMem(ListeProc + i + ecart ,sizeof(int), (*it)->processRunning);
-		 ecart = ecart + sizeof(int);
 		it++;
 	}
 	ecart = ecart + sizeof(int);
-	machine->WriteMem(ListeProc + i + ecart,sizeof(int), -1);
 	sem_Wait->V();
 	return ListeProc;
 }
