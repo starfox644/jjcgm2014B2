@@ -27,6 +27,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testJoinThreadDejaFini : \n");
+	PutString("Cree 2 thread, attend le 1er puis le 2e, qui est deja fini a ce moment la.\n");
+	PutString("-----------------------------------------\n");
 	int tidf, tidg;
 	int th_ret;
 	tidg = UserThreadCreate(g, 0);

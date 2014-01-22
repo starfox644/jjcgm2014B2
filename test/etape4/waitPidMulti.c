@@ -8,8 +8,11 @@
 #define NB_PROCESS 4
 
 int main(){
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test waitPidMulti : \n");
+	PutString("Lance plusieurs processus et atttend leur terminaison.\n");
+	PutString("-----------------------------------------\n");
 	int pid[NB_PROCESS], error, i;
-	PutString("Lancement du programme de test waitPidMulti\n");
 
 	for(i = 0; i < NB_PROCESS; i++)
 	{

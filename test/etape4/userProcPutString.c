@@ -10,6 +10,10 @@
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test userProcPutString : \n");
+	PutString("Cree un processus qui affiche une chaine de caractere.\n");
+	PutString("-----------------------------------------\n");
 	int pid = 0;
 	PutString("\n");
 	PutString("Lancement de putstring\n");

@@ -33,6 +33,11 @@ void consommateur ()
 
 int main ()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test semBasique : \n");
+	PutString("Cree des threads prod/conso et demande une chaine dans le prod.\n");
+	PutString("Le conso prend le meme semaphore et attend donc qu'un chaine soit rentree.\n");
+	PutString("-----------------------------------------\n");
 	int error;
 	PutString("Initialisation des semaphores\n");
 	if ((error = SemInit(&mutex, 1)) == -1)

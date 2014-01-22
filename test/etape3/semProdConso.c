@@ -66,6 +66,11 @@ void consommateur ()
 
 int main ()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test semProdConso : \n");
+	PutString("Les prod/conso font des acces concurrentiels a un buffer.\n");
+	PutString("Le prod y ajoute des char et le conso les retire pour les afficher.\n");
+	PutString("-----------------------------------------\n");
 	int error;
 	nbElem = 0;
 	ite = 0;

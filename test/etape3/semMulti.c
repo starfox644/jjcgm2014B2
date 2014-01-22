@@ -69,6 +69,10 @@ void consommateur3 ()
 
 int main ()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test semMulti : \n");
+	PutString("Cree 3 paires de threads prod/conso qui attendent une chaine sur leurs semaphores propres.\n");
+	PutString("-----------------------------------------\n");
 	int error;
 	PutString("Initialisation des semaphores\n");
 	if ((error = SemInit(&mutex1, 1)) == -1 || (error = SemInit(&mutex2, 1)) == -1 || (error = SemInit(&mutex3, 1)) == -1)

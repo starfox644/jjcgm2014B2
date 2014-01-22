@@ -26,15 +26,19 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testGetCharMultiThread : \n");
+	PutString("Affiche plusieurs caracteres sur 2 threads differents pour tester la synchro\n");
+	PutString("-----------------------------------------\n");
 	Arg arg;
 	PutChar('1');
 	arg.wait = 1;
 	PutChar('2');
 	PutString("Entrez un caractere :");
 	arg.a = GetChar();
-	PutChar('3');
+	PutChar('1');
 	UserThreadCreate(f, &arg);
-	PutChar('4');
+	PutChar('2');
 	while(arg.wait)
 		PutChar(' ');
 	PutChar('8');

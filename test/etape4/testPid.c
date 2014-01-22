@@ -3,6 +3,10 @@
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testPid : \n");
+	PutString("Cree 5 processus et affiche leur PID.\n");
+	PutString("-----------------------------------------\n");
 	int i;
 	int pid;
 	for(i = 0 ; i  < NB_PROC ; i++)

@@ -11,6 +11,10 @@
 //sem_t sem;
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test userProcMulti : \n");
+	PutString("Lance plusieurs processus qui vont lancer chacun plusieurs threads.\n");
+	PutString("-----------------------------------------\n");
 	int i;
 	/*int error;
 	if((error = SemInit(&sem,1)) == -1)
@@ -18,7 +22,6 @@ int main()
 		return -1;
 	}
 	SemWait(&sem);*/
-	PutString("Lancement du programme de test userProcMulti\n");
 	//SemPost(&sem);
 	for(i = 0; i < MAX_PROC; i++)
 	{

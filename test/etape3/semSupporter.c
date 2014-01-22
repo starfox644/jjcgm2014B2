@@ -27,6 +27,11 @@ void supporter (void *arg) {
 
 int main ()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test semSupporter : \n");
+	PutString("Reprise du TP2 sur la synchro : chaque thread cree affiche un message\n");
+	PutString("qui lui a ete passe en argument de facon synchronisee.\n");
+	PutString("-----------------------------------------\n");
 	int team1 = 3;
 	int team2 = 5;
 	int i ;

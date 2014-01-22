@@ -8,9 +8,12 @@
 #include "syscall.h"
 
 int main(){
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test waitPidAll : \n");
+	PutString("Teste les cas d'executions/erreurs de waitpid.\n");
+	PutString("-----------------------------------------\n");
 	int error;
 	int pid;
-	PutString("Lancement du programme de test waitPidAll\n");
 
 	// On lance le processus a attendre
 	pid = ForkExec("./etape4/progWait");
