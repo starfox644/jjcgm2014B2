@@ -28,6 +28,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testFin : \n");
+	PutString("Teste la terminaison des threads sans appel explicite a UserThreadExit.\n");
+	PutString("-----------------------------------------\n");
 	PutString("Main, Tid : \n");
 	PutInt(GetTid());
 	PutString("\n");

@@ -17,6 +17,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testJoin : \n");
+	PutString("Cree un thread qui affiche une chaine en attendant qu'il se termine\n");
+	PutString("-----------------------------------------\n");
 	int tidf;
 	tidf = UserThreadCreate(f, 0);
 	if(UserThreadJoin(tidf, 0) == -1)

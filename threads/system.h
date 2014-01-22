@@ -47,9 +47,7 @@ extern int nextPid;
 #ifdef step4
 extern FrameProvider *frameProvider; // permet de gerer les cadres
 extern ProcessManager *processManager; //permet de gerer les processus
-// number of process for process.cc
-extern int nbProcess;
-extern Semaphore *s_nbProcess;
+//// number of process for process.cc
 #endif
 #ifdef USER_PROGRAM
 #include "machine.h"
@@ -73,7 +71,7 @@ extern SynchDisk *synchDisk;
 #endif
 
 #ifdef NETWORK
-#include "post.h"
+#include "../network/post.h"
 extern PostOffice *postOffice;
 #endif
 

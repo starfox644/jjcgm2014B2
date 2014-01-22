@@ -7,7 +7,10 @@
 
 int main()
 {
-	ForkExec("./etape4/progSimple");
-	PutString("\nFin de fork exec !\n");
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test forkExecSimple : \n");
+	PutString("affiche \"Hello World !\" dans un autre processus\n");
+	PutString("-----------------------------------------\n");
+	ForkExec("./etape4/prog/progSimple");
 	return 0;
 }

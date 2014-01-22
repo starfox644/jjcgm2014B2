@@ -55,4 +55,9 @@ int SeekFile(int fileDescripteur, int offset,int position);
  */
 int CloseFile(int fileDescripteur);
 
+/*
+ * permet de recuperer le contenu de notre fichier d'apres son id
+ */
+char* getContent(int fileDescripteur);
+
 #endif /* FILE_H_ */

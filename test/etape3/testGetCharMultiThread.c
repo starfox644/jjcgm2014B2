@@ -26,6 +26,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testGetCharMultiThread : \n");
+	PutString("Affiche plusieurs caracteres sur 2 threads differents pour tester la synchro\n");
+	PutString("-----------------------------------------\n");
 	Arg arg;
 	PutChar('1');
 	arg.wait = 1;

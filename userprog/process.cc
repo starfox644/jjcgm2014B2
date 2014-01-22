@@ -57,8 +57,6 @@ int do_forkExec(int adrExec)
 		// test d'allocation du processus
 		if (allocateProcessSpace(t, executable) != -1)
 		{
-			// ajoute 1 au nb de processus en cours
-			addProcess();
 			// creation du thread principal
 			t->Fork(UserStartProcess, 0);
 			// relachement de la section critique de creation
@@ -100,24 +98,6 @@ void UserStartProcess (int adr)
 	ASSERT (FALSE);
 }
 
-void addProcess ()
-{
-	s_nbProcess->P();
-	nbProcess++;
-	s_nbProcess->V();
-}
-
-void removeProcess () {
-	s_nbProcess->P();
-	processManager->removeAddrProcess(currentProcess);
-	nbProcess--;
-	s_nbProcess->V();
-}
-
-int getNbProcess () {
-	return nbProcess;
-}
-
 #endif // step4
 
 /**
@@ -152,7 +132,7 @@ int allocateProcessSpace (Thread *t, char *filename)
 		return -1;
 	}
 	process->setPid(pid);
-	processManager->addAddrProcess(process);
+	processManager->addProcess(process);
 	process->threadManager->s_nbThreads->P();
 	// add the thread to the process
 	process->threadManager->addThread(t);
@@ -200,9 +180,8 @@ StartProcess (char *filename)
 	currentProcess = process;
 #ifdef step4
 	process->setPid(processManager->getNextPid());
-	processManager->addAddrProcess(currentProcess);
+	processManager->addProcess(currentProcess);
 	currentProcess->processRunning = true;
-	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
 	process->threadManager->s_nbThreads->P();
@@ -334,11 +313,10 @@ void Process::killProcess()
 	}
 	else
 	{
-		//(void) interrupt->SetLevel (oldLevel);
 		(void) interrupt->SetLevel (oldLevel);
 		//interrupt->Halt();
 #ifdef step4
-		processManager->removeAddrProcess(currentProcess);
+		processManager->removeProcess(currentProcess);
 #endif
 		currentThread->Finish();
 	}
