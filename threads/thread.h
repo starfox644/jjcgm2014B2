@@ -62,6 +62,10 @@ class Semaphore;
 // WATCH OUT IF THIS ISN'T BIG ENOUGH!!!!!
 #define StackSize	(4 * 1024)	// in words
 
+#ifdef CHANGED
+#define NAME_SIZE 30
+#endif
+
 // Thread state
 enum ThreadStatus
 { JUST_CREATED, RUNNING, READY, BLOCKED };
@@ -144,7 +148,7 @@ public:
 	/**
 	 *	Gives an unique tid for a thread, or -1 if there is not tid available
 	 */
-	static int getTid();
+	static int getNextTid();
 
 	// tid given to the next thread
 	static int nextTid;
@@ -161,7 +165,7 @@ private:
 	// (If NULL, don't deallocate stack)
 	ThreadStatus status;	// ready, running or blocked
 #ifdef CHANGED
-	char name[10];
+	char name[NAME_SIZE];
 #else
 	const char *name;
 #endif
