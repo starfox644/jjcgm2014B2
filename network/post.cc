@@ -286,11 +286,7 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	// concatenate MailHeader and data
 	bcopy(&mailHdr, buffer, sizeof(MailHeader));
 	bcopy(data, buffer + sizeof(MailHeader), mailHdr.length);
-#ifdef CHANGED
-	long long depart,fin;
-	depart = stats->totalTicks;
-	printf("\nDepart : %lli\n",depart);
-#endif
+
 	sendLock->Acquire();   		// only one message can be sent
 	// to the network at any one time
 	network->Send(pktHdr, buffer);
@@ -298,16 +294,7 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	messageSent->P();			// wait for interrupt to tell us
 	// ok to send the next message
 	sendLock->Release();
-#ifdef CHANGED
-	fin = stats->totalTicks;
-	printf("\nFin : %lli\n",fin);
-	/*
-	 * permet de connaitre le nombre de tick que met l'envoi d'un message.
-	 * Par contre pour la conversion c'est plus compliqué, car suivant si l'on est en mode user ou kernel l'avancement en nombre de tick
-	 * n'est pas le meme, il est soit de 1 soit de 10.
-	 */
-	printf("\ndurée de l'envoi : %lli\n",fin - depart);
-#endif
+
 	delete [] buffer;			// we've sent the message, so
 	// we can delete our buffer
 }
