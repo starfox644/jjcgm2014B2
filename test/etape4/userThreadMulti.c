@@ -14,7 +14,7 @@ void f(void* arg)
 	//int i;
 	SemWait(&sem);
 	//i = GetPid();
-	PutString("Lancement du thread pid = ");
+	PutString("Lancement du thread\n");
 	//PutInt(i);
 	PutChar('a');
 	PutChar('b');

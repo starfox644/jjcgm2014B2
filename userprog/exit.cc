@@ -17,8 +17,6 @@ void do_UserThreadExit(int);
 void do_exit(int returnCode)
 {
 	s_createProcess->P();
-
-	//Printf("********Tentative exit pid = %d name = %s\n", currentProcess->getPid(), currentThread->getName());
 #ifdef step3
 	// a thread is waiting, he will do exit
 	if(!currentProcess->threadWaiting)
