@@ -1,9 +1,13 @@
 #include "syscall.h"
 
-
+/*
+ * Dans le main, creation d'un processus executant le programme userThreadMulti
+ * puis d'un thread qui execute f, qui entraine l'erreur "StackOverFlow".
+ * On remarque que le processus (qui execute userThreadMulti), continu a s'executer
+ * alors que l'autre se termine correctement.
+ */
 void f(void *arg)
 {
-	//PutString("Debut f\n");
 	int* i = (int*)arg;
 	int j = *i;
 	if (*i < 200)

@@ -11,18 +11,14 @@ sem_t sem;
 
 void f(void* arg)
 {
-	//int i;
 	SemWait(&sem);
-	//i = GetPid();
 	PutString("Lancement du thread\n");
-	//PutInt(i);
 	PutChar('a');
 	PutChar('b');
 	PutChar('c');
 	PutChar('d');
 	PutChar('\n');
 	SemPost(&sem);
-	//PutString("Fin du thread\n");
 }
 
 int main(){
@@ -42,12 +38,6 @@ int main(){
 		{
 			PutString("Erreur de lancement de thread\n");
 		}
-		/*else
-		{
-			PutString("Lancement ");
-			PutInt(i);
-			PutString("\n");
-		}*/
 	}
 	return 0;
 }

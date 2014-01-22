@@ -47,8 +47,6 @@ int do_UserThreadCreate(int f, int arg)
     		stackAddr = space->popAvailableStackPointer();
 #endif
     		error = (stackAddr == -1);
-    		if(error)
-    			printf("erreur stack\n");
     	}
     }
 
