@@ -84,7 +84,7 @@ int do_forkExec(int adrExec)
  */
 void UserStartProcess (int adr)
 {
-	interrupt->SetLevel(IntOff);
+	IntStatus oldLevel = interrupt->SetLevel(IntOff);
 	// recuperation de l'espace d'adressage du processus
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
@@ -92,6 +92,7 @@ void UserStartProcess (int adr)
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
+	interrupt->SetLevel(oldLevel);
 	// lancement du programme
 	machine->Run ();
 	// on ne revient jamais ici si tout se passe normalement

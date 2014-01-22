@@ -261,13 +261,18 @@ void List::Remove(int tid)
 
 	ListElement *ptr = first;
 	ListElement *ptr_prec = NULL;
-	Thread *th = (Thread*) (first->item);
+	Thread* th = NULL;
+	if(first != NULL)
+		th = (Thread*) (first->item);
 	//Thread *th_prec = NULL;
 	while (ptr != NULL && th->tid != tid)
 	{
 		ptr_prec = ptr;
 		ptr = ptr->next;
-		th = (Thread*) ptr;
+		if(ptr != NULL)
+		{
+			th = (Thread*) ptr->item;
+		}
 	}
 	if (th != NULL && th->tid == tid)
 	{
