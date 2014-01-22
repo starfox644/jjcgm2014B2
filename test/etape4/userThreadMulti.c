@@ -5,14 +5,17 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_THREAD 24
+#define MAX_THREAD 12
 
 sem_t sem;
 
 void f(void* arg)
 {
+	//int i;
 	SemWait(&sem);
-	PutString("Lancement du thread\n");
+	//i = GetPid();
+	PutString("Lancement du thread pid = ");
+	//PutInt(i);
 	PutChar('a');
 	PutChar('b');
 	PutChar('c');
@@ -36,11 +39,16 @@ int main(){
 	{
 		if(UserThreadCreate(f, 0) == -1)
 		{
-
 			//SemWait(&sem);
 			PutString("Erreur de lancement de thread\n");
 			//SemPost(&sem);
 		}
+		/*else
+		{
+			PutString("Lancement ");
+			PutInt(i);
+			PutString("\n");
+		}*/
 	}
 	return 0;
 }

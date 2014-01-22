@@ -313,25 +313,9 @@ ExceptionHandler (ExceptionType which)
 				do_exit(codeErreur);
 				break;
 
-
-			default: {
-#ifdef CHANGED
-				Printf ("Unexpected user mode exception (%d:", which);
-				// Print the exception name for practical purpose
-				switch (which) {
-				case SyscallException: 		Printf("SyscallException "); 		break;
-				case PageFaultException:	Printf("PageFaultException ");		break;
-				case ReadOnlyException: 	Printf("ReadOnlyException "); 		break;
-				case BusErrorException: 	Printf("BusErrorException "); 		break;
-				case AddressErrorException: Printf("AddressErrorException "); 	break;
-				case OverflowException: 	Printf("OverflowException "); 		break;
-				case IllegalInstrException: Printf("IllegalInstrException "); 	break;
-				default: 					Printf("Unknown "); 				break;
-				}
-				Printf("type:%d)\n", type);
-				ASSERT (FALSE);
-#endif	//CHANGED
-			}
+			default:
+				printf("Unknown syscall\n");
+				currentProcess->killProcess();
 		}
 		currentThread->setIsSyscall(false);
 		// LB: Do not forget to increment the pc before returning!
@@ -372,6 +356,7 @@ ExceptionHandler (ExceptionType which)
 #else
 			Printf ("Unexpected user mode exception (%d:", which);
 			case PageFaultException:	Printf("PageFaultException ");		break;
+			ASSERT(FALSE);
 #endif // step4
 
 			Printf ("Unexpected user mode exception (%d:", which);
@@ -386,10 +371,12 @@ ExceptionHandler (ExceptionType which)
 #endif //CHANGED
 
 #ifdef CHANGED
-#ifndef step4
-		Printf("type:%d)\n", type);
-#endif // step4
+#ifdef step4
 		currentProcess->killProcess();
+#else
+		Printf("type:%d)\n", type);
+		ASSERT(FALSE);
+#endif
 #endif //CHANGED
 
 	} // fin else

@@ -84,8 +84,7 @@ int do_forkExec(int adrExec)
  */
 void UserStartProcess (int adr)
 {
-	// intialisation du processus en section critique
-	s_createProcess->P();
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 	// recuperation de l'espace d'adressage du processus
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
@@ -93,8 +92,7 @@ void UserStartProcess (int adr)
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
-	// relachement de section critique
-	s_createProcess->V();
+	(void) interrupt->SetLevel (oldLevel);
 	// lancement du programme
 	machine->Run ();
 	// on ne revient jamais ici si tout se passe normalement
@@ -155,6 +153,10 @@ int allocateProcessSpace (Thread *t, char *filename)
 	}
 	process->setPid(pid);
 	processManager->addAddrProcess(process);
+	process->threadManager->s_nbThreads->P();
+	// add the thread to the process
+	process->threadManager->addThread(t);
+	process->threadManager->s_nbThreads->V();
 #endif
 	delete executable;		// close file
 	return 0;
@@ -203,6 +205,10 @@ StartProcess (char *filename)
 	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
+	process->threadManager->s_nbThreads->P();
+	// add the thread to the process
+	process->threadManager->addThread(currentThread);
+	process->threadManager->s_nbThreads->V();
 	process->getAddrSpace()->InitRegisters ();	// set the initial register values
 	process->getAddrSpace()->RestoreState ();	// load page table register
 	machine->Run ();		// jump to the user progam
@@ -233,7 +239,7 @@ Process::Process()
 {
 	addrSpace = NULL;
 	processRunning = false;
-	mainIsWaiting = false;
+	threadWaiting = false;
 	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
@@ -279,14 +285,12 @@ void Process::freeAddrSpace()
 	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
 	currentProcess->semProc->V();
 	delete addrSpace;
-	Printf("apres delete addrSpace\n");
 	threadManager->deleteThreads();
 	//Printf("Apres delete threads\n");
 	delete threadManager;
 	//Printf("Apres delete threadsManager\n");
 	delete semManager;
 	addrSpace = NULL;
-	//s_createProcess->V();	/*****************************************/
 }
 
 /**
@@ -313,9 +317,9 @@ void Process::setPid(int newPid)
  */
 void Process::killProcess()
 {
-
-	interrupt->SetLevel (IntOff);
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 	Printf("Debut KillPorcess pid = %d\n", pid);
+	//interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
 	while (it != threadManager->l_threads.end())
@@ -323,20 +327,22 @@ void Process::killProcess()
 		scheduler->RemoveTid((*it)->tid);
 		++it;
 	}
-	//Printf("apres boucle\n");
 	freeAddrSpace();
-
 	if(scheduler->isReadyListEmpty())
 	{
 		Printf("La liste est vide\n");
-		//(void) interrupt->SetLevel (oldLevel);
 		interrupt->Halt();
 	}
 	else
 	{
 		Printf("avant finish\n");
 		//(void) interrupt->SetLevel (oldLevel);
+		(void) interrupt->SetLevel (oldLevel);
 		//interrupt->Halt();
+#ifdef step4
+		processManager->removeAddrProcess(currentProcess);
+		Printf("nb process en cours : %d\n", processManager->getNbAddrProcess());
+#endif
 		currentThread->Finish();
 	}
 }
