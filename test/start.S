@@ -346,14 +346,6 @@ Receive:
 	j	$31
 	.end Receive
 /* ********************************* */
-	.globl CloseSocket
-	.ent	CloseSocket
-CloseSocket:
-	addiu $2,$0,SC_CloseSocket
-	syscall
-	j	$31
-	.end CloseSocket
-/* ********************************* */
 .globl Sleep
 	.ent	Sleep
 Sleep:

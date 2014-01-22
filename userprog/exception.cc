@@ -337,11 +337,6 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, currentProcess->socketManager->do_Receive(n, adrBuffer));
 				break;
 
-			case SC_CloseSocket:
-				n = machine->ReadRegister(4);		// Id de la socket
-				currentProcess->socketManager->removeSocket(n);
-				break;
-
 			case SC_Sleep:
 				n = machine->ReadRegister(4);
 				Delay(n);

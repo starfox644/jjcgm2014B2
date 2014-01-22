@@ -15,15 +15,6 @@ sock_t creerSocket(int farAddr){
 	return socket;
 }
 
-
-int fermerSocket(sock_t socketUser){
-	int erreur = 0;
-	//envoi de l'appel système pour la fermeture du socket
-	erreur = CloseSocket(socketUser);
-	//on renvoie -1 si cela a echoue ou 0 sinon
-	return erreur;
-}
-
 int envoyerMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
 	//envoi de l'appel système pour envoyer le message
