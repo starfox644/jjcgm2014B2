@@ -14,8 +14,8 @@ int main() {
 
 	a = 0;
 	b = 0;
-	s = (char*) malloc(MAX_LENGH * sizeof(char));
-	t = (char*) malloc(MAX_LENGH * sizeof(char));
+	s = (char*) malloc(MAX_LENGTH * sizeof(char));
+	t = (char*) malloc(MAX_LENGTH * sizeof(char));
 
 	if (s == 0 || t == 0) {
 		Printf("Erreur alloc\n");

@@ -13,7 +13,7 @@
 #include "syscall.h"
 #include "String.h"
 #include "util.h"
-#define MAX_LENGH (256)
+#define MAX_LENGTH (256)
 
 
 /*

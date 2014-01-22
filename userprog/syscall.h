@@ -59,8 +59,7 @@
 #define SC_Receive 52
 #define SC_CloseSocket 53
 #define SC_Sleep 54
-#define SC_SetHostname 55
-#define SC_GetHostname 56
+#define SC_GetHostname 55
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
