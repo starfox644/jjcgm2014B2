@@ -6,7 +6,7 @@
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_PROC 14
+#define MAX_PROC 12
 
 //sem_t sem;
 int main()

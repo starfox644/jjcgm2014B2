@@ -64,7 +64,7 @@ int Thread::getNbThreadsCreated() {
 Thread::Thread (const char *threadName)
 {
 #ifdef CHANGED
-	strncpy(name, threadName, 10);
+	strncpy(name, threadName, NAME_SIZE);
 #else
 	name = threadName;
 #endif
@@ -226,16 +226,10 @@ void
 Thread::Finish ()
 {
 	(void) interrupt->SetLevel (IntOff);
+	ASSERT (interrupt->getLevel () == IntOff);
 	ASSERT (this == currentThread);
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
-	// release the semaphore for threads which are waiting the end
-	s_join->V();
-	if(currentThread->isMainThread())
-	{
-		// the main thread is the last to finish, it must be deleted
-		threadToBeDestroyed = currentThread;
-	}
 
 	if (currentProcess == NULL) {
 		Printf("currentProcess == NULL, exit\n");
@@ -263,6 +257,8 @@ Thread::Finish ()
 	ASSERT (threadToBeDestroyed == NULL);
 	// End of addition
 	threadToBeDestroyed = currentThread;
+#endif
+#ifdef CHANGED
 #endif
 	Sleep ();			// invokes SWITCH
 	// not reached
@@ -336,7 +332,6 @@ Thread::Sleep ()
 	status = BLOCKED;
 	while ((nextThread = scheduler->FindNextToRun ()) == NULL)
 		interrupt->Idle ();	// no one to run, wait for an interrupt
-
 	scheduler->Run (nextThread);	// returns when we've been signalled
 }
 
@@ -424,7 +419,7 @@ ThreadPrint (int arg)
 #ifdef CHANGED
 void Thread::setName(char* newName)
 {
-	strncpy(name, newName, 10);
+	strncpy(name, newName, NAME_SIZE);
 }
 #endif
 
@@ -551,7 +546,7 @@ int Thread::getThreadReturn()
 	return thread_return;
 }
 
-int Thread::getTid()
+int Thread::getNextTid()
 {
 	if(nextTid <= INT_MAX)
 	{

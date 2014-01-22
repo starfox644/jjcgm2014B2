@@ -122,7 +122,7 @@ int ProcessManager::getNextPid()
 }
 
 /*
- * Renvoie une liste des processus
+ * Renvoi une liste des processus
  */
 int ProcessManager::getListProcess(int ListeProc){
 

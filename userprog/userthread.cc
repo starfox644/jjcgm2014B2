@@ -17,7 +17,7 @@ int do_UserThreadCreate(int f, int arg)
 	int n;
 	bool error = false;
 	int stackAddr;
-	char buffer[10];
+	char buffer[NAME_SIZE];
 	// locks this function
 	s_createProcess->P();
 	AddrSpace* space = currentProcess->getAddrSpace();
@@ -47,17 +47,19 @@ int do_UserThreadCreate(int f, int arg)
     		stackAddr = space->popAvailableStackPointer();
 #endif
     		error = (stackAddr == -1);
+    		if(error)
+    			printf("erreur stack\n");
     	}
     }
 
     if(!error)
     {
 		// gets a tid for the thread
-		newThread->tid = Thread::getTid();
+		newThread->tid = Thread::getNextTid();
 		error = (newThread->tid == -1);
 		if(!error)
 		{
-			snprintf(buffer, 10, "t%i", newThread->tid);
+			snprintf(buffer, NAME_SIZE - 1, "t%i", newThread->tid);
 			newThread->setName(buffer);
 			// the new thread is in same process
 			newThread->process = currentThread->process;
@@ -89,7 +91,7 @@ int do_UserThreadCreate(int f, int arg)
  */
 static void StartUserThread(int f)
 {
-	interrupt->SetLevel(IntOff);
+	IntStatus oldLevel = interrupt->SetLevel(IntOff);
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
 	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC to the function __startThread (in start.s)
@@ -102,6 +104,7 @@ static void StartUserThread(int f)
 	machine->WriteRegister(StackReg, currentThread->userStackAddr);
 	// set r26 (reserved to OS) to the function address for loading it later into pc
 	machine->WriteRegister(26, f);
+	(void) interrupt->SetLevel (oldLevel);
 	machine->Run ();		// jump to the user progam at __startThread
 }
 
@@ -156,7 +159,8 @@ int do_UserThreadJoin(int tid, int addrUser)
  */
 void do_UserThreadExit(int status)
 {
-	if(!currentThread->isMainThread())
+	// main thread or another thread has called exit
+	if(!currentThread->isMainThread() || currentProcess->threadWaiting)
 	{
 		s_createProcess->P();
 		AddrSpace* space = currentProcess->getAddrSpace();
@@ -166,11 +170,13 @@ void do_UserThreadExit(int status)
 		// remove the thread in the process
 		currentProcess->threadManager->removeThread(currentThread);
 		// if the main thread is waiting, notify the end of the thread
-		if(currentProcess->mainIsWaiting)
+		if(currentProcess->threadWaiting)
 			space->s_exit->V();
 		// save the return status of the thread if another calls UserThreadJoin
 		currentThread->setThreadReturn(status);
 		currentProcess->threadManager->s_nbThreads->V();
+		currentThread->s_join->V();
+		// release the semaphore for threads which are waiting the end
 	    s_createProcess->V();
 		// terminates this thread
 		currentThread->Finish();

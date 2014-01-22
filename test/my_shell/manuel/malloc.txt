@@ -1,0 +1,22 @@
+MALLOC
+
+NOM
+	malloc, free, calloc, realloc - alloue et libere la mémoire dynamique
+	
+SYNOPSYS
+	#include "syscall.h"
+	
+	void *malloc(size_t taille);
+	void free(void *ptr);
+	void *calloc(size_t count, size_t size);
+	void *realloc(void *ptr, size_t size);
+	
+DESCRIPTION
+	la fonction malloc() permet d'allouer la taille voulu en bytes dans la mémoire
+	virtuelle et de renvoyer un pointeur vers l'allocation. La mémoire n'est pas initialisé
+	
+	La fonction free() permet de libérer la mémoire, qui doit absolument avoir été retourné par un appel a malloc(), calloc(), realloc().
+	
+	la fonction calloc() alloue de la mémoire pour un tableau d'élément de taille voulu en bytes et renvoi un pointeur. La mémoire est initialisé à zero.
+	
+	la fonction realloc() permet de changer la taille mémoire d'une allocation précédente effectué avec malloc, calloc ou realloc.

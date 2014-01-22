@@ -22,7 +22,7 @@
  *  %c affiche un char
  *  %s afficher un string
  */
-void Printf(char* messageVoulu, void* variable);
+void Printf(char* messageVoulu, ...);
 
 /*
  * Fonction permettant de récupérer une valeur de variable écris sur la console

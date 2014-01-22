@@ -16,8 +16,9 @@ void f(void *arg)
 void g(void *arg)
 {
 	int i;
-	//PutString("debut g\n");
+	PutString("debut g\n");
 	for ( i  = 0 ; i < 1000 ; i++);
+	PutString("fin g\n");
 }
 int main()
 {

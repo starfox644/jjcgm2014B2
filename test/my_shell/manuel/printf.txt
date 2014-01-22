@@ -1,0 +1,18 @@
+PRINTF
+
+NOM
+	printf - affiche les données sur la console
+	
+SYNOPSYS
+	printf DONNEE [ARGUMENT]
+
+DESCRIPTION
+	Affiche les ARGUMENT suivant le type de variable dont il s'agit.
+	
+	\n retour a la ligne
+	\t insère une tabulation
+	
+	'%d' pour afficher un entier
+	'%i' pour afficher un entier
+	'%c' pour afficher un caractère
+	'%s' pour afficher une chaine de caractère

@@ -1,0 +1,69 @@
+/*
+ * commandIntegre.c
+ *
+ *  Created on: 19 janv. 2014
+ *      Author: galdween
+ */
+#include "commandeIntegre.h"
+
+/*
+ * fonction permettant d'afficher les processus système en cours d'execution
+ */
+void afficherProcess(){
+	int *liste_Process;
+	int nbProcessus = GetNbProcessTotal(), i = 0 ;
+	int compteur = 0;
+	//on alloue la mémoire et on recupere la liste des processus
+	liste_Process = (int*) malloc((nbProcessus * 10) * sizeof(int));
+	if(liste_Process == 0){
+		Printf("arf\n",0);
+	}
+	liste_Process = GetListProcess(liste_Process);
+	//on réalise l'affichage
+	Printf("Liste des processus sytème\n",0);
+	while(compteur < nbProcessus){ //pour chaque processus faire
+		Printf("Pid du processus : %d",(void*)liste_Process[i]);
+		i++;
+		Printf("\t\t Etat : %d\n",(void*)liste_Process[i]);
+		i++;
+		compteur++;
+	}
+	free(liste_Process);
+	return;
+}
+
+/*
+ * fonction permettant d'afficher le contenu du dossier courant
+ */
+void do_ls();
+
+/*
+ * Fonction permettant d'afficher le chemin local
+ */
+void do_pwd();
+
+/*
+ * fonction permettant de copier un fichier Unix vers un fichier NachOS
+ */
+void do_copie(char* source , char* destination);
+
+/*
+ * fonction permettant de supprimer le fichier passé en paramètre du système NachOS
+ */
+void do_remove(char* element);
+/*
+ * fonction permettant d'afficher l'intégralité du contenu du systeme de fichier
+ */
+void afficherSysteme();
+/*
+ * fonction permettant de naviguer dans le système de fichier
+ */
+void do_cd(char* destination);
+
+/*
+ * fonction permettant d'afficher le manuel d'aide des commandes
+ */
+void afficherManuel(char*element){
+
+}
+

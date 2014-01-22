@@ -248,7 +248,7 @@ void* Mmap(int length);
 /**
  * 	desalloue une portion de memoire virtuelle
  */
-int Unmap();
+int Unmap(void* addr);
 
 /**
  * fonctions et structures de gestion de liste d'arguments

@@ -1,0 +1,11 @@
+PWD
+
+NOM
+	pwd - affiche le nom du dossier courant
+
+SYNOPSIS
+	pwd
+
+DESCRIPTION
+	affiche sur la console le chemin complet du dossier courant
+

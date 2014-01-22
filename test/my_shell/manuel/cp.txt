@@ -1,0 +1,11 @@
+CP
+
+NOM
+	cp - copie les fichiers
+
+SYNOPSYS
+	cp SOURCE DESTINATION
+
+DESCRIPTION
+	copie un fichier UNIX vers un fichier NachOS
+	

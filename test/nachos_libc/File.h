@@ -48,6 +48,4 @@ int SeekFile(int fileDescripteur, int offset,int position);
  */
 int CloseFile(int fileDescripteur);
 
-
-
 #endif /* FILE_H_ */
