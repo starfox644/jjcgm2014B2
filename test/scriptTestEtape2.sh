@@ -2,7 +2,7 @@
 
 
 #fonctions d'affichage
-function afficher
+afficher ()
 {
 	tmp=`expr length "$chaine"`
 	number=`expr 4 + $tmp`
@@ -14,7 +14,7 @@ function afficher
 	echo ""
 }
 
-function etoiles
+etoiles ()
 {
 	for i in `seq 1 $number`
 	do
