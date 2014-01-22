@@ -10,47 +10,54 @@
 #include "Printf.h"
 #include "syscall.h"
 
-void Printf(char* messageVoulu, ...){
+int Printf (char* messageVoulu, ...){
 
 	int i = 0, j = 0, k;
-	int variable;
+	int variable, nbArg;
 	char *value, buffer[MAX_LENGH];
 
 	arg_start();
+	nbArg = 0;
 
 	// tant que l'on est pas a la fin du message
 	while (messageVoulu[i] != '\0') {
 		// si on a un %, il faut recuperer la variable
 		// la transformer en chaine et la rajouter au resultat
 		if (messageVoulu[i] == '%') {
-			i++;
-			variable = arg_arg();
+			nbArg++;
 
-			switch(messageVoulu[i]) {
-			case 'd': // un entier
-				value = Itoa(variable);
-				break;
+			if (nbArg < 4) {
+				i++;
+				variable = arg_arg ();
 
-			case 'i':
-				value = Itoa(variable);
-				break;
+				switch (messageVoulu[i]) {
+				case 'd': // un entier
+					value = Itoa (variable);
+					break;
 
-			case 'c': // un char
-				value[0] = (char) variable;
-				value[1] = '\0';
-				break;
+				case 'i':
+					value = Itoa (variable);
+					break;
 
-			case 's': // un string
-				value = (char*)variable;
-				break;
+				case 'c': // un char
+					value[0] = (char) variable;
+					value[1] = '\0';
+					break;
+
+				case 's': // un string
+					value = (char*) variable;
+					break;
+				}
+
+				k = 0;
+				while (value[k] != '\0') {
+					buffer[j] = value[k];
+					j++;
+					k++;
+				}
 			}
-
-			k = 0;
-			while (value[k] != '\0') {
-				buffer[j] = value[k];
-				j++;
-				k++;
-			}
+			else // si on veut lire un 4eme argument
+				return -1;
 		}
 		else {
 			buffer[j] = messageVoulu[i];
@@ -66,33 +73,54 @@ void Printf(char* messageVoulu, ...){
 		buffer[i] = '\0';
 	}
 
+	return 0;
 }
 
+int Scanf (char* typeVariable, ...) {
+	void* variable;
+	char tmp[MAX_LENGH];
+	int i, nbArg;
 
-void* Scanf(char* typeVariable, void *variable){
-	if(typeVariable[0] == '%'){
-		switch(typeVariable[1]){
-			case 'd' :	//cas de récupération d'un int
-				GetString((char*)variable,sizeof(int));
-				variable = (void*)Atoi((char*)variable);
-				return variable;
-				break;
-			case 'c' : //cas de récupération d'un char
-				GetString(variable,1 * sizeof(char));
-				StrCpy(variable,(char*)variable);
-				return variable;
-				break;
-			case 's' : //cas de récupération d'un string
-				GetString((char*)variable,MAX_LENGH);
-				return variable;
-				break;
-			default :
-				Printf("\nType de variable non reconnu\n",0);
-				return 0;
-				break;
+	i = 0;
+	arg_start ();
+	nbArg = 0;
+
+	// tant qu'on est pas a la fin de la liste de variables a lire
+	while (typeVariable[i] != '\0') {
+		//si on lit un %, on va regarder la lettre apres pour savoir
+		//le type de variable a lire
+		if (typeVariable[i] == '%') {
+			nbArg++;
+
+			if (nbArg < 4) {
+				variable = (void*) arg_arg ();
+				i++;
+
+				switch (typeVariable[i]) {
+				case 'i':
+				case 'd':	//cas de récupération d'un int
+					GetString(tmp, MAX_LENGH);
+					*((int*) variable) = Atoi (tmp);
+					break;
+				case 'c': //cas de récupération d'un char
+					GetString(tmp, MAX_LENGH);
+					((char*) variable)[0] = tmp[0];
+					((char*) variable)[1] = '\0';
+					break;
+				case 's': //cas de récupération d'un string
+					GetString ((char*) variable, MAX_LENGH);
+					break;
+				default:
+					return -1;
+					break;
+				}
+			}
+			else // si on a plus de 3 arguments a lire, on a une erreur
+				return -1;
 		}
-	}else{
-		return 0;
+
+		i++;
 	}
+
 	return 0;
 }
