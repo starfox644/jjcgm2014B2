@@ -1,0 +1,12 @@
+RM
+
+NOM
+	rm - supprime un fichier ou un dossier
+	
+SYNOPSYS
+	rm FILE
+
+DESCRIPTION
+
+	cette commande permet de supprimer un fichier, ou de supprimer
+	un dossier si celui est vide.

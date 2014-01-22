@@ -57,8 +57,6 @@ int do_forkExec(int adrExec)
 		// test d'allocation du processus
 		if (allocateProcessSpace(t, executable) != -1)
 		{
-			// ajoute 1 au nb de processus en cours
-			addProcess();
 			// creation du thread principal
 			t->Fork(UserStartProcess, 0);
 			// relachement de la section critique de creation
@@ -84,7 +82,7 @@ int do_forkExec(int adrExec)
  */
 void UserStartProcess (int adr)
 {
-	IntStatus oldLevel = interrupt->SetLevel (IntOff);
+	IntStatus oldLevel = interrupt->SetLevel(IntOff);
 	// recuperation de l'espace d'adressage du processus
 	AddrSpace *space = currentProcess->getAddrSpace();
 	// indication du lancement du processus
@@ -98,24 +96,6 @@ void UserStartProcess (int adr)
 	// on ne revient jamais ici si tout se passe normalement
 	// le processus se termine par un appel a exit
 	ASSERT (FALSE);
-}
-
-void addProcess ()
-{
-	s_nbProcess->P();
-	nbProcess++;
-	s_nbProcess->V();
-}
-
-void removeProcess () {
-	s_nbProcess->P();
-	processManager->removeAddrProcess(currentProcess);
-	nbProcess--;
-	s_nbProcess->V();
-}
-
-int getNbProcess () {
-	return nbProcess;
 }
 
 #endif // step4
@@ -152,7 +132,7 @@ int allocateProcessSpace (Thread *t, char *filename)
 		return -1;
 	}
 	process->setPid(pid);
-	processManager->addAddrProcess(process);
+	processManager->addProcess(process);
 	process->threadManager->s_nbThreads->P();
 	// add the thread to the process
 	process->threadManager->addThread(t);
@@ -200,9 +180,8 @@ StartProcess (char *filename)
 	currentProcess = process;
 #ifdef step4
 	process->setPid(processManager->getNextPid());
-	processManager->addAddrProcess(currentProcess);
+	processManager->addProcess(currentProcess);
 	currentProcess->processRunning = true;
-	addProcess(); // ajoute 1 au nb de processus en cours
 #endif
 
 	process->threadManager->s_nbThreads->P();
@@ -244,7 +223,6 @@ Process::Process()
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 	semProc = new Semaphore("semaphore processus", 0);
-
 }
 
 Process::~Process() {
@@ -281,7 +259,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
-	Printf("Dans free addrSpace\n");
+	//Printf("Dans free addrSpace\n");
 	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
 	currentProcess->semProc->V();
 	delete addrSpace;
@@ -318,7 +296,6 @@ void Process::setPid(int newPid)
 void Process::killProcess()
 {
 	IntStatus oldLevel = interrupt->SetLevel (IntOff);
-	Printf("Debut KillPorcess pid = %d\n", pid);
 	//interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
@@ -335,13 +312,10 @@ void Process::killProcess()
 	}
 	else
 	{
-		Printf("avant finish\n");
-		//(void) interrupt->SetLevel (oldLevel);
 		(void) interrupt->SetLevel (oldLevel);
 		//interrupt->Halt();
 #ifdef step4
-		processManager->removeAddrProcess(currentProcess);
-		Printf("nb process en cours : %d\n", processManager->getNbAddrProcess());
+		processManager->removeProcess(currentProcess);
 #endif
 		currentThread->Finish();
 	}

@@ -53,7 +53,7 @@
 #define SC_ArgArg 30
 #define SC_ArgEnd 31
 #define SC_GetListProcess 32
-#define SC_GetNbProcess 33
+#define SC_GetNbProcessTotal 33
 
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
@@ -259,7 +259,7 @@ int arg_arg();
 /*
  * renvoi le nombre de processus système en cours
  */
-int GetNbProcess();
+int GetNbProcessTotal();
 
 /*
  * renvoi la liste des processus créé

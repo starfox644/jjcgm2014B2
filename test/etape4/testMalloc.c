@@ -4,6 +4,10 @@
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testMalloc : \n");
+	PutString("Demande une chaine a l'utilisateur qu'il affiche ensuite\nvia un buffer alloue au debut.\n");
+	PutString("-----------------------------------------\n");
 	char* buffer = (char*)malloc(SIZE * sizeof(char));
 	if(buffer == 0)
 	{

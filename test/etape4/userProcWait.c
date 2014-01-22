@@ -9,6 +9,10 @@
 
 int main(){
 
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test userProcWait : \n");
+	PutString("Cree un processus qui cree plusieurs processus et attend sa terminaison.\n");
+	PutString("-----------------------------------------\n");
 
 	int pid, error;
 	PutString("Lancement du programme de test userProcWait\n");

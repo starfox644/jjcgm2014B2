@@ -8,18 +8,21 @@
 #include "syscall.h"
 
 int main(){
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test waitPidAll : \n");
+	PutString("Teste les cas d'executions/erreurs de waitpid.\n");
+	PutString("-----------------------------------------\n");
 	int error;
 	int pid;
-	PutString("Lancement du programme de test waitPidAll\n");
 
 	// On lance le processus a attendre
-	pid = ForkExec("./etape4/progWait");
+	pid = ForkExec("./etape4/prog/progWait");
 	if(pid == -1){
 		PutString("[Test1] Erreur de création du processus\n");
 	}
 
 	// On lance le processus qui va attendre le precedent
-	pid = ForkExec("./etape4/progDoubleAttente");
+	pid = ForkExec("./etape4/prog/progDoubleAttente");
 	if(pid == -1){
 		PutString("[Test1] Erreur de création du processus\n");
 		return -1;

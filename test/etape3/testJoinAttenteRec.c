@@ -42,6 +42,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testJoinAttenteRec : \n");
+	PutString("Lance 3 threads f, g et h. Le main attend f qui attend g qui attend h.\n");
+	PutString("-----------------------------------------\n");
 	int tidf, tidg, tidh;
 	tidh = UserThreadCreate(h, 0);
 	tidg = UserThreadCreate(g, &tidh);

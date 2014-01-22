@@ -322,13 +322,13 @@ arg_end:
 	j	$31
 	.end arg_end
 
-	.globl GetNbProcess
-	.ent	GetNbProcess
-GetNbProcess:
-	addiu $2,$0,SC_GetNbProcess
+	.globl GetNbProcessTotal
+	.ent	GetNbProcessTotal
+GetNbProcessTotal:
+	addiu $2,$0,SC_GetNbProcessTotal
 	syscall
 	j	$31
-	.end GetNbProcess
+	.end GetNbProcessTotal
 
 #endif /*CHANGED*/
 

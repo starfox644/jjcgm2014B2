@@ -95,7 +95,9 @@ class Lock
 
   private:
     const char *name;		// for debugging
-    // plus some other stuff you'll need to define
+#ifdef CHANGED
+    Semaphore* sem;
+#endif
 };
 
 // The following class defines a "condition variable".  A condition

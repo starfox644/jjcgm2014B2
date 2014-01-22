@@ -8,12 +8,6 @@ class OpenFile;
 class SemaphoreManager;
 class ThreadManager;
 
-void addProcess ();
-
-void removeProcess () ;
-
-int getNbProcess ();
-
 /**
  * Realise l'appel systeme fork exec.
  * Lit le nom de l'executable dans la memoire du MIPS a partir de l'adresse passee en

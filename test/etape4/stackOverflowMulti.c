@@ -16,23 +16,18 @@ void f(void *arg)
 void g(void *arg)
 {
 	int i;
-	PutString("debut g\n");
+	//PutString("debut g\n");
 	for ( i  = 0 ; i < 1000 ; i++);
-	PutString("fin g\n");
 }
 int main()
 {
-	PutString("\n-----------------------------------------\n");
-	PutString("Lancement du test testStackOverflow : \n");
-	PutString("Teste le depassement de la pile.\n");
-	PutString("-----------------------------------------\n");
 	int i = 0;
+	if(ForkExec("etape4/userThreadMulti") == -1)
+	{
+		PutString("erreur fork exec\n");
+	}
 	int tidf = UserThreadCreate(f, &i);
-	int tidg = UserThreadCreate(g, 0);
 	if(UserThreadJoin(tidf, 0) == -1)
-		PutString("Erreur join\n");
-
-	if(UserThreadJoin(tidg, 0) == -1)
 		PutString("Erreur join\n");
 	PutString("fin main!\n");
     return 0;

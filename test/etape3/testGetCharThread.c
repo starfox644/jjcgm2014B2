@@ -21,6 +21,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testGetCharThread : \n");
+	PutString("Demande un char et l'affiche via un autre thread.\n");
+	PutString("-----------------------------------------\n");
 	Arg arg;
 	PutString("Entrez un caractere :");
 	arg.wait = 1;
