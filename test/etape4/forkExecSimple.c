@@ -11,6 +11,6 @@ int main()
 	PutString("Lancement du test forkExecSimple : \n");
 	PutString("affiche \"Hello World !\" dans un autre processus\n");
 	PutString("-----------------------------------------\n");
-	ForkExec("./etape4/progSimple");
+	ForkExec("./etape4/prog/progSimple");
 	return 0;
 }

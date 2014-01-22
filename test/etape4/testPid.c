@@ -11,7 +11,7 @@ int main()
 	int pid;
 	for(i = 0 ; i  < NB_PROC ; i++)
 	{
-		pid = ForkExec("etape4/printPid");
+		pid = ForkExec("etape4/prog/progPid");
 		if(pid == -1)
 		{
 			PutString("erreur de creation de processus\n");

@@ -95,7 +95,7 @@ int commandIntegre(char **argv){
 
 void afficherProcess(){
 	int *liste_Process;
-	int nbProcessus = GetNbProcess(), i = 0 ;
+	int nbProcessus = GetNbProcessTotal(), i = 0 ;
 	int compteur = 0;
 	//on alloue la mémoire et on recupere la liste des processus
 	liste_Process = (int*) malloc((nbProcessus * 100) * sizeof(int));

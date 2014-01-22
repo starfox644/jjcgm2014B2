@@ -36,9 +36,9 @@ int main()
 	PutChar('2');
 	PutString("Entrez un caractere :");
 	arg.a = GetChar();
-	PutChar('1');
+	PutChar('3');
 	UserThreadCreate(f, &arg);
-	PutChar('2');
+	PutChar('4');
 	while(arg.wait)
 		PutChar(' ');
 	PutChar('8');

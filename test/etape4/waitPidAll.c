@@ -16,13 +16,13 @@ int main(){
 	int pid;
 
 	// On lance le processus a attendre
-	pid = ForkExec("./etape4/progWait");
+	pid = ForkExec("./etape4/prog/progWait");
 	if(pid == -1){
 		PutString("[Test1] Erreur de création du processus\n");
 	}
 
 	// On lance le processus qui va attendre le precedent
-	pid = ForkExec("./etape4/progDoubleAttente");
+	pid = ForkExec("./etape4/prog/progDoubleAttente");
 	if(pid == -1){
 		PutString("[Test1] Erreur de création du processus\n");
 		return -1;

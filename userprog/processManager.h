@@ -18,16 +18,18 @@ class ProcessManager{
 		ProcessManager ();
 		~ProcessManager();
 		//variables
-		int nbAdrProcess;	// nombre d'adresse de processus de notre liste
 		Semaphore *sem_Wait;	//semaphore pour notre classe
 		// liste des addrSpace de chaque processus
 		std::list<Process*> l_process;
-		//rajout d'une addresse d'un processus a notre liste
-		int addAddrProcess(Process *);
-		//suppression d'une addresse d'un processus de notre liste
-		void removeAddrProcess(Process *);
-		//récupération du nombre d'adresse de processus
-		int getNbAddrProcess();
+
+		//rajout d'un processus a notre liste
+		int addProcess(Process *);
+		//suppression d'un processus de notre liste
+		void removeProcess(Process *);
+		//récupération du nombre de processus
+		int getNbProcessRunning();
+		//récupération du nombre de processus total
+		int getNbProcessTotal();
 
 		int getNextPid();
 
@@ -38,16 +40,14 @@ class ProcessManager{
 		int waitPid(int processPid);
 
 		/*
-		 * Fonction permettant de renvoyer le nombre de processus systeme en cours
-		 */
-		int getNbProcess();
-		/*
 		 * fonction permettant de retourner la list des processus
 		 */
 		int getListProcess(int);
 
 	private:
-		int nextPid;		// numero du prochain processus a creer
+		int nextPid;			// numero du prochain processus a creer
+		int nbProcessRunning;	// nombre de processus de notre liste
+		int nbProcessTotal;		// nombre total de processus de notre liste
 
 };
 #endif // __PROCESSMANAGER__H__

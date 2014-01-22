@@ -28,7 +28,7 @@ void do_exit(int returnCode)
 		space->s_exit->P();
 		s_createProcess->P();
 	}
-	//}
+
 #ifdef CHANGED
 	Printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
 #endif //CHANGED
@@ -36,23 +36,20 @@ void do_exit(int returnCode)
 	currentProcess->freeAddrSpace();
 
 #ifdef step4
-	// currentThread isn't the last main thread
-	if (getNbProcess() > 1)
+	// currentProcess isn't the last main process TODO better commentary ?
+	if (processManager->getNbProcessRunning() > 1)
 	{
-		removeProcess();
-		processManager->removeAddrProcess(currentProcess);
+		processManager->removeProcess(currentProcess);
 		s_createProcess->V();
 		currentProcess->semProc->V();
 		currentThread->Finish();
 	}
-	else // the current thread is the last thread
+	else // the current process is the last process TODO better commentary ?
 	{
-		removeProcess();
-		processManager->removeAddrProcess(currentProcess);
+		processManager->removeProcess(currentProcess);
 
 		// stop the program
 		s_createProcess->V();
-//		currentProcess->semProc->V();
 		interrupt->Halt ();
 	}
 #else

@@ -12,7 +12,8 @@ ProcessManager::ProcessManager ()
 {
 	//on initialise notre semaphore
 	sem_Wait = new Semaphore("WaitPid semaphore", 1);
-	nbAdrProcess = 0;
+	nbProcessRunning = 0;
+	nbProcessTotal = 0;
 	nextPid = 0;
 }
 
@@ -27,23 +28,30 @@ ProcessManager::~ProcessManager()
 	delete sem_Wait;
 }
 
-int ProcessManager::addAddrProcess(Process *proc){
+int ProcessManager::addProcess(Process *proc){
 	sem_Wait->P();
 
-	nbAdrProcess++;
-	//rajout de notre adresse de processus dans la liste
+	nbProcessRunning++;
+	nbProcessTotal++;
+	//rajout de processus dans la liste
 	l_process.push_back(proc);
 	sem_Wait->V();
 	return 0;
 }
-void ProcessManager::removeAddrProcess(Process *proc){
+
+void ProcessManager::removeProcess(Process *proc){
 	sem_Wait->P();
-	nbAdrProcess--;
+	nbProcessRunning--;
 	proc->processRunning = false;
 	sem_Wait->V();
 }
-int ProcessManager::getNbAddrProcess(){
-	return nbAdrProcess;
+
+int ProcessManager::getNbProcessRunning(){
+	return nbProcessRunning;
+}
+
+int ProcessManager::getNbProcessTotal(){
+	return nbProcessRunning;
 }
 
 /*
@@ -99,7 +107,7 @@ int ProcessManager::waitPid(int processPid){
 }
 
 /**
- * Renvoie le prochain PID non utilise, jusqu'a MAX_INT
+ * Renvoie le prochain PID non utilise, jusqu'a INT_MAX
  */
 int ProcessManager::getNextPid()
 {
@@ -114,26 +122,7 @@ int ProcessManager::getNextPid()
 }
 
 /*
- * renvoi le nombre de processus
- */
-int ProcessManager::getNbProcess(){
-	int compteur = 0;
-
-	sem_Wait->P();
-	// iterator pour trouver l'adresse dans la liste
-	std::list<Process*>::iterator it=l_process.begin();
-
-	while (it != l_process.end()){
-		it++;
-		compteur++;
-	}
-	sem_Wait->V();
-	return compteur;
-
-}
-
-/*
- * Renvoi une liste des processus
+ * Renvoie une liste des processus
  */
 int ProcessManager::getListProcess(int ListeProc){
 
