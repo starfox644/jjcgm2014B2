@@ -10,102 +10,64 @@
 #include "Printf.h"
 #include "syscall.h"
 
-void Printf(char* messageVoulu, void* variable){
+void Printf(char* messageVoulu, ...){
 
-	int i = 0;
-	char buffer[MAX_LENGH],bufferSuite[MAX_LENGH];
-	//tant que le mot n'est pas finis ou que l'on ne trouve pas un % on continue
-	while(messageVoulu[i] != '%' && messageVoulu[i] != '\0'){
-		buffer[i] = messageVoulu[i];
-		i++;
-	}
-	if(messageVoulu[i] == '\0'){//le mot est fini donc on affiche le message tout seul
-		PutString(messageVoulu);
-	}else{
-		if(messageVoulu[i] == '%'){
-			switch (messageVoulu[i+1]){
-				case 'd'://on a un entier a afficher
-					StrNCpy(messageVoulu, buffer, i - 1);
-					PutString(buffer);
-					variable = Itoa((int)variable);//on transforme le int en string pour pouvoir l'afficher.
-					PutString((char*) variable);
-					i = i+2;//on ce décale pour etre apres le %d
-					if(messageVoulu[i] == '\0'){// c'est la fin de notre message a afficher donc on stop
-						return;
-					}else{ //message non finis on continue d'afficher le reste du texte
-						int j = 0;
-						while(messageVoulu[i] != '\0'){
-							bufferSuite[j] = messageVoulu[i];
-							j++;
-							i++;
-						}
-						PutString(bufferSuite);
-						return;
-					}
-					break;
+	int i = 0, j = 0, k;
+	int variable;
+	char *value, buffer[MAX_LENGH];
 
-				case 'i'://on a un entier a afficher
-					StrNCpy(messageVoulu, buffer, i - 1);
-					PutString(buffer);
-					PutInt((int) variable);
-					i = i+2;//on ce décale pour etre apres le %d
-					if(messageVoulu[i] == '\0'){// c'est la fin de notre message a afficher donc on stop
-						return;
-					}else{ //message non finis on continue d'afficher le reste du texte
-						int j = 0;
-						while(messageVoulu[i] != '\0'){
-							bufferSuite[j] = messageVoulu[i];
-							j++;
-							i++;
-						}
-						PutString(bufferSuite);
-						return;
-					}
-					break;
+	arg_start();
 
-				case 'c':// on a un char a afficher
-					StrNCpy(messageVoulu, buffer, i - 1);
-					PutString(buffer);
-					PutString((char*)variable);
-					i = i+2;//on ce décale pour etre apres le %d
-					if(messageVoulu[i] == '\0'){// c'est la fin de notre message a afficher donc on stop
-						return;
-					}else{ //message non finis on continue d'afficher le reste du texte
-						int j = 0;
-						while(messageVoulu[i] != '\0'){
-							bufferSuite[j] = messageVoulu[i];
-							j++;
-							i++;
-						}
-						PutString(bufferSuite);
-						return;
-					}
-					break;
+	// tant que l'on est pas a la fin du message
+	while (messageVoulu[i] != '\0') {
+		// si on a un %, il faut recuperer la variable
+		// la transformer en chaine et la rajouter au resultat
+		if (messageVoulu[i] == '%') {
+			i++;
+			variable = arg_arg();
 
-				case 's':// on a un string a afficher
-					StrNCpy(messageVoulu, buffer, i - 1);
-					PutString(buffer);
-					PutString((char*) variable);
-					i = i+2;//on ce décale pour etre apres le %d
-					if(messageVoulu[i] == '\0'){// c'est la fin de notre message a afficher donc on stop
-						return;
-					}else{ //message non finis on continue d'afficher le reste du texte
-						int j = 0;
-						while(messageVoulu[i] != '\0'){
-							bufferSuite[j] = messageVoulu[i];
-							j++;
-							i++;
-						}
-						PutString(bufferSuite);
-						return;
-					}
-					break;
+			switch(messageVoulu[i]) {
+			case 'd': // un entier
+				value = Itoa(variable);
+				break;
 
+			case 'i':
+				value = Itoa(variable);
+				break;
+
+			case 'c': // un char
+				value[0] = (char) variable;
+				value[1] = '\0';
+				break;
+
+			case 's': // un string
+				value = (char*)variable;
+				break;
+			}
+
+			k = 0;
+			while (value[k] != '\0') {
+				buffer[j] = value[k];
+				j++;
+				k++;
 			}
 		}
+		else {
+			buffer[j] = messageVoulu[i];
+			j++;
+		}
+
+		i++;
+	}
+	PutString(buffer);
+
+	// on vide le buffer (sinon, il y a des affichages en trop
+	for (i = 0; i < MAX_LENGH; i++) {
+		buffer[i] = '\0';
 	}
 
 }
+
 
 void* Scanf(char* typeVariable, void *variable){
 	if(typeVariable[0] == '%'){

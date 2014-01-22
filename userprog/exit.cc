@@ -17,6 +17,7 @@ void do_UserThreadExit(int);
 void do_exit(int returnCode)
 {
 	s_createProcess->P();
+	Printf("********Tentative exit pid = %d name = %s\n", currentProcess->getPid(), currentThread->getName());
 #ifdef step3
 	// a thread is waiting, he will do exit
 	if(!currentProcess->threadWaiting)
@@ -39,10 +40,9 @@ void do_exit(int returnCode)
 		Printf("Program (Pid : %i) stopped with return code : %d\n", currentProcess->getPid(), returnCode);
 		DEBUG('a',"Program exit");
 		currentProcess->freeAddrSpace();
-
 	#ifdef step4
 		// currentThread isn't the last main thread
-		if (getNbProcess() > 1)
+		if (processManager->getNbAddrProcess() > 1)
 		{
 			removeProcess();
 			processManager->removeAddrProcess(currentProcess);

@@ -92,7 +92,7 @@ void UserStartProcess (int adr)
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
-	interrupt->SetLevel(oldLevel);
+	(void) interrupt->SetLevel (oldLevel);
 	// lancement du programme
 	machine->Run ();
 	// on ne revient jamais ici si tout se passe normalement
@@ -281,11 +281,14 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
+	Printf("Dans free addrSpace\n");
 	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
 	currentProcess->semProc->V();
 	delete addrSpace;
 	threadManager->deleteThreads();
+	//Printf("Apres delete threads\n");
 	delete threadManager;
+	//Printf("Apres delete threadsManager\n");
 	delete semManager;
 	addrSpace = NULL;
 }
@@ -314,8 +317,9 @@ void Process::setPid(int newPid)
  */
 void Process::killProcess()
 {
-	//interrupt->SetLevel (IntOff);
 	IntStatus oldLevel = interrupt->SetLevel (IntOff);
+	Printf("Debut KillPorcess pid = %d\n", pid);
+	//interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
 	scheduler->RemoveTid(0);
 	while (it != threadManager->l_threads.end())
@@ -326,15 +330,21 @@ void Process::killProcess()
 	freeAddrSpace();
 	if(scheduler->isReadyListEmpty())
 	{
+		Printf("La liste est vide\n");
 		interrupt->Halt();
 	}
 	else
 	{
+		Printf("avant finish\n");
+		//(void) interrupt->SetLevel (oldLevel);
 		(void) interrupt->SetLevel (oldLevel);
 		//interrupt->Halt();
+#ifdef step4
+		processManager->removeAddrProcess(currentProcess);
+		Printf("nb process en cours : %d\n", processManager->getNbAddrProcess());
+#endif
 		currentThread->Finish();
 	}
-
 }
 bool Process::getEstAttendu()
 {

@@ -226,14 +226,10 @@ void
 Thread::Finish ()
 {
 	(void) interrupt->SetLevel (IntOff);
+	ASSERT (interrupt->getLevel () == IntOff);
 	ASSERT (this == currentThread);
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
-	/*if(currentThread->isMainThread())
-	{
-		// the main thread is the last to finish, it must be deleted
-		threadToBeDestroyed = currentThread;
-	}*/
 
 	if (currentProcess == NULL) {
 		Printf("currentProcess == NULL, exit\n");
@@ -247,7 +243,9 @@ Thread::Finish ()
 #ifdef step4
 		if(!currentThread->isMainThread())
 		{
+			Printf("[FINISH] avant freeThreadStack\n");
 			space->freeThreadStack(userStackAddr);
+			Printf("[FINISH] apres freeThreadStack\n");
 		}
 #else
 		if(!currentThread->isMainThread())
@@ -261,6 +259,9 @@ Thread::Finish ()
 	ASSERT (threadToBeDestroyed == NULL);
 	// End of addition
 	threadToBeDestroyed = currentThread;
+#endif
+#ifdef CHANGED
+	Printf("[FINISH] fin pid %d\n", currentProcess->getPid());
 #endif
 	Sleep ();			// invokes SWITCH
 	// not reached
@@ -334,7 +335,6 @@ Thread::Sleep ()
 	status = BLOCKED;
 	while ((nextThread = scheduler->FindNextToRun ()) == NULL)
 		interrupt->Idle ();	// no one to run, wait for an interrupt
-
 	scheduler->Run (nextThread);	// returns when we've been signalled
 }
 
