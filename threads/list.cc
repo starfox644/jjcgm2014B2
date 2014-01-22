@@ -203,7 +203,8 @@ List::SortedInsert (void *item, long long sortKey)
 	  first = element;
       }
     else
-      {				// look for first elt in list bigger than item
+      {
+    	// look for first elt in list bigger than item
 	  for (ptr = first; ptr->next != NULL; ptr = ptr->next)
 	    {
 		if (sortKey < ptr->next->key)
@@ -255,8 +256,9 @@ List::SortedRemove (long long *keyPtr)
     delete element;
     return thing;
 }
+
 #ifdef CHANGED
-void List::Remove(int tid)
+void List::Remove(int tid, int pid)
 {
 
 	ListElement *ptr = first;
@@ -264,8 +266,7 @@ void List::Remove(int tid)
 	Thread* th = NULL;
 	if(first != NULL)
 		th = (Thread*) (first->item);
-	//Thread *th_prec = NULL;
-	while (ptr != NULL && th->tid != tid)
+	while (ptr != NULL && (th->tid != tid  && th->process->getPid() != pid))
 	{
 		ptr_prec = ptr;
 		ptr = ptr->next;
@@ -274,7 +275,7 @@ void List::Remove(int tid)
 			th = (Thread*) ptr->item;
 		}
 	}
-	if (th != NULL && th->tid == tid)
+	if (th != NULL && (th->tid == tid) && (th->process->getPid() == pid))
 	{
 		// element a supp est la tete
 		if (ptr_prec == NULL)

@@ -173,9 +173,9 @@ Scheduler::Print ()
 	readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
 }
 #ifdef CHANGED
-void Scheduler::RemoveTid(int tid)
+void Scheduler::RemoveTid(int tid, int pid)
 {
-	readyList->Remove(tid);
+	readyList->Remove(tid, pid);
 }
 
 bool Scheduler::isReadyListEmpty()

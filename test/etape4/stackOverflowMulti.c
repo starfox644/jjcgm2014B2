@@ -13,12 +13,6 @@ void f(void *arg)
 	}
 }
 
-void g(void *arg)
-{
-	int i;
-	//PutString("debut g\n");
-	for ( i  = 0 ; i < 1000 ; i++);
-}
 int main()
 {
 	int i = 0;

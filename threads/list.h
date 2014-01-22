@@ -62,7 +62,7 @@ class List
     void SortedInsert (void *item, long long sortKey);	// Put item into list
     void *SortedRemove (long long *keyPtr);	// Remove first item from list
 
-    void Remove(int tid);
+    void Remove(int tid, int pid);
   private:
       ListElement * first;	// Head of the list, NULL if list is empty
     ListElement *last;		// Last element of list

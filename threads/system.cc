@@ -138,7 +138,6 @@ Initialize (int argc, char **argv)
 				argCount = 2;
 			}else{
 				fprintf(stderr,"\nPlease give an argument\n");
-				Exit(-1);
 			}
 #else
 			ASSERT(argc > 1);
@@ -227,6 +226,7 @@ void
 Cleanup ()
 {
 #ifdef CHANGED
+	interrupt->SetLevel(IntOff);
 	Printf ("\nCleaning up...\n");
 #endif
 #ifdef step4
@@ -261,5 +261,4 @@ Cleanup ()
 	delete scheduler;
 	delete interrupt;
 	delete stats;
-	Exit (0);
 }

@@ -11,7 +11,7 @@
  */
 void afficherProcess(){
 	int *liste_Process;
-	int nbProcessus = GetNbProcessTotal(), i = 0 ;
+	int nbProcessus = GetNbProcess(), i = 0 ;
 	int compteur = 0;
 	//on alloue la mémoire et on recupere la liste des processus
 	liste_Process = (int*) malloc(nbProcessus * (2 * sizeof(int)));
@@ -65,7 +65,7 @@ void do_cd(char* destination);
  * fonction permettant d'afficher le manuel d'aide des commandes
  */
 void afficherManuel(char* element){
-	char quit;
+	/*char quit;
 	char * texte;
 	char *extension = ".txt";
 	int fileDescripteur;
@@ -79,7 +79,7 @@ void afficherManuel(char* element){
 		Printf("%s",texte);
 	}
 	//liberation de la mémoire
-	free(element);
+	free(element);*/
 	return;
 
 }
