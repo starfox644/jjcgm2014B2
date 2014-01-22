@@ -24,7 +24,7 @@ int main() {
 
 	Printf("Veuillez entrer un entier svp ?\n");
 	resultat = Scanf("%d", &a);
-	Printf("valeur de retour : %d\n", resultat);
+	//Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
@@ -33,7 +33,7 @@ int main() {
 
 	Printf("Veuillez entrer un char svp ?\n");
 	resultat = Scanf("%c", &c);
-	Printf("valeur de retour : %d\n", resultat);
+	//Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else

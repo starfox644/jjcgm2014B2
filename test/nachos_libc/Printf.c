@@ -14,8 +14,9 @@ int Printf (char* messageVoulu, ...){
 
 	int i = 0, j = 0, k;
 	int variable, nbArg;
-	char *value, buffer[MAX_LENGH];
-
+	char *value;
+	char buffer[MAX_LENGH];
+	int alloue = 0;
 	arg_start();
 	nbArg = 0;
 
@@ -33,15 +34,21 @@ int Printf (char* messageVoulu, ...){
 				switch (messageVoulu[i]) {
 				case 'd': // un entier
 					value = Itoa (variable);
+					alloue = 1;
 					break;
 
 				case 'i':
 					value = Itoa (variable);
+					alloue = 1;
 					break;
 
-				case 'c': // un char
+				case 'c':
+					value = malloc(2*sizeof(char));
+					if(value == 0)
+						return -1;
 					value[0] = (char) variable;
 					value[1] = '\0';
+					alloue = 1;
 					break;
 
 				case 's': // un string
@@ -57,7 +64,11 @@ int Printf (char* messageVoulu, ...){
 				}
 			}
 			else // si on veut lire un 4eme argument
+			{
+				if(alloue)
+					free(value);
 				return -1;
+			}
 		}
 		else {
 			buffer[j] = messageVoulu[i];
@@ -72,7 +83,8 @@ int Printf (char* messageVoulu, ...){
 	for (i = 0; i < MAX_LENGH; i++) {
 		buffer[i] = '\0';
 	}
-
+	if(alloue)
+		free(value);
 	return 0;
 }
 
@@ -103,9 +115,11 @@ int Scanf (char* typeVariable, ...) {
 					*((int*) variable) = Atoi (tmp);
 					break;
 				case 'c': //cas de récupération d'un char
-					GetString(tmp, MAX_LENGH);
-					((char*) variable)[0] = tmp[0];
-					((char*) variable)[1] = '\0';
+					//GetString(tmp, MAX_LENGH);
+					*((char*)variable) = (char)GetChar();
+					GetChar();
+					/*((char*) variable)[0] = tmp[0];
+					((char*) variable)[1] = '\0';*/
 					break;
 				case 's': //cas de récupération d'un string
 					GetString ((char*) variable, MAX_LENGH);
