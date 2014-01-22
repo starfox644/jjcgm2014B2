@@ -23,7 +23,7 @@
 #include "interrupt.h"
 
 #ifdef CHANGED
-#include "process.h" //TODO
+#include "process.h"
 #include "synch.h"
 #endif
 

@@ -232,7 +232,6 @@ PostOffice::PostalDelivery()
 
 	for (;;) {
 		// first, wait for a message
-		//    	printf("[Post] prise semaphore messageAvailable\n"); // TODO
 		messageAvailable->P();
 		pktHdr = network->Receive(buffer);
 
@@ -290,7 +289,7 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	sendLock->Acquire();   		// only one message can be sent
 	// to the network at any one time
 	network->Send(pktHdr, buffer);
-	//	printf("[Post] prise semaphore messageSent\n"); // TODO
+
 	messageSent->P();			// wait for interrupt to tell us
 	// ok to send the next message
 	sendLock->Release();
@@ -336,7 +335,6 @@ PostOffice::Receive(int box, PacketHeader *pktHdr,
 void
 PostOffice::IncomingPacket()
 { 
-	//	printf("[Post] relache semaphore messageAvailable\n"); // TODO
 	messageAvailable->V();
 }
 
@@ -353,7 +351,6 @@ PostOffice::IncomingPacket()
 void 
 PostOffice::PacketSent()
 { 
-	//	printf("[Post] relache semaphore messageSent\n"); // TODO
 	messageSent->V();
 }
 
