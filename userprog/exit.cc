@@ -41,10 +41,10 @@ void do_exit(int returnCode)
 		currentProcess->freeAddrSpace();
 	#ifdef step4
 		// currentThread isn't the last main thread
-		if (processManager->getNbAddrProcess() > 1)
+		if (processManager->getNbProcessRunning() > 1)
 		{
 			//removeProcess();
-			processManager->removeAddrProcess(currentProcess);
+			processManager->removeProcess(currentProcess);
 			currentProcess->semProc->V();
 			s_createProcess->V();
 			currentThread->Finish();
@@ -52,10 +52,10 @@ void do_exit(int returnCode)
 		else // the current thread is the last thread
 		{
 			//removeProcess();
-			processManager->removeAddrProcess(currentProcess);
+			processManager->removeProcess(currentProcess);
 			// stop the program
-			s_createProcess->V();
 			currentProcess->semProc->V();
+			s_createProcess->V();
 			interrupt->Halt ();
 		}
 #else

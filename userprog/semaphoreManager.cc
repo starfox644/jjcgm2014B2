@@ -26,19 +26,25 @@ SemaphoreManager::~SemaphoreManager (){
 
 /**
  * Add newSem to semList, give it a unique modifier and return the id
+ * Return -1 if nextSemId has reached MAX_INT
  */
 int SemaphoreManager::addSemaphore(int initValue)
 {
 	// unique name based on identifier
-	const char *name = "UserSem" + nextSemId;
-	Semaphore *sem = new Semaphore (name, initValue);
-	// Set the semaphore id
-	sem->setId(nextSemId);
-	nbSem++;
-	nextSemId++;
-	// Add it to the list
-	semList.push_back(sem);
-	return sem->getId();
+	if (nextSemId < INT_MAX)
+	{
+		const char *name = "UserSem" + nextSemId;
+		Semaphore *sem = new Semaphore (name, initValue);
+		// Set the semaphore id
+		sem->setId(nextSemId);
+		nbSem++;
+		nextSemId++;
+		// Add it to the list
+		semList.push_back(sem);
+		return sem->getId();
+	}
+	else
+		return -1;
 }
 
 /**

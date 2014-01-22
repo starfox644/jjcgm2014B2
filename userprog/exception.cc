@@ -296,8 +296,8 @@ ExceptionHandler (ExceptionType which)
 				n = do_arg_arg();
 				machine->WriteRegister(2, n);
 				break;
-			case SC_GetNbProcess:
-				machine->WriteRegister(2,processManager->getNbProcess());
+			case SC_GetNbProcessTotal:
+				machine->WriteRegister(2,processManager->getNbProcessTotal());
 				break;
 
 			case SC_GetListProcess:

@@ -20,6 +20,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testBcpThreads : \n");
+	PutString("Lance plusieurs threads affichant un nombre different avec semaphore pour l'acces.\n");
+	PutString("-----------------------------------------\n");
 	int i;
 	int nb[NB_THREADS];
 	SemInit(&s, 1);

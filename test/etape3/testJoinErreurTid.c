@@ -14,6 +14,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testJoinErreurTid : \n");
+	PutString("Essaie d'attendre un thread dont le TID n'existe pas.\n");
+	PutString("-----------------------------------------\n");
 	int tidf;
 	tidf = UserThreadCreate(f, 0);
 	if(UserThreadJoin(6, 0) == -1)

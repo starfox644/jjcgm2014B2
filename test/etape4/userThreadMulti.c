@@ -27,21 +27,20 @@ void f(void* arg)
 
 int main(){
 
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test userThreadMulti : \n");
+	PutString("Lance plusieurs threads qui affice chacun \"abcd\".\n");
+	PutString("-----------------------------------------\n");
 	int i, error;
 	if((error = SemInit(&sem,1)) == -1){
 		return -1;
 	}
 
-	//SemWait(&sem);
-	PutString("\n Lancement du programme de test userThreadMulti\n");
-	//SemPost(&sem);
 	for(i = 0; i < MAX_THREAD; i++)
 	{
 		if(UserThreadCreate(f, 0) == -1)
 		{
-			//SemWait(&sem);
 			PutString("Erreur de lancement de thread\n");
-			//SemPost(&sem);
 		}
 		/*else
 		{

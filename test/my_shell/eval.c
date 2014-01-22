@@ -120,4 +120,3 @@ int commandIntegre(char **argv){
 	return 1;
 }
 
-

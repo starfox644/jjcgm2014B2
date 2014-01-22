@@ -22,6 +22,10 @@ void g(void *arg)
 }
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testStackOverflow : \n");
+	PutString("Teste le depassement de la pile.\n");
+	PutString("-----------------------------------------\n");
 	int i = 0;
 	int tidf = UserThreadCreate(f, &i);
 	int tidg = UserThreadCreate(g, 0);
