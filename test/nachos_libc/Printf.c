@@ -90,8 +90,8 @@ int Printf (char* messageVoulu, ...){
 
 int Scanf (char* typeVariable, ...) {
 	void* variable;
-	char tmp[MAX_LENGH];
 	int i, nbArg;
+	char c;
 
 	i = 0;
 	arg_start ();
@@ -111,8 +111,14 @@ int Scanf (char* typeVariable, ...) {
 				switch (typeVariable[i]) {
 				case 'i':
 				case 'd':	//cas de récupération d'un int
-					GetString(tmp, MAX_LENGH);
-					*((int*) variable) = Atoi (tmp);
+					c = GetChar();
+					*((int*) variable) = 0;
+
+					while (c != '\n' && c != ' ' && c != '\t') {
+						*((int*) variable) *= 10;
+						*((int*) variable) += (c - '0');
+						c = GetChar();
+					}
 					break;
 				case 'c': //cas de récupération d'un char
 					//GetString(tmp, MAX_LENGH);

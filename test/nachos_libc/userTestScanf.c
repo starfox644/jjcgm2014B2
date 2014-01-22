@@ -24,7 +24,6 @@ int main() {
 
 	Printf("Veuillez entrer un entier svp ?\n");
 	resultat = Scanf("%d", &a);
-	//Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
@@ -33,7 +32,6 @@ int main() {
 
 	Printf("Veuillez entrer un char svp ?\n");
 	resultat = Scanf("%c", &c);
-	//Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
@@ -42,7 +40,6 @@ int main() {
 
 	Printf("Veuillez entrer un string svp ?\n");
 	resultat = Scanf("%s", s);
-	Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
@@ -51,7 +48,6 @@ int main() {
 
 	Printf("Veuillez entrer un caractere puis deux entier svp ?\n");
 	resultat = Scanf("%c%d %i", &c, &b, &a);
-	Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
@@ -60,7 +56,6 @@ int main() {
 
 	Printf("Veuillez entrer deux chaines svp ?\n");
 	resultat = Scanf("%s%s", s, t);
-	Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
@@ -69,7 +64,6 @@ int main() {
 
 	Printf("Test erreur :\n");
 	resultat = Scanf("%w", s);
-	Printf("valeur de retour : %d\n", resultat);
 	if (resultat)
 		Printf("Erreur lecture\n\n");
 	else
