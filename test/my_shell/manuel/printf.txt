@@ -4,10 +4,13 @@ NOM
 	printf - affiche les données sur la console
 	
 SYNOPSYS
-	printf DONNEE [ARGUMENT]
+	#include "Printf.h"
+	int Printf(char* format, ...);
 
 DESCRIPTION
 	Affiche les ARGUMENT suivant le type de variable dont il s'agit.
+	
+	Cette fonction est limité à 3 arguments maximum
 	
 	\n retour a la ligne
 	\t insère une tabulation
@@ -16,3 +19,5 @@ DESCRIPTION
 	'%i' pour afficher un entier
 	'%c' pour afficher un caractère
 	'%s' pour afficher une chaine de caractère
+	
+	Si la fonction échoue, elle renvoie -1.

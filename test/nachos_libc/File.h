@@ -20,6 +20,13 @@
 #define SEEK_CUR (21)	//a partir de la position ou on ce trouve
 #define SEEK_END (22)	//a partir de la fin du fichier
 
+typedef struct File{	//structure de definition d'un ficher pour l'utilisateur
+	char* name;
+	int fileDescriptor;
+	int size;
+	char* contenu;
+}File;
+
 /*
  * Fonction permettant d'ouvrir un fichier
  * suivant le flag choisi on l'ouvre en ecriture ou lecture
@@ -47,5 +54,10 @@ int SeekFile(int fileDescripteur, int offset,int position);
  * Fonction permettant de fermer un fichier et de libérer la mémoire
  */
 int CloseFile(int fileDescripteur);
+
+/*
+ * permet de recuperer le contenu de notre fichier d'apres son id
+ */
+char* getContent(int fileDescripteur);
 
 #endif /* FILE_H_ */

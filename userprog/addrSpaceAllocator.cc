@@ -118,7 +118,6 @@ struct space* AddrSpaceAllocator::canAllocate(int length)
  */
 bool AddrSpaceAllocator::isInStack(int addr)
 {
-	printf("[IsInStack] Avant boucle\n");
 	struct space* actu = busyHead;
 
 	//parcours pour recherche le bloc contenant l'adresse addr
@@ -126,7 +125,6 @@ bool AddrSpaceAllocator::isInStack(int addr)
 	{
 		actu = actu->next;
 	}
-	printf("[IsInStack] Apres boucle\n");
 	// addr n'est present dans aucun bloc
 	if (actu == NULL || !actu->forbiddenPage)
 		return false;

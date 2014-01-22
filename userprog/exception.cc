@@ -343,7 +343,6 @@ ExceptionHandler (ExceptionType which)
 				// address of the user's stack pointer
 				adr = machine->ReadRegister(StackReg);
 				// if is in stack => Stzck overflow
-				printf("Avant isInStack\n");
 				if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
 				{
 					Printf("STACK OVERFLOW !!\n");
