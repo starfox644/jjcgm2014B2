@@ -21,13 +21,18 @@
  *  %d et %i affiche un entier
  *  %c affiche un char
  *  %s afficher un string
+ *  Renvoie 0 si tout va bien, -1 sinon
  */
-void Printf(char* messageVoulu, ...);
+int Printf(char* messageVoulu, ...);
 
 /*
  * Fonction permettant de récupérer une valeur de variable écris sur la console
+ *  %d et %i recupere un entier
+ *  %c recupere un char
+ *  %s recupere un string
+ * Renvoie 0 si tout va bien, -1 sinon
  */
-void* Scanf(char* typeVariable, void * variable);
+int Scanf(char* typeVariable, ...);
 
 
 
