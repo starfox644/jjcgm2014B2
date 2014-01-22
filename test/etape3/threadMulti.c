@@ -19,6 +19,11 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadMulti : \n");
+	PutString("Lance 2 threads executant la meme fonction.\n");
+	PutString("Doit afficher des 5 et des 6\".\n");
+	PutString("-----------------------------------------\n");
 	int a = 5;
 	int b = 6;
 	UserThreadCreate(f, &a);

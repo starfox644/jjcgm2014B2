@@ -15,6 +15,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadMulJoin : \n");
+	PutString("Cree un thread et recupere sa valeur de retour avec Join puis l'affiche.\n");
+	PutString("-----------------------------------------\n");
 	int tidf;
 	int ret;
 	tidf = UserThreadCreate(f, 0);

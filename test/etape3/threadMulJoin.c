@@ -26,6 +26,11 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadMulJoin : \n");
+	PutString("Test le Join multiple sur le meme thread.\n");
+	PutString("Doit afficher \"Erreur join ...\".\n");
+	PutString("-----------------------------------------\n");
 	int tidf, tidg;
 	tidg = UserThreadCreate(g, 0);
 	tidf = UserThreadCreate(f, &tidg);

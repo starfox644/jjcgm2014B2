@@ -27,6 +27,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadParallele2 : \n");
+	PutString("Lance 3 thread que le main va attendre puis se terminer.\n");
+	PutString("-----------------------------------------\n");
 	PutString("Thread main\n");
 	UserThreadCreate(f, 0);
 	UserThreadCreate(g, 0);

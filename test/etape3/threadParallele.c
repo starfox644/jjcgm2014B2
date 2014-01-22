@@ -32,6 +32,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadParallele : \n");
+	PutString("Lance 3 threads et fais une attente active jusqu'a terminaison.\n");
+	PutString("-----------------------------------------\n");
 	int attf = 0;
 	int attFin = 0;
 	int attg = 0;

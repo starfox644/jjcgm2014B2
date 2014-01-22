@@ -14,6 +14,11 @@ void f(void *a)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadNullArg : \n");
+	PutString("Lance un thread avec une adresse d'argument nulle.\n");
+	PutString("Doit afficher \"Thread 2\".\n");
+	PutString("-----------------------------------------\n");
 	if(UserThreadCreate(f, 0) == -1)
 	{
 		PutString("Erreur de creation de thread.\n");

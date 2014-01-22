@@ -257,6 +257,10 @@ List::SortedRemove (long long *keyPtr)
     return thing;
 }
 
+/*
+ * Suppression dans ReadyList du thread dont le tid est passe en parametre.
+ * Ce thread appartient au processus dont le pid est passe en parametre
+ */
 #ifdef CHANGED
 void List::Remove(int tid, int pid)
 {
@@ -266,6 +270,7 @@ void List::Remove(int tid, int pid)
 	Thread* th = NULL;
 	if(first != NULL)
 		th = (Thread*) (first->item);
+	// recherche du thread dans la liste
 	while (ptr != NULL && (th->tid != tid  && th->process->getPid() != pid))
 	{
 		ptr_prec = ptr;

@@ -17,11 +17,14 @@
 // of liability and disclaimer of warranty provisions.
 
 #include "copyright.h"
-
 #include "system.h"
 #include "network.h"
 #include "post.h"
 #include "interrupt.h"
+
+#ifdef CHANGED
+#include "process.h" //TODO
+#endif
 
 // Test out message delivery, by doing the following:
 //	1. send a message to the machine with ID "farAddr", at mail box #0
@@ -42,13 +45,13 @@ MailTest(int farAddr)
     // construct packet, mail header for original message
     // To: destination machine, mailbox 0
     // From: our machine, reply to: mailbox 1
-    outPktHdr.to = farAddr;		
+    outPktHdr.to = farAddr;
     outMailHdr.to = 0;
     outMailHdr.from = 1;
     outMailHdr.length = strlen(data) + 1;
 
     // Send the first message
-    postOffice->Send(outPktHdr, outMailHdr, data); 
+    postOffice->Send(outPktHdr, outMailHdr, data);
 
     // Wait for the first message from the other machine
     postOffice->Receive(0, &inPktHdr, &inMailHdr, buffer);
@@ -60,7 +63,7 @@ MailTest(int farAddr)
     outPktHdr.to = inPktHdr.from;
     outMailHdr.to = inMailHdr.from;
     outMailHdr.length = strlen(ack) + 1;
-    postOffice->Send(outPktHdr, outMailHdr, ack); 
+    postOffice->Send(outPktHdr, outMailHdr, ack);
 
     // Wait for the ack from the other machine to the first message we sent.
     postOffice->Receive(1, &inPktHdr, &inMailHdr, buffer);

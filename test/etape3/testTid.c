@@ -31,6 +31,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testTid : \n");
+	PutString("Lance 3 threads en parallele affichant leur TID.\n");
+	PutString("-----------------------------------------\n");
 	PutString("Main, Tid : \n");
 	PutInt(GetTid());
 	PutString("\n");

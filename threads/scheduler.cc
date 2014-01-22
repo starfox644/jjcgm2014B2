@@ -97,6 +97,8 @@ Scheduler::Run (Thread * nextThread)
 	// End of addition
 
 #ifdef USER_PROGRAM		// ignore until running user programs
+#ifndef FILESYS
+#ifndef NETWORK
 #ifdef CHANGED
 	if (currentProcess->getAddrSpace() != NULL)
 	{
@@ -109,8 +111,10 @@ Scheduler::Run (Thread * nextThread)
 		currentThread->SaveUserState ();	// to restore, do it.
 		currentThread->space->SaveState ();
 	}
-#endif
-#endif
+#endif // CHANGED
+#endif // NETWORK
+#endif // FILESYS
+#endif // USER_PROGRAM
 
 	oldThread->CheckOverflow ();	// check if the old thread
 	// had an undetected stack overflow
@@ -145,6 +149,8 @@ Scheduler::Run (Thread * nextThread)
 	}
 
 #ifdef USER_PROGRAM
+#ifndef NETWORK
+#ifndef FILESYS
 #ifdef CHANGED
 	if (currentProcess->getAddrSpace() != NULL)
 	{
@@ -158,6 +164,8 @@ Scheduler::Run (Thread * nextThread)
 		currentThread->space->RestoreState ();
 	}
 #endif // changed
+#endif // FILESYS
+#endif // NETWORK
 #endif // user program
 }
 
@@ -172,6 +180,11 @@ Scheduler::Print ()
 	printf ("Ready list contents:\n");
 	readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
 }
+
+/*
+ * Suppression dans ReadyList du thread dont le tid est passe en parametre.
+ * Ce thread appartient au processus dont le pid est passe en parametre
+ */
 #ifdef CHANGED
 void Scheduler::RemoveTid(int tid, int pid)
 {

@@ -13,6 +13,11 @@ void f(void *a)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadBadArg : \n");
+	PutString("Lance un thread avec une mauvaise adresse d'argument.\n");
+	PutString("Doit afficher \"Erreur de creation de thread\".\n");
+	PutString("-----------------------------------------\n");
 	if(UserThreadCreate(f, (void*)-1) == -1)
 	{
 		PutString("Erreur de creation de thread.\n");
