@@ -136,8 +136,8 @@ Lock::~Lock ()
 void Lock::Acquire ()
 {
 #ifdef CHANGED
-	sem->P();
-	holder = currentThread;
+	sem->P(); // Verrouille le lock
+	holder = currentThread; // Attribue le lock au Thread courant
 #endif
 }
 
@@ -146,24 +146,25 @@ void Lock::Release ()
 #ifdef CHANGED
 	if (isHeldByCurrentThread())
 	{
-		holder = NULL;
-		sem->V();
+		holder = NULL; // Retire le lock au thread courant
+		sem->V(); // Deverouille le lock
 	}
 	else
 		printf("[Lock::Release] Erreur - Ce lock n'est pas pris par le thread courant.\n");
 #endif
 }
+
 #ifdef CHANGED
 bool Lock::isHeldByCurrentThread ()
 {
 	return holder == (currentThread);
 }
 #endif
+
 Condition::Condition (const char *debugName)
 {
 	name = debugName;
 #ifdef NETWORK
-	semProtList = new Semaphore("Semaphore protection Liste",1);
 	l_semCond = new List();
 #endif
 }
@@ -171,7 +172,6 @@ Condition::Condition (const char *debugName)
 Condition::~Condition ()
 {
 #ifdef NETWORK
-	delete semProtList;
 	delete l_semCond;
 #endif
 }
@@ -181,20 +181,14 @@ void Condition::Wait (Lock * conditionLock)
 {
 #ifdef CHANGED
 #ifdef NETWORK
+	// Si le thread courant est le proprietaire du lock
 	if (conditionLock->isHeldByCurrentThread())
 	{
 		Semaphore *semCond = new Semaphore("condWait", 0);
-//		printf("[Condition::Wait] debut fonction\n"); // TODO
-		// On ajoute le semaphore a notre liste
-//		semProtList->P();
-		l_semCond->Append(semCond);
-//		semProtList->V();
-		// On commence par liberer notre lock
-		conditionLock->Release();
-		// On prend notre semaphore pour attendre
-		semCond->P();
-		conditionLock->Acquire(); // on recupere notre lock
-//		printf("[Condition::Wait] fin fonction\n"); // TODO
+		l_semCond->Append(semCond); // On ajoute le semaphore a la liste
+		conditionLock->Release(); // On libere le lock
+		semCond->P(); // On prend le semaphore pour attendre
+		conditionLock->Acquire(); // On recupere notre lock a la sortie de l'attente
 	}
 	else
 	{
@@ -209,16 +203,15 @@ void Condition::Signal (Lock * conditionLock)
 {
 #ifdef CHANGED
 #ifdef NETWORK
+	// Si le thread courant est le proprietaire du lock
 	if (conditionLock->isHeldByCurrentThread())
 	{
 		Semaphore *semCond;
-//		printf("[Condition::Signal] debut fonction\n"); // TODO
-//		semProtList->P();
+		// On choisit un thread a reveiller
 		semCond = (Semaphore*) l_semCond->Remove();
 		if (semCond != NULL)
 		{
-			//on libere notre semaphore des conditions
-//			semProtList->V();
+			// On relache le semaphore du thread pour qu'il se reveille
 			semCond->V();
 		}
 	}
@@ -235,15 +228,15 @@ void Condition::Broadcast (Lock * conditionLock)
 {
 #ifdef CHANGED
 #ifdef NETWORK
+	// Si le thread courant est le proprietaire du lock
 	if (conditionLock->isHeldByCurrentThread())
 	{
 		Semaphore *semCond;
+		// Tant qu'il y a des semaphores dans la liste
 		while (!l_semCond->IsEmpty())
 		{
-//			semProtList->P();
 			semCond = (Semaphore*) l_semCond->Remove();
-			//on libere notre semaphore des conditions
-//			semProtList->V();
+			// On libere les threads
 			semCond->V();
 		}
 	}

@@ -29,8 +29,8 @@ int main(){
 	Scanf("%d",&to);
 	Sleep(5);
 	//connexion de notre machine
-	SocketEnvoi = creerSocket(to, 0, 1, message);
-	SocketReception = creerSocket(to, 1, 0, reception);
+	SocketEnvoi = creerSocket(to);
+	SocketReception = creerSocket(to);
 	//si on est la première machine on envoi le message
 
 

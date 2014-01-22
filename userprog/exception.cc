@@ -96,7 +96,7 @@ ExceptionHandler (ExceptionType which)
 	bool isSuccess;
 #endif //step3
 #ifdef NETWORK
-	int to, from, adrBuffer;
+	int adrBuffer;
 #endif // NETWORK
 
 	if (which == SyscallException)
@@ -319,11 +319,8 @@ ExceptionHandler (ExceptionType which)
 #ifdef NETWORK
 			case SC_InitSocket:
 				n = machine->ReadRegister(4);		// Numero de la box
-				to = machine->ReadRegister(5); 		// Adresse destination de la socket
-				from = machine->ReadRegister(6); 	// Adresse de la machine
-				adrBuffer=machine->ReadRegister(7); // Buffer
 				// Renvoie l'ID de la socket creee ou -1
-				machine->WriteRegister(2, do_SockInit(n, to, from, adrBuffer));
+				machine->WriteRegister(2, do_SockInit(n));
 				break;
 
 			case SC_Send:
@@ -348,11 +345,6 @@ ExceptionHandler (ExceptionType which)
 			case SC_Sleep:
 				n = machine->ReadRegister(4);
 				Delay(n);
-				break;
-
-			case SC_SetHostname:
-				n = machine->ReadRegister(4);
-				postOffice->setNetAddr(n);
 				break;
 
 			case SC_GetHostname:

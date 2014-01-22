@@ -21,43 +21,50 @@ public :
 	SocketManager();
 	~SocketManager();
 
-	// Socket list : needed to give an unique identifier for user sockets
 	std::list<Socket*> socketList;
-	/**
-	 * Add newSem to semList and allocate it a unique modifier
-	 */
-	int addSocket(int farAddr, int to, int from, char* buffer);
 
 	/**
-	 * Remove a semaphore from the list based on his identifier.
-	 * If the identifier is valid, the semaphore is destroyed.
-	 * If not, the function returns -1.
+	 * Ajoute la socket a la liste
+	 * Renvoie -1 si nextSocketId a atteint INT_MAX
+	 */
+	int addSocket(int farAddr);
+
+	/**
+	 * Supprime la socket id de la liste.
+	 * Si id n'est pas valide, la socket est detruite
+	 * Sinon, renvoie -1
 	 */
 	int removeSocket(int id);
 
 	/**
-	 * Return the semaphore identified by id, or NULL if it doesn't exist
+	 * Renvoie la socket identifiee par id
+	 * Renvoie NULL si celle-ci n'est pas dans la liste
 	 */
 	Socket* getSocket(int id);
 
 	/**
-	 * Send the message at adrMessage via the socket idSocket
-	 * Return the number of written characters
+	 * Utilise la socket id pour envoyer le message a adrMessage
+	 * Renvoie le nombre de caracteres ecrits
+	 * Renvoie -1 si : - Le message est long de plus de MAX_STRING_SIZE caracteres
+	 * 				   - Id n'est pas valide
 	 */
-	int do_Send(int idSocket, int adrMessage);
+	int do_Send(int id, int adrMessage);
 
 	/**
-	 * Receive a message via the socket idSocket and write it at adrMessage
-	 * Return the number of read characters
+	 * Demande la reception d'un message a la socket idSocket
+	 * Celui-ci est ecrit a adrMessage
+	 * Renvoie le nombre de caracteres lus.
+	 * Renvoie -1 si id n'est pas valide
 	 */
-	int do_Receive(int idSocket, int adrMessage);
+	int do_Receive(int id, int adrMessage);
+
 	/**
-	 * Delete the semaphore list
+	 * Supprime la liste de sockets
 	 */
 	void deleteSocketList();
 
 private :
-	// number of socket created
+	// nombre de sockets creees
 	int nbSocket;
 	int nextSocketId;
 

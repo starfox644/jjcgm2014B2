@@ -17,27 +17,27 @@
  * Retourne l'identifiant de la socket
  * -1 si jamais cela echoue
  *
- * A besoin du numero de mailBox
- * le numéro de la cible
- * le numéro de l'hote
- * et la taille du buffer
+ * A besoin de l'adresse de la cible
  */
-sock_t creerSocket(int,int,int,char*);
+sock_t creerSocket(int adr);
+
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue
  */
-int fermerSocket(sock_t);
+int fermerSocket(sock_t socket); // TODO voir pourquoi ca plante
+
 /*
  * permet d'envoyer un message
  * retourne -1 si cela echoue
  */
-int envoyerMessage(sock_t,char*);
+int envoyerMessage(sock_t socket, char* messageEnvoi);
+
 /*
  * permet de recevoir un message
  * retourne -1 si cela echoue
  */
-int recevoirMessage(sock_t,char*);
+int recevoirMessage(sock_t socket,char* messageReception);
 
 /*
  * permet d'envoyer un message en étant sur qu'il soit bien arrivé

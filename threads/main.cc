@@ -257,7 +257,7 @@ main (int argc, char **argv)
 	Exit(0);
 #else
 	currentThread->Finish ();	// NOTE: if the procedure "main"
-#endif
+#endif // CHANGED
 	// returns, then the program "nachos"
 	// will exit (as any other normal program
 	// would).  But there may be other

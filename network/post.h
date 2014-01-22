@@ -129,7 +129,6 @@ class PostOffice {
 				// PostalDelivery)
 
     NetworkAddress getNetAddr();
-    void setNetAddr(NetworkAddress addr);
 
   private:
     Network *network;		// Physical network connection
