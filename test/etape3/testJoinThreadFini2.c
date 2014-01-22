@@ -1,8 +1,8 @@
 #include "syscall.h"
 
 /**
- * 	Le thread main cree deux threads qui exécutent f et g.
- *	Le thread f et le main attendent tous les deux g, qui est deja termine.
+ * 	Le thread main cree deux threads qui executent f et g.
+ *	Le main attend f, puis g, qui est deja termine.
  *
  *
  */
@@ -25,6 +25,10 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testJoinThreadFini2 : \n");
+	PutString("Lance 2 threads et les attend, le 2e attendu est deja termine.\n");
+	PutString("-----------------------------------------\n");
 	int tidf, tidg;
 	int th_ret;
 	tidg = UserThreadCreate(g, 0);

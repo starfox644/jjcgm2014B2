@@ -149,6 +149,7 @@ Lock::Release ()
 
 Condition::Condition (const char *debugName)
 {
+	name = debugName;
 }
 
 Condition::~Condition ()
@@ -157,7 +158,7 @@ Condition::~Condition ()
 void
 Condition::Wait (Lock * conditionLock)
 {
-    ASSERT (FALSE);
+
 }
 
 void

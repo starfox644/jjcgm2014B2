@@ -6,6 +6,11 @@
  */
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadBadFunction : \n");
+	PutString("Lance un thread avec une mauvaise adresse de fonction.\n");
+	PutString("Doit afficher \"Erreur de creation de thread\".\n");
+	PutString("-----------------------------------------\n");
 	int a = 0;
 	if(UserThreadCreate((void(*)(void*))500000, &a) == -1)
 	{

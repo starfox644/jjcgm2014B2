@@ -216,6 +216,7 @@ int do_unmap(int addr)
  */
 Process::Process()
 {
+	printf("[Process()] Creation d'un nouveau processus.\n");
 	addrSpace = NULL;
 	processRunning = false;
 	threadWaiting = false;
@@ -238,6 +239,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 #ifdef step4
 	addrSpace = NULL;
 	addrSpace = new AddrSpace();
+#ifndef NETWORK
 	if(addrSpace != NULL)
 	{
 		// load code and initial data
@@ -247,6 +249,7 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	{
 		return_value = false;
 	}
+#endif
 #else
 	// les etapes precedentes chargent directement le code dans le constructeur
 	addrSpace = new AddrSpace(executable);
