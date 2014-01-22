@@ -232,6 +232,11 @@ int SemWait(sem_t *adrSem);
 int SemPost(sem_t *adrSem);
 
 /**
+ * Delete the semaphore.
+ **/
+int SemDestroy(sem_t *adrSem);
+
+/**
  * Create a thread and execute the program given in parameter
  */
 int ForkExec(char *executable);
