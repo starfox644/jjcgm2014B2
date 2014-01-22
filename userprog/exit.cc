@@ -43,7 +43,6 @@ void do_exit(int returnCode)
 		// currentThread isn't the last main thread
 		if (processManager->getNbProcessRunning() > 1)
 		{
-			//removeProcess();
 			processManager->removeProcess(currentProcess);
 			currentProcess->semProc->V();
 			s_createProcess->V();
@@ -51,7 +50,6 @@ void do_exit(int returnCode)
 		}
 		else // the current thread is the last thread
 		{
-			//removeProcess();
 			processManager->removeProcess(currentProcess);
 			// stop the program
 			currentProcess->semProc->V();

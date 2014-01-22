@@ -71,13 +71,13 @@ int StrLengh(char * element){
 	return compteur;
 }
 
-char* StrChr(char *element, char elementATrouve){
+char* StrChr(char *chaine, char c){
 	int compteur = 0;
-	while(element[compteur] != '\0' && element[compteur] != elementATrouve){
+	while(chaine[compteur] != '\0' && chaine[compteur] != c){
 		compteur++;
 	}
-	if(element[compteur] == elementATrouve){
-		return &element[compteur];
+	if(chaine[compteur] == c){
+		return &chaine[compteur];
 	}else{
 		return 0;
 	}
