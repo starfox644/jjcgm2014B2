@@ -15,7 +15,7 @@ int main(){
 
 	Printf("\n-----------------------------------------\n");
 	Printf("Lancement du test inetEnvoi : \n");
-	Printf("envoi un message a une machine qui l'envoi a la suivante\n");
+	Printf("envoi un message a une machine\n");
 	Printf("-----------------------------------------\n");
 	int to,from;
 	char* message = (char*) malloc(10 * sizeof(char));

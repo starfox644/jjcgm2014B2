@@ -15,7 +15,7 @@ int main(){
 
 	Printf("\n-----------------------------------------\n");
 	Printf("Lancement du test inetReception : \n");
-	Printf("envoi un message a une machine qui l'envoi a la suivante\n");
+	Printf("reçois un message d'une machine distantes\n");
 	Printf("-----------------------------------------\n");
 	int to,from, compteur = 0, nbChar = 0;
 	char* reception = (char*) malloc(2 * sizeof(char));
