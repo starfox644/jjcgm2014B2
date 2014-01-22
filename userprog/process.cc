@@ -326,6 +326,7 @@ void Process::killProcess()
 		++it;
 	}
 	freeAddrSpace();
+	threadToBeDestroyed = currentThread;
 	if(scheduler->isReadyListEmpty())
 	{
 		Printf("La liste est vide\n");

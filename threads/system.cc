@@ -174,6 +174,7 @@ Initialize (int argc, char **argv)
 	scheduler = new Scheduler ();	// initialize the ready queue
 #ifdef CHANGED
 	s_createProcess = new Semaphore("sem process", 1);
+	currentProcess = NULL;
 #ifdef step3
 	s_create = new Semaphore("sem create", 1);
 #endif
