@@ -40,12 +40,10 @@ int main(){
 			Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
 		}
 
-		Printf("\nrecevoirMessage\n");
 		if(recevoirMessage(SocketReception,reception) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 		}
 	}else{
-		Printf("\nrecevoirMessage\n");
 		if(recevoirMessage(SocketReception,reception) == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 		}

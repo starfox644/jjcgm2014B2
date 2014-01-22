@@ -49,7 +49,7 @@ int Socket::do_SendSocket(char *message)
 	// To: destination machine, mailbox 0
 	// From: our machine, reply to: mailbox 1
 	outPktHdr.to = farAddr;
-//	outPktHdr.from = 1;
+	outPktHdr.from = postOffice->getNetAddr();
 	outMailHdr.to = to;
 	outMailHdr.from = from;
 	outMailHdr.length = strlen(message) + 1;
