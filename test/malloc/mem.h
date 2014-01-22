@@ -2,7 +2,7 @@
 #define __MEM_H
 #include "syscall.h"
 #define NULL 0
-#define MEMORY_SIZE 2048
+#define MEMORY_SIZE 4096
 typedef unsigned int size_t;
 
 struct fb

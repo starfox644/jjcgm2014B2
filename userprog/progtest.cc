@@ -41,7 +41,6 @@ StartProcess (char *filename)
 #ifdef CHANGED
 		Printf ("Unable to open file %s\n", filename);
 #endif
-		Exit(-1);
 	}
 	space = new AddrSpace (executable);
 	currentThread->space = space;

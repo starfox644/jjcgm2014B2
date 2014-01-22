@@ -65,7 +65,6 @@ int do_forkExec(int adrExec)
 		}
 		else
 		{
-			//printf("[ForkExec] Erreur allocation process space\n");
 			// erreur : l'allocation du processus a echoue
 			delete t;
 			// relachement de la section critique de creation
@@ -262,14 +261,11 @@ bool Process::allocateAddrSpace(OpenFile * executable)
  */
 void Process::freeAddrSpace()
 {
-	//Printf("Dans free addrSpace\n");
 	// On relache le semaphore pour qu'un appel a waitpid ne bloque pas une fois le process termine
 	currentProcess->semProc->V();
 	delete addrSpace;
 	threadManager->deleteThreads();
-	//Printf("Apres delete threads\n");
 	delete threadManager;
-	//Printf("Apres delete threadsManager\n");
 	delete semManager;
 	addrSpace = NULL;
 }
@@ -299,24 +295,21 @@ void Process::setPid(int newPid)
 void Process::killProcess()
 {
 	IntStatus oldLevel = interrupt->SetLevel (IntOff);
-	//interrupt->SetLevel (IntOff);
 	std::list<Thread*>::iterator it = threadManager->l_threads.begin();
-	scheduler->RemoveTid(0);
+	scheduler->RemoveTid(0, currentProcess->pid);
 	while (it != threadManager->l_threads.end())
 	{
-		scheduler->RemoveTid((*it)->tid);
+		scheduler->RemoveTid((*it)->tid,currentProcess->pid);
 		++it;
 	}
 	freeAddrSpace();
 	if(scheduler->isReadyListEmpty())
 	{
-		Printf("La liste est vide\n");
 		interrupt->Halt();
 	}
 	else
 	{
 		(void) interrupt->SetLevel (oldLevel);
-		//interrupt->Halt();
 #ifdef step4
 		processManager->removeProcess(currentProcess);
 #endif

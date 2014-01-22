@@ -61,8 +61,11 @@ class List
     // Routines to put/get items on/off list in order (sorted by key)
     void SortedInsert (void *item, long long sortKey);	// Put item into list
     void *SortedRemove (long long *keyPtr);	// Remove first item from list
-
-    void Remove(int tid);
+    /*
+     * Suppression dans ReadyList du thread dont le tid est passe en parametre.
+     * Ce thread appartient au processus dont le pid est passe en parametre
+     */
+    void Remove(int tid, int pid);
   private:
       ListElement * first;	// Head of the list, NULL if list is empty
     ListElement *last;		// Last element of list

@@ -29,7 +29,11 @@ class Scheduler
     void Run (Thread * nextThread);	// Cause nextThread to start running
     void Print ();		// Print contents of ready list
 #ifdef CHANGED
-    void RemoveTid(int tid); 	//remove this thread in readyList
+    /*
+     * Suppression dans ReadyList du thread dont le tid est passe en parametre.
+     * Ce thread appartient au processus dont le pid est passe en parametre
+     */
+    void RemoveTid(int tid, int pid); 	//remove this thread in readyList
     bool isReadyListEmpty();
 #endif
   private:

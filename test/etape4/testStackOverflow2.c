@@ -2,7 +2,9 @@
 
 /*
  * Lancement de deux threads dont un qui cree l'erreur stackOverFlow.
- * On remarque que la terminaison du processus se passe correctement
+ * On remarque que la terminaison du processus se passe correctement.
+ * Des que l'erreur est levee, g se termine instantanement,
+ * on ne voit donc pas s'afficher "Fin g"
  */
 void f(void *arg)
 {
@@ -20,14 +22,14 @@ void g(void *arg)
 {
 	int i;
 	PutString("debut g\n");
-	for ( i  = 0 ; i < 1000 ; i++);
+	for ( i  = 0 ; i < 10000 ; i++);
 	PutString("fin g\n");
 }
 int main()
 {
 	PutString("\n-----------------------------------------\n");
-	PutString("Lancement du test testStackOverflow : \n");
-	PutString("Teste le depassement de la pile.\n");
+	PutString("Lancement du test testStackOverflow2 : \n");
+	PutString("Teste terminaison threads avec le depassement de la pile.\n");
 	PutString("-----------------------------------------\n");
 	int i = 0;
 	int tidf = UserThreadCreate(f, &i);

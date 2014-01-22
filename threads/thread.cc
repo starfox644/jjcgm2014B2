@@ -233,7 +233,6 @@ Thread::Finish ()
 
 	if (currentProcess == NULL) {
 		Printf("currentProcess == NULL, exit\n");
-		Exit(0);
 	}
 
 	AddrSpace* space = currentProcess->getAddrSpace();
@@ -257,8 +256,6 @@ Thread::Finish ()
 	ASSERT (threadToBeDestroyed == NULL);
 	// End of addition
 	threadToBeDestroyed = currentThread;
-#endif
-#ifdef CHANGED
 #endif
 	Sleep ();			// invokes SWITCH
 	// not reached

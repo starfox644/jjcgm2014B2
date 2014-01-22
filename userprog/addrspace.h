@@ -23,7 +23,7 @@ class threadManager;
 #include "noff.h"
 #include <list>
 
-#define UserStackSize		2048	// increase this as necessary!
+#define UserStackSize		4096	// increase this as necessary!
 #define UserStackPages		UserStackSize / PageSize;
 
 #else

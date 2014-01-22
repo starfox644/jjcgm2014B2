@@ -180,10 +180,15 @@ Scheduler::Print ()
 	printf ("Ready list contents:\n");
 	readyList->Mapcar ((VoidFunctionPtr) ThreadPrint);
 }
+
+/*
+ * Suppression dans ReadyList du thread dont le tid est passe en parametre.
+ * Ce thread appartient au processus dont le pid est passe en parametre
+ */
 #ifdef CHANGED
-void Scheduler::RemoveTid(int tid)
+void Scheduler::RemoveTid(int tid, int pid)
 {
-	readyList->Remove(tid);
+	readyList->Remove(tid, pid);
 }
 
 bool Scheduler::isReadyListEmpty()
