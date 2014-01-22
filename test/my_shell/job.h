@@ -57,15 +57,6 @@ void supp_job(int num);
 void supp_job_pid(int pid);
 
 /*
- * fonction de mise en premier plan du job
- */
-void fg(char** argv);
-/*
- * fonction de mise en arriere plan du job
- */
-void bg(char** argv);
-
-/*
  * affichage des jobs en cours
  */
 void afficherJobs();
