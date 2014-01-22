@@ -1,0 +1,13 @@
+LS
+
+NOM
+	ls - affiche le contenu du dossier
+	
+SYNOPSYS
+	ls
+	
+DESCRIPTION
+	affiche le contenu du dossier tout en affichant les informations
+	concernant les fichiers contenu comme leur nom, leur taille et
+	leur date de création.
+	
