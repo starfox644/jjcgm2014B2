@@ -20,7 +20,9 @@
 #include "copyright.h"
 #include "thread.h"
 #include "list.h"
-
+#ifdef NETWORK
+#include <list>
+#endif
 // The following class defines a "semaphore" whose value is a non-negative
 // integer.  The semaphore has only two operations P() and V():
 //
@@ -56,11 +58,21 @@ public:
 #endif // CHANGED
 	void P ();			// these are the only operations on a semaphore
 	void V ();			// they are both *atomic*
-
+#ifdef NETWORK
+	//getter and setter pour nos booleens
+	bool getInUse();
+	void setInUse(bool);
+	bool getInListCond();
+	void setInListCond(bool);
+#endif
 private:
 	const char *name;		// useful for debugging
 	int value;			// semaphore value, always >= 0
 	List *queue;		// threads waiting in P() for the value to be > 0
+#ifdef NETWORK
+	volatile bool inUse;			//la semaphore est verrouille
+	volatile bool inListCond;	//la semaphore est dans la liste des condition
+#endif
 };
 
 // The following class defines a "lock".  A lock can be BUSY or FREE.
@@ -92,12 +104,11 @@ public:
 	// holds this lock.  Useful for
 	// checking in Release, and in
 	// Condition variable ops below.
-
-private:
-	const char *name;		// for debugging
 #ifdef CHANGED
 	Semaphore* sem;
 #endif
+private:
+	const char *name;		// for debugging
 };
 
 // The following class defines a "condition variable".  A condition
@@ -143,16 +154,22 @@ public:
 		return (name);
 	}
 
-	void Wait (Lock * conditionLock);	// these are the 3 operations on
+	int Wait (Lock * conditionLock);	// these are the 3 operations on
 	// condition variables; releasing the
 	// lock and going to sleep are
 	// *atomic* in Wait()
-	void Signal (Lock * conditionLock);	// conditionLock must be held by
-	void Broadcast (Lock * conditionLock);	// the currentThread for all of
+	int Signal (Lock * conditionLock);	// conditionLock must be held by
+	int Broadcast (Lock * conditionLock);	// the currentThread for all of
 	// these operations
+#ifdef NETWORK
+	Semaphore* cond;
+	int nbCond;
+	std::list<Lock*> l_condLock;
+#endif //network
 
 private:
 	const char *name;
+
 	// plus some other stuff you'll need to define
 };
 #endif // SYNCH_H
