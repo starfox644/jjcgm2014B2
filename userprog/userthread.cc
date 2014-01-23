@@ -90,6 +90,11 @@ int do_UserThreadCreate(int f, int arg)
 static void StartUserThread(int f)
 {
 	IntStatus oldLevel = interrupt->SetLevel(IntOff);
+	int i;
+	for(i = 0 ; i < NumTotalRegs ; i++)
+	{
+		machine->WriteRegister(i, 0);
+	}
 	// copy the arg in register 27 (reserved to OS) for saving it, will be load in r4 by startThread
 	machine->WriteRegister(27, currentThread->getInitArg());
 	// set PC to the function __startThread (in start.s)
@@ -102,6 +107,7 @@ static void StartUserThread(int f)
 	machine->WriteRegister(StackReg, currentThread->userStackAddr);
 	// set r26 (reserved to OS) to the function address for loading it later into pc
 	machine->WriteRegister(26, f);
+	currentThread->SaveUserState();
 	(void) interrupt->SetLevel (oldLevel);
 	machine->Run ();		// jump to the user progam at __startThread
 }

@@ -89,6 +89,7 @@ void UserStartProcess (int adr)
 	// initialisation de l'etat du processus
 	space->InitRegisters ();
 	space->RestoreState ();
+	currentThread->SaveUserState();
 	(void) interrupt->SetLevel (oldLevel);
 	// lancement du programme
 	machine->Run ();

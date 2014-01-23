@@ -633,14 +633,14 @@ Machine::DelayedLoad(int nextReg, int nextValue)
 {
 	/*printf("delayed load\n");
 	printf("load reg : %i\n", registers[LoadReg]);*/
-#ifdef CHANGED
+/*#ifdef CHANGED
 	if(registers[LoadReg] >= 0 && registers[LoadReg] < NumTotalRegs)
 	{
 		registers[registers[LoadReg]] = registers[LoadValueReg];
 	}
-#else
+#else*/
 	registers[registers[LoadReg]] = registers[LoadValueReg];
-#endif
+//#endif
 	registers[LoadReg] = nextReg;
 	registers[LoadValueReg] = nextValue;
 	//printf("next reg : %i\n", nextReg);
