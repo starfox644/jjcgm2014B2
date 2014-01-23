@@ -290,10 +290,12 @@ ExceptionHandler (ExceptionType which)
 				m = machine->ReadRegister(5);
 				n = machine->ReadRegister(6);
 				o = machine->ReadRegister(7);
-				do_arg_start(m, n, o);
+				n = do_arg_start(m, n, o);
+				machine->WriteRegister(2, n);
 				break;
 			case SC_ArgArg:
-				n = do_arg_arg();
+				n = machine->ReadRegister(4);
+				n = do_arg_arg(n);
 				machine->WriteRegister(2, n);
 				break;
 			case SC_GetNbProcessTotal:

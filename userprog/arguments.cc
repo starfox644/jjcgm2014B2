@@ -9,23 +9,50 @@
 
 #include "arguments.h"
 
-arg_list liste;
+int nbNext = 1;
+std::list<arg_list_t> listeArg;
 
-void do_arg_start(int a, int b, int c) {
-	liste.args[0] = a;
-	liste.args[1] = b;
-	liste.args[2] = c;
-	liste.next = 0;
+arg_list do_arg_start (int a, int b, int c) {
+	arg_list_t new_arg_list;
+	int nb;
+
+
+	new_arg_list.nb = nbNext;
+	new_arg_list.args[0] = a;
+	new_arg_list.args[1] = b;
+	new_arg_list.args[2] = c;
+	new_arg_list.next = 0;
+
+	listeArg.push_back(new_arg_list);
+
+	nb = nbNext;
+
+	nbNext++;
+
+	return nb;
 }
 
-int do_arg_arg() {
-	int result;
+int do_arg_arg(arg_list arg) {
+	int nb;
+	std::list<arg_list_t>::iterator it=listeArg.begin();
 
-	result = liste.args[liste.next];
-	liste.next++;
+	while (it != listeArg.end() && it->nb != arg)
+		it++;
 
-	return result;
+	if(it == listeArg.end())
+		return 0;
+
+	// If semaphore not found, return -1 : error
+	if (it->nb != arg)
+		return 0;
+	// Else, return it
+	else {
+		nb = it->next;
+		it->next++;
+		return (int)it->args[nb];
+	}
+
+	return 0;
 }
-
 
 #endif

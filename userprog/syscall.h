@@ -254,8 +254,11 @@ int Unmap(void* addr);
  * fonctions et structures de gestion de liste d'arguments
  * maximum 3 arguments peuvent etres traites
  */
-void arg_start();
-int arg_arg();
+typedef int arg_list;
+
+arg_list arg_start();
+int arg_arg(arg_list arg);
+
 /*
  * renvoi le nombre de processus système en cours
  */

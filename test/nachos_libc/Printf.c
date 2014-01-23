@@ -17,7 +17,10 @@ int Printf (char* messageVoulu, ...){
 	char *value;
 	char buffer[MAX_LENGH];
 	int alloue = 0;
-	arg_start();
+	arg_list alist;
+
+
+	alist = arg_start ();
 	nbArg = 0;
 
 	// tant que l'on est pas a la fin du message
@@ -29,7 +32,7 @@ int Printf (char* messageVoulu, ...){
 
 			if (nbArg < 4) {
 				i++;
-				variable = arg_arg ();
+				variable = arg_arg (alist);
 
 				switch (messageVoulu[i]) {
 				case 'd': // un entier
@@ -85,6 +88,7 @@ int Printf (char* messageVoulu, ...){
 	}
 	if(alloue)
 		free(value);
+
 	return 0;
 }
 
@@ -92,9 +96,10 @@ int Scanf (char* typeVariable, ...) {
 	void* variable;
 	int i, nbArg;
 	char c;
+	arg_list alist;
 
 	i = 0;
-	arg_start ();
+	alist = arg_start ();
 	nbArg = 0;
 
 	// tant qu'on est pas a la fin de la liste de variables a lire
@@ -105,7 +110,7 @@ int Scanf (char* typeVariable, ...) {
 			nbArg++;
 
 			if (nbArg < 4) {
-				variable = (void*) arg_arg ();
+				variable = (void*) arg_arg (alist);
 				i++;
 
 				switch (typeVariable[i]) {
@@ -135,8 +140,9 @@ int Scanf (char* typeVariable, ...) {
 					break;
 				}
 			}
-			else // si on a plus de 3 arguments a lire, on a une erreur
+			else {// si on a plus de 3 arguments a lire, on a une erreur
 				return -1;
+			}
 		}
 
 		i++;
