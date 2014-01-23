@@ -117,6 +117,10 @@ main (int argc, char **argv)
 		}
 		else if (!strcmp (*argv, "-c"))
 		{			// test the console
+#ifdef CHANGED
+			StartProcess((char*)"./etape2/getchar");
+#else
+
 			if (argc == 1)
 				ConsoleTest (NULL, NULL);
 			else
@@ -128,11 +132,12 @@ main (int argc, char **argv)
 			interrupt->Halt ();	// once we start the console, then
 			// Nachos will loop forever waiting
 			// for console input
+#endif
 		}
 #ifdef CHANGED
 		else if (!strcmp (*argv, "-sc"))
 		{
-			currentProcess = new Process();
+			/*currentProcess = new Process();
 			if (argc == 1)
 			{
 				SynchConsoleTest (NULL, NULL);
@@ -143,7 +148,8 @@ main (int argc, char **argv)
 				SynchConsoleTest (*(argv + 1), *(argv + 2));
 				argCount = 3;
 			}
-			interrupt->Halt ();
+			interrupt->Halt ();*/
+			StartProcess((char*)"./etape2/getchar");
 		}
 #endif	//changed
 #ifdef step4

@@ -2,12 +2,9 @@
 
 int main()
 {
-    char c;
-
+	int c;
     // on récupere des caracteres et on les affiche tant qu'on a pas de 'q'
-    do {
-    	c = (char) GetChar();
+    while((c = GetChar()) != -1)
     	PutChar(c);
-    } while (c != 'q');
     return 0;
 }
