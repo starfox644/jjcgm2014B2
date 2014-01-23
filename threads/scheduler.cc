@@ -97,10 +97,10 @@ Scheduler::Run (Thread * nextThread)
 	// End of addition
 
 #ifdef USER_PROGRAM		// ignore until running user programs
-#ifndef FILESYS
-#ifndef NETWORK
+//#ifndef FILESYS
+//#ifndef NETWORK
 #ifdef CHANGED
-	if (currentProcess->getAddrSpace() != NULL)
+	if (currentProcess != NULL && currentProcess->getAddrSpace() != NULL)
 	{
 		currentThread->SaveUserState ();	// to restore, do it.
 		currentProcess->getAddrSpace()->SaveState ();
@@ -112,8 +112,8 @@ Scheduler::Run (Thread * nextThread)
 		currentThread->space->SaveState ();
 	}
 #endif // CHANGED
-#endif // NETWORK
-#endif // FILESYS
+//#endif // NETWORK
+//#endif // FILESYS
 #endif // USER_PROGRAM
 
 	oldThread->CheckOverflow ();	// check if the old thread
@@ -149,10 +149,10 @@ Scheduler::Run (Thread * nextThread)
 	}
 
 #ifdef USER_PROGRAM
-#ifndef NETWORK
-#ifndef FILESYS
+//#ifndef NETWORK
+//#ifndef FILESYS
 #ifdef CHANGED
-	if (currentProcess->getAddrSpace() != NULL)
+	if (currentProcess != NULL && currentProcess->getAddrSpace() != NULL)
 	{
 		currentThread->RestoreUserState ();	// to restore, do it.
 		currentProcess->getAddrSpace()->RestoreState ();
@@ -164,8 +164,8 @@ Scheduler::Run (Thread * nextThread)
 		currentThread->space->RestoreState ();
 	}
 #endif // changed
-#endif // FILESYS
-#endif // NETWORK
+//#endif // FILESYS
+//#endif // NETWORK
 #endif // user program
 }
 

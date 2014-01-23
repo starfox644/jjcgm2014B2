@@ -383,10 +383,11 @@ SetupThreadState ()
 
 	// This is definitely the case as soon as several *processes* are
 	// running together.
-#ifndef NETWORK
 #ifndef FILESYS
 #ifdef CHANGED
-	AddrSpace* space = currentProcess->getAddrSpace();
+	AddrSpace* space;
+	if (currentProcess != NULL)
+		space = currentProcess->getAddrSpace();
 	if (space != NULL)
     {				// if there is an address space
 	  currentThread->RestoreUserState ();	// to restore, do it.
@@ -401,7 +402,6 @@ SetupThreadState ()
 		currentThread->space->RestoreState ();
 	}
 #endif // changed
-#endif // NETWORK
 #endif // FILESYS
 #endif // USER_PROGRAM
 
