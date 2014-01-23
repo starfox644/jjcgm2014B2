@@ -26,9 +26,6 @@
 #include "process.h" //TODO
 #endif
 
-int main (int argc, char* argv[]){
-	mailTest(atoi(argv[1]));
-}
 // Test out message delivery, by doing the following:
 //	1. send a message to the machine with ID "farAddr", at mail box #0
 //	2. wait for the other machine's message to arrive (in our mailbox #0)
@@ -44,7 +41,7 @@ MailTest(int farAddr)
     const char *data = "Hello there!";
     const char *ack = "Got it!";
     char buffer[MaxMailSize];
-    int i;
+   // int i;
 
     // construct packet, mail header for original message
     // To: destination machine, mailbox 0
@@ -53,7 +50,7 @@ MailTest(int farAddr)
     outMailHdr.to = 0;
     outMailHdr.from = 1;
     outMailHdr.length = strlen(data) + 1;
-    for (i = 0; i < 10; i++){
+   // for (i = 0; i < 10; i++){
 		// Send the first message
 		postOffice->Send(outPktHdr, outMailHdr, data);
 
@@ -61,8 +58,7 @@ MailTest(int farAddr)
 		postOffice->Receive(0, &inPktHdr, &inMailHdr, buffer);
 		printf("Got \"%s\" from %d, box %d\n",buffer,inPktHdr.from,inMailHdr.from);
 		fflush(stdout);
-    }
-    for (i = 0; i < 10; i++){
+
 		// Send acknowledgement to the other machine (using "reply to" mailbox
 		// in the message that just arrived
 		outPktHdr.to = inPktHdr.from;
@@ -74,7 +70,7 @@ MailTest(int farAddr)
 		postOffice->Receive(1, &inPktHdr, &inMailHdr, buffer);
 		printf("Got \"%s\" from %d, box %d\n",buffer,inPktHdr.from,inMailHdr.from);
 		fflush(stdout);
-    }
+  //  }
 	// Then we're done!
     //interrupt->Halt();
     Exit(0);

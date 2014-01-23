@@ -196,6 +196,7 @@ int Condition::Wait (Lock * conditionLock)
 {
 #ifdef NETWORK
 	cond->P();
+	printf("condition wait entré\n");
 	conditionLock->sem->V(); //on libere la semaphore du lock et on l'ajoute a notre liste
 	if(conditionLock->sem->getInUse() == true && conditionLock->sem->getInListCond() == false){//si semaphore utilisé mais pas dans la liste
 		cond->V();
@@ -221,6 +222,7 @@ int Condition::Wait (Lock * conditionLock)
 		l_condLock.push_back(conditionLock);
 		nbCond++;
 	}
+	printf("condition wait sortie\n");
 	cond->V();
 #endif//network
 	return 0;
@@ -229,6 +231,7 @@ int Condition::Wait (Lock * conditionLock)
 int Condition::Signal (Lock * conditionLock)
 {
 #ifdef NETWORK
+	printf("condition signal entré\n");
 	cond->P();
 	std::list<Lock*>::iterator it=l_condLock.begin();
 	while (it != l_condLock.end() && (*it) != conditionLock)
@@ -243,6 +246,7 @@ int Condition::Signal (Lock * conditionLock)
 		conditionLock->sem->setInListCond(false);
 		l_condLock.erase(it);
 		cond->V();
+		printf("condition signal sortie\n");
 		return 0;
 	}
 #endif //network
