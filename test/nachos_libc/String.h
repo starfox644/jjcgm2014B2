@@ -40,7 +40,7 @@ int StrLengh(char * element);
 /*
  * Le but de cette fonction et de trouver l'emplacement d'un caractère dans un string et de renvoyer sa position ou 0 si le caractère n'est pa présent
  */
-char* StrChr(char *element, char elementATrouve);
+char* StrChr(char *chaine, char c);
 
 /*
  * Fonction permettant de concatener deux mots.

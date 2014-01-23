@@ -44,7 +44,6 @@ void do_exit(int returnCode)
 		if (processManager->getNbProcessRunning() > 1)
 		{
 			IntStatus oldLevel = interrupt->SetLevel(IntOff);
-			//removeProcess();
 			processManager->removeProcess(currentProcess);
 			currentProcess->semProc->V();
 			s_createProcess->V();
@@ -54,7 +53,6 @@ void do_exit(int returnCode)
 		else // the current thread is the last thread
 		{
 			interrupt->SetLevel(IntOff);
-			//removeProcess();
 			processManager->removeProcess(currentProcess);
 			// stop the program
 			currentProcess->semProc->V();

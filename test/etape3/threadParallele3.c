@@ -28,6 +28,11 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test threadParallele3 : \n");
+	PutString("Lance un thread qui lance un autre thread etc. (cree 4 threads).\n");
+	PutString("Le main doit se terminer apres tous les autres.\n");
+	PutString("-----------------------------------------\n");
 	PutString("Thread main\n");
 	UserThreadCreate(f, 0);
 	PutString("Le thread main a fini ! \n");

@@ -19,6 +19,11 @@ void f(void* arg)
 
 int main()
 {
+	PutString("\n-----------------------------------------\n");
+	PutString("Lancement du test testJoinThreadReturn2 : \n");
+	PutString("Lance un thread avec 0 comme argument.\n");
+	PutString("La valeur a l'adresse 0 ne doit pas etre modifee.\n");
+	PutString("-----------------------------------------\n");
 	int tidf;
 	int* ad0 = (int*)0;
 	tidf = UserThreadCreate(f, 0);
