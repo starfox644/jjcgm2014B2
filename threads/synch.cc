@@ -127,7 +127,20 @@ Semaphore::V ()
 #endif
 	(void) interrupt->SetLevel (oldLevel);
 }
-
+#ifdef NETWORK
+bool Semaphore::getInUse(){
+	return inUse;
+}
+void Semaphore::setInUse(bool b){
+	inUse = b;
+}
+bool Semaphore::getInListCond(){
+	return inListCond;
+}
+void Semaphore::setInListCond(bool b){
+	inListCond = b;
+}
+#endif
 // Dummy functions -- so we can compile our later assignments 
 // Note -- without a correct implementation of Condition::Wait(), 
 // the test case in the network assignment won't work!
@@ -158,28 +171,18 @@ Lock::Release ()
 	sem->V();
 #endif
 }
-#ifdef NETWORK
-bool getInUse(){
-	return sem->inUse;
-}
-void setInUse(bool b){
-	sem->inUse = b;
-}
-bool getInListCond(){
-	return inListCond;
-}
-void setInListCond(bool b){
-	sem->inListCond = b;
-}
-#endif
+
 Condition::Condition (const char *debugName)
 {
 	name = debugName;
-	 cond = new Semaphore("Semaphore Condition",1);
+#ifdef NETWORK
+	cond = new Semaphore("Semaphore Condition",1);
+#endif
 }
 
 Condition::~Condition ()
 {
+#ifdef NETWORK
 	std::list<Lock*>::iterator it;
 	//liberation de la liste
 	for(it = l_condLock.begin() ; it != l_condLock.end() ; ++it)
@@ -187,6 +190,7 @@ Condition::~Condition ()
 		delete (*it);
 	}
 	delete cond; // liberation de la semaphore
+#endif
 }
 int Condition::Wait (Lock * conditionLock)
 {
@@ -218,8 +222,8 @@ int Condition::Wait (Lock * conditionLock)
 		nbCond++;
 	}
 	cond->V();
-	return 0;
 #endif//network
+	return 0;
 }
 
 int Condition::Signal (Lock * conditionLock)
@@ -241,11 +245,12 @@ int Condition::Signal (Lock * conditionLock)
 		cond->V();
 		return 0;
 	}
-	return 0;
 #endif //network
+	return 0;
 }
 int Condition::Broadcast (Lock * conditionLock)
 {
+#ifdef NETWORK
 	cond->P();
 	std::list<Lock*>::iterator it=l_condLock.begin();
 	while (it != l_condLock.end() && (*it) != conditionLock){
@@ -255,4 +260,6 @@ int Condition::Broadcast (Lock * conditionLock)
 		l_condLock.erase(it);
 	}
 	cond->V();
+#endif
+	return 0;
 }
