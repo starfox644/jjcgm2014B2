@@ -109,7 +109,7 @@ int
 Directory::Find(const char *name)
 {
     int i = FindIndex(name);
-
+    //printf("find : %i\n", i);
     if (i != -1)
 	return table[i].sector;
     return -1;

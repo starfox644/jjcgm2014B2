@@ -130,9 +130,13 @@ main (int argc, char **argv)
 			// for console input
 		}
 #ifdef CHANGED
-		else if (!strcmp (*argv, "-sc")) {
+		else if (!strcmp (*argv, "-sc"))
+		{
+			currentProcess = new Process();
 			if (argc == 1)
+			{
 				SynchConsoleTest (NULL, NULL);
+			}
 			else
 			{
 				ASSERT (argc > 2);
@@ -167,23 +171,44 @@ main (int argc, char **argv)
 
 #endif // USER_PROGRAM
 #ifdef FILESYS
+#ifdef CHANGED
+		currentProcess = new Process();
+#endif
 		if (!strcmp (*argv, "-cp"))
 		{			// copy from UNIX to Nachos
-			ASSERT (argc > 2);
-			Copy (*(argv + 1), *(argv + 2));
-			argCount = 3;
+			if(argc > 2)
+			{
+				Copy (*(argv + 1), *(argv + 2));
+				argCount = 3;
+			}
+			else
+			{
+				printf("format : -cp <unix file> <nachos file>\n");
+			}
 		}
 		else if (!strcmp (*argv, "-p"))
 		{			// print a Nachos file
-			ASSERT (argc > 1);
-			Print (*(argv + 1));
-			argCount = 2;
+			if(argc > 1)
+			{
+				Print (*(argv + 1));
+				argCount = 2;
+			}
+			else
+			{
+				printf("format : -p <nachos file>\n");
+			}
 		}
 		else if (!strcmp (*argv, "-r"))
 		{			// remove Nachos file
-			ASSERT (argc > 1);
-			fileSystem->Remove (*(argv + 1));
-			argCount = 2;
+			if(argc > 1)
+			{
+				fileSystem->Remove (*(argv + 1));
+				argCount = 2;
+			}
+			else
+			{
+				printf("format : -r <nachos file>\n");
+			}
 		}
 		else if (!strcmp (*argv, "-l"))
 		{			// list Nachos directory
@@ -211,7 +236,11 @@ main (int argc, char **argv)
 #endif // NETWORK
 	}
 
+#ifdef CHANGED
+	Exit(0);
+#else
 	currentThread->Finish ();	// NOTE: if the procedure "main"
+#endif
 	// returns, then the program "nachos"
 	// will exit (as any other normal program
 	// would).  But there may be other

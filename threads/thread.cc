@@ -231,8 +231,10 @@ Thread::Finish ()
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
 
-	if (currentProcess == NULL) {
+	if (currentProcess == NULL)
+	{
 		Printf("currentProcess == NULL, exit\n");
+		Exit(0);
 	}
 
 	AddrSpace* space = currentProcess->getAddrSpace();
@@ -382,7 +384,6 @@ SetupThreadState ()
 	// This is definitely the case as soon as several *processes* are
 	// running together.
 #ifndef NETWORK
-#ifndef FILESYS
 #ifdef CHANGED
 	AddrSpace* space = currentProcess->getAddrSpace();
 	if (space != NULL)
@@ -399,7 +400,6 @@ SetupThreadState ()
 		currentThread->space->RestoreState ();
 	}
 #endif // changed
-#endif // FILESYS
 #endif // NETWORK
 #endif // USER_PROGRAM
 

@@ -148,7 +148,9 @@ Initialize (int argc, char **argv)
 #endif
 #ifdef FILESYS_NEEDED
 		if (!strcmp (*argv, "-f"))
+		{
 			format = TRUE;
+		}
 #endif
 #ifdef NETWORK
 		if (!strcmp (*argv, "-l"))

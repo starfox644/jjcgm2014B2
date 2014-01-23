@@ -47,7 +47,6 @@ int do_forkExec(int adrExec)
 	t = new Thread("ThreadForkExec");
 	if(t == NULL)
 	{
-		Printf("[ForkExec] Erreur creation thread\n");
 		// relachement de la section critique de creation
 		s_createProcess->V();
 		return -1;
@@ -216,7 +215,6 @@ int do_unmap(int addr)
  */
 Process::Process()
 {
-	printf("[Process()] Creation d'un nouveau processus.\n");
 	addrSpace = NULL;
 	processRunning = false;
 	threadWaiting = false;
