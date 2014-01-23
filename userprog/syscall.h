@@ -162,6 +162,7 @@ void Yield ();
  * User semaphore
  */
 typedef int sem_t;
+typedef int sock_t;
 
 /*
  * PutChar writes in console the given character
