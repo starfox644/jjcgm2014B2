@@ -229,6 +229,20 @@ main (int argc, char **argv)
 		{			// performance test
 			PerformanceTest ();
 		}
+#ifdef CHANGED
+		else if(!strcmp (*argv, "-cr"))
+		{
+			if(argc > 1)
+			{
+				fileSystem->CreateDir (*(argv + 1));
+				argCount = 2;
+			}
+			else
+			{
+				printf("format : -cr <dir name>\n");
+			}
+		}
+#endif
 #endif // FILESYS
 #ifdef NETWORK
 		if (!strcmp (*argv, "-o"))

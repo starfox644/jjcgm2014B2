@@ -63,6 +63,7 @@ int Thread::getNbThreadsCreated() {
 
 Thread::Thread (const char *threadName)
 {
+	printf("creation de thread\n");
 #ifdef CHANGED
 	strncpy(name, threadName, NAME_SIZE);
 #else
@@ -225,6 +226,7 @@ Thread::CheckOverflow ()
 void
 Thread::Finish ()
 {
+	printf("finish\n");
 	(void) interrupt->SetLevel (IntOff);
 	ASSERT (interrupt->getLevel () == IntOff);
 	ASSERT (this == currentThread);

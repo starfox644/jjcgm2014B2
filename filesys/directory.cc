@@ -64,6 +64,10 @@ void
 Directory::FetchFrom(OpenFile *file)
 {
     (void) file->ReadAt((char *)table, tableSize * sizeof(DirectoryEntry), 0);
+#ifdef CHANGED
+    selfDir = table[0];
+    parentDir = table[1];
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -76,6 +80,10 @@ Directory::FetchFrom(OpenFile *file)
 void
 Directory::WriteBack(OpenFile *file)
 {
+#ifdef CHANGED
+	table[0] = selfDir;
+	table[1] = parentDir;
+#endif
     (void) file->WriteAt((char *)table, tableSize * sizeof(DirectoryEntry), 0);
 }
 
@@ -90,7 +98,7 @@ Directory::WriteBack(OpenFile *file)
 int
 Directory::FindIndex(const char *name)
 {
-    for (int i = 0; i < tableSize; i++)
+    for (int i = 2; i < tableSize; i++)
         if (table[i].inUse && !strncmp(table[i].name, name, FileNameMaxLen))
 	    return i;
     return -1;		// name not in directory
@@ -109,7 +117,6 @@ int
 Directory::Find(const char *name)
 {
     int i = FindIndex(name);
-    //printf("find : %i\n", i);
     if (i != -1)
 	return table[i].sector;
     return -1;
@@ -132,7 +139,7 @@ Directory::Add(const char *name, int newSector)
     if (FindIndex(name) != -1)
 	return FALSE;
 
-    for (int i = 0; i < tableSize; i++)
+    for (int i = 2; i < tableSize; i++)
         if (!table[i].inUse) {
             table[i].inUse = TRUE;
             strncpy(table[i].name, name, FileNameMaxLen); 
@@ -196,3 +203,29 @@ Directory::Print()
     printf("\n");
     delete hdr;
 }
+
+#ifdef CHANGED
+    void Directory::setSelfDir(int sector)
+    {
+    	selfDir.inUse = true;
+    	selfDir.sector = sector;
+    	strcpy(selfDir.name, ".");
+    	selfDir.isDirectory = true;
+    }
+    void Directory::setParentDir(int sector)
+    {
+    	parentDir.inUse = true;
+    	parentDir.sector = sector;
+    	strcpy(parentDir.name, "..");
+    	parentDir.isDirectory = true;
+    }
+
+    DirectoryEntry Directory::getSelfDir()
+    {
+    	return selfDir;
+    }
+    DirectoryEntry Directory::getParentDir()
+    {
+    	return parentDir;
+    }
+#endif
