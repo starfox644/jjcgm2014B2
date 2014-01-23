@@ -151,6 +151,7 @@ main (int argc, char **argv)
 			interrupt->Halt ();*/
 			StartProcess((char*)"./etape2/getchar");
 		}
+
 #endif	//changed
 #ifdef step4
 		else if(!strcmp (*argv, "-ta"))
