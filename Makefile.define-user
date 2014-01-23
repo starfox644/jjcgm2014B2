@@ -35,7 +35,7 @@ USERPROG_LIBS=start.S $(NachOS_libc_SOURCES)
 # USERPROG_LIBS         = start.S nachos-libc.c
 # bigtest_EXTRA_SOURCES = bigtest_extra.c
 
-NachOS_libc_SOURCES=nachos_libc/Printf.c nachos_libc/String.c malloc/malloc_stub.c malloc/mem.c ./nachos_libc/util.c ./nachos_libc/File.c
+NachOS_libc_SOURCES=nachos_libc/Printf.c nachos_libc/String.c malloc/malloc_stub.c malloc/mem.c ./nachos_libc/util.c ./nachos_libc/File.c ./nachos_libc/inet.c
 my_shell/my_shell_EXTRA_SOURCES = my_shell/eval.c my_shell/job.c my_shell/parseline.c my_shell/commandeIntegre.c
 my_notepad/my_notepad_EXTRA_SOURCES = my_notepad/my_notepad.c
  
@@ -91,7 +91,7 @@ $(eval $(call define-flavor,step2,userprog filesys-stub,exit.cc synchconsole.cc 
 $(eval $(call define-flavor,step3,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc process.cc threadManager.cc semaphoreManager.cc,-Dstep3))
 $(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc threadManager.cc semaphoreManager.cc arguments.cc,-Dstep4 -Dstep3))
 $(eval $(call define-flavor,countNew,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc,-Dstep4 -Dstep3 -DcountNew))   
-$(eval $(call define-flavor,mynetwork,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc nettest.cc post.cc network.cc,-DNETWORK -Dstep4 -Dstep3 -DcountNew))
+$(eval $(call define-flavor,mynetwork,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc nettest.cc post.cc network.cc,-Dstep4 -Dstep3 -DNETWORK))
 $(eval $(call define-flavor,myfilesys,userprog filesys step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc, -Dstep4 -Dstep3 -DFILESYS))
 
 # $(eval $(call define-flavor,step5,userprog filesys,\
