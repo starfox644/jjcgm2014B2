@@ -216,7 +216,6 @@ int do_unmap(int addr)
  */
 Process::Process()
 {
-	printf("[Process()] Creation d'un nouveau processus.\n");
 	addrSpace = NULL;
 	processRunning = false;
 	threadWaiting = false;
