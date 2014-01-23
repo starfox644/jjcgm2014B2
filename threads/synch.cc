@@ -152,6 +152,7 @@ Condition::Condition (const char *debugName)
 	name = debugName;
 #ifdef NETWORK
 	semCond = new Semaphore("semaphore Condition",0);
+	semProtList = new Semaphore("Semaphore protection Liste",1);
 #endif
 }
 
@@ -159,11 +160,17 @@ Condition::~Condition ()
 {
 #ifdef NETWORK
 	delete semCond; // liberation de la semaphore
+	delete semProtList;
 #endif
 }
 void Condition::Wait (Lock * conditionLock)
 {
 #ifdef NETWORK
+	printf("Wait?\n");
+	//on ajoute notre condition a notre liste
+	semProtList->P();
+	l_LockWait.push_back(conditionLock);
+	semProtList->V();
 	//on commence par liberer notre lock
 	conditionLock->Release();
 	//on prend notre semaphore pour attendre
@@ -175,6 +182,19 @@ void Condition::Wait (Lock * conditionLock)
 void Condition::Signal (Lock * conditionLock)
 {
 #ifdef NETWORK
+	printf("Signal?\n");
+	semProtList->P();
+	//on chercher le lock dans notre liste
+	std::list<Lock*>::iterator it=l_LockWait.begin();
+	while(it != l_LockWait.end() && (*it) != conditionLock){
+		it++;
+	}
+	//puis on le supprime
+	if((*it) == conditionLock){
+		l_LockWait.erase(it);
+	}
+	semProtList->V();
+	//on libere notre semaphore des conditions
 	semCond->V();
 #endif //network
 
@@ -182,6 +202,14 @@ void Condition::Signal (Lock * conditionLock)
 void Condition::Broadcast (Lock * conditionLock)
 {
 #ifdef NETWORK
+	semProtList->P();
+	//on sort tous les locks de notre liste
+	std::list<Lock*>::iterator it=l_LockWait.begin();
+	while(it != l_LockWait.end()){
+		l_LockWait.erase(it);
+		it++;
+	}
+	semProtList->V();
 	semCond->V();
 #endif
 }
