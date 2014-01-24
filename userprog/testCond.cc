@@ -59,7 +59,6 @@ void redacteur(int args){
 	for(i = 0;i < d->iterations;i++){
 		dodo(2);
 		debut_redaction(&d->lecteur_redacteur);
-
 		valeur = Random();
 		d->donnee = valeur;
 		dodo(1);
@@ -93,12 +92,10 @@ int testCond(){
 	for(i = 0; i < nb_lecteurs; i++){
 		threads[i]->Fork(lecteur,(int)donnees_thread);
 	}
-	for(i = 0; i < nb_redacteurs; i++){
+	for(i = nb_lecteurs; i < nb_redacteurs + nb_lecteurs; i++){
 		threads[i]->Fork(redacteur,(int)donnees_thread);
 	}
-	for(i = 0; i < nb_redacteurs+nb_lecteurs;i++){
-		threads[i]->Finish();
-	}
+	currentThread->Yield();
 	delete threads[nb_redacteurs+nb_lecteurs];
 
 	return 0;
