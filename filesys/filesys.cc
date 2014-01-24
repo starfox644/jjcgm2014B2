@@ -182,52 +182,52 @@ FileSystem::FileSystem(bool format)
 bool
 FileSystem::Create(const char *name, int initialSize)
 {
-    Directory *directory;
-    BitMap *freeMap;
-    FileHeader *hdr;
-    int sector;
-    bool success;
+	Directory *directory;
+	BitMap *freeMap;
+	FileHeader *hdr;
+	int sector;
+	bool success;
 
-    DEBUG('f', "Creating file %s, size %d\n", name, initialSize);
+	DEBUG('f', "Creating file %s, size %d\n", name, initialSize);
 
-    directory = new Directory(NumDirEntries);
+	directory = new Directory(NumDirEntries);
 #ifdef CHANGED
-    directory->FetchFrom(currentDirFile);
+	directory->FetchFrom(currentDirFile);
 #else
-    directory->FetchFrom(directoryFile);
+	directory->FetchFrom(directoryFile);
 #endif
 
-    if (directory->Find(name) != -1)
-      success = FALSE;			// file is already in directory
-    else {	
-        freeMap = new BitMap(NumSectors);
-        freeMap->FetchFrom(freeMapFile);
-        sector = freeMap->Find();	// find a sector to hold the file header
-    	if (sector == -1) 		
-            success = FALSE;		// no free block for file header 
-        else if (!directory->Add(name, sector))
-            success = FALSE;	// no space in directory
+	if (directory->Find(name) != -1)
+		success = FALSE;			// file is already in directory
 	else {
-    	    hdr = new FileHeader;
-	    if (!hdr->Allocate(freeMap, initialSize))
-            	success = FALSE;	// no space on disk for data
-	    else {	
-	    	success = TRUE;
-		// everthing worked, flush all changes back to disk
-    	    	hdr->WriteBack(sector); 		
+		freeMap = new BitMap(NumSectors);
+		freeMap->FetchFrom(freeMapFile);
+		sector = freeMap->Find();	// find a sector to hold the file header
+		if (sector == -1)
+			success = FALSE;		// no free block for file header
+		else if (!directory->Add(name, sector))
+			success = FALSE;	// no space in directory
+		else {
+			hdr = new FileHeader;
+			if (!hdr->Allocate(freeMap, initialSize))
+				success = FALSE;	// no space on disk for data
+			else {
+				success = TRUE;
+				// everthing worked, flush all changes back to disk
+				hdr->WriteBack(sector);
 #ifdef CHANGED
-    	    	directory->WriteBack(currentDirFile);
+				directory->WriteBack(currentDirFile);
 #else
-    	    	directory->WriteBack(directoryFile);
+				directory->WriteBack(directoryFile);
 #endif
-    	    	freeMap->WriteBack(freeMapFile);
-	    }
-            delete hdr;
+				freeMap->WriteBack(freeMapFile);
+			}
+			delete hdr;
+		}
+		delete freeMap;
 	}
-        delete freeMap;
-    }
-    delete directory;
-    return success;
+	delete directory;
+	return success;
 }
 
 #ifdef CHANGED
@@ -243,23 +243,26 @@ bool FileSystem::CreateDir(const char *name)
 	if(Create(name, DirectoryFileSize))
 	{
 		// ouverture du fichier cree
-	    openFile = Open(name);
-	    ASSERT(openFile != NULL);
-	    // lecture du repertoire courant
-	    currentDir = new Directory(NumDirEntries);
-	    currentDir->FetchFrom(currentDirFile);
-	    // creation du nouveau repertoire
-	    newDir = new Directory(NumDirEntries);
-	    // recuperation du numero de secteur du nouveau repertoire
-	    newSector = currentDir->Find(name);
-	    newDir->setSelfDir(newSector);
-	    // recuperation de l'entree du repertoire courant
-	    currentDirEntry = currentDir->getSelfDir();
-	    currentSector = currentDirEntry.sector;
-	    newDir->setParentDir(currentSector);
-	    // ecriture du nouveau repertoire dans le fichier attribue
-	    newDir->WriteBack(openFile);
-	    return true;
+		openFile = Open(name);
+		ASSERT(openFile != NULL);
+		// lecture du repertoire courant
+		currentDir = new Directory(NumDirEntries);
+		currentDir->FetchFrom(currentDirFile);
+		// modification du booleen isDirectory
+		currentDir->setIsDirectory(name, true);
+		currentDir->WriteBack(currentDirFile);
+		// creation du nouveau repertoire
+		newDir = new Directory(NumDirEntries);
+		// recuperation du numero de secteur du nouveau repertoire
+		newSector = currentDir->Find(name);
+		newDir->setSelfDir(newSector);
+		// recuperation de l'entree du repertoire courant
+		currentDirEntry = currentDir->getSelfDir();
+		currentSector = currentDirEntry.sector;
+		newDir->setParentDir(currentSector);
+		// ecriture du nouveau repertoire dans le fichier attribue
+		newDir->WriteBack(openFile);
+		return true;
 	}
 	else
 	{
@@ -273,7 +276,8 @@ bool FileSystem::CreateDir(const char *name)
 bool FileSystem::cd(char* path)
 {
 	char** path_dir;
-	int nbDir;
+	int i = 0;
+	int nbDir, sector;
 	Directory* dir = new Directory(NumDirEntries);
 	OpenFile* openFile = NULL;
 	// verification que le chemin existe
@@ -285,29 +289,62 @@ bool FileSystem::cd(char* path)
 		if (path_dir != NULL)
 		{
 			if (nbDir >= 2)
-				openFile = Open(path_dir[nbDir-2]);
+			{
+				// parcours des repertoires du path
+				while ( i < nbDir-1)
+				{
+					// si le path commence par /
+					//on modifie le repertoire courant
+					if (!strcmp(path_dir[i], "/"))
+					{
+						if(currentDirFile != directoryFile)
+							delete currentDirFile;
+						openFile = directoryFile;
+						currentDirFile = openFile;
+					}
+					else
+					{
+						openFile = currentDirFile;
+						dir->FetchFrom(openFile);
+						sector = dir->Find(path_dir[i]);
+						if (sector >= 0)
+							openFile = new OpenFile(sector);
+						else
+							ASSERT(false);
+						ASSERT(openFile != NULL);
+						if(currentDirFile != directoryFile)
+							delete currentDirFile;
+						// modification du repertoire courant
+						currentDirFile = openFile;
+					}
+					i++;
+				}
+			}
 			else
 				openFile = currentDirFile;
 			dir->FetchFrom(openFile);
 			// si le dernier nom est un repertoire
-		    if (dir->isDirectory(path_dir[nbDir-1]))
-		    {
-		    	delete openFile;
-		    	openFile = Open(path_dir[nbDir-1]);
-		    	ASSERT(openFile != NULL);
-		    	// modification du repertoire courant
+			if (dir->isDirectory(path_dir[nbDir-1]))
+			{
+				if(currentDirFile != directoryFile)
+					delete openFile;
+				// recherche du secteur du repertoire
+				sector = dir->Find(path_dir[nbDir-1]);
+				if (sector >= 0)
+					openFile = new OpenFile(sector);
+				ASSERT(openFile != NULL);
+				// modification du repertoire courant
 				currentDirFile = openFile;
 				strncpy(currentDirName, path_dir[nbDir-1], 9);
 				delete dir;
 				delete path_dir;
-		    	delete openFile;
 				return true;
-		    }
+			}
+			delete path_dir;
 		}
 	}
 	printf("Impossible d'acceder a : %s\n", path);
 	delete dir;
-	delete path_dir;
 	return false;
 }
 
@@ -346,7 +383,7 @@ bool FileSystem::RemoveDirEmpty(char *path)
 				}
 				delete dir;
 				delete path_dir;
-		    	delete openFile;
+				delete openFile;
 				return true;
 			}
 		}
@@ -369,8 +406,92 @@ char* FileSystem::pwd()
  */
 bool FileSystem::pathExist(char* path)
 {
-	return false;
+	int nbDir;
+	int i;
+	int sector;
+	char** pathList;
+	OpenFile* fileActu;
+	Directory* dir = new Directory(NumDirEntries);
+	// decoupage du chemin en une liste
+	pathList = cutPath(path, &nbDir);
+	if(pathList != NULL)
+	{
+		if(!strcmp(pathList[0], "/"))
+		{
+			if(nbDir == 1)
+			{
+				// juste la racine : vrai
+				delete pathList;
+				delete dir;
+				return true;
+			}
+			else
+			{
+				// chemin absolu : on commence a la racine
+				sector = DirectorySector;
+				// la racine n'est pas comptee
+				i = 1;
+			}
+		}
+		else
+		{
+			// chemin relatif : on commence au repertoire courant
+			dir->FetchFrom(currentDirFile);
+			sector = (dir->getSelfDir()).sector;
+			i = 0;
+		}
+		// ouverture du fichier du premier repertoire
+		fileActu = new OpenFile(sector);
+		while(i < nbDir - 1 && sector != -1)
+		{
+			// lecture du repertoire actuel
+			dir->FetchFrom(fileActu);
+			delete fileActu;
+			// le nom suivant doit etre un repertoire
+			if(dir->isDirectory(pathList[i]))
+			{
+				// recherche du repertoire suivant
+				sector = dir->Find(pathList[i]);
+				if(sector != -1)
+				{
+					fileActu = new OpenFile(sector);
+					i++;
+				}
+			}
+			else
+			{
+				delete pathList;
+				delete dir;
+				return false;
+			}
+		}
+		if(sector == -1)
+		{
+			// erreur : un dossier du path est introuvable
+			delete pathList;
+			delete dir;
+			return false;
+		}
+		else
+		{
+			// lecture du dernier repertoire
+			dir->FetchFrom(fileActu);
+			delete fileActu;
+			// recherche du dernier fichier
+			sector = dir->Find(pathList[i]);
+			delete pathList;
+			delete dir;
+			return (sector != -1);
+		}
+	}
+	else
+	{
+		delete pathList;
+		delete dir;
+		return false;
+	}
 }
+
 
 
 /**
@@ -471,9 +592,15 @@ char** FileSystem::cutPath(char* path, int* nbDir) {
 	if (path[0] == '/') {
 		result[0][0] = '/';
 		result[0][1] = '\0';
+		if(path[1] == '\0')
+		{
+			// just '/' : return
+			return result;
+		}
 		i++;
 		k++;
 	}
+
 
 	// while we are not at the end of the path
 	while (path[k] != '\0') {
@@ -515,21 +642,21 @@ char** FileSystem::cutPath(char* path, int* nbDir) {
 OpenFile *
 FileSystem::Open(const char *name)
 { 
-    Directory *directory = new Directory(NumDirEntries);
-    OpenFile *openFile = NULL;
-    int sector;
+	Directory *directory = new Directory(NumDirEntries);
+	OpenFile *openFile = NULL;
+	int sector;
 
-    DEBUG('f', "Opening file %s\n", name);
+	DEBUG('f', "Opening file %s\n", name);
 #ifdef CHANGED
-    directory->FetchFrom(currentDirFile);
+	directory->FetchFrom(currentDirFile);
 #else
-    directory->FetchFrom(directoryFile);
+	directory->FetchFrom(directoryFile);
 #endif
-    sector = directory->Find(name);
-    if (sector >= 0) 		
-	openFile = new OpenFile(sector);	// name was found in directory 
-    delete directory;
-    return openFile;				// return NULL if not found
+	sector = directory->Find(name);
+	if (sector >= 0)
+		openFile = new OpenFile(sector);	// name was found in directory
+	delete directory;
+	return openFile;				// return NULL if not found
 }
 
 //----------------------------------------------------------------------
@@ -549,34 +676,34 @@ FileSystem::Open(const char *name)
 bool
 FileSystem::Remove(const char *name)
 { 
-    Directory *directory;
-    BitMap *freeMap;
-    FileHeader *fileHdr;
-    int sector;
-    
-    directory = new Directory(NumDirEntries);
-    directory->FetchFrom(directoryFile);
-    sector = directory->Find(name);
-    if (sector == -1) {
-       delete directory;
-       return FALSE;			 // file not found 
-    }
-    fileHdr = new FileHeader;
-    fileHdr->FetchFrom(sector);
+	Directory *directory;
+	BitMap *freeMap;
+	FileHeader *fileHdr;
+	int sector;
 
-    freeMap = new BitMap(NumSectors);
-    freeMap->FetchFrom(freeMapFile);
+	directory = new Directory(NumDirEntries);
+	directory->FetchFrom(directoryFile);
+	sector = directory->Find(name);
+	if (sector == -1) {
+		delete directory;
+		return FALSE;			 // file not found
+	}
+	fileHdr = new FileHeader;
+	fileHdr->FetchFrom(sector);
 
-    fileHdr->Deallocate(freeMap);  		// remove data blocks
-    freeMap->Clear(sector);			// remove header block
-    directory->Remove(name);
+	freeMap = new BitMap(NumSectors);
+	freeMap->FetchFrom(freeMapFile);
 
-    freeMap->WriteBack(freeMapFile);		// flush to disk
-    directory->WriteBack(directoryFile);        // flush to disk
-    delete fileHdr;
-    delete directory;
-    delete freeMap;
-    return TRUE;
+	fileHdr->Deallocate(freeMap);  		// remove data blocks
+	freeMap->Clear(sector);			// remove header block
+	directory->Remove(name);
+
+	freeMap->WriteBack(freeMapFile);		// flush to disk
+	directory->WriteBack(directoryFile);        // flush to disk
+	delete fileHdr;
+	delete directory;
+	delete freeMap;
+	return TRUE;
 } 
 
 //----------------------------------------------------------------------
@@ -587,14 +714,14 @@ FileSystem::Remove(const char *name)
 void
 FileSystem::List()
 {
-    Directory *directory = new Directory(NumDirEntries);
+	Directory *directory = new Directory(NumDirEntries);
 #ifdef CHANGED
-    directory->FetchFrom(currentDirFile);
+	directory->FetchFrom(currentDirFile);
 #else
-    directory->FetchFrom(directoryFile);
+	directory->FetchFrom(directoryFile);
 #endif
-    directory->List();
-    delete directory;
+	directory->List();
+	delete directory;
 }
 
 //----------------------------------------------------------------------
@@ -610,27 +737,27 @@ FileSystem::List()
 void
 FileSystem::Print()
 {
-    FileHeader *bitHdr = new FileHeader;
-    FileHeader *dirHdr = new FileHeader;
-    BitMap *freeMap = new BitMap(NumSectors);
-    Directory *directory = new Directory(NumDirEntries);
+	FileHeader *bitHdr = new FileHeader;
+	FileHeader *dirHdr = new FileHeader;
+	BitMap *freeMap = new BitMap(NumSectors);
+	Directory *directory = new Directory(NumDirEntries);
 
-    printf("Bit map file header:\n");
-    bitHdr->FetchFrom(FreeMapSector);
-    bitHdr->Print();
+	printf("Bit map file header:\n");
+	bitHdr->FetchFrom(FreeMapSector);
+	bitHdr->Print();
 
-    printf("Directory file header:\n");
-    dirHdr->FetchFrom(DirectorySector);
-    dirHdr->Print();
+	printf("Directory file header:\n");
+	dirHdr->FetchFrom(DirectorySector);
+	dirHdr->Print();
 
-    freeMap->FetchFrom(freeMapFile);
-    freeMap->Print();
+	freeMap->FetchFrom(freeMapFile);
+	freeMap->Print();
 
-    directory->FetchFrom(directoryFile);
-    directory->Print();
+	directory->FetchFrom(directoryFile);
+	directory->Print();
 
-    delete bitHdr;
-    delete dirHdr;
-    delete freeMap;
-    delete directory;
+	delete bitHdr;
+	delete dirHdr;
+	delete freeMap;
+	delete directory;
 } 

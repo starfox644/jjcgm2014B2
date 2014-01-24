@@ -242,10 +242,13 @@ Directory::Print()
     		return table[i].isDirectory;
     }
 
-/*    void Directory::setInUse(int num_sector, bool bUse)
+
+    void Directory::setIsDirectory(const char *name, bool b)
     {
-    	table[num_sector].inUse = bUse;
-    }*/
+    	int i = FindIndex(name);
+    	if (i != -1)
+    		 table[i].isDirectory = b;
+    }
 
     /**
      * Fonction permettant de savoir si le repertoire
