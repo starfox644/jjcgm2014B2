@@ -267,19 +267,44 @@ bool FileSystem::CreateDir(const char *name)
 	}
 }
 
-bool FileSystem::cd(char* name)
+bool FileSystem::cd(char* path)
 {
-	OpenFile* openFile = Open(name);
-	if(openFile == NULL)
+	char** path_dir;
+	int nbDir;
+	Directory* dir = new Directory(NumDirEntries);
+	OpenFile* openFile = NULL;
+	// verification que le chemin existe
+	if (pathExist(path))
+	{
+		// recuperation du chemin decoupe
+		path_dir = cutPath(path, &nbDir);
+		// verification que le chemin existe
+		if (path_dir != NULL)
+		{
+			// si le dernier nom est un repertoire
+		    //dir->FetchFrom(openFile);
+		    if (dir->isDirectory(path_dir[nbDir-1]))
+		    {
+		    	openFile = Open(path_dir[nbDir-1]);
+		    	ASSERT(openFile != NULL);
+				currentDirFile = openFile;
+				strncpy(currentDirName, path_dir[nbDir-1], 9);
+				return true;
+		    }
+		}
+	}
+	return false;
+	/*if(openFile == NULL)
 	{
 		return false;
 	}
 	else
 	{
+
 		currentDirFile = openFile;
 		strncpy(currentDirName, name, 9);
 		return true;
-	}
+	}*/
 }
 
 char* FileSystem::pwd()

@@ -91,7 +91,7 @@ class FileSystem {
      * 	nbDir will contain the number of entries.
      */
     char** cutPath(char* path, int* nbDir);
-    bool cd(char* name);
+    bool cd(char* path);
     char* pwd();
 #endif
 
