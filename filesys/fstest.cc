@@ -228,6 +228,11 @@ void moveTest()
 				printf("chemin non existant !");
 			}
 		}
+		else if(!strcmp(cmd, "rm"))
+		{
+			scanf("%s", name);
+			fileSystem->Remove(name);
+		}
 	}while(strcmp(cmd, "q"));
 }
 #endif

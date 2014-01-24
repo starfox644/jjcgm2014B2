@@ -78,20 +78,28 @@ class FileSystem {
 					// Create a file (UNIX creat)
 
 #ifdef CHANGED
+
+    /**
+     *  Return the sector of the file associated to the given path
+     *  or -1 if the path is not valable
+     */
+    int getSector(const char* path);
+
     bool CreateDir(const char *name);
 
     /**
      * Return true if the path already exists
      */
-    bool pathExist(char* path);
+    bool pathExist(const char* path);
+
 
     /**
      * 	Cut the given path into directory list.
      * 	Return a list which contains the directories of the path.
      * 	nbDir will contain the number of entries.
      */
-    char** cutPath(char* path, int* nbDir);
-    int isLegalPath(char* path);
+    char** cutPath(const char* path, int* nbDir);
+    int isLegalPath(const char* path);
 
 	/**
 	 * Deplacement dans le repertoire dont le chemin est passe en argument

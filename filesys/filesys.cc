@@ -262,6 +262,9 @@ bool FileSystem::CreateDir(const char *name)
 		newDir->setParentDir(currentSector);
 		// ecriture du nouveau repertoire dans le fichier attribue
 		newDir->WriteBack(openFile);
+		delete currentDir;
+		delete newDir;
+		delete openFile;
 		return true;
 	}
 	else
@@ -327,7 +330,7 @@ bool FileSystem::cd(char* path)
 			if (dir->isDirectory(path_dir[nbDir-1]))
 			{
 				if(currentDirFile != directoryFile)
-					delete openFile;
+					delete currentDirFile;
 				// recherche du secteur du repertoire
 				sector = dir->Find(path_dir[nbDir-1]);
 				if (sector >= 0)
@@ -412,14 +415,15 @@ char* FileSystem::pwd()
 	return currentDirName;
 }
 
-/*
- * Return true if the path already exists
+/**
+ *  Return the sector of the file associated to the given path
+ *  or -1 if the path is not valable
  */
-bool FileSystem::pathExist(char* path)
+int FileSystem::getSector(const char* path)
 {
 	int nbDir;
 	int i;
-	int sector;
+	int curSector;
 	char** pathList;
 	OpenFile* fileActu;
 	Directory* dir = new Directory(NumDirEntries);
@@ -434,12 +438,12 @@ bool FileSystem::pathExist(char* path)
 				// juste la racine : vrai
 				delete pathList;
 				delete dir;
-				return true;
+				return DirectorySector;
 			}
 			else
 			{
 				// chemin absolu : on commence a la racine
-				sector = DirectorySector;
+				curSector = DirectorySector;
 				// la racine n'est pas comptee
 				i = 1;
 			}
@@ -448,12 +452,12 @@ bool FileSystem::pathExist(char* path)
 		{
 			// chemin relatif : on commence au repertoire courant
 			dir->FetchFrom(currentDirFile);
-			sector = (dir->getSelfDir()).sector;
+			curSector = (dir->getSelfDir()).sector;
 			i = 0;
 		}
 		// ouverture du fichier du premier repertoire
-		fileActu = new OpenFile(sector);
-		while(i < nbDir - 1 && sector != -1)
+		fileActu = new OpenFile(curSector);
+		while(i < nbDir - 1 && curSector != -1)
 		{
 			// lecture du repertoire actuel
 			dir->FetchFrom(fileActu);
@@ -462,26 +466,28 @@ bool FileSystem::pathExist(char* path)
 			if(dir->isDirectory(pathList[i]))
 			{
 				// recherche du repertoire suivant
-				sector = dir->Find(pathList[i]);
-				if(sector != -1)
+				curSector = dir->Find(pathList[i]);
+				if(curSector != -1)
 				{
-					fileActu = new OpenFile(sector);
+					fileActu = new OpenFile(curSector);
 					i++;
 				}
 			}
 			else
 			{
+				printf("le fichier %s n'est pas un repertoire\n", pathList[i]);
 				delete pathList;
 				delete dir;
-				return false;
+				return -1;
 			}
 		}
-		if(sector == -1)
+		if(curSector == -1)
 		{
+			printf("le repertoire %s est introuvable\n", pathList[i]);
 			// erreur : un dossier du path est introuvable
 			delete pathList;
 			delete dir;
-			return false;
+			return -1;
 		}
 		else
 		{
@@ -489,18 +495,26 @@ bool FileSystem::pathExist(char* path)
 			dir->FetchFrom(fileActu);
 			delete fileActu;
 			// recherche du dernier fichier
-			sector = dir->Find(pathList[i]);
+			curSector = dir->Find(pathList[i]);
 			delete pathList;
 			delete dir;
-			return (sector != -1);
+			return curSector;
 		}
 	}
 	else
 	{
 		delete pathList;
 		delete dir;
-		return false;
+		return -1;
 	}
+}
+
+/*
+ * Return true if the path already exists
+ */
+bool FileSystem::pathExist(const char* path)
+{
+	return (getSector(path) != -1);
 }
 
 
@@ -515,7 +529,7 @@ bool FileSystem::pathExist(char* path)
  *  - one name is longer than limit
  *  - it is void
  */
-int FileSystem::isLegalPath(char* path) {
+int FileSystem::isLegalPath(const char* path) {
 	int i, legal, level, nameLength;
 	char c, prev;
 
@@ -579,7 +593,7 @@ int FileSystem::isLegalPath(char* path) {
  *    and nbDir contains the size of the array
  * If the path is illegal, the function returns NULL
  */
-char** FileSystem::cutPath(char* path, int* nbDir) {
+char** FileSystem::cutPath(const char* path, int* nbDir) {
 	int i, j, k;
 	char** result;
 
@@ -625,7 +639,7 @@ char** FileSystem::cutPath(char* path, int* nbDir) {
 				i++;
 				j = 0;
 			}
-		} else { // else we just scopy
+		} else { // else we just copy
 			result[i][j] = path[k];
 			j++;
 		}
@@ -652,22 +666,30 @@ char** FileSystem::cutPath(char* path, int* nbDir) {
 
 OpenFile *
 FileSystem::Open(const char *name)
-{ 
+{
+#ifdef CHANGED
+	int sector = getSector(name);
+	if(sector >= 0)
+	{
+		return new OpenFile(sector);
+	}
+	else
+	{
+		return NULL;
+	}
+#else
 	Directory *directory = new Directory(NumDirEntries);
 	OpenFile *openFile = NULL;
 	int sector;
 
 	DEBUG('f', "Opening file %s\n", name);
-#ifdef CHANGED
-	directory->FetchFrom(currentDirFile);
-#else
 	directory->FetchFrom(directoryFile);
-#endif
 	sector = directory->Find(name);
 	if (sector >= 0)
 		openFile = new OpenFile(sector);	// name was found in directory
 	delete directory;
 	return openFile;				// return NULL if not found
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -691,10 +713,18 @@ FileSystem::Remove(const char *name)
 	BitMap *freeMap;
 	FileHeader *fileHdr;
 	int sector;
-
+#ifdef CHANGED
+	sector = getSector(name);
+	if (sector == -1)
+	{
+		return FALSE;			 // file not found
+	}
+#endif
 	directory = new Directory(NumDirEntries);
 	directory->FetchFrom(directoryFile);
+#ifndef CHANGED
 	sector = directory->Find(name);
+#endif
 	if (sector == -1) {
 		delete directory;
 		return FALSE;			 // file not found
@@ -715,7 +745,7 @@ FileSystem::Remove(const char *name)
 	delete directory;
 	delete freeMap;
 	return TRUE;
-} 
+}
 
 //----------------------------------------------------------------------
 // FileSystem::List
