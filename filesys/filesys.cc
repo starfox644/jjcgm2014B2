@@ -320,16 +320,135 @@ bool FileSystem::pathExist(char* path)
 	return false;
 }
 
+
 /**
- * 	Cut the given path into directory list.
- * 	Return a list which contains the directories of the path.
- * 	nbDir will contain the number of entries.
+ * Tell if a path is legal or not
+ * If it is legal, it returns the numbers of levels in the path,
+ * else it returns 0
+ * The path is considered illegal if :
+ *  - it contains characters others than . / _ - and alphanum (a-z, A-Z, 0-9)
+ *  - there are two null names "//"
+ *  - one name is longer than limit
+ *  - it is void
  */
-char** FileSystem::cutPath(char* path, int* nbDir)
-{
-	return NULL;
+int FileSystem::isLegalPath(char* path) {
+	int i, legal, level, nameLength;
+	char c, prev;
+
+	legal = 1;
+	i = 0;
+	prev = 0;
+	level = 1;
+	nameLength = 0;
+
+	// if the path is void
+	if (strlen(path) == 0)
+		legal = 0;
+
+	// while we are not at the end of the path string
+	while (path[i] != '\0' && legal) {
+		c = path[i];
+
+		// if we find a /, we increment the number of levels
+		// and we reset the name length
+		if (c == '/') {
+			level++;
+			nameLength = 0;
+		} else {
+			// we increase name length
+			nameLength++;
+
+			// if it's too big, the path is not legal
+			if (nameLength > FileNameMaxLen)
+				legal = 0;
+		}
+
+		// if there are two /, not legal
+		if (c == '/' && prev == '/')
+			legal = 0;
+
+		// if c is not a alphanum, or . / - _
+		if ((c < 'a' || 'z' < c) && (c < 'A' || 'Z' < c) && (c < '0' || '9' < c)
+				&& c != '/' && c != '.' && c != '-' && c != '_')
+			legal = 0;
+
+		// we keep the previous character in memory
+		prev = c;
+		i++;
+	}
+
+	// if there is a / at the end, we decrease the number level
+	if (path[i - 1] == '/') {
+		level--;
+	}
+
+	// if it isn't legal, we return 0, else we return the level
+	if (legal == 0)
+		return 0;
+	else
+		return level;
 }
-#endif
+
+/**
+ * Cuts a path name into multiple names.
+ * Returns an array of names if the path is legal
+ *    and nbDir contains the size of the array
+ * If the path is illegal, the function returns NULL
+ */
+char** FileSystem::cutPath(char* path, int* nbDir) {
+	int i, j, k;
+	char** result;
+
+	result = NULL;
+
+	*nbDir = isLegalPath(path);
+
+	if (*nbDir == 0) // if illegalPath
+		return NULL;
+
+	// we allocate the result
+	result = new char*[*nbDir];
+	for (i = 0; i < *nbDir; i++)
+		result[i] = new char[FileNameMaxLen];
+
+	i = 0; // line in the result
+	j = 0; // column in the result
+	k = 0; // character in the path
+
+	// if the path beggins with a /, we add it to the result
+	if (path[0] == '/') {
+		result[0][0] = '/';
+		result[0][1] = '\0';
+		i++;
+		k++;
+	}
+
+	// while we are not at the end of the path
+	while (path[k] != '\0') {
+
+		// if we find a /, we change path
+		if (path[k] == '/') {
+
+			// the case of the last / is treated at the end
+			if (path[k + 1] != '\0') {
+				result[i][j] = '\0';
+				i++;
+				j = 0;
+			}
+		} else { // else we just scopy
+			result[i][j] = path[k];
+			j++;
+		}
+
+		k++;
+	}
+
+	// don't forget the '\0' at the end of the last string
+	result[i][j] = '\0';
+
+	return result;
+}
+#endif //CHANGED
 
 //----------------------------------------------------------------------
 // FileSystem::Open
