@@ -210,6 +210,11 @@ void moveTest()
 		{
 			fileSystem->List();
 		}
+		else if(!strcmp(cmd, "rmdir"))
+		{
+			scanf("%s", name);
+			fileSystem->RemoveDirEmpty(name);
+		}
 		else if(!strcmp(cmd, "pe"))
 		{
 			scanf("%s", name);
@@ -222,6 +227,11 @@ void moveTest()
 			{
 				printf("chemin non existant !");
 			}
+		}
+		else if(!strcmp(cmd, "rm"))
+		{
+			scanf("%s", name);
+			fileSystem->Remove(name);
 		}
 	}while(strcmp(cmd, "q"));
 }

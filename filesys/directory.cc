@@ -24,6 +24,9 @@
 #include "utility.h"
 #include "filehdr.h"
 #include "directory.h"
+#ifdef CHANGED
+#include "system.h"
+#endif
 
 //----------------------------------------------------------------------
 // Directory::Directory
@@ -240,4 +243,42 @@ Directory::Print()
     }
 
 
+    void Directory::setIsDirectory(const char *name, bool b)
+    {
+    	int i = FindIndex(name);
+    	if (i != -1)
+    		 table[i].isDirectory = b;
+    }
+
+    /**
+     * Fonction permettant de savoir si le repertoire
+     * dont le nom est passe en parametre est vide ou non
+     */
+    bool Directory::isEmpty(char *name)
+    {
+    	Directory* dir = new Directory(tableSize);
+    	OpenFile* openFile = NULL;
+    	int i = FindIndex(name);
+    	int j = 0;
+
+    	if (i == -1)
+    	{
+    		delete dir;
+    		return false; 		// name not in directory
+    	}
+    	else
+    	{
+	    	openFile = fileSystem->Open(name);
+	    	ASSERT(openFile != NULL);
+	    	dir->FetchFrom(openFile);
+	    	// verification qu'aucun fichier n'est present dans le repertoire
+	        while (j < tableSize && !table[j].inUse)
+	        {
+	        	j++;
+	        }
+	        delete openFile;
+	        delete dir;
+	        return (j == tableSize);
+    	}
+    }
 #endif

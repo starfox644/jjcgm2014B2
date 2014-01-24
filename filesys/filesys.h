@@ -101,7 +101,12 @@ class FileSystem {
     char** cutPath(const char* path, int* nbDir);
     int isLegalPath(const char* path);
 
+	/**
+	 * Deplacement dans le repertoire dont le chemin est passe en argument
+	 */
     bool cd(char* path);
+    bool RemoveDirEmpty(char *path);
+    bool RemoveDir(char *path);
     char* pwd();
 #endif
 
