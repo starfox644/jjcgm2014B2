@@ -71,6 +71,7 @@ extern void Print (char *file), PerformanceTest (void);
 extern void ConsoleTest (char *in, char *out);
 #ifdef CHANGED
 	extern void SynchConsoleTest (char *in, char *out);
+	extern void moveTest();
 
 #endif
 #ifdef NETWORK
@@ -241,6 +242,11 @@ main (int argc, char **argv)
 			{
 				printf("format : -cr <dir name>\n");
 			}
+		}
+		else if(!strcmp(*argv, "-mt"))
+		{
+
+			moveTest();
 		}
 #endif
 #endif // FILESYS

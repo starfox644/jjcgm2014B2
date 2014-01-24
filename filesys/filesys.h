@@ -79,6 +79,20 @@ class FileSystem {
 
 #ifdef CHANGED
     bool CreateDir(const char *name);
+
+    /**
+     * Return true if the path already exists
+     */
+    bool pathExist(char* path);
+
+    /**
+     * 	Cut the given path into directory list.
+     * 	Return a list which contains the directories of the path.
+     * 	nbDir will contain the number of entries.
+     */
+    char** cutPath(char* path, int* nbDir);
+    bool cd(char* name);
+    char* pwd();
 #endif
 
     OpenFile* Open(const char *name); 	// Open a file (UNIX open)
@@ -96,6 +110,7 @@ class FileSystem {
 					// file names, represented as a file
 #ifdef CHANGED
    OpenFile* currentDirFile;
+   char currentDirName[9];
 #endif
 };
 

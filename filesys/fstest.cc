@@ -183,3 +183,33 @@ PerformanceTest()
     stats->Print();
 }
 
+#ifdef CHANGED
+void moveTest()
+{
+	char cmd[20];
+	char name[20];
+	do
+	{
+		scanf("%s", cmd);
+		if(!strcmp(cmd, "cd"))
+		{
+			scanf("%s", name);
+			fileSystem->cd(name);
+		}
+		else if(!strcmp(cmd, "pwd"))
+		{
+			printf("%s\n", fileSystem->pwd());
+		}
+		else if(!strcmp(cmd, "mkdir"))
+		{
+			scanf("%s", name);
+			fileSystem->CreateDir(name);
+		}
+		else if(!strcmp(cmd, "ls"))
+		{
+			fileSystem->List();
+		}
+	}while(strcmp(cmd, "q"));
+}
+#endif
+

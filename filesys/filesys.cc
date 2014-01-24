@@ -145,6 +145,7 @@ FileSystem::FileSystem(bool format)
 		directoryFile = new OpenFile(DirectorySector);
 #ifdef CHANGED
 		currentDirFile = directoryFile;
+		strcpy(currentDirName, "/");
 #endif
 	}
 }
@@ -265,6 +266,44 @@ bool FileSystem::CreateDir(const char *name)
 		return false;
 	}
 }
+
+bool FileSystem::cd(char* name)
+{
+	OpenFile* openFile = Open(name);
+	if(openFile == NULL)
+	{
+		return false;
+	}
+	else
+	{
+		currentDirFile = openFile;
+		strncpy(currentDirName, name, 9);
+		return true;
+	}
+}
+
+char* FileSystem::pwd()
+{
+	return currentDirName;
+}
+
+/*
+ * Return true if the path already exists
+ */
+bool pathExist()
+{
+	return false;
+}
+
+/**
+ * 	Cut the given path into directory list.
+ * 	Return a list which contains the directories of the path.
+ * 	nbDir will contain the number of entries.
+ */
+char** cutPath(char* path, int* nbDir)
+{
+	return NULL;
+}
 #endif
 
 //----------------------------------------------------------------------
@@ -353,8 +392,11 @@ void
 FileSystem::List()
 {
     Directory *directory = new Directory(NumDirEntries);
-
+#ifdef CHANGED
+    directory->FetchFrom(currentDirFile);
+#else
     directory->FetchFrom(directoryFile);
+#endif
     directory->List();
     delete directory;
 }
