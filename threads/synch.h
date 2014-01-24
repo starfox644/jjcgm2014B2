@@ -58,21 +58,10 @@ public:
 #endif // CHANGED
 	void P ();			// these are the only operations on a semaphore
 	void V ();			// they are both *atomic*
-#ifdef NETWORK
-	//getter and setter pour nos booleens
-	bool getInUse();
-	void setInUse(bool);
-	bool getInListCond();
-	void setInListCond(bool);
-#endif
 private:
 	const char *name;		// useful for debugging
 	int value;			// semaphore value, always >= 0
 	List *queue;		// threads waiting in P() for the value to be > 0
-#ifdef NETWORK
-	volatile bool inUse;			//la semaphore est verrouille
-	volatile bool inListCond;	//la semaphore est dans la liste des condition
-#endif
 };
 
 // The following class defines a "lock".  A lock can be BUSY or FREE.
@@ -154,17 +143,15 @@ public:
 		return (name);
 	}
 
-	int Wait (Lock * conditionLock);	// these are the 3 operations on
+	void Wait (Lock * conditionLock);	// these are the 3 operations on
 	// condition variables; releasing the
 	// lock and going to sleep are
 	// *atomic* in Wait()
-	int Signal (Lock * conditionLock);	// conditionLock must be held by
-	int Broadcast (Lock * conditionLock);	// the currentThread for all of
+	void Signal (Lock * conditionLock);	// conditionLock must be held by
+	void Broadcast (Lock * conditionLock);	// the currentThread for all of
 	// these operations
 #ifdef NETWORK
-	Semaphore* cond;
-	int nbCond;
-	std::list<Lock*> l_condLock;
+	Semaphore* semCond;
 #endif //network
 
 private:
