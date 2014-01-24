@@ -269,12 +269,12 @@ bool FileSystem::CreateDir(const char *name)
 
 bool FileSystem::cd(char* path)
 {
-	char** path_dir;
-	int nbDir;
-	Directory* dir = new Directory(NumDirEntries);
+	//char** path_dir;
+	//int nbDir;
+	//Directory* dir = new Directory(NumDirEntries);
 	OpenFile* openFile = NULL;
 	// verification que le chemin existe
-	if (pathExist(path))
+	/*if (pathExist(path))
 	{
 		// recuperation du chemin decoupe
 		path_dir = cutPath(path, &nbDir);
@@ -293,8 +293,9 @@ bool FileSystem::cd(char* path)
 		    }
 		}
 	}
-	return false;
-	/*if(openFile == NULL)
+	return false;*/
+	openFile = Open(path);
+	if(openFile == NULL)
 	{
 		return false;
 	}
@@ -302,9 +303,9 @@ bool FileSystem::cd(char* path)
 	{
 
 		currentDirFile = openFile;
-		strncpy(currentDirName, name, 9);
+		strncpy(currentDirName, path, 9);
 		return true;
-	}*/
+	}
 }
 
 char* FileSystem::pwd()
@@ -325,14 +326,29 @@ bool FileSystem::pathExist(char* path)
 	Directory* dir = new Directory(NumDirEntries);
 	// decoupage du chemin en une liste
 	pathList = cutPath(path, &nbDir);
+	printf("path list : \n");
+	for(i = 0 ; i < nbDir ; i++)
+	{
+		printf("%s\n", pathList[i]);
+	}
 	if(pathList != NULL)
 	{
 		if(!strcmp(pathList[0], "/"))
 		{
-			// chemin absolu : on commence a la racine
-			sector = DirectorySector;
-			// la racine n'est pas comptee
-			i = 1;
+			if(nbDir == 1)
+			{
+				// juste la racine : vrai
+				delete pathList;
+				delete dir;
+				return true;
+			}
+			else
+			{
+				// chemin absolu : on commence a la racine
+				sector = DirectorySector;
+				// la racine n'est pas comptee
+				i = 1;
+			}
 		}
 		else
 		{
@@ -368,6 +384,7 @@ bool FileSystem::pathExist(char* path)
 		}
 		if(sector == -1)
 		{
+			// erreur : un dossier du path est introuvable
 			delete pathList;
 			delete dir;
 			return false;
@@ -476,7 +493,10 @@ char** FileSystem::cutPath(char* path, int* nbDir) {
 	*nbDir = isLegalPath(path);
 
 	if (*nbDir == 0) // if illegalPath
+	{
+		printf("illegal path !\n");
 		return NULL;
+	}
 
 	// we allocate the result
 	result = new char*[*nbDir];
@@ -491,6 +511,11 @@ char** FileSystem::cutPath(char* path, int* nbDir) {
 	if (path[0] == '/') {
 		result[0][0] = '/';
 		result[0][1] = '\0';
+		if(path[1] == '\0')
+		{
+			// just '/' : return
+			return result;
+		}
 		i++;
 		k++;
 	}
