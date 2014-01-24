@@ -81,6 +81,8 @@ public:
 	DirectoryEntry getSelfDir();
 	DirectoryEntry getParentDir();
     bool isDirectory(char *name);
+    void setInUse(int num_sector, bool bUse);
+    bool isEmpty(char *name);
 
 #endif
 private:

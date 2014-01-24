@@ -267,6 +267,9 @@ bool FileSystem::CreateDir(const char *name)
 	}
 }
 
+/**
+ * Deplacement dans le repertoire dont le chemin est passe en argument
+ */
 bool FileSystem::cd(char* path)
 {
 	char** path_dir;
@@ -281,30 +284,78 @@ bool FileSystem::cd(char* path)
 		// verification que le chemin existe
 		if (path_dir != NULL)
 		{
+			if (nbDir >= 2)
+				openFile = Open(path_dir[nbDir-2]);
+			else
+				openFile = currentDirFile;
+			dir->FetchFrom(openFile);
 			// si le dernier nom est un repertoire
-		    //dir->FetchFrom(openFile);
 		    if (dir->isDirectory(path_dir[nbDir-1]))
 		    {
+		    	delete openFile;
 		    	openFile = Open(path_dir[nbDir-1]);
 		    	ASSERT(openFile != NULL);
+		    	// modification du repertoire courant
 				currentDirFile = openFile;
 				strncpy(currentDirName, path_dir[nbDir-1], 9);
+				delete dir;
+				delete path_dir;
+		    	delete openFile;
 				return true;
 		    }
 		}
 	}
+	delete dir;
+	delete path_dir;
 	return false;
-	/*if(openFile == NULL)
-	{
-		return false;
-	}
-	else
-	{
+}
 
-		currentDirFile = openFile;
-		strncpy(currentDirName, name, 9);
-		return true;
-	}*/
+/**
+ * Fonction permettant de supprimer le repertoire
+ * dont le chemin d'acces est passe en parametre
+ */
+bool FileSystem::RemoveDirEmpty(char *path)
+{
+	char** path_dir;
+	int nbDir;
+	OpenFile* openFile = NULL;
+	Directory* dir = new Directory(NumDirEntries);
+	// verification que le chemin existe
+	if (pathExist(path))
+	{
+		// recuperation du chemin decoupe
+		path_dir = cutPath(path, &nbDir);
+		// verification que le chemin existe
+		if (path_dir != NULL)
+		{
+			// recuperation du repertoire parent de celui a supprimer
+			if (nbDir >= 2)
+				openFile = Open(path_dir[nbDir-2]);
+			else
+				openFile = currentDirFile;
+
+			dir->FetchFrom(openFile);
+			// si le dernier nom est un repertoire
+			if (dir->isDirectory(path_dir[nbDir-1]))
+			{
+				// suppression du repertoire s'il est vide
+				if (dir->isEmpty(path_dir[nbDir-1]))
+				{
+					remove(path_dir[nbDir-1]);
+				}
+				delete dir;
+				delete path_dir;
+		    	delete openFile;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool FileSystem::RemoveDir(char *path)
+{
+	return false;
 }
 
 char* FileSystem::pwd()
