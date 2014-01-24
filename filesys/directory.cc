@@ -228,4 +228,16 @@ Directory::Print()
     {
     	return parentDir;
     }
+
+
+    bool Directory::isDirectory(char *name)
+    {
+    	int i = FindIndex(name);
+    	if (i == -1)
+    		return false; 		// name not in directory
+    	else
+    		return table[i].isDirectory;
+    }
+
+
 #endif

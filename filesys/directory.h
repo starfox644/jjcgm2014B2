@@ -80,7 +80,7 @@ public:
 
 	DirectoryEntry getSelfDir();
 	DirectoryEntry getParentDir();
-
+    bool isDirectory(char *name);
 
 #endif
 private:
