@@ -209,6 +209,11 @@ void moveTest()
 		{
 			fileSystem->List();
 		}
+		else if(!strcmp(cmp, "rm"))
+		{
+			scanf("%s", name);
+			fileSystem->RemoveDirEmpty(name);
+		}
 	}while(strcmp(cmd, "q"));
 }
 #endif

@@ -305,6 +305,7 @@ bool FileSystem::cd(char* path)
 		    }
 		}
 	}
+	printf("Impossible d'acceder a : %s\n", path);
 	delete dir;
 	delete path_dir;
 	return false;
