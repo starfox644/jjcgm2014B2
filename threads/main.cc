@@ -108,9 +108,11 @@ main (int argc, char **argv)
 		if (!strcmp (*argv, "-z"))	// print copyright
 			printf ("%s", copyright);
 #ifdef USER_PROGRAM
+
 		if (!strcmp (*argv, "-x"))
 		{			// run a user program
 			ASSERT (argc > 1);
+			printf("option -X\n");
 			StartProcess (*(argv + 1));
 			return -1;
 			argCount = 2;
@@ -153,6 +155,7 @@ main (int argc, char **argv)
 		}
 #endif	//changed
 #ifdef step4
+
 		else if(!strcmp (*argv, "-ta"))
 		{
 			ASSERT (argc > 1);
@@ -233,7 +236,7 @@ main (int argc, char **argv)
 		if (!strcmp (*argv, "-o"))
 		{
 			ASSERT (argc > 1);
-			Delay (2);	// delay for 2 seconds
+			Delay (5);	// delay for 2 seconds
 			// to give the user time to
 			// start up another nachos
 			MailTest (atoi (*(argv + 1)));

@@ -35,9 +35,13 @@
 
 Semaphore::Semaphore (const char *debugName, int initialValue)
 {
-    name = debugName;
-    value = initialValue;
-    queue = new List;
+	name = debugName;
+	value = initialValue;
+	queue = new List;
+#ifdef NETWORK
+	inUse = false;
+	inListCond = false;
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -48,7 +52,7 @@ Semaphore::Semaphore (const char *debugName, int initialValue)
 
 Semaphore::~Semaphore ()
 {
-    delete queue;
+	delete queue;
 }
 
 #ifdef CHANGED
@@ -82,17 +86,22 @@ void Semaphore::setId(int idSem)
 void
 Semaphore::P ()
 {
-    IntStatus oldLevel = interrupt->SetLevel (IntOff);	// disable interrupts
-
-    while (value == 0)
-      {				// semaphore not available
-	  queue->Append ((void *) currentThread);	// so go to sleep
-	  currentThread->Sleep ();
-      }
-    value--;			// semaphore available, 
-    // consume its value
-
-    (void) interrupt->SetLevel (oldLevel);	// re-enable interrupts
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);	// disable interrupts
+#ifdef NETWORK
+	while (value == 0 && inListCond == true)
+#else
+		while (value == 0)
+#endif
+		{				// semaphore not available
+			queue->Append ((void *) currentThread);	// so go to sleep
+			currentThread->Sleep ();
+		}
+	value--;			// semaphore available,
+	// consume its value
+#ifdef NETWORK
+	inUse = true;
+#endif
+	(void) interrupt->SetLevel (oldLevel);	// re-enable interrupts
 }
 
 //----------------------------------------------------------------------
@@ -106,16 +115,32 @@ Semaphore::P ()
 void
 Semaphore::V ()
 {
-    Thread *thread;
-    IntStatus oldLevel = interrupt->SetLevel (IntOff);
+	Thread *thread;
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 
-    thread = (Thread *) queue->Remove ();
-    if (thread != NULL)		// make thread ready, consuming the V immediately
-	scheduler->ReadyToRun (thread);
-    value++;
-    (void) interrupt->SetLevel (oldLevel);
+	thread = (Thread *) queue->Remove ();
+	if (thread != NULL)		// make thread ready, consuming the V immediately
+		scheduler->ReadyToRun (thread);
+	value++;
+#ifdef NETWORK
+	inUse = false;
+#endif
+	(void) interrupt->SetLevel (oldLevel);
 }
-
+#ifdef NETWORK
+bool Semaphore::getInUse(){
+	return inUse;
+}
+void Semaphore::setInUse(bool b){
+	inUse = b;
+}
+bool Semaphore::getInListCond(){
+	return inListCond;
+}
+void Semaphore::setInListCond(bool b){
+	inListCond = b;
+}
+#endif
 // Dummy functions -- so we can compile our later assignments 
 // Note -- without a correct implementation of Condition::Wait(), 
 // the test case in the network assignment won't work!
@@ -150,22 +175,95 @@ Lock::Release ()
 Condition::Condition (const char *debugName)
 {
 	name = debugName;
+#ifdef NETWORK
+	cond = new Semaphore("Semaphore Condition",1);
+#endif
 }
 
 Condition::~Condition ()
 {
+#ifdef NETWORK
+	std::list<Lock*>::iterator it;
+	//liberation de la liste
+	for(it = l_condLock.begin() ; it != l_condLock.end() ; ++it)
+	{
+		delete (*it);
+	}
+	delete cond; // liberation de la semaphore
+#endif
 }
-void
-Condition::Wait (Lock * conditionLock)
+int Condition::Wait (Lock * conditionLock)
 {
+#ifdef NETWORK
+	cond->P();
+	printf("condition wait entré\n");
+	conditionLock->sem->V(); //on libere la semaphore du lock et on l'ajoute a notre liste
+	if(conditionLock->sem->getInUse() == true && conditionLock->sem->getInListCond() == false){//si semaphore utilisé mais pas dans la liste
+		cond->V();
+		return 0;
+	}else if(conditionLock->sem->getInUse() == true && conditionLock->sem->getInListCond() == true){		//si semaphore utlisé mais dans la liste
+		std::list<Lock*>::iterator it=l_condLock.begin();
+		while (it != l_condLock.end() && (*it) != conditionLock)
+			it++;
+		// If lock not found, return -1 : error
+		if ((*it) != conditionLock){
+			cond->V();
+			return -1;
+		}else{// Else, remove it
+			nbCond--;
+			conditionLock->sem->setInListCond(false);
+			l_condLock.erase(it);
+		}
+	}else if(conditionLock->sem->getInListCond() == true){//si la semaphore et non utilisé mais deja dans la liste
+		cond->V();
+		return 0;
+	}else{//si semaphore non utilisé et pas dans la liste
+		conditionLock->sem->setInListCond(true);
+		l_condLock.push_back(conditionLock);
+		nbCond++;
+	}
+	printf("condition wait sortie\n");
+	cond->V();
+#endif//network
+	return 0;
+}
 
-}
-
-void
-Condition::Signal (Lock * conditionLock)
+int Condition::Signal (Lock * conditionLock)
 {
+#ifdef NETWORK
+	printf("condition signal entré\n");
+	cond->P();
+	std::list<Lock*>::iterator it=l_condLock.begin();
+	while (it != l_condLock.end() && (*it) != conditionLock)
+		it++;
+	// If lock not found, return -1 : error
+	if ((*it) != conditionLock){
+		cond->V();
+		return -1;
+		// Else, remove it
+	}else{
+		nbCond--;
+		conditionLock->sem->setInListCond(false);
+		l_condLock.erase(it);
+		cond->V();
+		printf("condition signal sortie\n");
+		return 0;
+	}
+#endif //network
+	return 0;
 }
-void
-Condition::Broadcast (Lock * conditionLock)
+int Condition::Broadcast (Lock * conditionLock)
 {
+#ifdef NETWORK
+	cond->P();
+	std::list<Lock*>::iterator it=l_condLock.begin();
+	while (it != l_condLock.end() && (*it) != conditionLock){
+		it++;
+		nbCond--;
+		conditionLock->sem->setInListCond(false);
+		l_condLock.erase(it);
+	}
+	cond->V();
+#endif
+	return 0;
 }
