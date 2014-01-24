@@ -290,9 +290,59 @@ char* FileSystem::pwd()
 /*
  * Return true if the path already exists
  */
-bool pathExist()
+bool FileSystem::pathExist(char* path)
 {
-	return false;
+	int nbDir;
+	int i;
+	int sector;
+	char** pathList;
+	OpenFile* fileActu;
+	Directory* dir = new Directory(NumDirEntries);
+	// decoupage du chemin en une liste
+	pathList = cutPath(path, &nbDir);
+	if(pathList != NULL)
+	{
+		if(!strcmp(pathList[0], "/"))
+		{
+			// chemin absolu : on commence a la racine
+			sector = DirectorySector;
+			// la racine n'est pas comptee
+			i = 1;
+		}
+		else
+		{
+			// chemin relatif : on commence au repertoire courant
+			dir->FetchFrom(currentDirFile);
+			sector = (dir->getSelfDir()).sector;
+			i = 0;
+		}
+		fileActu = new OpenFile(sector);
+		while(i < nbDir - 1 && sector != -1)
+		{
+			// lecture du repertoire actuel
+			dir->FetchFrom(fileActu);
+			delete fileActu;
+			// recherche du repertoire suivant
+			sector = dir->Find(pathList[i]);
+			if(sector != -1)
+			{
+				fileActu = new OpenFile(sector);
+				i++;
+			}
+		}
+		if(sector == -1)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return false;
+	}
 }
 
 /**
@@ -300,7 +350,7 @@ bool pathExist()
  * 	Return a list which contains the directories of the path.
  * 	nbDir will contain the number of entries.
  */
-char** cutPath(char* path, int* nbDir)
+char** FileSystem::cutPath(char* path, int* nbDir)
 {
 	return NULL;
 }
