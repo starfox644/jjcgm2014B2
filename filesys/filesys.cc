@@ -341,31 +341,53 @@ bool FileSystem::pathExist(char* path)
 			sector = (dir->getSelfDir()).sector;
 			i = 0;
 		}
+		// ouverture du fichier du premier repertoire
 		fileActu = new OpenFile(sector);
 		while(i < nbDir - 1 && sector != -1)
 		{
 			// lecture du repertoire actuel
 			dir->FetchFrom(fileActu);
 			delete fileActu;
-			// recherche du repertoire suivant
-			sector = dir->Find(pathList[i]);
-			if(sector != -1)
+			// le nom suivant doit etre un repertoire
+			if(dir->isDirectory(pathList[i]))
 			{
-				fileActu = new OpenFile(sector);
-				i++;
+				// recherche du repertoire suivant
+				sector = dir->Find(pathList[i]);
+				if(sector != -1)
+				{
+					fileActu = new OpenFile(sector);
+					i++;
+				}
+			}
+			else
+			{
+				delete pathList;
+				delete dir;
+				return false;
 			}
 		}
 		if(sector == -1)
 		{
+			delete pathList;
+			delete dir;
 			return false;
 		}
 		else
 		{
-			return true;
+			// lecture du dernier repertoire
+			dir->FetchFrom(fileActu);
+			delete fileActu;
+			// recherche du dernier fichier
+			sector = dir->Find(pathList[i]);
+			delete pathList;
+			delete dir;
+			return (sector != -1);
 		}
 	}
 	else
 	{
+		delete pathList;
+		delete dir;
 		return false;
 	}
 }
