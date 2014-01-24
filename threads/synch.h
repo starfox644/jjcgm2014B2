@@ -151,7 +151,9 @@ public:
 	void Broadcast (Lock * conditionLock);	// the currentThread for all of
 	// these operations
 #ifdef NETWORK
-	Semaphore* semCond;
+	Semaphore* semCond;//semaphore de notre condition
+	Semaphore* semProtList; //semaphore pour proteger notre liste
+	std::list<Lock*> l_LockWait; //liste des locks en attente
 #endif //network
 
 private:
