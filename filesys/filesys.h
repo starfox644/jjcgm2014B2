@@ -91,10 +91,11 @@ class FileSystem {
      * 	nbDir will contain the number of entries.
      */
     char** cutPath(char* path, int* nbDir);
+    int isLegalPath(char* path);
 
-    /**
-     * Deplacement dans le repertoire dont le chemin est passe en argument
-     */
+	/**
+	 * Deplacement dans le repertoire dont le chemin est passe en argument
+	 */
     bool cd(char* path);
     bool RemoveDirEmpty(char *path);
     bool RemoveDir(char *path);
