@@ -368,7 +368,9 @@ bool FileSystem::RemoveDirEmpty(char *path)
 		{
 			// recuperation du repertoire parent de celui a supprimer
 			if (nbDir >= 2)
-				openFile = Open(path_dir[nbDir-2]);
+			{
+
+			}
 			else
 				openFile = currentDirFile;
 
@@ -376,14 +378,23 @@ bool FileSystem::RemoveDirEmpty(char *path)
 			// si le dernier nom est un repertoire
 			if (dir->isDirectory(path_dir[nbDir-1]))
 			{
+				printf("C'est un repertoire \n");
 				// suppression du repertoire s'il est vide
 				if (dir->isEmpty(path_dir[nbDir-1]))
 				{
+					printf("Le repertoire est vide \n");
+					/*if(remove(path_dir[nbDir-1]))
+						printf("Suppression ok\n");
+					else
+						printf("Bug Suppression !! \n ");*/
 					remove(path_dir[nbDir-1]);
 				}
+				else
+					printf("Le repertoire n'est pas vide : suppression impossible\n");
 				delete dir;
 				delete path_dir;
-				delete openFile;
+				if(currentDirFile != directoryFile)
+					delete openFile;
 				return true;
 			}
 		}

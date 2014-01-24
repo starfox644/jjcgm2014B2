@@ -210,7 +210,7 @@ void moveTest()
 		{
 			fileSystem->List();
 		}
-		else if(!strcmp(cmd, "rm"))
+		else if(!strcmp(cmd, "rmdir"))
 		{
 			scanf("%s", name);
 			fileSystem->RemoveDirEmpty(name);

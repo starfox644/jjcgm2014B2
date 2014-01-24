@@ -259,11 +259,12 @@ Directory::Print()
     	Directory* dir = new Directory(tableSize);
     	OpenFile* openFile = NULL;
     	int i = FindIndex(name);
-    	int j = 0;
+    	int j = 2;
 
     	if (i == -1)
     	{
     		delete dir;
+    		printf(" %s introuvable\n", name);
     		return false; 		// name not in directory
     	}
     	else
@@ -272,13 +273,14 @@ Directory::Print()
 	    	ASSERT(openFile != NULL);
 	    	dir->FetchFrom(openFile);
 	    	// verification qu'aucun fichier n'est present dans le repertoire
-	        while (j < tableSize && !table[j].inUse)
+	        while (j < dir->tableSize && !dir->table[j].inUse)
 	        {
+	        	printf("verif inUse de %s\n", dir->table[j].name);
 	        	j++;
 	        }
 	        delete openFile;
-	        delete dir;
-	        return (j == tableSize);
+	        printf("return %d == %d\n", j, dir->tableSize);
+	        return (j == dir->tableSize);
     	}
     }
 #endif
