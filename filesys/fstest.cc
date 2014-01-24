@@ -188,6 +188,7 @@ void moveTest()
 {
 	char cmd[20];
 	char name[20];
+	bool exist;
 	do
 	{
 		scanf("%s", cmd);
@@ -209,10 +210,25 @@ void moveTest()
 		{
 			fileSystem->List();
 		}
+<<<<<<< HEAD
 		else if(!strcmp(cmp, "rm"))
 		{
 			scanf("%s", name);
 			fileSystem->RemoveDirEmpty(name);
+=======
+		else if(!strcmp(cmd, "pe"))
+		{
+			scanf("%s", name);
+			exist = fileSystem->pathExist(name);
+			if(exist)
+			{
+				printf("chemin existant !");
+			}
+			else
+			{
+				printf("chemin non existant !");
+			}
+>>>>>>> 208f0b03c5d1c91d6d61c7eed7141bc0fb1fd752
 		}
 	}while(strcmp(cmd, "q"));
 }
