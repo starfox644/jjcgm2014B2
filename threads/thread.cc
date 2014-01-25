@@ -387,15 +387,17 @@ SetupThreadState ()
 #ifdef CHANGED
 	AddrSpace* space = NULL;
 	if (currentProcess != NULL)
+	{
 		space = currentProcess->getAddrSpace();
+	}
 	if (space != NULL)
-    {				// if there is an address space
+    {	// if there is an address space
 	  currentThread->RestoreUserState ();	// to restore, do it.
 	  space->RestoreState ();
     }
 #else
 	if (currentThread->space != NULL)
-	{				// if there is an address space
+	{	// if there is an address space
 		// LB: Actually, the user state is void at that time. Keep this
 		// action for consistency with the Scheduler::Run function
 		currentThread->RestoreUserState ();	// to restore, do it.

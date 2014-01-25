@@ -52,7 +52,4 @@ void do_cd(char*);
  */
 void afficherManuel(char*);
 
-
-
-
 #endif /* COMMANDINTEGRE_H_ */

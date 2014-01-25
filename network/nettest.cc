@@ -73,4 +73,5 @@ MailTest(int farAddr)
 	}
 	// Then we're done!
 	interrupt->Halt();
+
 }
