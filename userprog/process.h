@@ -7,6 +7,9 @@ class Thread;
 class OpenFile;
 class SemaphoreManager;
 class ThreadManager;
+#ifdef NETWORK
+class SocketManager;
+#endif // NETWORK
 
 /**
  * Realise l'appel systeme fork exec.
@@ -66,6 +69,9 @@ class Process
 		// gere les threads crees du processus
 		Semaphore *semProc;
 		ThreadManager *threadManager;
+#ifdef NETWORK
+		SocketManager *socketManager;
+#endif
 
 		/**
 		 * alloue un espace d'adressage pour le processus en chargeant l'executable a l'interieur

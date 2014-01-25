@@ -385,7 +385,7 @@ SetupThreadState ()
 	// running together.
 #ifndef FILESYS
 #ifdef CHANGED
-	AddrSpace* space;
+	AddrSpace* space = NULL;
 	if (currentProcess != NULL)
 		space = currentProcess->getAddrSpace();
 	if (space != NULL)

@@ -34,6 +34,8 @@
 #include "addrSpaceAllocator.h"
 #include "arguments.h"
 #include "synchconsole.h"
+#include "socket.h"
+#include "socketManager.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -93,6 +95,9 @@ ExceptionHandler (ExceptionType which)
 #ifdef step3
 	bool isSuccess;
 #endif //step3
+#ifdef NETWORK
+	int to, from, adrBuffer;
+#endif // NETWORK
 
 	if (which == SyscallException)
 	{
@@ -293,11 +298,13 @@ ExceptionHandler (ExceptionType which)
 				n = do_arg_start(m, n, o);
 				machine->WriteRegister(2, n);
 				break;
+
 			case SC_ArgArg:
 				n = machine->ReadRegister(4);
 				n = do_arg_arg(n);
 				machine->WriteRegister(2, n);
 				break;
+
 			case SC_GetNbProcessTotal:
 				machine->WriteRegister(2,processManager->getNbProcessTotal());
 				break;
@@ -309,6 +316,35 @@ ExceptionHandler (ExceptionType which)
 
 #endif // STEP4
 
+#ifdef NETWORK
+			case SC_InitSocket:
+				n = machine->ReadRegister(4);		// Numero de la box
+				to = machine->ReadRegister(5); 		// Adresse destination de la socket
+				from = machine->ReadRegister(6); 	// Adresse de la machine
+				adrBuffer=machine->ReadRegister(7); // Buffer
+				// Renvoie l'ID de la socket creee ou -1
+				machine->WriteRegister(2, do_SockInit(n, to, from, adrBuffer));
+				break;
+
+			case SC_Send:
+				n = machine->ReadRegister(4);		// Id de la socket
+				adrBuffer=machine->ReadRegister(5); // Adresse du message
+				// Renvoie le nombre de caractere envoyes ou -1
+				machine->WriteRegister(2, currentProcess->socketManager->do_Send(n, adrBuffer));
+				break;
+
+			case SC_Receive:
+				n = machine->ReadRegister(4);		// Id de la socket
+				adrBuffer=machine->ReadRegister(5); // Adresse du message
+				// Renvoie le nombre de caractere recuperes ou -1
+				machine->WriteRegister(2, currentProcess->socketManager->do_Receive(n, adrBuffer));
+				break;
+
+			case SC_CloseSocket:
+				n = machine->ReadRegister(4);		// Id de la socket
+				currentProcess->socketManager->removeSocket(n);
+				break;
+#endif // NETWORK
 			case SC_Exit:
 				// read return code in r4 register
 				codeErreur = machine->ReadRegister(4);

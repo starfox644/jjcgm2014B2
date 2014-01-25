@@ -4,6 +4,9 @@
 #include "system.h"
 #include "semaphoreManager.h"
 #include "threadManager.h"
+#ifdef NETWORK
+#include "socketManager.h"
+#endif // NETWORK
 #include <list>
 
 extern void do_exit(int returnCode);
@@ -221,6 +224,9 @@ Process::Process()
 	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
+#ifdef NETWORK
+	socketManager = new SocketManager();
+#endif // NETWORK
 	semProc = new Semaphore("semaphore processus", 0);
 }
 
@@ -266,6 +272,9 @@ void Process::freeAddrSpace()
 	threadManager->deleteThreads();
 	delete threadManager;
 	delete semManager;
+#ifdef NETWORK
+	delete socketManager;
+#endif // NETWORK
 	addrSpace = NULL;
 }
 

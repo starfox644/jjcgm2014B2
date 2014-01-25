@@ -54,6 +54,10 @@
 #define SC_ArgEnd 31
 #define SC_GetListProcess 32
 #define SC_GetNbProcessTotal 33
+#define SC_InitSocket 34
+#define SC_Send 35
+#define SC_Receive 36
+#define SC_CloseSocket 37
 
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED

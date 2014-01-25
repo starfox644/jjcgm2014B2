@@ -216,7 +216,7 @@ Initialize (int argc, char **argv)
 
 #ifdef NETWORK
 	postOffice = new PostOffice (netname, rely, 10);
-#endif
+#endif // NETWORK
 }
 
 //----------------------------------------------------------------------

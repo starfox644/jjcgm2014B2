@@ -55,7 +55,7 @@ __start:
  * 	convention on the MIPS.
  * -------------------------------------------------------------
  */
-
+/* ********************************* */
 	.globl Halt
 	.ent	Halt
 Halt:
@@ -63,7 +63,7 @@ Halt:
 	syscall
 	j	$31
 	.end Halt
-
+/* ********************************* */
 	.globl Exit
 	.ent	Exit
 Exit:
@@ -71,7 +71,7 @@ Exit:
 	syscall
 	j	$31
 	.end Exit
-
+/* ********************************* */
 	.globl Exec
 	.ent	Exec
 Exec:
@@ -79,7 +79,7 @@ Exec:
 	syscall
 	j	$31
 	.end Exec
-
+/* ********************************* */
 	.globl Join
 	.ent	Join
 Join:
@@ -87,7 +87,7 @@ Join:
 	syscall
 	j	$31
 	.end Join
-
+/* ********************************* */
 	.globl Create
 	.ent	Create
 Create:
@@ -95,7 +95,7 @@ Create:
 	syscall
 	j	$31
 	.end Create
-
+/* ********************************* */
 	.globl Open
 	.ent	Open
 Open:
@@ -103,7 +103,7 @@ Open:
 	syscall
 	j	$31
 	.end Open
-
+/* ********************************* */
 	.globl Read
 	.ent	Read
 Read:
@@ -111,7 +111,7 @@ Read:
 	syscall
 	j	$31
 	.end Read
-
+/* ********************************* */
 	.globl Write
 	.ent	Write
 Write:
@@ -119,7 +119,7 @@ Write:
 	syscall
 	j	$31
 	.end Write
-
+/* ********************************* */
 	.globl Close
 	.ent	Close
 Close:
@@ -127,7 +127,7 @@ Close:
 	syscall
 	j	$31
 	.end Close
-
+/* ********************************* */
 	.globl Fork
 	.ent	Fork
 Fork:
@@ -135,7 +135,7 @@ Fork:
 	syscall
 	j	$31
 	.end Fork
-
+/* ********************************* */
 	.globl Yield
 	.ent	Yield
 Yield:
@@ -145,7 +145,7 @@ Yield:
 	.end Yield
 
 #ifdef CHANGED
-
+/* ********************************* */
 	.globl PutChar
 	.ent	PutChar
 PutChar:
@@ -153,7 +153,7 @@ PutChar:
 	syscall
 	j	$31
 	.end PutChar
-
+/* ********************************* */
 	.globl PutString
 	.ent	PutString
 PutString:
@@ -161,7 +161,7 @@ PutString:
 	syscall
 	j	$31
 	.end PutString
-
+/* ********************************* */
 	.globl PutInt
 	.ent	PutInt
 PutInt:
@@ -169,7 +169,7 @@ PutInt:
 	syscall
 	j	$31
 	.end PutInt
-
+/* ********************************* */
 	.globl GetChar
 	.ent	GetChar
 GetChar:
@@ -177,7 +177,7 @@ GetChar:
 	syscall
 	j	$31
 	.end GetChar
-
+/* ********************************* */
 	.globl GetString
 	.ent	GetString
 GetString:
@@ -185,7 +185,7 @@ GetString:
 	syscall
 	j	$31
 	.end GetString
-
+/* ********************************* */
 	.globl UserThreadCreate
 	.ent	UserThreadCreate
 UserThreadCreate:
@@ -193,7 +193,7 @@ UserThreadCreate:
 	syscall
 	j	$31
 	.end UserThreadCreate
-
+/* ********************************* */
 .globl UserThreadExit
 	.ent	UserThreadExit
 UserThreadExit:
@@ -201,7 +201,7 @@ UserThreadExit:
 	syscall
 	j	$31
 	.end UserThreadExit
-
+/* ********************************* */
 .globl SemInit
 	.ent	SemInit
 SemInit:
@@ -209,7 +209,7 @@ SemInit:
 	syscall
 	j	$31
 	.end SemInit
-
+/* ********************************* */
 .globl SemWait
 	.ent	SemWait
 SemWait:
@@ -217,7 +217,7 @@ SemWait:
 	syscall
 	j	$31
 	.end SemWait
-
+/* ********************************* */
 .globl SemPost
 	.ent	SemPost
 SemPost:
@@ -225,7 +225,7 @@ SemPost:
 	syscall
 	j	$31
 	.end SemPost
-
+/* ********************************* */
 .globl SemDestroy
 	.ent	SemDestroy
 SemDestroy:
@@ -233,7 +233,7 @@ SemDestroy:
 	syscall
 	j	$31
 	.end SemDestroy
-
+/* ********************************* */
 .globl GetTid
 	.ent	GetTid
 GetTid:
@@ -241,7 +241,7 @@ GetTid:
 	syscall
 	j	$31
 	.end GetTid
-
+/* ********************************* */
 	.globl UserThreadJoin
 	.ent	UserThreadJoin
 UserThreadJoin:
@@ -249,7 +249,7 @@ UserThreadJoin:
 	syscall
 	j	$31
 	.end UserThreadJoin
-
+/* ********************************* */
 	.globl ForkExec
 	.ent	ForkExec
 ForkExec:
@@ -257,7 +257,7 @@ ForkExec:
 	syscall
 	j	$31
 	.end ForkExec
-
+/* ********************************* */
 	.globl GetPid
 	.ent	GetPid
 GetPid:
@@ -265,7 +265,7 @@ GetPid:
 	syscall
 	j	$31
 	.end GetPid
-
+/* ********************************* */
 	.globl WaitPid
 	.ent	WaitPid
 WaitPid:
@@ -273,7 +273,7 @@ WaitPid:
 	syscall
 	j	$31
 	.end WaitPid
-
+/* ********************************* */
 	.globl Mmap
 	.ent	Mmap
 Mmap:
@@ -281,7 +281,7 @@ Mmap:
 	syscall
 	j	$31
 	.end Mmap
-
+/* ********************************* */
 	.globl Unmap
 	.ent	Unmap
 Unmap:
@@ -289,7 +289,7 @@ Unmap:
 	syscall
 	j	$31
 	.end Unmap
-
+/* ********************************* */
 	.globl GetListProcess
 	.ent	GetListProcess
 GetListProcess:
@@ -297,7 +297,7 @@ GetListProcess:
 	syscall
 	j	$31
 	.end GetListProcess
-
+/* ********************************* */
 	.globl arg_start
 	.ent	arg_start
 arg_start:
@@ -305,7 +305,7 @@ arg_start:
 	syscall
 	j	$31
 	.end arg_start
-
+/* ********************************* */
 	.globl arg_arg
 	.ent	arg_arg
 arg_arg:
@@ -313,7 +313,7 @@ arg_arg:
 	syscall
 	j	$31
 	.end arg_arg
-
+/* ********************************* */
 	.globl GetNbProcessTotal
 	.ent	GetNbProcessTotal
 GetNbProcessTotal:
@@ -321,8 +321,42 @@ GetNbProcessTotal:
 	syscall
 	j	$31
 	.end GetNbProcessTotal
-
-#endif /*CHANGED*/
+/* ********************************* */
+#ifdef NETWORK
+	.globl InitSocket
+	.ent	InitSocket
+InitSocket:
+	addiu $2,$0,SC_InitSocket
+	syscall
+	j	$31
+	.end InitSocket
+/* ********************************* */
+	.globl Send
+	.ent	Send
+Send:
+	addiu $2,$0,SC_Send
+	syscall
+	j	$31
+	.end Send
+/* ********************************* */
+	.globl Receive
+	.ent	Receive
+Receive:
+	addiu $2,$0,SC_Receive
+	syscall
+	j	$31
+	.end Receive
+/* ********************************* */
+	.globl CloseSocket
+	.ent	CloseSocket
+CloseSocket:
+	addiu $2,$0,SC_CloseSocket
+	syscall
+	j	$31
+	.end CloseSocket
+/* ********************************* */
+#endif /* NETWORK */
+#endif /* CHANGED */
 
 /* dummy function to keep gcc happy */
         .globl  __main
