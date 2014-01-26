@@ -187,15 +187,17 @@ PerformanceTest()
 void moveTest()
 {
 	char cmd[20];
-	char name[20];
+	char path[20];
 	bool exist;
+	char* name;
+	char* subPath;
 	do
 	{
 		scanf("%s", cmd);
 		if(!strcmp(cmd, "cd"))
 		{
-			scanf("%s", name);
-			fileSystem->cd(name);
+			scanf("%s", path);
+			fileSystem->cd(path);
 		}
 		else if(!strcmp(cmd, "pwd"))
 		{
@@ -203,8 +205,8 @@ void moveTest()
 		}
 		else if(!strcmp(cmd, "mkdir"))
 		{
-			scanf("%s", name);
-			fileSystem->CreateDir(name);
+			scanf("%s", path);
+			fileSystem->CreateDir(path);
 		}
 		else if(!strcmp(cmd, "ls"))
 		{
@@ -212,13 +214,13 @@ void moveTest()
 		}
 		else if(!strcmp(cmd, "rmdir"))
 		{
-			scanf("%s", name);
-			fileSystem->RemoveDirEmpty(name);
+			scanf("%s", path);
+			fileSystem->RemoveDirEmpty(path);
 		}
 		else if(!strcmp(cmd, "pe"))
 		{
-			scanf("%s", name);
-			exist = fileSystem->pathExist(name);
+			scanf("%s", path);
+			exist = fileSystem->pathExist(path);
 			if(exist)
 			{
 				printf("chemin existant !");
@@ -228,11 +230,42 @@ void moveTest()
 				printf("chemin non existant !");
 			}
 		}
-		/*else if(!strcmp(cmd, "rm"))
+		else if(!strcmp(cmd, "rm"))
 		{
-			scanf("%s", name);
-			fileSystem->Remove(name);
-		}*/
+			scanf("%s", path);
+			fileSystem->Remove(path);
+		}
+		else if(!strcmp(cmd, "cr"))
+		{
+			scanf("%s", path);
+			fileSystem->Create(path, 32);
+		}
+		else if(!strcmp(cmd, "test"))
+		{
+
+			scanf("%s", path);
+			fileSystem->getLastDirectory(path, &name, &subPath);
+			if(name == NULL && subPath == NULL)
+			{
+				printf("erreur de path\n");
+			}
+			else if(subPath == NULL)
+			{
+				printf("%s dans le repertoire courant\n", name);
+				delete name;
+			}
+			else if(name == NULL)
+			{
+				printf("repertoire %s\n", subPath);
+				delete subPath;
+			}
+			else
+			{
+				printf("%s dans %s\n", name, subPath);
+				delete name;
+				delete subPath;
+			}
+		}
 	}while(strcmp(cmd, "q"));
 }
 #endif
