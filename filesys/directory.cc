@@ -254,7 +254,7 @@ Directory::Print()
      * Fonction permettant de savoir si le repertoire
      * dont le nom est passe en parametre est vide ou non
      */
-    bool Directory::isEmpty(char *name)
+    /*bool Directory::isEmpty(char *name)
     {
     	Directory* dir = new Directory(tableSize);
     	OpenFile* openFile = NULL;
@@ -282,5 +282,25 @@ Directory::Print()
 	        printf("return %d == %d\n", j, dir->tableSize);
 	        return (j == dir->tableSize);
     	}
-    }
+    }*/
+
+    /**
+	 * Fonction permettant de savoir si le repertoire
+	 * dont le nom est passe en parametre est vide ou non
+	 */
+	bool Directory::isEmpty(OpenFile* openFile)
+	{
+		int j = 2;
+    	Directory* dir = new Directory(tableSize);
+		dir->FetchFrom(openFile);
+		// verification qu'aucun fichier n'est present dans le repertoire
+		while (j < dir->tableSize && !dir->table[j].inUse)
+		{
+			j++;
+		}
+		//if (openFile == directoryFile)
+		//delete openFile;
+		printf("return %d == %d\n", j, dir->tableSize);
+		return (j == dir->tableSize);
+	}
 #endif

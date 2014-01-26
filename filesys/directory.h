@@ -83,7 +83,7 @@ public:
     bool isDirectory(char *name);
     void setIsDirectory(const char *name, bool b);
     void setInUse(int num_sector, bool bUse);
-    bool isEmpty(char *name);
+    bool isEmpty(OpenFile* openFile);
 
 #endif
 private:
