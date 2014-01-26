@@ -343,3 +343,15 @@ PostOffice::PacketSent()
 { 
     messageSent->V();
 }
+
+#ifdef CHANGED
+NetworkAddress PostOffice::getNetAddr()
+{
+	return netAddr;
+}
+void PostOffice::setNetAddr(NetworkAddress addr)
+{
+	netAddr = addr;
+}
+#endif // CHANGED
+
