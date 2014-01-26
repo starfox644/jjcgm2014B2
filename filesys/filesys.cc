@@ -180,19 +180,45 @@ FileSystem::FileSystem(bool format)
 //----------------------------------------------------------------------
 
 bool
-FileSystem::Create(const char *name, int initialSize)
+FileSystem::Create(const char *path, int initialSize)
 {
 	Directory *directory;
 	BitMap *freeMap;
 	FileHeader *hdr;
 	int sector;
 	bool success;
+#ifdef CHANGED
+	OpenFile *dirFile;
+	char* name;
+	char* subpath;
+	getLastDirectory(path, &name, &subpath);
+	if(name == NULL)
+	{
+		return false;
+	}
+	if(subpath == NULL)
+	{
+		dirFile = currentDirFile;
+	}
+	else
+	{
+		sector = getSector(subpath);
+		if(sector == -1)
+		{
+			delete subpath;
+			delete name;
+			return false;
+		}
+		dirFile = new OpenFile(sector);
+		delete subpath;
+	}
+#endif
 
 	DEBUG('f', "Creating file %s, size %d\n", name, initialSize);
 
 	directory = new Directory(NumDirEntries);
 #ifdef CHANGED
-	directory->FetchFrom(currentDirFile);
+	directory->FetchFrom(dirFile);
 #else
 	directory->FetchFrom(directoryFile);
 #endif
@@ -641,6 +667,61 @@ char** FileSystem::cutPath(const char* path, int* nbDir) {
 
 	return result;
 }
+
+void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
+{
+	int i = 0;
+	int size = strlen(path);
+	if(!isLegalPath(path))
+	{
+		*name = NULL;
+		*subPath = NULL;
+		return;
+	}
+	*name = new char[size];
+	if(size > 1 && path[size-1] == '/')
+	{
+		i = size - 2;
+	}
+	else
+	{
+		i = size - 1;
+	}
+	while(i > 0 && path[i] != '/')
+	{
+		i--;
+	}
+	if(i == 0 && path[i] != '/')
+	{
+		// nom seul : fichier dans le repertoire courant
+		strcpy(*name, path);
+		*subPath = NULL;
+	}
+	else if(i == 0 && path[i] == '/')
+	{
+		*subPath = new char[size];
+		*name = NULL;
+		strcpy(*subPath, path);
+	}
+	else
+	{
+		*subPath = new char[size];
+		// on copie le path dans le sous path
+		strcpy(*subPath, path);
+		// le sous path s'arrete au dernier /
+		(*subPath)[i] = '\0';
+		// copie du nom du fichier
+		strcpy(*name, &path[i+1]);
+	}
+	if(name != NULL)
+	{
+		size = strlen(*name);
+		if((*name)[size - 1] == '/')
+		{
+			(*name)[size - 1] = '\0';
+		}
+	}
+}
 #endif //CHANGED
 
 //----------------------------------------------------------------------
@@ -696,24 +777,46 @@ FileSystem::Open(const char *name)
 //----------------------------------------------------------------------
 
 bool
-FileSystem::Remove(const char *name)
+FileSystem::Remove(const char *path)
 { 
 	Directory *directory;
 	BitMap *freeMap;
 	FileHeader *fileHdr;
 	int sector;
 #ifdef CHANGED
-	sector = getSector(name);
-	if (sector == -1)
+	OpenFile *dirFile;
+	char* name;
+	char* subpath;
+	getLastDirectory(path, &name, &subpath);
+	if(name == NULL)
 	{
-		return FALSE;			 // file not found
+		return false;
+	}
+	if(subpath == NULL)
+	{
+		dirFile = currentDirFile;
+	}
+	else
+	{
+		sector = getSector(subpath);
+		if(sector == -1)
+		{
+			delete subpath;
+			delete name;
+			return false;
+		}
+		dirFile = new OpenFile(sector);
+		delete subpath;
 	}
 #endif
 	directory = new Directory(NumDirEntries);
+
+#ifdef CHANGED
+	directory->FetchFrom(dirFile);
+#else
 	directory->FetchFrom(directoryFile);
-#ifndef CHANGED
-	sector = directory->Find(name);
 #endif
+	sector = directory->Find(name);
 	if (sector == -1) {
 		delete directory;
 		return FALSE;			 // file not found
