@@ -212,9 +212,11 @@ FileSystem::Create(const char *path, int initialSize)
 		dirFile = new OpenFile(sector);
 		delete subpath;
 	}
+#else
+	const char* name = path;
 #endif
 
-	DEBUG('f', "Creating file %s, size %d\n", name, initialSize);
+	DEBUG('f', "Creating file %s, size %d\n", path, initialSize);
 
 	directory = new Directory(NumDirEntries);
 #ifdef CHANGED
@@ -242,7 +244,7 @@ FileSystem::Create(const char *path, int initialSize)
 				// everthing worked, flush all changes back to disk
 				hdr->WriteBack(sector);
 #ifdef CHANGED
-				directory->WriteBack(currentDirFile);
+				directory->WriteBack(dirFile);
 #else
 				directory->WriteBack(directoryFile);
 #endif
@@ -806,6 +808,8 @@ FileSystem::Remove(const char *path)
 		dirFile = new OpenFile(sector);
 		delete subpath;
 	}
+#else
+	const char* name = path;
 #endif
 	directory = new Directory(NumDirEntries);
 
@@ -830,7 +834,11 @@ FileSystem::Remove(const char *path)
 	directory->Remove(name);
 
 	freeMap->WriteBack(freeMapFile);		// flush to disk
-	directory->WriteBack(directoryFile);        // flush to disk
+#ifdef CHANGED
+	directory->WriteBack(dirFile);
+#else
+	directory->WriteBack(directoryFile);
+#endif
 	delete fileHdr;
 	delete directory;
 	delete freeMap;
