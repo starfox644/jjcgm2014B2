@@ -74,7 +74,7 @@ class FileSystem {
 					// the disk, so initialize the directory
     					// and the bitmap of free blocks.
 
-    bool Create(const char *name, int initialSize);  	
+    bool Create(const char *path, int initialSize);
 					// Create a file (UNIX creat)
 
 #ifdef CHANGED
@@ -108,11 +108,12 @@ class FileSystem {
     bool RemoveDirEmpty(char *path);
     bool RemoveDir(char *path);
     char* pwd();
+    void getLastDirectory(const char* path, char** name, char** subPath);
 #endif
 
     OpenFile* Open(const char *name); 	// Open a file (UNIX open)
 
-    bool Remove(const char *name); 	// Delete a file (UNIX unlink)
+    bool Remove(const char *path); 	// Delete a file (UNIX unlink)
 
     void List();			// List all the files in the file system
 
