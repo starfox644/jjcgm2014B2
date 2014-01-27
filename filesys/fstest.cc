@@ -241,7 +241,10 @@ void moveTest()
 		else if(!strcmp(cmd, "rm"))
 		{
 			scanf("%s", path);
-			fileSystem->RemoveFile(path);
+			if(!fileSystem->RemoveFile(path))
+			{
+				printf("impossible de supprimer le fichier\n");
+			}
 		}
 		else if(!strcmp(cmd, "cr"))
 		{

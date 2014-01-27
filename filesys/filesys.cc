@@ -474,7 +474,6 @@ bool FileSystem::CreateDir(const char *path)
 	}
 	else
 	{
-		printf("Erreur create\n");
 		return false;
 	}
 }
@@ -501,7 +500,12 @@ bool FileSystem::RemoveDirEmpty(char *path)
 			// suppression du repertoire s'il est vide
 			if (dir->isEmpty(openFile))
 			{
-				Remove(path);
+				if(!Remove(path))
+				{
+					delete path_prec;
+					delete openFile;
+					return false;
+				}
 				// on supprime le repertoire courant
 				if (openFile->getSector() == currentDirFile->getSector())
 				{
@@ -544,10 +548,6 @@ bool FileSystem::RemoveDirEmpty(char *path)
 		}
 		else
 			printf("Ce n'est pas un repertoire\n");
-	}
-	else
-	{
-		printf("Suppression impossible\n");
 	}
 	return false;
 }
@@ -1030,8 +1030,13 @@ FileSystem::Remove(const char *path)
 		{
 			directory->FetchFrom(currentDirFile);
 			sector = directory->getSelfDir().sector;
+			if(sector == -1)
+			{
+				delete directory;
+				return false;
+			}
 			parentSector = directory->getParentDir().sector;
-			if(sector != -1)
+			if(parentSector != -1)
 			{
 				dirFile = new OpenFile(parentSector);
 			}
@@ -1070,21 +1075,28 @@ FileSystem::Remove(const char *path)
 	directory->FetchFrom(directoryFile);
 #endif
 #ifdef CHANGED
+
 	if(sector == -1)
-#endif
+	{
 		sector = directory->Find(name);
-#ifdef CHANGED
+	}
 	else
 	{
 		delete name;
 		name = new char[strlen(path)];
 		strcpy(name, directory->findName(sector));
 	}
-#endif
+	if (sector == -1 || sector == DirectorySector) {
+		delete directory;
+		return FALSE;			 // file not found
+	}
+#else
+	sector = directory->Find(name);
 	if (sector == -1) {
 		delete directory;
 		return FALSE;			 // file not found
 	}
+#endif
 	fileHdr = new FileHeader;
 	fileHdr->FetchFrom(sector);
 
