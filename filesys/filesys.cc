@@ -481,17 +481,21 @@ bool FileSystem::RemoveDirEmpty(char *path)
 	{
 		path_dir = cutPath(path, &nbDir);
 		dir->FetchFrom(openFile);
-		printf("verif repertoire %s\n", path_dir[nbDir-1]);
+		//printf("verif repertoire %s\n", path_dir[nbDir-1]);
 		// si le dernier nom est un repertoire
 		if (dir->getSelfDir().isDirectory)
 		{
-			printf("C'est un repertoire \n");
+			//printf("C'est un repertoire \n");
 			// suppression du repertoire s'il est vide
 			if (dir->isEmpty(openFile))
 			{
-				printf("Le repertoire est vide \n");
+				//printf("Le repertoire est vide \n");
 				//Remove(path_dir[nbDir-1]);
-				Remove(path);
+				if(!Remove(path))
+				{
+					printf("erreur remove\n");
+					return false;
+				}
 			}
 			else
 				printf("Le repertoire n'est pas vide : suppression impossible\n");
@@ -499,6 +503,7 @@ bool FileSystem::RemoveDirEmpty(char *path)
 			delete path_dir;
 			if(currentDirFile != directoryFile)
 				delete openFile;
+			printf("pas de probleme\n");
 			return true;
 		}
 	}
@@ -805,13 +810,18 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 {
 	int i = 0;
 	int size = strlen(path);
+	// verification de la legalite du path
 	if(!isLegalPath(path))
 	{
+		// les deux chaines a NULL signifie une erreur
 		*name = NULL;
 		*subPath = NULL;
 		return;
 	}
+	// allocation du nom a la taille (maximum)
 	*name = new char[size];
+	// initialisation de l'indice de debut a la fin du path
+	// si il y a un '/' a la fin du path on l'ignore
 	if(size > 1 && path[size-1] == '/')
 	{
 		i = size - 2;
@@ -820,6 +830,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 	{
 		i = size - 1;
 	}
+	// recherche du dernier '/' du path (avant le nom)
 	while(i > 0 && path[i] != '/')
 	{
 		i--;
@@ -828,23 +839,24 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 	{
 		// nom seul : fichier dans le repertoire courant
 		strcpy(*name, path);
+		// pas de subpath, juste le nom
 		*subPath = NULL;
 	}
 	else if(i == 0 && path[i] == '/')
 	{
-		// racine : name = NULL
+		// fichier a la racine (/nom)
 		*subPath = new char[size];
 		strcpy(*subPath, path);
 		if(size == 1)
 		{
+			// le path est juste constitue de la racine : pas de nom
 			*name = NULL;
 		}
 		else
 		{
-			*name = new char[size];
 			// copie du nom du fichier
 			strcpy(*name, &path[i+1]);
-			// le sous path s'arrete au dernier /
+			// on ne conserve que le '/' dans le subpath
 			(*subPath)[i+1] = '\0';
 		}
 	}
@@ -858,6 +870,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 		// copie du nom du fichier
 		strcpy(*name, &path[i+1]);
 	}
+	// suppression du '/' a la fin du nom
 	if(*name != NULL)
 	{
 		size = strlen(*name);
@@ -937,20 +950,44 @@ FileSystem::Remove(const char *path)
 	Directory *directory;
 	BitMap *freeMap;
 	FileHeader *fileHdr;
+#ifdef CHANGED
+	int sector = -1;
+#else
 	int sector;
+#endif
 #ifdef CHANGED
 	OpenFile *dirFile;
 	char* name;
 	char* subpath;
+	int parentSector;
 	// recuperation du repertoire parent du fichier a supprimer
 	getLastDirectory(path, &name, &subpath);
 	if(name == NULL)
 	{
 		return false;
 	}
+	directory = new Directory(NumDirEntries);
 	if(subpath == NULL)
 	{
-		dirFile = currentDirFile;
+		if(!strcmp(name, "."))
+		{
+			directory->FetchFrom(currentDirFile);
+			sector = directory->getSelfDir().sector;
+			parentSector = directory->getParentDir().sector;
+			if(sector != -1)
+			{
+				dirFile = new OpenFile(parentSector);
+			}
+			else
+			{
+				delete directory;
+				return false;
+			}
+		}
+		else
+		{
+			dirFile = currentDirFile;
+		}
 	}
 	else
 	{
@@ -966,15 +1003,18 @@ FileSystem::Remove(const char *path)
 	}
 #else
 	const char* name = path;
-#endif
 	directory = new Directory(NumDirEntries);
+#endif
 
 #ifdef CHANGED
 	directory->FetchFrom(dirFile);
 #else
 	directory->FetchFrom(directoryFile);
 #endif
-	sector = directory->Find(name);
+#ifdef CHANGED
+	if(sector == -1)
+#endif
+		sector = directory->Find(name);
 	if (sector == -1) {
 		delete directory;
 		return FALSE;			 // file not found

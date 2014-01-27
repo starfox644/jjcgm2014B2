@@ -309,7 +309,7 @@ Directory::Print()
 		}
 		//if (openFile == directoryFile)
 		//delete openFile;
-		printf("return %d == %d\n", j, dir->tableSize);
+		//printf("return %d == %d\n", j, dir->tableSize);
 		return (j == dir->tableSize);
 	}
 #endif

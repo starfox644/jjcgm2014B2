@@ -222,7 +222,10 @@ void moveTest()
 		else if(!strcmp(cmd, "rmdir"))
 		{
 			scanf("%s", path);
-			fileSystem->RemoveDirEmpty(path);
+			if(!fileSystem->RemoveDirEmpty(path))
+			{
+				printf("impossible de supprimer le repertoire\n");
+			}
 		}
 		else if(!strcmp(cmd, "pe"))
 		{
