@@ -75,15 +75,56 @@ public:
 	//  names and their contents.
 
 #ifdef CHANGED
+
+	/**
+	 * 	Set the entry correspondant to this directory with "."
+	 * 	sector is the sector number of this directory
+	 */
 	void setSelfDir(int sector);
+
+	/**
+	 * 	Set the entry correspondant to this directory's parent with ".."
+	 * 	sector is the sector number of this directory
+	 */
 	void setParentDir(int sector);
 
+	/**
+	 * 	Return the entry "." which correspond to this directory
+	 */
 	DirectoryEntry getSelfDir();
+
+	/**
+	 *  Return the entry ".." which correspond to the parent directory
+	 *  For the root this entry has -1 as sector number
+	 */
 	DirectoryEntry getParentDir();
+
+	/**
+	 * 	Return true if the entry 'name' of this directory is a directory
+	 * 	If the name is not found in the directory
+	 * 	or if it's not a directory, this function returns false
+	 */
     bool isDirectory(char *name);
+
+    /**
+     * 	Set the boolean isDirectory of a directory entry
+     */
     void setIsDirectory(const char *name, bool b);
+
+    /**
+     * 	Set the boolean inUse of a directory entry
+     */
     void setInUse(int num_sector, bool bUse);
+
+    /**
+     * 	Return true if the directory is empty
+     */
     bool isEmpty(OpenFile* openFile);
+
+    /**
+     *	Return the name of the entry which has the sector number given
+     */
+    char* findName(int sector);
 
 #endif
 private:

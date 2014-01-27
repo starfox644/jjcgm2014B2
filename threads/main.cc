@@ -210,7 +210,11 @@ main (int argc, char **argv)
 		{			// remove Nachos file
 			if(argc > 1)
 			{
+#ifdef CHANGED
+				fileSystem->RemoveFile(*(argv + 1));
+#else
 				fileSystem->Remove (*(argv + 1));
+#endif
 				argCount = 2;
 			}
 			else
