@@ -34,6 +34,7 @@
 #include "addrSpaceAllocator.h"
 #include "arguments.h"
 #include "synchconsole.h"
+#include "filemanager.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -308,6 +309,37 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 #endif // STEP4
+
+#ifdef step5
+			case SC_Open:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = do_Open(buffer);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes -1 in return register
+					machine->WriteRegister(2, -1);
+				}
+				break;
+
+			case SC_Read:
+				printf("TODO : Read\n");
+				break;
+
+			case SC_Write:
+				printf("TODO : Write\n");
+				break;
+
+			case SC_Close:
+				n = machine->ReadRegister(4);
+				do_Close (n);
+				break;
+#endif //step5
 
 			case SC_Exit:
 				// read return code in r4 register
