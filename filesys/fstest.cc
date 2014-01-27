@@ -193,8 +193,6 @@ void moveTest()
 	char cmd[20];
 	char path[20];
 	bool exist;
-	char* name;
-	char* subPath;
 	do
 	{
 		scanf("%s", cmd);
