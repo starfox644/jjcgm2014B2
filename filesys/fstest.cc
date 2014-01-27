@@ -250,31 +250,6 @@ void moveTest()
 				printf("impossible de creer le fichier\n");
 			}
 		}
-		else if(!strcmp(cmd, "test"))
-		{
-			scanf("%s", path);
-			fileSystem->getLastDirectory(path, &name, &subPath);
-			if(name == NULL && subPath == NULL)
-			{
-				printf("erreur de path\n");
-			}
-			else if(subPath == NULL)
-			{
-				printf("%s dans le repertoire courant\n", name);
-				delete name;
-			}
-			else if(name == NULL)
-			{
-				printf("repertoire %s\n", subPath);
-				delete subPath;
-			}
-			else
-			{
-				printf("%s dans %s\n", name, subPath);
-				delete name;
-				delete subPath;
-			}
-		}
 		else
 			printf("%s : command not found\n", cmd);
 	}while(strcmp(cmd, "q"));
