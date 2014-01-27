@@ -85,7 +85,7 @@ class FileSystem {
 	 */
     bool cd(char* path);
 
-    char* pwd();
+    const char* pwd();
 
     /**
      *  Cree un repertoire vide de nom 'name' dans le repertoire courant

@@ -51,6 +51,10 @@
 #include "filehdr.h"
 #include "filesys.h"
 
+#ifdef CHANGED
+#include <string>
+#endif
+
 // Sectors containing the file headers for the bitmap of free sectors,
 // and the directory of files.  These file headers are placed in well-known 
 // sectors, so that they can be located on boot-up.
@@ -358,18 +362,21 @@ bool FileSystem::cd(char* path)
 	return false;
 }
 
-char* FileSystem::pwd()
+const char* FileSystem::pwd()
 {
-	char* pos;
+	std::string s = "";
+	std::string prev = "";
+	// recuperation du repertoire actuel
 	OpenFile* dirFile = currentDirFile;
 	Directory* directory = new Directory(NumDirEntries);
 	directory->FetchFrom(dirFile);
 	DirectoryEntry parent = directory->getParentDir();
 	int prevSector = directory->getSelfDir().sector;
 	int sector = parent.sector;
+	// si il n'y a pas de repertoire parent, on debute a la racine
 	if(sector == -1)
 	{
-		printf("/\n");
+		s = "/";
 	}
 	else
 	{
@@ -377,15 +384,20 @@ char* FileSystem::pwd()
 		{
 			dirFile = new OpenFile(sector);
 			directory->FetchFrom(dirFile);
-			pos = directory->findName(prevSector);
+			prev = s;
+			s = directory->findName(prevSector);
+			if(prev != "")
+			{
+				s += ("/" + prev);
+			}
 			prevSector = sector;
 			parent = directory->getParentDir();
 			sector = parent.sector;
-			printf("%s\n", pos);
+			//printf("%s\n", pos);
 		}
-		printf("/\n");
+		s = "/" + s;
 	}
-	return (char*)"\0";
+	return s.c_str();
 }
 
 /**
@@ -643,6 +655,7 @@ int FileSystem::getSector(const char* path)
 	}
 	else
 	{
+		printf("path list NULL\n");
 		delete pathList;
 		delete dir;
 		return -1;
@@ -829,6 +842,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 	}
 	else if(i == 0 && path[i] == '/')
 	{
+		// racine : name = NULL
 		*subPath = new char[size];
 		*name = NULL;
 		strcpy(*subPath, path);
@@ -843,7 +857,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 		// copie du nom du fichier
 		strcpy(*name, &path[i+1]);
 	}
-	if(name != NULL)
+	if(*name != NULL)
 	{
 		size = strlen(*name);
 		if((*name)[size - 1] == '/')
