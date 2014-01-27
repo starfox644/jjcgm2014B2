@@ -195,7 +195,7 @@ FileSystem::Create(const char *path, int initialSize)
 	OpenFile *dirFile;
 	char* name;
 	char* subpath;
-	// recuperation du repertoire parent fichier a creer
+	// recuperation du repertoire parent du fichier a creer
 	getLastDirectory(path, &name, &subpath);
 	if(name == NULL)
 	{
@@ -252,6 +252,7 @@ FileSystem::Create(const char *path, int initialSize)
 				hdr->WriteBack(sector);
 #ifdef CHANGED
 				directory->WriteBack(dirFile);
+				DeleteFile(dirFile);
 #else
 				directory->WriteBack(directoryFile);
 #endif
@@ -354,33 +355,42 @@ const char* FileSystem::pwd()
 	OpenFile* dirFile = currentDirFile;
 	Directory* directory = new Directory(NumDirEntries);
 	directory->FetchFrom(dirFile);
+	// recuperation du numero de secteur du repertoire parent
 	DirectoryEntry parent = directory->getParentDir();
 	int prevSector = directory->getSelfDir().sector;
 	int sector = parent.sector;
-	// si il n'y a pas de repertoire parent, on debute a la racine
+	// si il n'y a pas de repertoire parent on affiche uniquement la racine
 	if(sector == -1)
 	{
 		s = "/";
 	}
 	else
 	{
+		// on remonte dans les repertoires en concatenant les noms
 		while(sector != -1)
 		{
+			// recuperation du fichier du repertoire parent
 			dirFile = new OpenFile(sector);
 			directory->FetchFrom(dirFile);
+			// copie du chemin precedent
 			prev = s;
+			// recuperation du nom du repertoire
 			s = directory->findName(prevSector);
+			// si le chemin ne debute pas, on rajoute le nom au debut du chemin avec un '/'
 			if(prev != "")
 			{
 				s += ("/" + prev);
 			}
+			// copie du secteur du repertoire actuel
 			prevSector = sector;
+			// recuperation du secteur du repertoire parent
 			parent = directory->getParentDir();
 			sector = parent.sector;
-			//printf("%s\n", pos);
+			DeleteFile(dirFile);
 		}
 		s = "/" + s;
 	}
+	delete directory;
 	return s.c_str();
 }
 
@@ -416,6 +426,7 @@ bool FileSystem::CreateDir(const char *path)
 		}
 		else
 		{
+			// recuperation du fichier contenant le repertoire parent du dossier a creer
 			sector = getSector(subpath);
 			if(sector == -1)
 			{
@@ -427,7 +438,7 @@ bool FileSystem::CreateDir(const char *path)
 			delete subpath;
 		}
 		ASSERT(openFile != NULL);
-		// lecture du repertoire courant
+		// lecture du repertoire parent
 		currentDir = new Directory(NumDirEntries);
 		currentDir->FetchFrom(dirFile);
 		// modification du booleen isDirectory
@@ -446,7 +457,7 @@ bool FileSystem::CreateDir(const char *path)
 		newDir->WriteBack(openFile);
 		delete currentDir;
 		delete newDir;
-		delete openFile;
+		DeleteFile(openFile);
 		return true;
 	}
 	else
@@ -823,8 +834,19 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 	{
 		// racine : name = NULL
 		*subPath = new char[size];
-		*name = NULL;
 		strcpy(*subPath, path);
+		if(size == 1)
+		{
+			*name = NULL;
+		}
+		else
+		{
+			*name = new char[size];
+			// copie du nom du fichier
+			strcpy(*name, &path[i+1]);
+			// le sous path s'arrete au dernier /
+			(*subPath)[i+1] = '\0';
+		}
 	}
 	else
 	{
