@@ -79,41 +79,80 @@ class FileSystem {
 
 #ifdef CHANGED
 
+	/**
+	 * Deplacement dans le repertoire dont le chemin est passe en argument
+	 * Renvoie false si le chemin est invalide, true si le deplacement est possible
+	 */
+    bool cd(char* path);
+
+    char* pwd();
+
     /**
-     *  Return the sector of the file associated to the given path
-     *  or -1 if the path is not valable
+     *  Cree un repertoire vide de nom 'name' dans le repertoire courant
+     */
+    bool CreateDir(const char *path);
+
+    /*
+     * Supprime le repertoire dont le chemin est passe en parametre
+     * Renvoie false si le fichier associe au chemin n'est pas un repertoire
+     * si ce repertoire n'est pas vide ou que le chemin n'est pas valide
+     * sinon la suppression est realisee et la fonction renvoie true
+     */
+    bool RemoveDirEmpty(char *path);
+
+    /**
+     * 	Supprime le fichier dont le chemin est passe en parametre
+     * 	renvoie false si le chemin n'est pas valide ou que
+     * 	le fichier associe est un repertoire
+     */
+    bool RemoveFile(char* path);
+
+    bool RemoveDir(char *path);
+
+    /**
+     *  Renvoie le numero de secteur du fichier correspondant au chemin
+     *  passe en parametre
+     *  Si le chemin est invalide, la fonction renvoie -1
      */
     int getSector(const char* path);
 
-    bool CreateDir(const char *name);
+    void getLastDirectory(const char* path, char** name, char** subPath);
 
     /**
-     * Return true if the path already exists
+     * 	Renvoie vrai si chemin passe en parametre est associe a un fichier
      */
     bool pathExist(const char* path);
 
-
     /**
-     * 	Cut the given path into directory list.
-     * 	Return a list which contains the directories of the path.
-     * 	nbDir will contain the number of entries.
+     * 	Decoupe le chemin passe en parametre en une liste composee
+     * 	des repertoires du chemin et du dernier fichier
+     * 	Si le chemin commence par '/' il est place en premier dans la liste
+     * 	Sinon la liste debute par le premier repertoire du chemin
+     * 	L'entier pointe par nbDir contient le nombre d'entrees de la liste apres
+     * 	l'appel a la fonction
+     *	La fonction alloue dynamiquement la liste et la renvoie, elle doit etre
+     *	liberee par la suite.
+     *	Si un '/' est place a la fin du chemin, il est retire
+     *	Si le chemin n'est pas valide, la fonction renvoie NULL
      */
     char** cutPath(const char* path, int* nbDir);
-    int isLegalPath(const char* path);
 
-	/**
-	 * Deplacement dans le repertoire dont le chemin est passe en argument
-	 */
-    bool cd(char* path);
-    bool RemoveDirEmpty(char *path);
-    bool RemoveDir(char *path);
-    char* pwd();
-    void getLastDirectory(const char* path, char** name, char** subPath);
+    /**
+     * Indique si le chemin passe en parametre est legal
+     * Un chemin est illegal si :
+     *  - Il contient d'autres caracteres que . / _ - ou (a-z, A-Z, 0-9)
+     *  - il contient "//"
+     *  - un nom est plus long que la limite
+     *  - il est vide
+     */
+    int isLegalPath(const char* path);
 #endif
 
-    OpenFile* Open(const char *name); 	// Open a file (UNIX open)
+    OpenFile* Open(const char *path); 	// Open a file (UNIX open)
 
+#ifndef CHANGED
     bool Remove(const char *path); 	// Delete a file (UNIX unlink)
+#endif
 
     void List();			// List all the files in the file system
 
@@ -127,6 +166,11 @@ class FileSystem {
 #ifdef CHANGED
    OpenFile* currentDirFile;
    char currentDirName[9];
+
+   bool Remove(const char *path); 	// Delete a file (UNIX unlink)
+
+   void DeleteFile(OpenFile* openfile);
+
 #endif
 };
 
