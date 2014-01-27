@@ -248,6 +248,8 @@ void moveTest()
 				printf("impossible de creer le fichier\n");
 			}
 		}
+		else if (!strcmp(cmd, "q"))
+			printf("Quit !\n");
 		else
 			printf("%s : command not found\n", cmd);
 	}while(strcmp(cmd, "q"));
