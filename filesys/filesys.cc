@@ -453,36 +453,34 @@ bool FileSystem::RemoveDirEmpty(char *path)
 	int nbDir;
 	OpenFile* openFile = NULL;
 	Directory* dir = new Directory(NumDirEntries);
-	// verification que le chemin existe
-	if (pathExist(path))
+	//if ((sector = getSector(path)) != -1)
+	if((openFile = Open(path)) != NULL)
 	{
-		// recuperation du chemin decoupe
 		path_dir = cutPath(path, &nbDir);
-		// verification que le chemin existe
-		if (path_dir != NULL)
+		dir->FetchFrom(openFile);
+		printf("verif repertoire %s\n", path_dir[nbDir-1]);
+		// si le dernier nom est un repertoire
+		if (dir->getSelfDir().isDirectory)
 		{
-			// recuperation du repertoire parent de celui a supprimer
-			if (nbDir >= 2)
-				openFile = Open(path_dir[nbDir-2]);
-			else
-				openFile = currentDirFile;
-
-			dir->FetchFrom(openFile);
-			// si le dernier nom est un repertoire
-			if (dir->isDirectory(path_dir[nbDir-1]))
+			printf("C'est un repertoire \n");
+			// suppression du repertoire s'il est vide
+			if (dir->isEmpty(openFile))
 			{
-				// suppression du repertoire s'il est vide
-				if (dir->isEmpty(path_dir[nbDir-1]))
-				{
-					remove(path_dir[nbDir-1]);
-				}
-				delete dir;
-				delete path_dir;
-				delete openFile;
-				return true;
+				printf("Le repertoire est vide \n");
+				//Remove(path_dir[nbDir-1]);
+				Remove(path);
 			}
+			else
+				printf("Le repertoire n'est pas vide : suppression impossible\n");
+			delete dir;
+			delete path_dir;
+			if(currentDirFile != directoryFile)
+				delete openFile;
+			return true;
 		}
 	}
+	else
+		printf("Open fail\n");
 	return false;
 }
 

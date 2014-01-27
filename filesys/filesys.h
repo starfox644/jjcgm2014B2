@@ -171,7 +171,7 @@ class FileSystem {
 
    void DeleteFile(OpenFile* openfile);
 
-#endif
+#endif //CHANGED
 };
 
 #endif // FILESYS

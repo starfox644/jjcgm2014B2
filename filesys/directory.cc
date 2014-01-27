@@ -254,16 +254,17 @@ Directory::Print()
      * Fonction permettant de savoir si le repertoire
      * dont le nom est passe en parametre est vide ou non
      */
-    bool Directory::isEmpty(char *name)
+    /*bool Directory::isEmpty(char *name)
     {
     	Directory* dir = new Directory(tableSize);
     	OpenFile* openFile = NULL;
     	int i = FindIndex(name);
-    	int j = 0;
+    	int j = 2;
 
     	if (i == -1)
     	{
     		delete dir;
+    		printf(" %s introuvable\n", name);
     		return false; 		// name not in directory
     	}
     	else
@@ -272,15 +273,17 @@ Directory::Print()
 	    	ASSERT(openFile != NULL);
 	    	dir->FetchFrom(openFile);
 	    	// verification qu'aucun fichier n'est present dans le repertoire
-	        while (j < tableSize && !table[j].inUse)
+	        while (j < dir->tableSize && !dir->table[j].inUse)
 	        {
+	        	printf("verif inUse de %s\n", dir->table[j].name);
 	        	j++;
 	        }
 	        delete openFile;
-	        delete dir;
-	        return (j == tableSize);
+	        printf("return %d == %d\n", j, dir->tableSize);
+	        return (j == dir->tableSize);
     	}
     }
+}*/
 
     char* Directory::findName(int sector)
     {
@@ -289,4 +292,24 @@ Directory::Print()
     	    return table[i].name;
         return NULL;		// sector not in directory
     }
+
+    /**
+	 * Fonction permettant de savoir si le repertoire
+	 * dont le nom est passe en parametre est vide ou non
+	 */
+	bool Directory::isEmpty(OpenFile* openFile)
+	{
+		int j = 2;
+    	Directory* dir = new Directory(tableSize);
+		dir->FetchFrom(openFile);
+		// verification qu'aucun fichier n'est present dans le repertoire
+		while (j < dir->tableSize && !dir->table[j].inUse)
+		{
+			j++;
+		}
+		//if (openFile == directoryFile)
+		//delete openFile;
+		printf("return %d == %d\n", j, dir->tableSize);
+		return (j == dir->tableSize);
+	}
 #endif

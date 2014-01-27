@@ -119,7 +119,7 @@ public:
     /**
      * 	Return true if the directory is empty
      */
-    bool isEmpty(char *name);
+    bool isEmpty(OpenFile* openFile);
 
     /**
      *	Return the name of the entry which has the sector number given

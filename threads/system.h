@@ -65,6 +65,11 @@ extern SynchConsole *synchconsole;
 extern FileSystem *fileSystem;
 #endif
 
+#ifdef step5
+#include "filesys.h"
+extern FileSystem *fileSystem;
+#endif
+
 #ifdef FILESYS
 #include "synchdisk.h"
 extern SynchDisk *synchDisk;
