@@ -101,6 +101,9 @@ Directory::WriteBack(OpenFile *file)
 int
 Directory::FindIndex(const char *name)
 {
+	/*printf("Contenu : \n");
+	for (int i = 0; i < tableSize; i++)
+		printf("table[%d].name = %s", i, table[i].name);*/
     for (int i = 0; i < tableSize; i++)
         if (table[i].inUse && !strncmp(table[i].name, name, FileNameMaxLen))
 	    return i;
@@ -312,9 +315,6 @@ Directory::Print()
 		{
 			j++;
 		}
-		//if (openFile == directoryFile)
-		//delete openFile;
-		printf("return %d == %d\n", j, dir->tableSize);
 		return (j == dir->tableSize);
 	}
 #endif

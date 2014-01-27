@@ -208,9 +208,9 @@ void moveTest()
 		else if(!strcmp(cmd, "mkdir"))
 		{
 			scanf("%s", path);
-			if(!fileSystem->CreateDir(path))
+			if (!fileSystem->CreateDir(path))
 			{
-				printf("impossible de creer le repertoire\n");
+				printf("Impossible de creer ce repertoire\n");
 			}
 		}
 		else if(!strcmp(cmd, "ls"))
@@ -238,7 +238,7 @@ void moveTest()
 		else if(!strcmp(cmd, "rm"))
 		{
 			scanf("%s", path);
-			fileSystem->RemoveFile(path);
+			fileSystem->Remove(path);
 		}
 		else if(!strcmp(cmd, "cr"))
 		{
