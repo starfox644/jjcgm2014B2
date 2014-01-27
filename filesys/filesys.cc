@@ -394,16 +394,12 @@ bool FileSystem::RemoveDirEmpty(char *path)
 	{
 		path_dir = cutPath(path, &nbDir);
 		dir->FetchFrom(openFile);
-		printf("verif repertoire %s\n", path_dir[nbDir-1]);
 		// si le dernier nom est un repertoire
 		if (dir->getSelfDir().isDirectory)
 		{
-			printf("C'est un repertoire \n");
 			// suppression du repertoire s'il est vide
 			if (dir->isEmpty(openFile))
 			{
-				printf("Le repertoire est vide \n");
-				//Remove(path_dir[nbDir-1]);
 				Remove(path);
 			}
 			else
@@ -446,8 +442,11 @@ int FileSystem::getSector(const char* path)
 	pathList = cutPath(path, &nbDir);
 	if(pathList != NULL)
 	{
+		//printf("PathList != NULL \n");
 		if(!strcmp(pathList[0], "/"))
 		{
+
+			//printf("dernier caractere est / \n");
 			if(nbDir == 1)
 			{
 				// juste la racine : vrai
@@ -465,6 +464,8 @@ int FileSystem::getSector(const char* path)
 		}
 		else
 		{
+
+			//printf("dernier caractere n'est pas un  / \n");
 			// chemin relatif : on commence au repertoire courant
 			dir->FetchFrom(currentDirFile);
 			curSector = (dir->getSelfDir()).sector;
@@ -472,6 +473,7 @@ int FileSystem::getSector(const char* path)
 		}
 		// ouverture du fichier du premier repertoire
 		fileActu = new OpenFile(curSector);
+
 		while(i < nbDir - 1 && curSector != -1)
 		{
 			// lecture du repertoire actuel
