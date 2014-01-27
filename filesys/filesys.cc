@@ -195,6 +195,7 @@ FileSystem::Create(const char *path, int initialSize)
 	getLastDirectory(path, &name, &subpath);
 	if(name == NULL)
 	{
+		printf("erreur : %s\n", path);
 		return false;
 	}
 	if(subpath == NULL)
@@ -272,8 +273,17 @@ bool FileSystem::cd(char* path)
 	char** path_dir;
 	int i = 0;
 	int nbDir, sector;
-	Directory* dir = new Directory(NumDirEntries);
+
 	OpenFile* openFile = NULL;
+	if (!strcmp(path, "/"))
+	{
+		openFile = directoryFile;
+		// modification du repertoire courant
+		currentDirFile = openFile;
+		strncpy(currentDirName, path, 9);
+		return true;
+	}
+	Directory* dir = new Directory(NumDirEntries);
 	// verification que le chemin existe
 	if (pathExist(path))
 	{
@@ -287,6 +297,7 @@ bool FileSystem::cd(char* path)
 				// parcours des repertoires du path
 				while ( i < nbDir-1)
 				{
+					//printf("[cd] path_dir[i] = %s\n", path_dir[i]);
 					// si le path commence par /
 					//on modifie le repertoire courant
 					if (!strcmp(path_dir[i], "/"))
@@ -315,15 +326,20 @@ bool FileSystem::cd(char* path)
 				}
 			}
 			else
+			{
 				openFile = currentDirFile;
+			}
 			dir->FetchFrom(openFile);
+			printf("test : %s est un repertoire \n",path_dir[nbDir-1]);
 			// si le dernier nom est un repertoire
 			if (dir->isDirectory(path_dir[nbDir-1]))
 			{
+				printf("%s est un repertoire \n",path_dir[nbDir-1]);
 				if(currentDirFile != directoryFile)
 					delete currentDirFile;
 				// recherche du secteur du repertoire
 				sector = dir->Find(path_dir[nbDir-1]);
+				printf("Le secteur de %s est %d\n",path_dir[nbDir-1], sector);
 				if (sector >= 0)
 					openFile = new OpenFile(sector);
 				ASSERT(openFile != NULL);
@@ -476,7 +492,9 @@ bool FileSystem::RemoveDirEmpty(char *path)
 		}
 	}
 	else
-		printf("Open fail\n");
+	{
+		printf("Suppression impossible\n");
+	}
 	return false;
 }
 
@@ -790,6 +808,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 		return;
 	}
 	*name = new char[size];
+
 	if(size > 1 && path[size-1] == '/')
 	{
 		i = size - 2;

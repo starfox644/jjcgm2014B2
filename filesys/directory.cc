@@ -101,6 +101,9 @@ Directory::WriteBack(OpenFile *file)
 int
 Directory::FindIndex(const char *name)
 {
+	/*printf("Contenu : \n");
+	for (int i = 0; i < tableSize; i++)
+		printf("table[%d].name = %s", i, table[i].name);*/
     for (int i = 0; i < tableSize; i++)
         if (table[i].inUse && !strncmp(table[i].name, name, FileNameMaxLen))
 	    return i;
@@ -236,6 +239,7 @@ Directory::Print()
     bool Directory::isDirectory(char *name)
     {
     	int i = FindIndex(name);
+    	printf("[IsDirectory] findIndex = %d\n", i);
     	if (i == -1)
     		return false; 		// name not in directory
     	else
