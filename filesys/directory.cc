@@ -182,9 +182,14 @@ Directory::Remove(const char *name)
 void
 Directory::List()
 {
-   for (int i = 0; i < tableSize; i++)
-	if (table[i].inUse)
-	    printf("%s\n", table[i].name);
+	int nbElem = 0;
+
+	for (int i = 0; i < tableSize; i++)
+		if (table[i].inUse) {
+			printf("%s - %s\n",table[i].isDirectory ? "d" : "f", table[i].name);
+			nbElem++;
+		}
+	printf("%d elements\n", nbElem);
 }
 
 //----------------------------------------------------------------------

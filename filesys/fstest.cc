@@ -231,11 +231,11 @@ void moveTest()
 			exist = fileSystem->pathExist(path);
 			if(exist)
 			{
-				printf("chemin existant !");
+				printf("chemin existant !\n");
 			}
 			else
 			{
-				printf("chemin non existant !");
+				printf("chemin non existant !\n");
 			}
 		}
 		else if(!strcmp(cmd, "rm"))
@@ -251,6 +251,8 @@ void moveTest()
 				printf("impossible de creer le fichier\n");
 			}
 		}
+		else if (!strcmp(cmd, "q"))
+			printf("Quit !\n");
 		else
 			printf("%s : command not found\n", cmd);
 	}while(strcmp(cmd, "q"));
