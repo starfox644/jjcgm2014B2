@@ -240,7 +240,7 @@ void moveTest()
 		else if(!strcmp(cmd, "rm"))
 		{
 			scanf("%s", path);
-			fileSystem->RemoveFile(path);
+			fileSystem->Remove(path);
 		}
 		else if(!strcmp(cmd, "cr"))
 		{

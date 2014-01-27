@@ -146,6 +146,7 @@ class FileSystem {
      *  - il est vide
      */
     int isLegalPath(const char* path);
+    bool Remove(const char *path); 	// Delete a file (UNIX unlink)
 #endif
 
     OpenFile* Open(const char *path); 	// Open a file (UNIX open)
@@ -167,7 +168,6 @@ class FileSystem {
    OpenFile* currentDirFile;
    char currentDirName[9];
 
-   bool Remove(const char *path); 	// Delete a file (UNIX unlink)
 
    void DeleteFile(OpenFile* openfile);
 

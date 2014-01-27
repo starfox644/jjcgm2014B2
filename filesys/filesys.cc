@@ -467,6 +467,7 @@ bool FileSystem::CreateDir(const char *path)
 	}
 	else
 	{
+		printf("Erreur create\n");
 		return false;
 	}
 }
@@ -500,8 +501,11 @@ bool FileSystem::RemoveDirEmpty(char *path)
 			delete path_dir;
 			if(currentDirFile != directoryFile)
 				delete openFile;
+			printf("Return true\n");
 			return true;
 		}
+		else
+			printf("Ce n'est pas un repertoire\n");
 	}
 	else
 	{
