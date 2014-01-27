@@ -51,6 +51,10 @@
 #include "filehdr.h"
 #include "filesys.h"
 
+#ifdef CHANGED
+#include <string>
+#endif
+
 // Sectors containing the file headers for the bitmap of free sectors,
 // and the directory of files.  These file headers are placed in well-known 
 // sectors, so that they can be located on boot-up.
@@ -342,9 +346,10 @@ bool FileSystem::cd(char* path)
 	return false;
 }
 
-char* FileSystem::pwd()
+const char* FileSystem::pwd()
 {
-	char* pos;
+	std::string s = "";
+	std::string prev = "";
 	OpenFile* dirFile = currentDirFile;
 	Directory* directory = new Directory(NumDirEntries);
 	directory->FetchFrom(dirFile);
@@ -353,7 +358,7 @@ char* FileSystem::pwd()
 	int sector = parent.sector;
 	if(sector == -1)
 	{
-		printf("/\n");
+		s = "/";
 	}
 	else
 	{
@@ -361,15 +366,20 @@ char* FileSystem::pwd()
 		{
 			dirFile = new OpenFile(sector);
 			directory->FetchFrom(dirFile);
-			pos = directory->findName(prevSector);
+			prev = s;
+			s = directory->findName(prevSector);
+			if(prev != "")
+			{
+				s += ("/" + prev);
+			}
 			prevSector = sector;
 			parent = directory->getParentDir();
 			sector = parent.sector;
-			printf("%s\n", pos);
+			//printf("%s\n", pos);
 		}
-		printf("/\n");
+		s = "/" + s;
 	}
-	return (char*)"\0";
+	return s.c_str();
 }
 
 /**
