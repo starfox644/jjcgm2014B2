@@ -350,12 +350,14 @@ const char* FileSystem::pwd()
 {
 	std::string s = "";
 	std::string prev = "";
+	// recuperation du repertoire actuel
 	OpenFile* dirFile = currentDirFile;
 	Directory* directory = new Directory(NumDirEntries);
 	directory->FetchFrom(dirFile);
 	DirectoryEntry parent = directory->getParentDir();
 	int prevSector = directory->getSelfDir().sector;
 	int sector = parent.sector;
+	// si il n'y a pas de repertoire parent, on debute a la racine
 	if(sector == -1)
 	{
 		s = "/";
@@ -633,6 +635,7 @@ int FileSystem::getSector(const char* path)
 	}
 	else
 	{
+		printf("path list NULL\n");
 		delete pathList;
 		delete dir;
 		return -1;
@@ -818,6 +821,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 	}
 	else if(i == 0 && path[i] == '/')
 	{
+		// racine : name = NULL
 		*subPath = new char[size];
 		*name = NULL;
 		strcpy(*subPath, path);
@@ -832,7 +836,7 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 		// copie du nom du fichier
 		strcpy(*name, &path[i+1]);
 	}
-	if(name != NULL)
+	if(*name != NULL)
 	{
 		size = strlen(*name);
 		if((*name)[size - 1] == '/')
