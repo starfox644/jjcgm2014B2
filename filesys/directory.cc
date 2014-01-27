@@ -282,7 +282,16 @@ Directory::Print()
 	        printf("return %d == %d\n", j, dir->tableSize);
 	        return (j == dir->tableSize);
     	}
-    }*/
+    }
+}*/
+
+    char* Directory::findName(int sector)
+    {
+        for (int i = 0; i < tableSize; i++)
+            if (table[i].inUse && sector == table[i].sector)
+    	    return table[i].name;
+        return NULL;		// sector not in directory
+    }
 
     /**
 	 * Fonction permettant de savoir si le repertoire

@@ -176,7 +176,11 @@ PerformanceTest()
     stats->Print();
     FileWrite();
     FileRead();
+#ifdef CHANGED
+    if (!fileSystem->RemoveFile((char*)FileName)) {
+#else
     if (!fileSystem->Remove(FileName)) {
+#endif
       printf("Perf test: unable to remove %s\n", FileName);
       return;
     }
@@ -233,7 +237,7 @@ void moveTest()
 		else if(!strcmp(cmd, "rm"))
 		{
 			scanf("%s", path);
-			fileSystem->Remove(path);
+			fileSystem->RemoveFile(path);
 		}
 		else if(!strcmp(cmd, "cr"))
 		{
@@ -242,7 +246,6 @@ void moveTest()
 		}
 		else if(!strcmp(cmd, "test"))
 		{
-
 			scanf("%s", path);
 			fileSystem->getLastDirectory(path, &name, &subPath);
 			if(name == NULL && subPath == NULL)

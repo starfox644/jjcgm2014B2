@@ -51,6 +51,10 @@
 #include "filehdr.h"
 #include "filesys.h"
 
+#ifdef CHANGED
+#include <string>
+#endif
+
 // Sectors containing the file headers for the bitmap of free sectors,
 // and the directory of files.  These file headers are placed in well-known 
 // sectors, so that they can be located on boot-up.
@@ -191,6 +195,7 @@ FileSystem::Create(const char *path, int initialSize)
 	OpenFile *dirFile;
 	char* name;
 	char* subpath;
+	// recuperation du repertoire parent fichier a creer
 	getLastDirectory(path, &name, &subpath);
 	if(name == NULL)
 	{
@@ -198,10 +203,12 @@ FileSystem::Create(const char *path, int initialSize)
 	}
 	if(subpath == NULL)
 	{
+		// fichier a creer au repertoire courant
 		dirFile = currentDirFile;
 	}
 	else
 	{
+		// recuperation du fichier du repertoire parent
 		sector = getSector(subpath);
 		if(sector == -1)
 		{
@@ -259,47 +266,7 @@ FileSystem::Create(const char *path, int initialSize)
 }
 
 #ifdef CHANGED
-bool FileSystem::CreateDir(const char *name)
-{
-	OpenFile* openFile;
-	Directory* newDir;
-	Directory* currentDir;
-	DirectoryEntry currentDirEntry;
-	int currentSector;
-	int newSector;
-	// creation d'un fichier pour stocker le repertoire
-	if(Create(name, DirectoryFileSize))
-	{
-		// ouverture du fichier cree
-		openFile = Open(name);
-		ASSERT(openFile != NULL);
-		// lecture du repertoire courant
-		currentDir = new Directory(NumDirEntries);
-		currentDir->FetchFrom(currentDirFile);
-		// modification du booleen isDirectory
-		currentDir->setIsDirectory(name, true);
-		currentDir->WriteBack(currentDirFile);
-		// creation du nouveau repertoire
-		newDir = new Directory(NumDirEntries);
-		// recuperation du numero de secteur du nouveau repertoire
-		newSector = currentDir->Find(name);
-		newDir->setSelfDir(newSector);
-		// recuperation de l'entree du repertoire courant
-		currentDirEntry = currentDir->getSelfDir();
-		currentSector = currentDirEntry.sector;
-		newDir->setParentDir(currentSector);
-		// ecriture du nouveau repertoire dans le fichier attribue
-		newDir->WriteBack(openFile);
-		delete currentDir;
-		delete newDir;
-		delete openFile;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
+
 
 /**
  * Deplacement dans le repertoire dont le chemin est passe en argument
@@ -379,6 +346,113 @@ bool FileSystem::cd(char* path)
 	return false;
 }
 
+const char* FileSystem::pwd()
+{
+	std::string s = "";
+	std::string prev = "";
+	OpenFile* dirFile = currentDirFile;
+	Directory* directory = new Directory(NumDirEntries);
+	directory->FetchFrom(dirFile);
+	DirectoryEntry parent = directory->getParentDir();
+	int prevSector = directory->getSelfDir().sector;
+	int sector = parent.sector;
+	if(sector == -1)
+	{
+		s = "/";
+	}
+	else
+	{
+		while(sector != -1)
+		{
+			dirFile = new OpenFile(sector);
+			directory->FetchFrom(dirFile);
+			prev = s;
+			s = directory->findName(prevSector);
+			if(prev != "")
+			{
+				s += ("/" + prev);
+			}
+			prevSector = sector;
+			parent = directory->getParentDir();
+			sector = parent.sector;
+			//printf("%s\n", pos);
+		}
+		s = "/" + s;
+	}
+	return s.c_str();
+}
+
+/**
+*  Cree un repertoire vide de nom 'name' dans le repertoire courant
+*/
+bool FileSystem::CreateDir(const char *path)
+{
+	OpenFile* openFile;
+	Directory* newDir;
+	Directory* currentDir;
+	DirectoryEntry currentDirEntry;
+	int currentSector;
+	int newSector;
+	// creation d'un fichier pour stocker le repertoire
+	if(Create(path, DirectoryFileSize))
+	{
+		// ouverture du fichier cree
+		openFile = Open(path);
+		OpenFile *dirFile;
+		char* name;
+		char* subpath;
+		int sector;
+		// recuperation du repertoire parent du fichier a supprimer
+		getLastDirectory(path, &name, &subpath);
+		if(name == NULL)
+		{
+			return false;
+		}
+		if(subpath == NULL)
+		{
+			dirFile = currentDirFile;
+		}
+		else
+		{
+			sector = getSector(subpath);
+			if(sector == -1)
+			{
+				delete subpath;
+				delete name;
+				return false;
+			}
+			dirFile = new OpenFile(sector);
+			delete subpath;
+		}
+		ASSERT(openFile != NULL);
+		// lecture du repertoire courant
+		currentDir = new Directory(NumDirEntries);
+		currentDir->FetchFrom(dirFile);
+		// modification du booleen isDirectory
+		currentDir->setIsDirectory(name, true);
+		currentDir->WriteBack(dirFile);
+		// creation du nouveau repertoire
+		newDir = new Directory(NumDirEntries);
+		// recuperation du numero de secteur du nouveau repertoire
+		newSector = currentDir->Find(name);
+		newDir->setSelfDir(newSector);
+		// recuperation de l'entree du repertoire courant
+		currentDirEntry = currentDir->getSelfDir();
+		currentSector = currentDirEntry.sector;
+		newDir->setParentDir(currentSector);
+		// ecriture du nouveau repertoire dans le fichier attribue
+		newDir->WriteBack(openFile);
+		delete currentDir;
+		delete newDir;
+		delete openFile;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 /**
  * Fonction permettant de supprimer le repertoire
  * dont le chemin d'acces est passe en parametre
@@ -425,14 +499,55 @@ bool FileSystem::RemoveDir(char *path)
 	return false;
 }
 
-char* FileSystem::pwd()
+bool FileSystem::RemoveFile(char* path)
 {
-	return currentDirName;
+	int sector;
+	OpenFile *dirFile;
+	char* name;
+	char* subpath;
+	Directory* directory;
+	// recuperation du nom et du repertoire parent du fichier
+	getLastDirectory(path, &name, &subpath);
+	if(name == NULL)
+	{
+		return false;
+	}
+	if(subpath == NULL)
+	{
+		// fichier dans le repertoire courant
+		dirFile = currentDirFile;
+	}
+	else
+	{
+		// recuperation du numero de secteur du repertoire parent
+		sector = getSector(subpath);
+		if(sector == -1)
+		{
+			delete subpath;
+			delete name;
+			return false;
+		}
+		dirFile = new OpenFile(sector);
+		delete subpath;
+	}
+	// lecture du repertoire parent
+	directory = new Directory(NumDirEntries);
+	directory->FetchFrom(dirFile);
+	if(directory->isDirectory(name))
+	{
+		// erreur si le fichier a supprimer est un dossier
+		delete directory;
+		return false;
+	}
+	// suppression du fichier
+	Remove(path);
+	return true;
 }
 
 /**
- *  Return the sector of the file associated to the given path
- *  or -1 if the path is not valable
+ *  Renvoie le numero de secteur du fichier correspondant au chemin
+ *  passe en parametre
+ *  Si le chemin est invalide, la fonction renvoie -1
  */
 int FileSystem::getSector(const char* path)
 {
@@ -476,7 +591,7 @@ int FileSystem::getSector(const char* path)
 		{
 			// lecture du repertoire actuel
 			dir->FetchFrom(fileActu);
-			delete fileActu;
+			DeleteFile(fileActu);
 			// le nom suivant doit etre un repertoire
 			if(dir->isDirectory(pathList[i]))
 			{
@@ -508,7 +623,7 @@ int FileSystem::getSector(const char* path)
 		{
 			// lecture du dernier repertoire
 			dir->FetchFrom(fileActu);
-			delete fileActu;
+			DeleteFile(fileActu);
 			// recherche du dernier fichier
 			curSector = dir->Find(pathList[i]);
 			delete pathList;
@@ -524,8 +639,8 @@ int FileSystem::getSector(const char* path)
 	}
 }
 
-/*
- * Return true if the path already exists
+/**
+ * 	Renvoie vrai si chemin passe en parametre est associe a un fichier
  */
 bool FileSystem::pathExist(const char* path)
 {
@@ -535,14 +650,12 @@ bool FileSystem::pathExist(const char* path)
 
 
 /**
- * Tell if a path is legal or not
- * If it is legal, it returns the numbers of levels in the path,
- * else it returns 0
- * The path is considered illegal if :
- *  - it contains characters others than . / _ - and alphanum (a-z, A-Z, 0-9)
- *  - there are two null names "//"
- *  - one name is longer than limit
- *  - it is void
+ * Indique si le chemin passe en parametre est legal
+ * Un chemin est illegal si :
+ *  - Il contient d'autres caracteres que . / _ - ou (a-z, A-Z, 0-9)
+ *  - il contient "//"
+ *  - un nom est plus long que la limite
+ *  - il est vide
  */
 int FileSystem::isLegalPath(const char* path) {
 	int i, legal, level, nameLength;
@@ -603,10 +716,16 @@ int FileSystem::isLegalPath(const char* path) {
 }
 
 /**
- * Cuts a path name into multiple names.
- * Returns an array of names if the path is legal
- *    and nbDir contains the size of the array
- * If the path is illegal, the function returns NULL
+ * 	Decoupe le chemin passe en parametre en une liste composee
+ * 	des repertoires du chemin et du dernier fichier
+ * 	Si le chemin commence par '/' il est place en premier dans la liste
+ * 	Sinon la liste debute par le premier repertoire du chemin
+ * 	L'entier pointe par nbDir contient le nombre d'entrees de la liste apres
+ * 	l'appel a la fonction
+ *	La fonction alloue dynamiquement la liste et la renvoie, elle doit etre
+ *	liberee par la suite.
+ *	Si un '/' est place a la fin du chemin, il est retire
+ *	Si le chemin n'est pas valide, la fonction renvoie NULL
  */
 char** FileSystem::cutPath(const char* path, int* nbDir) {
 	int i, j, k;
@@ -722,6 +841,15 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 		}
 	}
 }
+
+void FileSystem::DeleteFile(OpenFile* openfile)
+{
+	// check if the file must be keeped open
+	if(openfile != currentDirFile && openfile != directoryFile)
+	{
+		delete openfile;
+	}
+}
 #endif //CHANGED
 
 //----------------------------------------------------------------------
@@ -735,10 +863,11 @@ void FileSystem::getLastDirectory(const char* path, char** name, char** subPath)
 //----------------------------------------------------------------------
 
 OpenFile *
-FileSystem::Open(const char *name)
+FileSystem::Open(const char *path)
 {
 #ifdef CHANGED
-	int sector = getSector(name);
+	// recuperation du numero de secteur associe au path
+	int sector = getSector(path);
 	if(sector >= 0)
 	{
 		return new OpenFile(sector);
@@ -752,9 +881,9 @@ FileSystem::Open(const char *name)
 	OpenFile *openFile = NULL;
 	int sector;
 
-	DEBUG('f', "Opening file %s\n", name);
+	DEBUG('f', "Opening file %s\n", path);
 	directory->FetchFrom(directoryFile);
-	sector = directory->Find(name);
+	sector = directory->Find(path);
 	if (sector >= 0)
 		openFile = new OpenFile(sector);	// name was found in directory
 	delete directory;
@@ -787,6 +916,7 @@ FileSystem::Remove(const char *path)
 	OpenFile *dirFile;
 	char* name;
 	char* subpath;
+	// recuperation du repertoire parent du fichier a supprimer
 	getLastDirectory(path, &name, &subpath);
 	if(name == NULL)
 	{
@@ -836,6 +966,8 @@ FileSystem::Remove(const char *path)
 	freeMap->WriteBack(freeMapFile);		// flush to disk
 #ifdef CHANGED
 	directory->WriteBack(dirFile);
+	DeleteFile(dirFile);
+	delete name;
 #else
 	directory->WriteBack(directoryFile);
 #endif
