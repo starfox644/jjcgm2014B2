@@ -25,6 +25,10 @@ OpenFileId do_Open (char *name) {
 	file = fileSystem->Open(name);
 	if (file == NULL) {
 		DEBUG('f', "Error opening file %s\n", name);
+
+		// if we just created the FileManager, we delete it to avoid memory leak
+		if (fm->getNbOpen() == 0)
+			delete fm;
 		return -1;
 	}
 
