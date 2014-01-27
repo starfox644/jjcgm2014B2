@@ -126,7 +126,7 @@ class FileSystem {
 #ifdef CHANGED
    OpenFile* currentDirFile;
    char currentDirName[9];
-#endif
+#endif //CHANGED
 };
 
 #endif // FILESYS

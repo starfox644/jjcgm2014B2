@@ -178,6 +178,7 @@ Initialize (int argc, char **argv)
 #ifdef step3
 	s_create = new Semaphore("sem create", 1);
 #endif
+
 #endif
 	if (randomYield)		// start the timer (if needed)
 		timer = new Timer (TimerInterruptHandler, 0, randomYield);
