@@ -302,7 +302,6 @@ bool FileSystem::cd(char* path)
 				// parcours des repertoires du path
 				while ( i < nbDir-1)
 				{
-					//printf("[cd] path_dir[i] = %s\n", path_dir[i]);
 					// si le path commence par /
 					//on modifie le repertoire courant
 					if (!strcmp(path_dir[i], "/"))
@@ -492,7 +491,6 @@ bool FileSystem::RemoveDirEmpty(char *path)
 	char* path_prec = new char[strlen(path)];
 	OpenFile* openFile = NULL;
 	Directory* dir = new Directory(NumDirEntries);
-	//if ((sector = getSector(path)) != -1)
 	if((openFile = Open(path)) != NULL)
 	{
 		path_dir = cutPath(path, &nbDir);
@@ -500,30 +498,24 @@ bool FileSystem::RemoveDirEmpty(char *path)
 		// si le dernier nom est un repertoire
 		if (dir->getSelfDir().isDirectory)
 		{
-			//printf("[remove dir empty] c'est un repertoire \n");
 			// suppression du repertoire s'il est vide
 			if (dir->isEmpty(openFile))
 			{
 				Remove(path);
-				//printf("Avant test Suppression du repertoire courant \n");
 				// on supprime le repertoire courant
 				if (openFile->getSector() == currentDirFile->getSector())
 				{
-					//printf("Suppression du repertoire courant \n");
 					// repertoire courant = repertoire precedent
 					strcpy(path_prec, path_dir[0]);
 					if (nbDir >=2)
 					{
-						//printf("nbDir >=2  : boucle jusqu'a = %d \n",nbDir-1 );
 						// modification du repertoire courant
 						// copie du path jusqu'au repertoire precedent
 						for (int i = 1 ; i < nbDir-1; i++)
 						{
-							//printf("copie path_dir[i] = %s\n", path_dir[i]);
 							strcat(path_prec, path_dir[i]);
 							strcat(path_prec,"/");
 						}
-						//printf("path_prec = %s\n", path_prec);
 						sector = getSector(path_prec);
 						if (sector != -1)
 						{
@@ -627,11 +619,9 @@ int FileSystem::getSector(const char* path)
 	pathList = cutPath(path, &nbDir);
 	if(pathList != NULL)
 	{
-		//printf("PathList != NULL \n");
 		if(!strcmp(pathList[0], "/"))
 		{
 
-			//printf("dernier caractere est / \n");
 			if(nbDir == 1)
 			{
 				// juste la racine : vrai
@@ -649,8 +639,6 @@ int FileSystem::getSector(const char* path)
 		}
 		else
 		{
-
-			//printf("dernier caractere n'est pas un  / \n");
 			// chemin relatif : on commence au repertoire courant
 			dir->FetchFrom(currentDirFile);
 			curSector = (dir->getSelfDir()).sector;
