@@ -43,15 +43,16 @@ Socket::~Socket()
  */
 int Socket::do_SendSocket(char *message)
 {
-	printf("do_SendSocket\n");
+//	printf("do_SendSocket, %s\n", message);
 	PacketHeader outPktHdr;
 	MailHeader outMailHdr;
 	// construct packet, mail header for original message
 	// To: destination machine, mailbox 0
 	// From: our machine, reply to: mailbox 1
 	outPktHdr.to = numBox;
-	outMailHdr.to = to;
-	outMailHdr.from = from;
+	outPktHdr.from = 1;
+	outMailHdr.to = 0;
+	outMailHdr.from = 1;
 	outMailHdr.length = strlen(message) + 1;
 	// Send the first message
 	postOffice->Send(outPktHdr, outMailHdr, message);
@@ -62,6 +63,7 @@ int Socket::do_ReceiveSocket(int adrMessage)
 {
 	PacketHeader inPktHdr;
 	MailHeader inMailHdr;
+	printf("[Socket::do_ReceiveSocket] Debut fonction\n");
 	// Wait for the first message from the other machine
 	postOffice->Receive(numBox, &inPktHdr, &inMailHdr, buffer);
 
@@ -77,6 +79,7 @@ int Socket::do_ReceiveSocket(int adrMessage)
 		buffer[i-1] = '\0';
 	else if (!isSuccess)
 		return -1;
+	printf("[Socket receive] buffer : %s", buffer);
 	return strlen(buffer);
 }
 

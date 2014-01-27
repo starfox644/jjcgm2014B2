@@ -23,20 +23,21 @@ int main(){
 	sock_t Socket;
 
 	//demande a l'utilisateur les informations pour créer la socket
-	Printf("Numéro de la machine :\n");
-	Scanf("%d",&netname);
-	SetHostname(netname);
-	Printf("Numéro de la machine cible : \n");
-	Scanf("%d",&numBox);
+//	Printf("Numéro de la machine :\n");
+//	Scanf("%d",&netname);
+//	SetHostname(netname);
+//	Printf("Numéro de la machine cible : \n");
+//	Scanf("%d",&numBox);
+	Printf("FROM : \n");
+	Scanf("%d",&from);
+	Printf("TO :\n");
+	Scanf("%d",&to);
 	Sleep(5);
 	//connexion de notre machine
-	Socket = creerSocket(numBox,to ,from,message);
-	Printf("Socket : %d\n",Socket);
+	Socket = creerSocket(to, to ,from,message);
 	//si on est la première machine on envoi le message
-	Printf("Itoa\n");
 	message = Itoa(numBox); //on donne le numero de la machine de départ
 
-	Printf("EnvoiMessage\n");
 	if(envoyerMessage(Socket,message) ==-1){
 		Printf("Erreur d'envoi de Message depuis la machine %d\n",from);
 	}

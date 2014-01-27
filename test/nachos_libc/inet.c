@@ -26,16 +26,16 @@ int fermerSocket(sock_t socketUser){
 int envoyerMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
 	Printf("Send inet\n");
-	//envoi de l'appel système pour envoyé le message
+	//envoi de l'appel système pour envoyer le message
 	nbChar = Send(socketUser, message);
-	//on retourne le nombre de char envoyé et -1 si cela échoue
+	//on retourne le nombre de char envoyés et -1 si cela échoue
 	return nbChar;
 }
 int recevoirMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
 	//envoi de l'appel système pour recevoir le message
 	nbChar = Receive(socketUser, message);
-	//on renvoi le nombre de char reçu et -1 si cela à échoué
+	//on renvoi le nombre de char reçu et -1 si cela a échoué
 	return nbChar;
 }
 
