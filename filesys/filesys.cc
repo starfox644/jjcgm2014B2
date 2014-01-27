@@ -335,16 +335,13 @@ bool FileSystem::cd(char* path)
 				openFile = currentDirFile;
 			}
 			dir->FetchFrom(openFile);
-			printf("test : %s est un repertoire \n",path_dir[nbDir-1]);
 			// si le dernier nom est un repertoire
 			if (dir->isDirectory(path_dir[nbDir-1]))
 			{
-				printf("%s est un repertoire \n",path_dir[nbDir-1]);
 				if(currentDirFile != directoryFile)
 					delete currentDirFile;
 				// recherche du secteur du repertoire
 				sector = dir->Find(path_dir[nbDir-1]);
-				printf("Le secteur de %s est %d\n",path_dir[nbDir-1], sector);
 				if (sector >= 0)
 					openFile = new OpenFile(sector);
 				ASSERT(openFile != NULL);
@@ -491,6 +488,7 @@ bool FileSystem::RemoveDirEmpty(char *path)
 {
 	char** path_dir;
 	int nbDir;
+	char* path_prec = new char[strlen(path)];
 	OpenFile* openFile = NULL;
 	Directory* dir = new Directory(NumDirEntries);
 	//if ((sector = getSector(path)) != -1)
@@ -501,10 +499,43 @@ bool FileSystem::RemoveDirEmpty(char *path)
 		// si le dernier nom est un repertoire
 		if (dir->getSelfDir().isDirectory)
 		{
+			//printf("[remove dir empty] c'est un repertoire \n");
 			// suppression du repertoire s'il est vide
 			if (dir->isEmpty(openFile))
 			{
 				Remove(path);
+				//printf("Avant test Suppression du repertoire courant \n");
+				// on supprime le repertoire courant
+				if (openFile->getSector() == currentDirFile->getSector())
+				{
+					//printf("Suppression du repertoire courant \n");
+					if (nbDir >=2)
+					{
+						//printf("nbDir >=2  : boucle jusqu'a = %d \n",nbDir-1 );
+						// modification du repertoire courant
+						// repertoire courant = repertoire precedent
+
+						strcpy(path_prec, path_dir[0]);
+						// copie du path jusqu'au repertoire precedent
+						for (int i = 1 ; i < nbDir-1; i++)
+						{
+							//printf("copie path_dir[i] = %s\n", path_dir[i]);
+							strcat(path_prec, path_dir[i]);
+							strcat(path_prec,"/");
+						}
+						//printf("path_prec = %s\n", path_prec);
+						int sector = getSector(path_prec);
+						if (sector != -1)
+						{
+							currentDirFile = new OpenFile(sector);
+							strncpy(currentDirName, path_dir[nbDir-2], 9);
+						}
+						else
+							printf("Erreur : secteur = -1 dans remove dir \n");
+					}
+
+				}
+
 			}
 			else
 				printf("Le repertoire n'est pas vide : suppression impossible\n");
@@ -512,7 +543,6 @@ bool FileSystem::RemoveDirEmpty(char *path)
 			delete path_dir;
 			if(currentDirFile != directoryFile)
 				delete openFile;
-			printf("Return true\n");
 			return true;
 		}
 		else

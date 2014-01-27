@@ -239,7 +239,6 @@ Directory::Print()
     bool Directory::isDirectory(char *name)
     {
     	int i = FindIndex(name);
-    	printf("[IsDirectory] findIndex = %d\n", i);
     	if (i == -1)
     		return false; 		// name not in directory
     	else
