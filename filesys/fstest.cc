@@ -245,7 +245,10 @@ void moveTest()
 		else if(!strcmp(cmd, "cr"))
 		{
 			scanf("%s", path);
-			fileSystem->Create(path, 32);
+			if(!fileSystem->Create(path, 32))
+			{
+				printf("impossible de creer le fichier\n");
+			}
 		}
 		else if(!strcmp(cmd, "test"))
 		{
