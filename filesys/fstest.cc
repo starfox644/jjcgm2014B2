@@ -275,6 +275,8 @@ void moveTest()
 				delete subPath;
 			}
 		}
+		else
+			printf("%s : command not found\n", cmd);
 	}while(strcmp(cmd, "q"));
 }
 #endif
