@@ -453,15 +453,17 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
-					n = fileSystem->Create(buffer, n);
-					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					isSuccess = fileSystem->Create(buffer, n);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					isSuccess = false;
 				}
+				if(isSuccess)
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, 0);
+				else
+					machine->WriteRegister(2, -1);
 				break;
 
 

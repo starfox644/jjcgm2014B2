@@ -5,6 +5,11 @@ int main()
 	OpenFileId id;
 	char c;
 	int n;
+	if(Create("test", 128) == -1)
+	{
+		PutString("Erreur create\n");
+		Exit(0);
+	}
 	id = Open("test");
 	if(id == -1)
 	{

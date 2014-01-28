@@ -125,8 +125,10 @@ typedef int OpenFileId;
 #define ConsoleInput	0
 #define ConsoleOutput	1
 
+#ifndef CHANGED
 /* Create a Nachos file, with "name" */
-void Create (char *name);
+int Create (char *name);
+#endif
 
 /* Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
@@ -330,7 +332,7 @@ int rm(char* path);
  * Cree un fichier de taille initialSize et de nom path
  * Renvoie 1 en cas de succes, 0 sinon
  */
-int create(const char *path, int initialSize);
+int Create(const char *path, int initialSize);
 
 
 #endif // CHANGED
