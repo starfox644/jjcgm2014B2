@@ -54,12 +54,13 @@
 #define SC_ArgEnd 31
 #define SC_GetListProcess 32
 #define SC_GetNbProcessTotal 33
-#define SC_InitSocket 34
-#define SC_Send 35
-#define SC_Receive 36
-#define SC_CloseSocket 37
-#define SC_Sleep 38
-#define SC_GetHostname 39
+#define SC_InitSocket 50
+#define SC_Send 51
+#define SC_Receive 52
+#define SC_CloseSocket 53
+#define SC_Sleep 54
+#define SC_SetHostname 55
+#define SC_GetHostname 56
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 

@@ -18,7 +18,9 @@
 
 #include "copyright.h"
 #include "post.h"
-
+#ifdef CHANGED
+#include <ctime> // pour le timer
+#endif //CHANGED
 
 #include <strings.h> /* for bzero */
 
@@ -287,6 +289,11 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	bcopy(&mailHdr, buffer, sizeof(MailHeader));
 	bcopy(data, buffer + sizeof(MailHeader), mailHdr.length);
 
+	//ici on fait notre boucle pour les tentative
+	std::clock_t start;
+	double duree;
+	start = std::clock();
+	printf("\nstart : %f\n",(double)start);
 	sendLock->Acquire();   		// only one message can be sent
 	// to the network at any one time
 	network->Send(pktHdr, buffer);
@@ -294,7 +301,10 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	messageSent->P();			// wait for interrupt to tell us
 	// ok to send the next message
 	sendLock->Release();
-
+	duree = ( std::clock() - start) /((double) CLOCKS_PER_SEC / 1000);
+	printf("\nClock : %f\n",(double)std::clock());
+	printf("\n Clock_per_sec : %f\n",(double) CLOCKS_PER_SEC);
+	printf("\nDuré de l'envoi : %f\n",duree);
 	delete [] buffer;			// we've sent the message, so
 	// we can delete our buffer
 }

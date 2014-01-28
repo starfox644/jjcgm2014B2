@@ -28,11 +28,12 @@ struct donnees_thread{
 typedef struct donnees_thread donnees_thread_t;
 
 void dodo(int scale){
-	Delay(Random()%1000000 * scale);
+	Delay(scale);
 }
 
 void lecteur (int args){
 	printf("lecteur\n");
+	//thread du lecteur qui debute de lire et fini la lecture
 	donnees_thread_t *d = (donnees_thread_t*)args;
 	int i, valeur;
 	for(i = 0; i< d->iterations; i++){
@@ -51,6 +52,7 @@ void lecteur (int args){
 
 void redacteur(int args){
 	printf("redacteur\n");
+	//thread du redacteur qui commence a rediger et finis sa redaction
 	donnees_thread_t *d = (donnees_thread_t*) args;
 	int i,valeur;
 
@@ -72,30 +74,33 @@ void redacteur(int args){
 
 int testCond(){
 	printf("testCond?\n");
-	Thread *threads,*thread_courant;
+
 	donnees_thread_t *donnees_thread = new donnees_thread_t;
 	int i, nb_lecteurs, nb_redacteurs;
 
 	nb_lecteurs = 4;
 	nb_redacteurs = 2;
-
+	Thread *threads[nb_lecteurs + nb_redacteurs];
 	donnees_thread->iterations = 2;
 
-	threads = new Thread("thread thread");
-	thread_courant = threads;
+	//initialisation du tableau de thread
+	for(i = 0; i < nb_redacteurs+nb_lecteurs;i++){
+		threads[i] = new Thread("thread thread");
+	}
 	initialiser_lecteur_redacteur(&donnees_thread->lecteur_redacteur);
 
 	printf("debut boucle creation\n");
 	for(i = 0; i < nb_lecteurs; i++){
-		thread_courant->Fork(lecteur,(int)donnees_thread);
+		threads[i]->Fork(lecteur,(int)donnees_thread);
 	}
 	for(i = 0; i < nb_redacteurs; i++){
-		thread_courant->Fork(redacteur,(int)donnees_thread);
+		threads[i]->Fork(redacteur,(int)donnees_thread);
 	}
-	//for(i = 0; i < nb_redacteurs+nb_lecteurs;i++){
-		//thread_courant[i].Finish();
-	//}
-	delete threads;
+	for(i = 0; i < nb_redacteurs+nb_lecteurs;i++){
+		threads[i]->Finish();
+	}
+	delete threads[nb_redacteurs+nb_lecteurs];
+
 	return 0;
 }
 #endif

@@ -94,9 +94,9 @@ public:
 	// checking in Release, and in
 	// Condition variable ops below.
 #ifdef CHANGED
-	Semaphore* sem;
-	Thread *holder;
-#endif
+	Semaphore* sem; // sem initalisee a 1 (mutex) pour le verrouillage
+	Thread *holder; // permet de retenir le thread qui tient le loc
+#endif // CHANGED
 private:
 	const char *name;		// for debugging
 };
@@ -152,7 +152,6 @@ public:
 	void Broadcast (Lock * conditionLock);	// the currentThread for all of
 	// these operations
 #ifdef NETWORK
-	Semaphore* semProtList; //semaphore pour proteger notre liste
 	List *l_semCond; //liste de semaphore en attente
 #endif //network
 

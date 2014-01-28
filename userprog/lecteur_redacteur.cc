@@ -9,7 +9,6 @@ void initialiser_lecteur_redacteur(lecteur_redacteur_t *lecteur_redacteur){
 	// on initialise les differentes informations de la structure
 	lecteur_redacteur->nb_Writer = 0;
 	lecteur_redacteur->nb_Reader = 0;
-	lecteur_redacteur->fifo = new Semaphore("semaphore fifo", 1);
 	lecteur_redacteur->verrou = new Lock("lock verrou");
 	lecteur_redacteur->cond_Lecteur = new Condition("condition lecteur");
 	lecteur_redacteur->cond_ecriture = new Condition("condition ecriture");
@@ -19,7 +18,6 @@ void initialiser_lecteur_redacteur(lecteur_redacteur_t *lecteur_redacteur){
 //fonction pour la lecture
 void debut_lecture(lecteur_redacteur_t *lecteur_redacteur){
 	printf("debut lecture\n");
-	lecteur_redacteur->fifo->P();
 
 	lecteur_redacteur->verrou->Acquire();
 
@@ -28,10 +26,8 @@ void debut_lecture(lecteur_redacteur_t *lecteur_redacteur){
 	}
 
 	lecteur_redacteur->nb_Reader++;
-
 	lecteur_redacteur->verrou->Release();
 
-	lecteur_redacteur->fifo->V();
 }
 
 void fin_lecture(lecteur_redacteur_t *lecteur_redacteur){
@@ -47,7 +43,6 @@ void fin_lecture(lecteur_redacteur_t *lecteur_redacteur){
 //fonction pour l'ecriture
 void debut_redaction(lecteur_redacteur_t *lecteur_redacteur){
 	printf("debut redaction\n");
-	lecteur_redacteur->fifo->P();
 
 	lecteur_redacteur->verrou->Acquire();
 	while(lecteur_redacteur->nb_Reader > 0 ||lecteur_redacteur->nb_Writer > 0 ){
@@ -59,18 +54,20 @@ void debut_redaction(lecteur_redacteur_t *lecteur_redacteur){
 
 void fin_redaction(lecteur_redacteur_t *lecteur_redacteur){
 	printf("fin redaction\n");
+	//on verrouille le redacteur
 	lecteur_redacteur->verrou->Acquire();
+	//on decremente le nombre d'ecrivain
 	lecteur_redacteur->nb_Writer--;
+	//on reveille tout le monde
 	lecteur_redacteur->cond_Lecteur->Broadcast(lecteur_redacteur->verrou);
 	lecteur_redacteur->cond_ecriture->Signal(lecteur_redacteur->verrou);
+	//on lache notre verrou
 	lecteur_redacteur->verrou->Release();
-	lecteur_redacteur->fifo->V();
 
 }
 
 void detruire_lecteur_redacteur(lecteur_redacteur_t *lecteur_redacteur){
 	delete lecteur_redacteur->verrou;
-	delete lecteur_redacteur->fifo;
 	delete lecteur_redacteur->cond_Lecteur;
 	delete lecteur_redacteur->cond_ecriture;
 }
