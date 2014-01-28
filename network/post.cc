@@ -34,11 +34,11 @@
 
 Mail::Mail(PacketHeader pktH, MailHeader mailH, char *msgData)
 {
-    ASSERT(mailH.length <= MaxMailSize);
+	ASSERT(mailH.length <= MaxMailSize);
 
-    pktHdr = pktH;
-    mailHdr = mailH;
-    bcopy(msgData, data, mailHdr.length);
+	pktHdr = pktH;
+	mailHdr = mailH;
+	bcopy(msgData, data, mailHdr.length);
 }
 
 //----------------------------------------------------------------------
@@ -52,7 +52,7 @@ Mail::Mail(PacketHeader pktH, MailHeader mailH, char *msgData)
 
 MailBox::MailBox()
 { 
-    messages = new SynchList(); 
+	messages = new SynchList();
 }
 
 //----------------------------------------------------------------------
@@ -65,7 +65,7 @@ MailBox::MailBox()
 
 MailBox::~MailBox()
 { 
-    delete messages; 
+	delete messages;
 }
 
 //----------------------------------------------------------------------
@@ -80,8 +80,8 @@ MailBox::~MailBox()
 static void 
 PrintHeader(PacketHeader pktHdr, MailHeader mailHdr)
 {
-    printf("From (%d, %d) to (%d, %d) bytes %d\n",
-    	    pktHdr.from, mailHdr.from, pktHdr.to, mailHdr.to, mailHdr.length);
+	printf("From (%d, %d) to (%d, %d) bytes %d\n",
+			pktHdr.from, mailHdr.from, pktHdr.to, mailHdr.to, mailHdr.length);
 }
 
 //----------------------------------------------------------------------
@@ -100,11 +100,12 @@ PrintHeader(PacketHeader pktHdr, MailHeader mailHdr)
 void 
 MailBox::Put(PacketHeader pktHdr, MailHeader mailHdr, char *data)
 { 
-    Mail *mail = new Mail(pktHdr, mailHdr, data); 
+//	printf("[MailBox::Put] recu \"%s\" de machine %i a la boite %i de la machine %i\n", data, pktHdr.from, mailHdr.to, pktHdr.to);
+	Mail *mail = new Mail(pktHdr, mailHdr, data);
 
-    messages->Append((void *)mail);	// put on the end of the list of 
-					// arrived messages, and wake up 
-					// any waiters
+	messages->Append((void *)mail);	// put on the end of the list of
+	// arrived messages, and wake up
+	// any waiters
 }
 
 //----------------------------------------------------------------------
@@ -122,22 +123,24 @@ MailBox::Put(PacketHeader pktHdr, MailHeader mailHdr, char *data)
 void 
 MailBox::Get(PacketHeader *pktHdr, MailHeader *mailHdr, char *data) 
 { 
-	printf("[MailBox::Get] Debut fonction\n");
-    DEBUG('n', "Waiting for mail in mailbox\n");
-    Mail *mail = (Mail *) messages->Remove();	// remove message from list;
-						// will wait if list is empty
-
-    *pktHdr = mail->pktHdr;
-    *mailHdr = mail->mailHdr;
-    if (DebugIsEnabled('n')) {
-	printf("Got mail from mailbox: ");
-	PrintHeader(*pktHdr, *mailHdr);
-    }
-    bcopy(mail->data, data, mail->mailHdr.length);
-					// copy the message data into
-					// the caller's buffer
-    delete mail;			// we've copied out the stuff we
-					// need, we can now discard the message
+//	printf("[MailBox::Get] Debut fonction\n");
+	DEBUG('n', "Waiting for mail in mailbox\n");
+	Mail *mail = (Mail *) messages->Remove();	// remove message from list;
+	// will wait if list is empty
+//	printf("[MailBox::Get] apres remove\n");
+	*pktHdr = mail->pktHdr;
+	*mailHdr = mail->mailHdr;
+	if (DebugIsEnabled('n')) {
+		printf("Got mail from mailbox: ");
+		PrintHeader(*pktHdr, *mailHdr);
+	}
+//	printf("[MailBox::Get] avant copy\n");
+	bcopy(mail->data, data, mail->mailHdr.length);
+//	printf("[MailBox::Get] apres copy\n");
+	// copy the message data into
+	// the caller's buffer
+	delete mail;			// we've copied out the stuff we
+	// need, we can now discard the message
 }
 
 //----------------------------------------------------------------------
@@ -177,24 +180,25 @@ static void WriteDone(int arg)
 
 PostOffice::PostOffice(NetworkAddress addr, double reliability, int nBoxes)
 {
-// First, initialize the synchronization with the interrupt handlers
-    messageAvailable = new Semaphore("message available", 0);
-    messageSent = new Semaphore("message sent", 0);
-    sendLock = new Lock("message send lock");
+	//	printf("[PostOffice::PostOffice] Constructeur. addr : %i | rely : %f | nBoxes : %i\n", addr, reliability, nBoxes);
+	// First, initialize the synchronization with the interrupt handlers
+	messageAvailable = new Semaphore("message available", 0);
+	messageSent = new Semaphore("message sent", 0);
+	sendLock = new Lock("message send lock");
 
-// Second, initialize the mailboxes
-    netAddr = addr; 
-    numBoxes = nBoxes;
-    boxes = new MailBox[nBoxes];
+	// Second, initialize the mailboxes
+	netAddr = addr;
+	numBoxes = nBoxes;
+	boxes = new MailBox[nBoxes];
 
-// Third, initialize the network; tell it which interrupt handlers to call
-    network = new Network(addr, reliability, ReadAvail, WriteDone, (int) this);
+	// Third, initialize the network; tell it which interrupt handlers to call
+	network = new Network(addr, reliability, ReadAvail, WriteDone, (int) this);
 
 
-// Finally, create a thread whose sole job is to wait for incoming messages,
-//   and put them in the right mailbox. 
-    Thread *t = new Thread("postal worker");
-    t->Fork(PostalHelper, (int) this);
+	// Finally, create a thread whose sole job is to wait for incoming messages,
+	//   and put them in the right mailbox.
+	Thread *t = new Thread("postal worker");
+	t->Fork(PostalHelper, (int) this);
 }
 
 //----------------------------------------------------------------------
@@ -204,11 +208,11 @@ PostOffice::PostOffice(NetworkAddress addr, double reliability, int nBoxes)
 
 PostOffice::~PostOffice()
 {
-    delete network;
-    delete [] boxes;
-    delete messageAvailable;
-    delete messageSent;
-    delete sendLock;
+	delete network;
+	delete [] boxes;
+	delete messageAvailable;
+	delete messageSent;
+	delete sendLock;
 }
 
 //----------------------------------------------------------------------
@@ -222,29 +226,29 @@ PostOffice::~PostOffice()
 void
 PostOffice::PostalDelivery()
 {
-    PacketHeader pktHdr;
-    MailHeader mailHdr;
-    char *buffer = new char[MaxPacketSize];
+	PacketHeader pktHdr;
+	MailHeader mailHdr;
+	char *buffer = new char[MaxPacketSize];
 
-    for (;;) {
-        // first, wait for a message
-    	printf("[Post] prise semaphore messageAvailable\n"); // TODO
-        messageAvailable->P();	
-        pktHdr = network->Receive(buffer);
+	for (;;) {
+		// first, wait for a message
+		//    	printf("[Post] prise semaphore messageAvailable\n"); // TODO
+		messageAvailable->P();
+		pktHdr = network->Receive(buffer);
 
-        mailHdr = *(MailHeader *)buffer;
-        if (DebugIsEnabled('n')) {
-	    printf("Putting mail into mailbox: ");
-	    PrintHeader(pktHdr, mailHdr);
-        }
+		mailHdr = *(MailHeader *)buffer;
+		if (DebugIsEnabled('n')) {
+			printf("Putting mail into mailbox: ");
+			PrintHeader(pktHdr, mailHdr);
+		}
 
-	// check that arriving message is legal!
-	ASSERT(0 <= mailHdr.to && mailHdr.to < numBoxes);
-	ASSERT(mailHdr.length <= MaxMailSize);
+		// check that arriving message is legal!
+		ASSERT(0 <= mailHdr.to && mailHdr.to < numBoxes);
+		ASSERT(mailHdr.length <= MaxMailSize);
 
-	// put into mailbox
-        boxes[mailHdr.to].Put(pktHdr, mailHdr, buffer + sizeof(MailHeader));
-    }
+		// put into mailbox
+		boxes[mailHdr.to].Put(pktHdr, mailHdr, buffer + sizeof(MailHeader));
+	}
 }
 
 //----------------------------------------------------------------------
@@ -263,36 +267,36 @@ PostOffice::PostalDelivery()
 void
 PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 {
-    char* buffer = new char[MaxPacketSize];	// space to hold concatenated
-						// mailHdr + data
+	char* buffer = new char[MaxPacketSize];	// space to hold concatenated
+	// mailHdr + data
 
-    printf("[PostOffice::Send] cible(-o) : %i | mailHdr.from : %i | mailHdr.to : %i\n", pktHdr.to, mailHdr.from, mailHdr.to);
+	//    printf("[PostOffice::Send] cible(-o) : %i | mailHdr.from : %i | mailHdr.to : %i\n", pktHdr.to, mailHdr.from, mailHdr.to);
 
-    if (DebugIsEnabled('n')) {
-	printf("Post send: ");
-	PrintHeader(pktHdr, mailHdr);
-    }
-    ASSERT(mailHdr.length <= MaxMailSize);
-    ASSERT(0 <= mailHdr.to && mailHdr.to < numBoxes);
-    
-    // fill in pktHdr, for the Network layer
-    pktHdr.from = netAddr;
-    pktHdr.length = mailHdr.length + sizeof(MailHeader);
+	if (DebugIsEnabled('n')) {
+		printf("Post send: ");
+		PrintHeader(pktHdr, mailHdr);
+	}
+	ASSERT(mailHdr.length <= MaxMailSize);
+	ASSERT(0 <= mailHdr.to && mailHdr.to < numBoxes);
 
-    // concatenate MailHeader and data
-    bcopy(&mailHdr, buffer, sizeof(MailHeader));
-    bcopy(data, buffer + sizeof(MailHeader), mailHdr.length);
+	// fill in pktHdr, for the Network layer
+	pktHdr.from = netAddr;
+	pktHdr.length = mailHdr.length + sizeof(MailHeader);
 
-    sendLock->Acquire();   		// only one message can be sent
-					// to the network at any one time
-    network->Send(pktHdr, buffer);
-	printf("[Post] prise semaphore messageSent\n"); // TODO
-    messageSent->P();			// wait for interrupt to tell us
-					// ok to send the next message
-    sendLock->Release();
+	// concatenate MailHeader and data
+	bcopy(&mailHdr, buffer, sizeof(MailHeader));
+	bcopy(data, buffer + sizeof(MailHeader), mailHdr.length);
 
-    delete [] buffer;			// we've sent the message, so
-					// we can delete our buffer
+	sendLock->Acquire();   		// only one message can be sent
+	// to the network at any one time
+	network->Send(pktHdr, buffer);
+	//	printf("[Post] prise semaphore messageSent\n"); // TODO
+	messageSent->P();			// wait for interrupt to tell us
+	// ok to send the next message
+	sendLock->Release();
+
+	delete [] buffer;			// we've sent the message, so
+	// we can delete our buffer
 }
 
 //----------------------------------------------------------------------
@@ -312,14 +316,14 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 
 void
 PostOffice::Receive(int box, PacketHeader *pktHdr, 
-				MailHeader *mailHdr, char* data)
+		MailHeader *mailHdr, char* data)
 {
-	printf("[PostOffice::Receive] Debut fonction\n");
-    ASSERT((box >= 0) && (box < numBoxes));
+	//	printf("[PostOffice::Receive] Debut fonction\n");
+	ASSERT((box >= 0) && (box < numBoxes));
 
-    boxes[box].Get(pktHdr, mailHdr, data);
-    printf("[PostOffice:Recep] cible(-o) : %i | mailHdr.from : %i | mailHdr.to : %i | box : %i\n", pktHdr->to, mailHdr->from, mailHdr->to, box);
-    ASSERT(mailHdr->length <= MaxMailSize);
+	boxes[box].Get(pktHdr, mailHdr, data);
+//	printf("[PostOffice:Recep] farAddr : %i | from : %i | to : %i | box : %i\n", pktHdr->to, mailHdr->from, mailHdr->to, box);
+	ASSERT(mailHdr->length <= MaxMailSize);
 }
 
 //----------------------------------------------------------------------
@@ -332,8 +336,8 @@ PostOffice::Receive(int box, PacketHeader *pktHdr,
 void
 PostOffice::IncomingPacket()
 { 
-	printf("[Post] relache semaphore messageAvailable\n"); // TODO
-    messageAvailable->V(); 
+	//	printf("[Post] relache semaphore messageAvailable\n"); // TODO
+	messageAvailable->V();
 }
 
 //----------------------------------------------------------------------
@@ -349,8 +353,8 @@ PostOffice::IncomingPacket()
 void 
 PostOffice::PacketSent()
 { 
-	printf("[Post] relache semaphore messageSent\n"); // TODO
-    messageSent->V();
+	//	printf("[Post] relache semaphore messageSent\n"); // TODO
+	messageSent->V();
 }
 
 #ifdef CHANGED

@@ -14,20 +14,19 @@
  * Initialise la socket et renvoie l'id attribuee.
  * Renvoie -1 si erreur.
  */
-int do_SockInit(int numBox, int to, int from, int adrBuffer)
+int do_SockInit(int farAddr, int to, int from, int adrBuffer)
 {
-	printf("do_SockInit\n");
-	int id = currentProcess->socketManager->addSocket(numBox, to, from, (char *) adrBuffer);
+	int id = currentProcess->socketManager->addSocket(farAddr, to, from, (char *) adrBuffer);
 	return id;
 }
 
-Socket::Socket(int newId, int newNumBox, int newTo, int newFrom, char* newBuffer)
+Socket::Socket(int newId, int newfarAddr, int newTo, int newFrom, char* newBuffer)
 {
 	id = newId;
-	numBox = newNumBox;
+	farAddr = newfarAddr;
 	to = newTo;
 	from = newFrom;
-	buffer = newBuffer;
+	buffer = new char[256];
 }
 
 Socket::~Socket()
@@ -49,10 +48,10 @@ int Socket::do_SendSocket(char *message)
 	// construct packet, mail header for original message
 	// To: destination machine, mailbox 0
 	// From: our machine, reply to: mailbox 1
-	outPktHdr.to = numBox;
-	outPktHdr.from = 1;
-	outMailHdr.to = 0;
-	outMailHdr.from = 1;
+	outPktHdr.to = farAddr;
+//	outPktHdr.from = 1;
+	outMailHdr.to = to;
+	outMailHdr.from = from;
 	outMailHdr.length = strlen(message) + 1;
 	// Send the first message
 	postOffice->Send(outPktHdr, outMailHdr, message);
@@ -63,10 +62,10 @@ int Socket::do_ReceiveSocket(int adrMessage)
 {
 	PacketHeader inPktHdr;
 	MailHeader inMailHdr;
-	printf("[Socket::do_ReceiveSocket] Debut fonction\n");
+//	printf("[Socket::do_ReceiveSocket] Debut fonction\n");
 	// Wait for the first message from the other machine
-	postOffice->Receive(numBox, &inPktHdr, &inMailHdr, buffer);
-
+	postOffice->Receive(0, &inPktHdr, &inMailHdr, buffer);
+//	printf("[Socket::do_ReceiveSocket] apres post->receive\n");
 	// On ecrit le message char par char
 	int i = 0;
 	bool isSuccess = true;
@@ -79,7 +78,7 @@ int Socket::do_ReceiveSocket(int adrMessage)
 		buffer[i-1] = '\0';
 	else if (!isSuccess)
 		return -1;
-	printf("[Socket receive] buffer : %s", buffer);
+//	printf("[Socket receive] buffer : %s", buffer);
 	return strlen(buffer);
 }
 

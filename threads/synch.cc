@@ -79,16 +79,15 @@ void Semaphore::setId(int idSem)
 //      when it is called.
 //----------------------------------------------------------------------
 
-void
-Semaphore::P ()
+void Semaphore::P ()
 {
 	IntStatus oldLevel = interrupt->SetLevel (IntOff);	// disable interrupts
 
-		while (value == 0)
-		{				// semaphore not available
-			queue->Append ((void *) currentThread);	// so go to sleep
-			currentThread->Sleep ();
-		}
+	while (value == 0)
+	{				// semaphore not available
+		queue->Append ((void *) currentThread);	// so go to sleep
+		currentThread->Sleep ();
+	}
 	value--;			// semaphore available,
 	// consume its value
 
@@ -123,6 +122,7 @@ Lock::Lock (const char *debugName)
 {
 #ifdef CHANGED
 	sem = new Semaphore(debugName, 1);
+	holder = NULL;
 #endif
 }
 
@@ -132,18 +132,32 @@ Lock::~Lock ()
 	delete sem;
 #endif
 }
-void
-Lock::Acquire ()
+
+void Lock::Acquire ()
 {
 #ifdef CHANGED
 	sem->P();
+	holder = currentThread;
 #endif
 }
-void
-Lock::Release ()
+
+void Lock::Release ()
 {
 #ifdef CHANGED
-	sem->V();
+	if (isHeldByCurrentThread())
+	{
+		holder = NULL;
+		sem->V();
+	}
+	else
+		printf("[Lock::Release] Erreur - Ce lock n'est pas pris par le thread courant.\n");
+#endif
+}
+
+bool Lock::isHeldByCurrentThread ()
+{
+#ifdef CHANGED
+	return holder == currentThread;
 #endif
 }
 
@@ -151,66 +165,88 @@ Condition::Condition (const char *debugName)
 {
 	name = debugName;
 #ifdef NETWORK
-	semCond = new Semaphore("semaphore Condition",0);
 	semProtList = new Semaphore("Semaphore protection Liste",1);
+	l_semCond = new List();
 #endif
 }
 
 Condition::~Condition ()
 {
 #ifdef NETWORK
-	delete semCond; // liberation de la semaphore
 	delete semProtList;
+	delete l_semCond;
 #endif
 }
+
 void Condition::Wait (Lock * conditionLock)
 {
 #ifdef NETWORK
-	//on ajoute notre condition a notre liste
-	semProtList->P();
-	l_LockWait.push_back(conditionLock);
-	semProtList->V();
-	//on commence par liberer notre lock
-	conditionLock->Release();
-	//on prend notre semaphore pour attendre
-	semCond->P();
-	conditionLock->Acquire(); // on recupere notre lock
+	if (conditionLock->isHeldByCurrentThread())
+	{
+		Semaphore *semCond = new Semaphore("condWait", 0);
+//		printf("[Condition::Wait] debut fonction\n"); // TODO
+		// On ajoute le semaphore a notre liste
+//		semProtList->P();
+		l_semCond->Append(semCond);
+//		semProtList->V();
+		// On commence par liberer notre lock
+		conditionLock->Release();
+		// On prend notre semaphore pour attendre
+		semCond->P();
+		conditionLock->Acquire(); // on recupere notre lock
+//		printf("[Condition::Wait] fin fonction\n"); // TODO
+	}
+	else
+	{
+		printf("[Condition::Wait] Erreur - Ce lock n'est pas pris par le thread courant.\n");
+		Exit(-1);
+	}
 #endif//network
 }
 
 void Condition::Signal (Lock * conditionLock)
 {
 #ifdef NETWORK
-	semProtList->P();
-	//on chercher le lock dans notre liste
-	std::list<Lock*>::iterator it=l_LockWait.begin();
-	while(it != l_LockWait.end() && (*it) != conditionLock){
-		it++;
+	if (conditionLock->isHeldByCurrentThread())
+	{
+		Semaphore *semCond;
+//		printf("[Condition::Signal] debut fonction\n"); // TODO
+//		semProtList->P();
+		semCond = (Semaphore*) l_semCond->Remove();
+		if (semCond != NULL)
+		{
+			//on libere notre semaphore des conditions
+//			semProtList->V();
+			semCond->V();
+		}
 	}
-	//puis on le supprime
-	if((*it) == conditionLock){
-		l_LockWait.erase(it);
-		semProtList->V();
-		//on libere notre semaphore des conditions
-		semCond->V();
-	}else{
-		semProtList->V();
+	else
+	{
+		printf("[Condition::Signal] Erreur - Ce lock n'est pas pris par le thread courant.\n");
+		Exit(-1);
 	}
-
 #endif //network
-
 }
+
 void Condition::Broadcast (Lock * conditionLock)
 {
 #ifdef NETWORK
-	semProtList->P();
-	//on sort tous les locks de notre liste
-	std::list<Lock*>::iterator it=l_LockWait.begin();
-	while(it != l_LockWait.end()){
-		l_LockWait.erase(it);
-		it++;
+	if (conditionLock->isHeldByCurrentThread())
+	{
+		Semaphore *semCond;
+		while (!l_semCond->IsEmpty())
+		{
+//			semProtList->P();
+			semCond = (Semaphore*) l_semCond->Remove();
+			//on libere notre semaphore des conditions
+//			semProtList->V();
+			semCond->V();
+		}
 	}
-	semProtList->V();
-	semCond->V();
+	else
+	{
+		printf("[Condition::Signal] Erreur - Ce lock n'est pas pris par le thread courant.\n");
+		Exit(-1);
+	}
 #endif
 }

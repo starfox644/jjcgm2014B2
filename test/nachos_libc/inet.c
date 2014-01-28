@@ -6,10 +6,10 @@
  */
 #include "inet.h"
 
-sock_t creerSocket(int numBox, int to ,int from ,char* buffer){
+sock_t creerSocket(int farAddr, int to ,int from ,char* buffer){
 	sock_t socket; //identifiant de notre socket unique a chaque fois, MAX_INT en limite
 	//envoir de l'appel systeme pour la création du socket
-	socket = InitSocket(numBox,to,from, buffer);
+	socket = InitSocket(farAddr,to,from, buffer);
 	//on renvoi la socket crée/-1 si cela à échoué
 	return socket;
 }
@@ -25,7 +25,6 @@ int fermerSocket(sock_t socketUser){
 
 int envoyerMessage(sock_t socketUser,char* message){
 	int nbChar = 0;
-	Printf("Send inet\n");
 	//envoi de l'appel système pour envoyer le message
 	nbChar = Send(socketUser, message);
 	//on retourne le nombre de char envoyés et -1 si cela échoue

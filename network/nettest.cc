@@ -24,6 +24,7 @@
 
 #ifdef CHANGED
 #include "process.h" //TODO
+#include "synch.h"
 #endif
 
 // Test out message delivery, by doing the following:
@@ -41,13 +42,13 @@ MailTest(int farAddr)
 	const char *data = "Hello there!";
 	const char *ack = "Got it!";
 	char buffer[MaxMailSize];
-	int i;
 
-	for (i = 0; i < 10; i++){
+	for (int i = 0; i < 10; i++){
 		// construct packet, mail header for original message
 		// To: destination machine, mailbox 0
 		// From: our machine, reply to: mailbox 1
 		outPktHdr.to = farAddr;
+		outPktHdr.from = postOffice->getNetAddr();
 		outMailHdr.to = 0;
 		outMailHdr.from = 1;
 		outMailHdr.length = strlen(data) + 1;
@@ -61,6 +62,8 @@ MailTest(int farAddr)
 
 		// Send acknowledgement to the other machine (using "reply to" mailbox
 		// in the message that just arrived
+//		printf("[Nettest] outPktHdr.to : %i | outMailHdr.to : %i\n", outPktHdr.to, outMailHdr.to);
+//		printf("[Nettest] inPktHdr.from : %i | inMailHdr.from : %i\n", inPktHdr.from, inMailHdr.from);
 		outPktHdr.to = inPktHdr.from;
 		outMailHdr.to = inMailHdr.from;
 		outMailHdr.length = strlen(ack) + 1;

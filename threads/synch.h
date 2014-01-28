@@ -95,6 +95,7 @@ public:
 	// Condition variable ops below.
 #ifdef CHANGED
 	Semaphore* sem;
+	Thread *holder;
 #endif
 private:
 	const char *name;		// for debugging
@@ -151,9 +152,8 @@ public:
 	void Broadcast (Lock * conditionLock);	// the currentThread for all of
 	// these operations
 #ifdef NETWORK
-	Semaphore* semCond;//semaphore de notre condition
 	Semaphore* semProtList; //semaphore pour proteger notre liste
-	std::list<Lock*> l_LockWait; //liste des locks en attente
+	List *l_semCond; //liste de semaphore en attente
 #endif //network
 
 private:

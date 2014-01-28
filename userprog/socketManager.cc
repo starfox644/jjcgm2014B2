@@ -20,11 +20,11 @@ SocketManager::~SocketManager()
  * Add a new socket to the list.
  * Return -1 if ID has reached INT_MAX
  */
-int SocketManager::addSocket(int numBox, int to, int from, char* buffer)
+int SocketManager::addSocket(int farAddr, int to, int from, char* buffer)
 {
 	if (nextSocketId < INT_MAX)
 	{
-		Socket *socket = new Socket(nextSocketId, numBox, to, from, buffer);
+		Socket *socket = new Socket(nextSocketId, farAddr, to, from, buffer);
 		nextSocketId++;
 		nbSocket++;
 		socketList.push_back(socket);

@@ -11,13 +11,13 @@
 #include "synch.h"
 
 
-int do_SockInit(int numBox, int newTo, int newFrom, int buffer);
+int do_SockInit(int farAddr, int newTo, int newFrom, int buffer);
 
 class Socket {
 
 public :
 	// Constructeur
-	Socket (int id, int numBox, int newTo, int newFrom, char* newBuffer);
+	Socket (int id, int farAddr, int newTo, int newFrom, char* newBuffer);
 	~Socket();
 	// Demande l'envoi d'un message
 	int do_SendSocket(char* message);
@@ -38,7 +38,7 @@ private:
 	int id;
 	int to;
 	int from;
-	int numBox;
+	int farAddr;
 	bool isUsed;
 	char *name;
 
