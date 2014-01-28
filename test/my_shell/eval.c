@@ -89,7 +89,6 @@ int commandIntegre(char **argv){
 	}
 	/* utile pour lorsqu'il y aura le fileSys*/
 	if(StrCmp(argv[0],"ls") == 1){//on affiche ce qui ce trouve dans le répétoire courant
-		PutString("Non implémenté :D\n");
 		ls();
 		return 0;
 	}
@@ -100,12 +99,10 @@ int commandIntegre(char **argv){
 		return 0;
 	}
 	if(StrCmp(argv[0],"cp") == 1){//copie un fichier unix vers un fichier nachOS
-		PutString("Non implémenté :D\n");
-		//do_copie(argv[1],arg[2]);
+		copy(argv[1],argv[2]);
 		return 0;
 	}
 	if(StrCmp(argv[0],"rm") == 1){//supprime un fichier nachOS
-		PutString("Non implémenté :D\n");
 		retour = rm(argv[1]);
 		if (!retour)
 			PutString("Echec de suppression\n");

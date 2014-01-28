@@ -61,6 +61,7 @@
 #define SC_Rmdir 38
 #define SC_PathExists 39
 #define SC_Rm 40
+#define SC_Copy 43
 
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
@@ -332,6 +333,10 @@ int rm(char* path);
  */
 int create(const char *path, int initialSize);
 
+/*
+ * Copie le fichier UNIX from dans NachOS avec le nom to
+ */
+void copy(const char *from, const char *to);
 
 #endif // CHANGED
 

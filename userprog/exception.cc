@@ -40,6 +40,7 @@
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
 extern void do_UserThreadExit(int status);
+void Copy(const char *from, const char *to);
 //extern bool isInStack(int addr);
 #endif
 
@@ -396,7 +397,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Ls:
-				List();
+				fileSystem->List();
 				break;
 
 			case SC_Rmdir:
@@ -464,6 +465,17 @@ ExceptionHandler (ExceptionType which)
 				}
 				break;
 
+			case SC_Copy:
+				char buffer2[MAX_STRING_SIZE];
+				adr = machine->ReadRegister(4);
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					adr = machine->ReadRegister(5);
+					if (copyStringFromMachine(adr, buffer2, MAX_STRING_SIZE-1))
+						Copy(buffer, buffer2);
+				}
+				break;
+
 
 #endif //FILESYS
 
@@ -502,7 +514,7 @@ ExceptionHandler (ExceptionType which)
 				interrupt->SetLevel (IntOff);
 				// address of the user's stack pointer
 				adr = machine->ReadRegister(StackReg);
-				// if is in stack => Stzck overflow
+				// if is in stack => Stack overflow
 				if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
 				{
 					Printf("STACK OVERFLOW !!\n");

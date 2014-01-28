@@ -381,6 +381,13 @@ rm:
 	j	$31
 	.end rm
 
+	.globl copy
+	.ent	copy
+copy:
+	addiu $2,$0,SC_Copy
+	syscall
+	j	$31
+	.end copy
 
 
 #endif /*CHANGED*/
