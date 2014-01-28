@@ -329,11 +329,19 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Read:
-				printf("TODO : Read\n");
+				adr = machine->ReadRegister(4);
+				maxSize = machine->ReadRegister(5);
+				n = machine->ReadRegister(6);
+				n = do_Read(adr, maxSize, n);
+				machine->WriteRegister(2, n);
 				break;
 
 			case SC_Write:
-				printf("TODO : Write\n");
+				adr = machine->ReadRegister(4);
+				maxSize = machine->ReadRegister(5);
+				n = machine->ReadRegister(6);
+				n = do_Write(adr, maxSize, n);
+				machine->WriteRegister(2, n);
 				break;
 
 			case SC_Close:
@@ -501,22 +509,23 @@ ExceptionHandler (ExceptionType which)
 				}
 				else
 				{
-					Printf("PageFaultException ");
+					Printf("PageFaultException\n");
+					ASSERT(false);
 				}
 				break;
 #else
 			Printf ("Unexpected user mode exception (%d:", which);
-			case PageFaultException:	Printf("PageFaultException ");		break;
+			case PageFaultException:	Printf("PageFaultException\n");		break;
 			ASSERT(FALSE);
 #endif // step4
 
 			Printf ("Unexpected user mode exception (%d:", which);
-			case SyscallException: 		Printf("SyscallException "); 		break;
-			case ReadOnlyException: 	Printf("ReadOnlyException "); 		break;
-			case BusErrorException: 	Printf("BusErrorException "); 		break;
-			case AddressErrorException: Printf("AddressErrorException "); 	break;
-			case OverflowException: 	Printf("OverflowException "); 		break;
-			case IllegalInstrException: Printf("IllegalInstrException "); 	break;
+			case SyscallException: 		Printf("SyscallException \n"); 		break;
+			case ReadOnlyException: 	Printf("ReadOnlyException \n"); 		break;
+			case BusErrorException: 	Printf("BusErrorException \n"); 		break;
+			case AddressErrorException: Printf("AddressErrorException \n"); 	break;
+			case OverflowException: 	Printf("OverflowException \n"); 		break;
+			case IllegalInstrException: Printf("IllegalInstrException \n"); 	break;
 			default: 					Printf("Unknown "); 				break;
 		}
 #endif //CHANGED

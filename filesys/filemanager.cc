@@ -70,7 +70,10 @@ int do_Close (OpenFileId id) {
 
 		fm->decreaseNbOpen ();
 		if (fm->getNbOpen () == 0)
+		{
 			delete fm;
+			fm = NULL;
+		}
 	}
 
 	return res;
@@ -89,7 +92,7 @@ int do_Write (int buffer, int size, OpenFileId id)
 	}
 	while(i < size && noError)
 	{
-		noError = machine->ReadMem(buffer, sizeof(char), &tmp);
+		noError = machine->ReadMem(buffer+(i*sizeof(char)), sizeof(char), &tmp);
 		if(noError)
 		{
 			c = (char)tmp;
@@ -103,7 +106,29 @@ int do_Write (int buffer, int size, OpenFileId id)
 
 int do_Read (int buffer, int size, OpenFileId id)
 {
-	return 0;
+	int i = 0;
+	unsigned int tmp;
+	char c;
+	bool noError = true;
+	OpenFile* openfile = fm->getFile(id);
+	if(openfile == NULL)
+	{
+		return -1;
+	}
+	while(i < size && noError)
+	{
+		noError = (openfile->Read(&c, sizeof(char)) == sizeof(char));
+		if(noError)
+		{
+			tmp = (unsigned int)c;
+			noError = machine->WriteMem(buffer+(i*sizeof(char)), sizeof(char), tmp);
+			if(noError)
+			{
+					i++;
+			}
+		}
+	}
+	return i;
 }
 
 FileManager::FileManager() {
