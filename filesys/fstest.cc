@@ -37,8 +37,13 @@ Copy(const char *from, const char *to)
 {
     FILE *fp;
     OpenFile* openFile;
+
     int amountRead, fileLength;
     char *buffer;
+#ifdef CHANGED
+    char* buffer2;
+    int position = 0;
+#endif
 
 // Open UNIX file
     if ((fp = fopen(from, "r")) == NULL) {	 
@@ -64,8 +69,28 @@ Copy(const char *from, const char *to)
     
 // Copy the data in TransferSize chunks
     buffer = new char[TransferSize];
+#ifdef CHANGED
+    buffer2 = new char[TransferSize];
+#endif
     while ((amountRead = fread(buffer, sizeof(char), TransferSize, fp)) > 0)
-	openFile->Write(buffer, amountRead);	
+    {
+    	openFile->Write(buffer, amountRead);
+#ifdef CHANGED
+    	openFile->ReadAt(buffer2, amountRead, position);
+    	position += amountRead;
+    	for(int i = 0 ; i < amountRead ; i++)
+    	{
+    		if(buffer[i] != buffer2[i])
+    		{
+    			printf("erreur de copie a l'octet %i\n", i);
+    		}
+    	}
+#endif
+    }
+
+#ifdef CHANGED
+    delete [] buffer2;
+#endif
     delete [] buffer;
 
 // Close the UNIX and the Nachos files

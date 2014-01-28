@@ -1,4 +1,6 @@
 //#ifdef step5
+#ifndef ___FILEMANAGER
+#define ___FILEMANAGER
 
 #include "openfile.h"
 #include "filesys.h"
@@ -36,4 +38,4 @@ public :
 	OpenFile* getFile(OpenFileId id);
 };
 
-//#endif
+#endif
