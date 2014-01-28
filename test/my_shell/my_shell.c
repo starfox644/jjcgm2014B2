@@ -14,7 +14,7 @@ int main (){
     		j = 0;
     	}
     	i = 0;
-    	PutString("<Nachos_Shell>");	//affichage du prompt
+    	PutString("<Nachos_Shell> ");	//affichage du prompt
     	k = j;
     	do{// tant que l'on appuie pas sur entrée on lis les caractères entrés dans la console.
     		buffer[i] = (char) GetChar();	//on ajoute les caractères lu au buffer

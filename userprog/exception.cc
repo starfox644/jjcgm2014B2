@@ -43,6 +43,7 @@ extern FileManager* fm;
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
 extern void do_UserThreadExit(int status);
+void Copy(const char *from, const char *to);
 //extern bool isInStack(int addr);
 #endif
 
@@ -361,12 +362,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->cd(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -374,11 +378,14 @@ ExceptionHandler (ExceptionType which)
 				strcpy(buffer, fileSystem->pwd());
 				if (copyStringToMachine(buffer, n))
 				{
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					machine->WriteRegister(2, 0);
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -389,17 +396,20 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->CreateDir(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
 			case SC_Ls:
-				List();
+				fileSystem->List();
 				break;
 
 			case SC_Rmdir:
@@ -409,12 +419,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->RemoveDirEmpty(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -425,12 +438,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->pathExist(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 1);
+					else
+						machine->WriteRegister(2, 0);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -441,12 +457,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->RemoveFile(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// remove error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -458,12 +477,26 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->Create(buffer, n);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// creation error, writes -1 in return register
+					machine->WriteRegister(2, -1);
+				}
+				break;
+
+			case SC_Copy:
+				char buffer2[MAX_STRING_SIZE];
+				adr = machine->ReadRegister(4);
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					adr = machine->ReadRegister(5);
+					if (copyStringFromMachine(adr, buffer2, MAX_STRING_SIZE-1))
+						Copy(buffer, buffer2);
 				}
 				break;
 
@@ -523,7 +556,7 @@ ExceptionHandler (ExceptionType which)
 				interrupt->SetLevel (IntOff);
 				// address of the user's stack pointer
 				adr = machine->ReadRegister(StackReg);
-				// if is in stack => Stzck overflow
+				// if is in stack => Stack overflow
 				if (currentProcess->getAddrSpace()->addrSpaceAllocator->isInStack(adr))
 				{
 					Printf("STACK OVERFLOW !!\n");
