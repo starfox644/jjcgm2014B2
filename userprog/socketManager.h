@@ -26,7 +26,7 @@ public :
 	/**
 	 * Add newSem to semList and allocate it a unique modifier
 	 */
-	int addSocket(int farAddr, int to, int from, char* buffer);
+	int addSocket(int farAddr);
 
 	/**
 	 * Remove a semaphore from the list based on his identifier.

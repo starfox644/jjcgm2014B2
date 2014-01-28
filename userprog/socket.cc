@@ -1,6 +1,6 @@
 #ifdef NETWORK
 /*
- * socket.cc
+ * socket.cc : Reprise des fonctions de nettest
  *
  *  Created on: 24 janv. 2014
  *      Author: Sarkal
@@ -14,18 +14,16 @@
  * Initialise la socket et renvoie l'id attribuee.
  * Renvoie -1 si erreur.
  */
-int do_SockInit(int farAddr, int to, int from, int adrBuffer)
+int do_SockInit(int farAddr)
 {
-	int id = currentProcess->socketManager->addSocket(farAddr, to, from, (char *) adrBuffer);
+	int id = currentProcess->socketManager->addSocket(farAddr);
 	return id;
 }
 
-Socket::Socket(int newId, int newfarAddr, int newTo, int newFrom, char* newBuffer)
+Socket::Socket(int newId, int newfarAddr)
 {
 	id = newId;
 	farAddr = newfarAddr;
-	to = newTo;
-	from = newFrom;
 	buffer = new char[256];
 }
 
@@ -49,9 +47,9 @@ int Socket::do_SendSocket(char *message)
 	// To: destination machine, mailbox 0
 	// From: our machine, reply to: mailbox 1
 	outPktHdr.to = farAddr;
-//	outPktHdr.from = 1;
-	outMailHdr.to = to;
-	outMailHdr.from = from;
+	outPktHdr.from = postOffice->getNetAddr();
+	outMailHdr.to = 0;
+	outMailHdr.from = 1;
 	outMailHdr.length = strlen(message) + 1;
 	// Send the first message
 	postOffice->Send(outPktHdr, outMailHdr, message);

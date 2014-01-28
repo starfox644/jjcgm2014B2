@@ -358,13 +358,12 @@ PostOffice::PacketSent()
 }
 
 #ifdef CHANGED
+/**
+ * Renvoie l'adresse de la machine
+ */
 NetworkAddress PostOffice::getNetAddr()
 {
 	return netAddr;
-}
-void PostOffice::setNetAddr(NetworkAddress addr)
-{
-	netAddr = addr;
 }
 #endif // CHANGED
 

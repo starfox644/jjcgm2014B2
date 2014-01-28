@@ -29,7 +29,7 @@ int main(){
 	Scanf("%d",&to);
 	Sleep(5);
 	//connexion de notre machine
-	Socket = creerSocket(to, to ,from,message);
+	Socket = creerSocket(to);
 	//si on est la première machine on envoi le message
 	message = "Hello"; //on donne le numero de la machine de départ
 
@@ -50,7 +50,7 @@ int main(){
 
 
 	//on a fini on se déconnecte
-	fermerSocket(Socket);
+//	fermerSocket(Socket);
 	free(reception);
 	free(message);
 	Printf("Fin du main\n");

@@ -82,15 +82,15 @@ my_notepad/my_notepad_EXTRA_SOURCES = my_notepad/my_notepad.c
 # nachos-"flavor" in the 'build/' directory
 
 # By default, the same flavors as the original ones are compiled
-USER_FLAVORS= mynetwork 
+USER_FLAVORS=step2 step3 step4 mynetwork
 
 # Once some personnal flavor are defined, this list can be limited
 # to the personal flavors
 #USER_FLAVORS=step2 step5 mynetwork final step2 step3 step4 countNew myfilesys
 
-#$(eval $(call define-flavor,step2,userprog filesys-stub,exit.cc synchconsole.cc process.cc threadManager.cc semaphoreManager.cc))
-#$(eval $(call define-flavor,step3,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc process.cc threadManager.cc semaphoreManager.cc,-Dstep3))
-#$(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc threadManager.cc semaphoreManager.cc arguments.cc,-Dstep4 -Dstep3))
+$(eval $(call define-flavor,step2,userprog filesys-stub,exit.cc synchconsole.cc process.cc threadManager.cc semaphoreManager.cc))
+$(eval $(call define-flavor,step3,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc process.cc threadManager.cc semaphoreManager.cc,-Dstep3))
+$(eval $(call define-flavor,step4,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc threadManager.cc semaphoreManager.cc arguments.cc,-Dstep4 -Dstep3))
 #$(eval $(call define-flavor,countNew,userprog filesys-stub step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc,-Dstep4 -Dstep3 -DcountNew))   
 $(eval $(call define-flavor,mynetwork,userprog filesys-stub step3 step4,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc nettest.cc post.cc network.cc socket.cc socketManager.cc testCond.cc lecteur_redacteur.cc ,-Dstep4 -Dstep3 -DNETWORK -DCHANGED))
 #$(eval $(call define-flavor,myfilesys,userprog filesys step3,exit.cc synchconsole.cc userthread.cc semaphore.cc processManager.cc frameProvider.cc process.cc addrSpaceAllocator.cc countNew.cc threadManager.cc semaphoreManager.cc arguments.cc, -Dstep4 -Dstep3 -DFILESYS))

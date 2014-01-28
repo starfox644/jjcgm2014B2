@@ -59,8 +59,7 @@
 #define SC_Receive 36
 #define SC_CloseSocket 37
 #define SC_Sleep 38
-#define SC_SetHostname 39
-#define SC_GetHostname 40
+#define SC_GetHostname 39
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -275,37 +274,40 @@ int GetNbProcessTotal();
  * renvoi la liste des processus créé
  */
 int* GetListProcess(int*);
+
 /*
  * reseau
  */
-sock_t InitSocket(int,int,int,char*);
+sock_t InitSocket(int);
+
 /*
  * permet de fermer la socket
  * retourne -1 si cela echoue
  */
 int CloseSocket(sock_t);
+
 /*
  * permet d'envoyer un message
  * retourne -1 si cela echoue
  */
 int Send(sock_t,char*);
+
 /*
  * permet de recevoir un message
  * retourne -1 si cela echoue
  */
 int Receive(sock_t,char*);
+
 /*
  * Fonction qui permet de faire une pause du temps voulu
  */
 void Sleep(int);
-/*
- * fonction permettant de renseigner le nom de la machine
- */
-void SetHostname(int);
+
 /*
  * fonction permettant de recuperer le nom de la machine
  */
 int GetHostname();
+
 #endif // CHANGED
 
 #endif // IN_USER_MODE

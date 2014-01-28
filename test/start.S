@@ -362,14 +362,6 @@ Sleep:
 	j	$31
 	.end Sleep
 /* ********************************* */
-.globl SetHostname
-	.ent	SetHostname
-SetHostname:
-	addiu $2,$0,SC_SetHostname
-	syscall
-	j	$31
-	.end SetHostname
-/* ********************************* */
 .globl GetHostname
 	.ent	GetHostname
 GetHostname:
