@@ -47,7 +47,7 @@ FileHeader::Allocate(BitMap *freeMap, int fileSize)
 	int tmp;
 	unsigned int numSectorsData = divRoundUp(fileSize, SectorSize);
 	numSectors = divRoundUp(numSectorsData, NumDirect);
-	if (freeMap->NumClear() < (numSectorsData + numSectors))
+	if (freeMap->NumClear() < (int)(numSectorsData + numSectors))
 	{
 		return FALSE;		// not enough space
 	}

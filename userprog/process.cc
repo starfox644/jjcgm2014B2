@@ -303,6 +303,7 @@ void Process::killProcess()
 	}
 	freeAddrSpace();
 	threadToBeDestroyed = currentThread;
+	Printf("Process %i terminated after error\n", currentProcess->getPid());
 	if(scheduler->isReadyListEmpty())
 	{
 		interrupt->Halt();
