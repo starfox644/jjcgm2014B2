@@ -222,6 +222,11 @@ Process::Process()
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
 	semProc = new Semaphore("semaphore processus", 0);
+	nbOpenFiles = 0;
+	for(int i = 0 ; i < NB_FILES_PROCESS ; i++)
+	{
+		openFiles[i] = -1;
+	}
 }
 
 Process::~Process() {
@@ -325,6 +330,68 @@ bool Process::getEstAttendu()
 void Process::setEstAttendu(bool b)
 {
 	estAttendu = b;
+}
+
+/**
+ * 	Renvoie true si le processus peut ajouter un nouveau fichier ouvert a sa table.
+ */
+bool Process::canAddFile()
+{
+	return (nbOpenFiles < NB_FILES_PROCESS);
+}
+
+/**
+ *	Ajoute un fichier ouvert au processus lorsqu'il appelle open.
+ *	Leve une assertion si le processus n'a plus de place disponible pour un nouveau fichier.
+ *	Renvoie l'id du fichier cree relatif au processus
+ */
+int Process::addOpenFile(int id)
+{
+	// erreur si plus de place
+	ASSERT(nbOpenFiles < NB_FILES_PROCESS);
+	// recherche d'un emplacement de fichier
+	int i = 0;
+	while(i < NB_FILES_PROCESS && openFiles[i] == -1)
+	{
+		i++;
+	}
+	openFiles[i] = id;
+	nbOpenFiles++;
+	return nbOpenFiles-1;
+}
+
+/**
+ * 	Retire le fichier ouvert id de la table du processus.
+ *	Renvoie false si l'id est invalide ou non associe a un fichier
+ *	ou true si la suppression est reussie
+ */
+bool Process::removeOpenFile(int id)
+{
+	if(id < 0 || id >= NB_FILES_PROCESS || openFiles[id] == -1)
+	{
+		return false;
+	}
+	else
+	{
+		openFiles[id] = -1;
+		nbOpenFiles--;
+		return true;
+	}
+}
+
+/**
+ * 	Renvoie l'id de fichier du noyau a partir de l'id du processus.
+ */
+int Process::getOpenFileId(int processFileId)
+{
+	if(processFileId < 0 || processFileId >= NB_FILES_PROCESS || openFiles[processFileId] == -1)
+	{
+		return -1;
+	}
+	else
+	{
+		return openFiles[processFileId];
+	}
 }
 
 #endif // CHANGED

@@ -7,6 +7,9 @@ class Thread;
 class OpenFile;
 class SemaphoreManager;
 class ThreadManager;
+#include "filemanager.h"
+
+#define NB_FILES_PROCESS 10
 
 /**
  * Realise l'appel systeme fork exec.
@@ -51,9 +54,13 @@ class Process
 	    int pid;
 	    // true si un processus quelconque attend ce processus, false sinon
 		bool estAttendu;
+		// nombre de fichiers ouverts par le processus
+		int nbOpenFiles;
+		// id noyaux de fichiers ouverts par le processus
+		// l'indice de tableau correspond a l'id relatif au process
+		OpenFileId openFiles[NB_FILES_PROCESS];
 
 	public:
-
 	    /**
 	     * 	Cree un processus vide.
 	     * 	Pour le chargement d'un programme, allocateAddrSpace doit etre appele.
@@ -92,9 +99,31 @@ class Process
 	    bool threadWaiting;
 
 	    /**
-	     * Demande aux threads du processus de se terminer
+	     * 	Demande aux threads du processus de se terminer
 	     */
 	    void killProcess();
+
+	    /**
+	     * 	Renvoie true si le processus peut ajouter un nouveau fichier ouvert a sa table.
+	     */
+	    bool canAddFile();
+
+	    /**
+	     *	Ajoute un fichier ouvert au processus lorsqu'il appelle open.
+	     *	Cette fonction ne doit etre appelee que si canAddFile renvoie true.
+	     *	Leve une assertion si le processus n'a plus de place disponible pour un nouveau fichier.
+	     */
+	    int addOpenFile(OpenFileId id);
+
+	    /**
+	     * 	Retire le fichier ouvert id de la table du processus.
+	     */
+	    bool removeOpenFile(int id);
+
+	    /**
+	     * 	Renvoie l'id de fichier du noyau a partir de l'id du processus.
+	     */
+	    OpenFileId getOpenFileId(int processFileId);
 };
 
 #endif // CHANGED
