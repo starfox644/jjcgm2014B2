@@ -41,14 +41,45 @@
 bool
 FileHeader::Allocate(BitMap *freeMap, int fileSize)
 { 
-    numBytes = fileSize;
-    numSectors  = divRoundUp(fileSize, SectorSize);
-    if (freeMap->NumClear() < numSectors)
-	return FALSE;		// not enough space
+	numBytes = fileSize;
+#ifdef CHANGED
+	IndirectTable table;
+	int tmp;
+	unsigned int numSectorsData = divRoundUp(fileSize, SectorSize);
+	numSectors = divRoundUp(numSectorsData, NumDirect);
+	if (freeMap->NumClear() < (numSectorsData + numSectors))
+	{
+		return FALSE;		// not enough space
+	}
 
-    for (int i = 0; i < numSectors; i++)
-	dataSectors[i] = freeMap->Find();
-    return TRUE;
+	for (int i = 0; i < numSectors ; i++)
+	{
+		sectorTable[i] = freeMap->Find();
+		// allocate all sectors of table
+		if(numSectorsData >= NumDirect)
+		{
+			tmp = numSectorsData;
+			table.Allocate(freeMap, NumDirect);
+			numSectorsData = tmp;
+			numSectorsData -= NumDirect;
+		}
+		// allocate remaining sectors
+		else
+		{
+			table.Allocate(freeMap, numSectorsData);
+		}
+		// write back table contents
+		table.WriteBack(sectorTable[i]);
+	}
+	return TRUE;
+#else
+	numSectors  = divRoundUp(fileSize, SectorSize);
+	if (freeMap->NumClear() < numSectors)
+		return FALSE;		// not enough space
+	for (int i = 0; i < numSectors; i++)
+		dataSectors[i] = freeMap->Find();
+	return TRUE;
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -61,10 +92,23 @@ FileHeader::Allocate(BitMap *freeMap, int fileSize)
 void 
 FileHeader::Deallocate(BitMap *freeMap)
 {
-    for (int i = 0; i < numSectors; i++) {
-	ASSERT(freeMap->Test((int) dataSectors[i]));  // ought to be marked!
-	freeMap->Clear((int) dataSectors[i]);
-    }
+#ifdef CHANGED
+	IndirectTable table;
+	for (int i = 0; i < numSectors; i++)
+	{
+		ASSERT(freeMap->Test((int) sectorTable[i]));  // ought to be marked!
+		// read table contents
+		table.FetchFrom(sectorTable[i]);
+		// deallocate indirection table
+		table.Deallocate(freeMap);
+		freeMap->Clear((int) sectorTable[i]);
+	}
+#else
+	for (int i = 0; i < numSectors; i++) {
+		ASSERT(freeMap->Test((int) dataSectors[i]));  // ought to be marked!
+		freeMap->Clear((int) dataSectors[i]);
+	}
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -77,7 +121,7 @@ FileHeader::Deallocate(BitMap *freeMap)
 void
 FileHeader::FetchFrom(int sector)
 {
-    synchDisk->ReadSector(sector, (char *)this);
+	synchDisk->ReadSector(sector, (char *)this);
 }
 
 //----------------------------------------------------------------------
@@ -90,7 +134,7 @@ FileHeader::FetchFrom(int sector)
 void
 FileHeader::WriteBack(int sector)
 {
-    synchDisk->WriteSector(sector, (char *)this); 
+	synchDisk->WriteSector(sector, (char *)this);
 }
 
 //----------------------------------------------------------------------
@@ -106,7 +150,15 @@ FileHeader::WriteBack(int sector)
 int
 FileHeader::ByteToSector(int offset)
 {
-    return(dataSectors[offset / SectorSize]);
+#ifdef CHANGED
+	// numero de secteur d'indirection
+	IndirectTable table;
+	int indirectNum = divRoundDown(offset, NumDirect * SectorSize);
+	table.FetchFrom(sectorTable[indirectNum]);
+	return table.ByteToSector(offset % (NumDirect * SectorSize));
+#else
+	return(dataSectors[offset / SectorSize]);
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -117,7 +169,7 @@ FileHeader::ByteToSector(int offset)
 int
 FileHeader::FileLength()
 {
-    return numBytes;
+	return numBytes;
 }
 
 //----------------------------------------------------------------------
@@ -129,22 +181,64 @@ FileHeader::FileLength()
 void
 FileHeader::Print()
 {
-    int i, j, k;
-    char *data = new char[SectorSize];
+#ifdef CHANGED
+#else
+	int i, j, k;
+	char *data = new char[SectorSize];
 
-    printf("FileHeader contents.  File size: %d.  File blocks:\n", numBytes);
-    for (i = 0; i < numSectors; i++)
-	printf("%d ", dataSectors[i]);
-    printf("\nFile contents:\n");
-    for (i = k = 0; i < numSectors; i++) {
-	synchDisk->ReadSector(dataSectors[i], data);
-        for (j = 0; (j < SectorSize) && (k < numBytes); j++, k++) {
-	    if ('\040' <= data[j] && data[j] <= '\176')   // isprint(data[j])
-		printf("%c", data[j]);
-            else
-		printf("\\%x", (unsigned char)data[j]);
+	printf("FileHeader contents.  File size: %d.  File blocks:\n", numBytes);
+	for (i = 0; i < numSectors; i++)
+		printf("%d ", dataSectors[i]);
+	printf("\nFile contents:\n");
+	for (i = k = 0; i < numSectors; i++) {
+		synchDisk->ReadSector(dataSectors[i], data);
+		for (j = 0; (j < SectorSize) && (k < numBytes); j++, k++) {
+			if ('\040' <= data[j] && data[j] <= '\176')   // isprint(data[j])
+				printf("%c", data[j]);
+			else
+				printf("\\%x", (unsigned char)data[j]);
+		}
+		printf("\n");
 	}
-        printf("\n"); 
-    }
-    delete [] data;
+	delete [] data;
+#endif
 }
+
+#ifdef CHANGED
+void IndirectTable::Allocate(BitMap *bitMap, unsigned int nbSectors)
+{
+	ASSERT(nbSectors <= NumDirect);
+	ASSERT((unsigned int)bitMap->NumClear() >= nbSectors);
+	numSectors = nbSectors;
+	for (int i = 0; i < numSectors ; i++)
+	{
+		dataSectors[i] = bitMap->Find();
+	}
+}
+
+void IndirectTable::Deallocate(BitMap *bitMap)
+{
+	for (int i = 0; i < numSectors; i++) {
+		ASSERT(bitMap->Test((int) dataSectors[i]));  // ought to be marked!
+		bitMap->Clear((int) dataSectors[i]);
+	}
+}
+
+// Initialize table from disk
+void IndirectTable::FetchFrom(int sectorNumber)
+{
+	synchDisk->ReadSector(sectorNumber, (char *)this);
+}
+
+// Write modifications to table back to disk
+void IndirectTable::WriteBack(int sectorNumber)
+{
+	synchDisk->WriteSector(sectorNumber, (char *)this);
+}
+
+int
+IndirectTable::ByteToSector(int offset)
+{
+	return(dataSectors[offset / SectorSize]);
+}
+#endif

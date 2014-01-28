@@ -17,8 +17,17 @@
 #include "disk.h"
 #include "bitmap.h"
 
+
+#ifdef CHANGED
+// deux entiers pour la taille et le nombre de secteurs
+#define NumIndirect	((SectorSize - 2 * sizeof(int)) / sizeof(int))
+// un entier pour le nombre de secteurs
+#define NumDirect 	((SectorSize - sizeof(int)) / sizeof(int))
+#define MaxFileSize 	(NumDirect * NumIndirect * SectorSize)
+#else
 #define NumDirect 	((SectorSize - 2 * sizeof(int)) / sizeof(int))
 #define MaxFileSize 	(NumDirect * SectorSize)
+#endif
 
 // The following class defines the Nachos "file header" (in UNIX terms,  
 // the "i-node"), describing where on disk to find all of the data in the file.
@@ -58,9 +67,31 @@ class FileHeader {
 
   private:
     int numBytes;			// Number of bytes in the file
-    int numSectors;			// Number of data sectors in the file
+    int numSectors;			// Number of sectors in the file
+#ifdef CHANGED
+    int sectorTable[NumIndirect];
+#else
     int dataSectors[NumDirect];		// Disk sector numbers for each data 
 					// block in the file
+#endif
 };
+
+#ifdef CHANGED
+class IndirectTable
+{
+
+public:
+	void Allocate(BitMap *bitMap, unsigned int nbSectors);
+	void Deallocate(BitMap *bitMap);
+    void FetchFrom(int sectorNumber); 	// Initialize table from disk
+    void WriteBack(int sectorNumber); 	// Write modifications to table back to disk
+    int ByteToSector(int offset);
+
+private:
+    int numSectors;			// Number of sectors in the file
+    int dataSectors[NumIndirect];		// Disk sector numbers for each data
+					// block in the file
+};
+#endif // CHANGED
 
 #endif // FILEHDR_H

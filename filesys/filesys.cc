@@ -1026,8 +1026,10 @@ FileSystem::Remove(const char *path)
 	directory = new Directory(NumDirEntries);
 	if(subpath == NULL)
 	{
+		// suppression du repertoire courant
 		if(!strcmp(name, "."))
 		{
+			// recuperation du secteur du repertoire
 			directory->FetchFrom(currentDirFile);
 			sector = directory->getSelfDir().sector;
 			if(sector == -1)
@@ -1035,6 +1037,7 @@ FileSystem::Remove(const char *path)
 				delete directory;
 				return false;
 			}
+			// recuperation du numero de secteur du repertoire parent
 			parentSector = directory->getParentDir().sector;
 			if(parentSector != -1)
 			{
@@ -1053,6 +1056,7 @@ FileSystem::Remove(const char *path)
 	}
 	else
 	{
+		// cas general : recuperation du numero de secteur a partir du path
 		sector = getSector(subpath);
 		if(sector == -1)
 		{
@@ -1061,6 +1065,7 @@ FileSystem::Remove(const char *path)
 			return false;
 		}
 		dirFile = new OpenFile(sector);
+		// on indique que le secteur n'est pas initialise
 		sector = -1;
 		delete subpath;
 	}
@@ -1075,17 +1080,19 @@ FileSystem::Remove(const char *path)
 	directory->FetchFrom(directoryFile);
 #endif
 #ifdef CHANGED
-
+	// numero de secteur non initialise : il faut le trouver dans le repertoire
 	if(sector == -1)
 	{
 		sector = directory->Find(name);
 	}
 	else
 	{
+		// cas particulier ou on a le secteur et il faut retrouver le nom
 		delete name;
 		name = new char[strlen(path)];
 		strcpy(name, directory->findName(sector));
 	}
+	// secteur invalide ou racine (on ne peut pas la supprimer)
 	if (sector == -1 || sector == DirectorySector) {
 		delete directory;
 		return FALSE;			 // file not found

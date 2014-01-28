@@ -133,9 +133,16 @@ OpenFile::ReadAt(char *into, int numBytes, int position)
 
     // read in all the full and partial sectors that we need
     buf = new char[numSectors * SectorSize];
+   /* printf("nombre a lire : %i\n", numBytes);
+    printf("position : %i\n", position);
+    printf("first sector : %i\n", firstSector);
+    printf("last sector : %i\n", lastSector);*/
     for (i = firstSector; i <= lastSector; i++)	
-        synchDisk->ReadSector(hdr->ByteToSector(i * SectorSize), 
-					&buf[(i - firstSector) * SectorSize]);
+    {
+    	//printf("sector fichier : %i disque : %i\n", i, hdr->ByteToSector(i * SectorSize));
+        synchDisk->ReadSector(hdr->ByteToSector(i * SectorSize), &buf[(i - firstSector) * SectorSize]);
+        //printf("lu : %c\n", buf[(i - firstSector) * SectorSize]);
+    }
 
     // copy the part we want
     bcopy(&buf[position - (firstSector * SectorSize)], into, numBytes);
