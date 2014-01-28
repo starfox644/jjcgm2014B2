@@ -34,9 +34,12 @@
 #include "addrSpaceAllocator.h"
 #include "arguments.h"
 #include "synchconsole.h"
+
+#ifdef FILESYS
 #include "filemanager.h"
 #include "filesys.h"
-
+extern FileManager* fm;
+#endif
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
 extern void do_UserThreadExit(int status);
@@ -347,7 +350,7 @@ ExceptionHandler (ExceptionType which)
 
 			case SC_Close:
 				n = machine->ReadRegister(4);
-				n = do_Close (n);
+				n = do_Close(n);
 				machine->WriteRegister(2, n);
 				break;
 
@@ -501,6 +504,24 @@ ExceptionHandler (ExceptionType which)
 				}
 				break;
 
+			case SC_Random:
+				n = machine->ReadRegister(4);
+				RandomInit(time(NULL));
+				n = Random() % n;
+				// writes the number in return register
+				machine->WriteRegister(2, n);
+				break;
+
+			case SC_Seek:
+				n = machine->ReadRegister(4);
+				adr = machine->ReadRegister(5);
+				OpenFile *openfile;
+				if (fm != NULL)
+				{
+					openfile = fm->getFile(adr);
+					openfile->Seek(n);
+				}
+				break;
 
 #endif //FILESYS
 

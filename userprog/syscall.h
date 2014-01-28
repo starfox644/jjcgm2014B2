@@ -61,6 +61,8 @@
 #define SC_Rmdir 38
 #define SC_PathExists 39
 #define SC_Rm 40
+#define SC_Random 41
+#define SC_Seek 42
 #define SC_Copy 43
 
 #define MAX_STRING_SIZE 1024
@@ -334,6 +336,16 @@ int rm(char* path);
  * Renvoie 0 en cas de succes, -1 sinon
  */
 int Create(const char *path, int initialSize);
+
+/*
+ *	Renvoie un entier tire aleatoirement
+ */
+int Random(int nbMax);
+
+/*
+ *	Modification de la position d'ou commencer a lire ou ecrire
+ */
+int Seek(int position, int idFile);
 
 /*
  * Copie le fichier UNIX from dans NachOS avec le nom to
