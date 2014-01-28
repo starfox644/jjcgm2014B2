@@ -322,6 +322,67 @@ GetNbProcessTotal:
 	j	$31
 	.end GetNbProcessTotal
 
+
+
+
+	.globl cd
+	.ent	cd
+cd:
+	addiu $2,$0,SC_Cd
+	syscall
+	j	$31
+	.end cd
+
+	.globl pwd
+	.ent	pwd
+pwd:
+	addiu $2,$0,SC_Pwd
+	syscall
+	j	$31
+	.end pwd
+
+	.globl mkdir
+	.ent	mkdir
+mkdir:
+	addiu $2,$0,SC_Mkdir
+	syscall
+	j	$31
+	.end mkdir
+
+	.globl ls
+	.ent	ls
+ls:
+	addiu $2,$0,SC_Ls
+	syscall
+	j	$31
+	.end ls
+
+	.globl rmdir
+	.ent	rmdir
+rmdir:
+	addiu $2,$0,SC_Rmdir
+	syscall
+	j	$31
+	.end rmdir
+
+	.globl pathExists
+	.ent	pathExists
+pathExists:
+	addiu $2,$0,SC_PathExists
+	syscall
+	j	$31
+	.end pathExists
+
+	.globl rm
+	.ent	rm
+rm:
+	addiu $2,$0,SC_Rm
+	syscall
+	j	$31
+	.end rm
+
+
+
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */
