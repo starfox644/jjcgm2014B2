@@ -10,7 +10,7 @@ typedef int OpenFileId;
 
 OpenFileId do_Open (char *name);
 
-void do_Write (char *buffer, int size, OpenFileId id);
+int do_Write (char *buffer, int size, OpenFileId id);
 
 int do_Read (char *buffer, int size, OpenFileId id);
 

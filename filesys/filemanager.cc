@@ -1,7 +1,7 @@
 //#ifdef step5
 
 #include "filemanager.h"
-
+#include "system.h"
 
 FileManager* fm = NULL;
 
@@ -21,6 +21,16 @@ OpenFileId do_Open (char *name) {
 	if (fm->getNbOpen () == MAX_FILES_OPEN)
 		return -1;
 
+	if(!fileSystem->pathExist(name))
+	{
+		if(!fileSystem->Create(name, SectorSize))
+		{
+			// if we just created the FileManager, we delete it to avoid memory leak
+			if (fm->getNbOpen() == 0)
+				delete fm;
+			return -1;
+		}
+	}
 	// we open the file
 	file = fileSystem->Open(name);
 	if (file == NULL) {
@@ -65,25 +75,36 @@ int do_Close (OpenFileId id) {
 
 	return res;
 }
-/*
-Function to use
 
-OpenFile *
-FileSystem::Open(const char *name)
-*/
-
-
-/*
-void do_Write (char *buffer, int size, OpenFileId id) {
-
+int do_Write (int buffer, int size, OpenFileId id)
+{
+	int i = 0;
+	int tmp;
+	char c;
+	bool noError = true;
+	OpenFile* openfile = fm->getFile(id);
+	if(openfile == NULL)
+	{
+		return -1;
+	}
+	while(i < size && noError)
+	{
+		noError = machine->ReadMem(buffer, sizeof(char), &tmp);
+		if(noError)
+		{
+			c = (char)tmp;
+			noError = (openfile->Write(&c, sizeof(char)) == sizeof(char));
+			if(noError)
+				i++;
+		}
+	}
+	return i;
 }
 
-int do_Read (char *buffer, int size, OpenFileId id) {
-
+int do_Read (int buffer, int size, OpenFileId id)
+{
+	return 0;
 }
-*/
-
-
 
 FileManager::FileManager() {
 	int i;
@@ -138,8 +159,15 @@ int FileManager::getNbOpen() {
 	return nbOpen;
 }
 
-OpenFile* FileManager::getFile(OpenFileId id) {
-	return table[id];
+OpenFile* FileManager::getFile(OpenFileId id)
+{
+	if(id < 0 || id >= MAX_FILES_OPEN)
+	{
+		DEBUG('f', "Invalid open file id, out of bounds\n");
+		return NULL;
+	}
+	else
+		return table[id];
 }
 
 //#endif

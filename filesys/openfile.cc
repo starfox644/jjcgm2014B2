@@ -203,7 +203,9 @@ OpenFile::Length()
     return hdr->FileLength(); 
 }
 
+#ifdef CHANGED
 int OpenFile::getSector()
 {
 	return sector;
 }
+#endif

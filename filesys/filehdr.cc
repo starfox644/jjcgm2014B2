@@ -52,7 +52,7 @@ FileHeader::Allocate(BitMap *freeMap, int fileSize)
 		return FALSE;		// not enough space
 	}
 
-	for (int i = 0; i < numSectors ; i++)
+	for (unsigned int i = 0; i < numSectors ; i++)
 	{
 		sectorTable[i] = freeMap->Find();
 		// allocate all sectors of table
@@ -94,7 +94,7 @@ FileHeader::Deallocate(BitMap *freeMap)
 {
 #ifdef CHANGED
 	IndirectTable table;
-	for (int i = 0; i < numSectors; i++)
+	for (unsigned int i = 0; i < numSectors; i++)
 	{
 		ASSERT(freeMap->Test((int) sectorTable[i]));  // ought to be marked!
 		// read table contents

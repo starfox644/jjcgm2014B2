@@ -67,10 +67,11 @@ class FileHeader {
 
   private:
     int numBytes;			// Number of bytes in the file
-    int numSectors;			// Number of sectors in the file
 #ifdef CHANGED
+    unsigned int numSectors;			// Number of sectors in the file
     int sectorTable[NumIndirect];
 #else
+    int numSectors;			// Number of sectors in the file
     int dataSectors[NumDirect];		// Disk sector numbers for each data 
 					// block in the file
 #endif

@@ -310,7 +310,7 @@ ExceptionHandler (ExceptionType which)
 
 #endif // STEP4
 
-#ifdef step5
+#ifdef FILESYS
 			case SC_Open:
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
@@ -337,9 +337,10 @@ ExceptionHandler (ExceptionType which)
 
 			case SC_Close:
 				n = machine->ReadRegister(4);
-				do_Close (n);
+				n = do_Close (n);
+				machine->WriteRegister(2, n);
 				break;
-#endif //step5
+#endif //FILESYS
 
 			case SC_Exit:
 				// read return code in r4 register
