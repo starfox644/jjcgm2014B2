@@ -104,7 +104,7 @@ int commandIntegre(char **argv){
 	}
 	if(StrCmp(argv[0],"rm") == 1){//supprime un fichier nachOS
 		retour = rm(argv[1]);
-		if (!retour)
+		if (retour)
 			PutString("Echec de suppression\n");
 		return 0;
 	}
@@ -124,19 +124,21 @@ int commandIntegre(char **argv){
 	}
 	if(StrCmp(argv[0],"mkdir") == 1){//affiche des pages d'aide
 		retour = mkdir(argv[1]);
-		if (!retour)
+		if (retour)
 			PutString("Echec de creation\n");
 		return 0;
 	}
 	if(StrCmp(argv[0],"rmdir") == 1){//affiche des pages d'aide
 		retour = rmdir(argv[1]);
-		if (!retour)
+		if (retour)
 			PutString("Echec de suppression\n");
 		return 0;
 	}
 	if(StrCmp(argv[0],"exist") == 1){//affiche des pages d'aide
 		retour = pathExists(argv[1]);
-		if (retour)
+		if (retour == -1)
+			PutString("Erreur\n");
+		else if (retour)
 			PutString("Existe\n");
 		else
 			PutString("N'existe pas\n");
@@ -144,7 +146,7 @@ int commandIntegre(char **argv){
 	}
 	if(StrCmp(argv[0],"create") == 1){//affiche des pages d'aide
 		retour = create(argv[1], Atoi(argv[2]));
-		if (!retour)
+		if (retour)
 			PutString("Echec de creation\n");
 		return 0;
 	}

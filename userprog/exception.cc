@@ -359,12 +359,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->cd(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -372,11 +375,14 @@ ExceptionHandler (ExceptionType which)
 				strcpy(buffer, fileSystem->pwd());
 				if (copyStringToMachine(buffer, n))
 				{
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					machine->WriteRegister(2, 0);
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -387,12 +393,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->CreateDir(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -407,12 +416,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->RemoveDirEmpty(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -423,12 +435,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->pathExist(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 1);
+					else
+						machine->WriteRegister(2, 0);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -439,12 +454,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->RemoveFile(buffer);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// remove error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
@@ -456,12 +474,15 @@ ExceptionHandler (ExceptionType which)
 				{
 					n = fileSystem->Create(buffer, n);
 					// writes the number of characters written in return register
-					machine->WriteRegister(2, n);
+					if (n) // if return is true
+						machine->WriteRegister(2, 0);
+					else
+						machine->WriteRegister(2, -1);
 				}
 				else
 				{
-					// copy error, writes 0 in return register
-					machine->WriteRegister(2, 0);
+					// creation error, writes -1 in return register
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
