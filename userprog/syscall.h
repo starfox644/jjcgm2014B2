@@ -296,7 +296,7 @@ int cd(char* path);
 /*
  * renvoie le path du repertoire courant
  */
-const char* pwd();
+char* pwd();
 
 /*
  * Cree un nouveau dossier vide dans le repertoire courant
