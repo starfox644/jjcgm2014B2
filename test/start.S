@@ -322,6 +322,14 @@ GetNbProcessTotal:
 	j	$31
 	.end GetNbProcessTotal
 
+	.globl Random
+	.ent	Random
+Random:
+	addiu $2,$0,SC_Random
+	syscall
+	j	$31
+	.end Random
+
 #endif /*CHANGED*/
 
 /* dummy function to keep gcc happy */
