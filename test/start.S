@@ -88,8 +88,8 @@ Join:
 	j	$31
 	.end Join
 
-	.globl Create
-	.ent	Create
+	.globl create
+	.ent	create
 Create:
 	addiu $2,$0,SC_Create
 	syscall
@@ -381,6 +381,13 @@ rm:
 	j	$31
 	.end rm
 
+	.globl copy
+	.ent	copy
+copy:
+	addiu $2,$0,SC_Copy
+	syscall
+	j	$31
+	.end copy
 
 
 #endif /*CHANGED*/

@@ -164,7 +164,11 @@ main (int argc, char **argv)
 		}
 		else if (!strcmp (*argv, "-sh")){
 			if(argc == 1){
+#ifdef FILESYS
+				char program[20] = "./my_shell";
+#else
 				char program[20] = "./my_shell/my_shell";
+#endif
 				StartProcess(program);
 				return -1;
 			}else{

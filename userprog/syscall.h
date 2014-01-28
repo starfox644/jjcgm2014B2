@@ -61,6 +61,7 @@
 #define SC_Rmdir 38
 #define SC_PathExists 39
 #define SC_Rm 40
+#define SC_Copy 43
 
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
@@ -291,18 +292,18 @@ int* GetListProcess(int*);
 
 /*
  * Permet de changer de repertoire courant
- * Renvoie 1 en cas de succes, 0 sinon
+ * Renvoie 0 en cas de succes, -1 sinon
  */
 int cd(char* path);
 
 /*
  * renvoie le path du repertoire courant
  */
-const char* pwd();
+char* pwd();
 
 /*
  * Cree un nouveau dossier vide dans le repertoire courant
- * Renvoie 1 en cas de succes, 0 sinon
+ * Renvoie 0 en cas de succes, -1 sinon
  */
 int mkdir(const char *path);
 
@@ -313,27 +314,31 @@ void ls();
 
 /*
  * Supprime le dossier vide path
- * Renvoie 1 en cas de succes, 0 sinon
+ * Renvoie 0 en cas de succes, -1 sinon
  */
 int rmdir(char *path);
 
 /*
- * Renvoie 1 si path existe, 0 sinon
+ * Renvoie 1 si path existe, 0 sinon et -1 en cas d'erreur
  */
 int pathExists(const char* path);
 
 /*
  * Supprime le fichier path
- * Renvoie 1 en cas de succes, 0 sinon
+ * Renvoie 0 en cas de succes, -1 sinon
  */
 int rm(char* path);
 
 /*
  * Cree un fichier de taille initialSize et de nom path
- * Renvoie 1 en cas de succes, 0 sinon
+ * Renvoie 0 en cas de succes, -1 sinon
  */
 int Create(const char *path, int initialSize);
 
+/*
+ * Copie le fichier UNIX from dans NachOS avec le nom to
+ */
+void copy(const char *from, const char *to);
 
 #endif // CHANGED
 
