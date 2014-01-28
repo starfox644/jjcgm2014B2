@@ -35,6 +35,7 @@
 #include "arguments.h"
 #include "synchconsole.h"
 #include "filemanager.h"
+#include "filesys.h"
 
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
@@ -340,6 +341,122 @@ ExceptionHandler (ExceptionType which)
 				n = do_Close (n);
 				machine->WriteRegister(2, n);
 				break;
+
+
+			case SC_Cd:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = fileSystem->cd(buffer);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes 0 in return register
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+			case SC_Pwd:
+				strcpy(buffer, fileSystem->pwd());
+				if (copyStringToMachine(buffer, n))
+				{
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+			case SC_Mkdir:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = fileSystem->CreateDir(buffer);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes 0 in return register
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+			case SC_Ls:
+				List();
+				break;
+
+			case SC_Rmdir:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = fileSystem->RemoveDirEmpty(buffer);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes 0 in return register
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+			case SC_PathExists:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = fileSystem->pathExist(buffer);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes 0 in return register
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+			case SC_Rm:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = fileSystem->RemoveFile(buffer);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes 0 in return register
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+			case SC_Create:
+				adr = machine->ReadRegister(4);
+				n = machine->ReadRegister(5);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					n = fileSystem->Create(buffer, n);
+					// writes the number of characters written in return register
+					machine->WriteRegister(2, n);
+				}
+				else
+				{
+					// copy error, writes 0 in return register
+					machine->WriteRegister(2, 0);
+				}
+				break;
+
+
 #endif //FILESYS
 
 			case SC_Exit:
