@@ -1,4 +1,4 @@
-#ifdef step5
+//#ifdef step5
 
 #include "filemanager.h"
 
@@ -45,14 +45,25 @@ OpenFileId do_Open (char *name) {
 	return id;
 }
 
-void do_Close (OpenFileId id) {
-	DEBUG('f', "Closing file %d\n", id);
+int do_Close (OpenFileId id) {
+	int res = 0;
 
-	fm->removeFile(id);
+	// if we try to close a non existent file
+	if (fm == NULL || fm->getFile(id) == NULL) {
+		DEBUG('f', "Error : file does not exists\n", id);
+		res = -1;
+	}
+	else {
+		DEBUG('f', "Closing file %d\n", id);
 
-	fm->decreaseNbOpen ();
-	if (fm->getNbOpen () == 0)
-		delete fm;
+		fm->removeFile(id);
+
+		fm->decreaseNbOpen ();
+		if (fm->getNbOpen () == 0)
+			delete fm;
+	}
+
+	return res;
 }
 /*
 Function to use
@@ -127,5 +138,8 @@ int FileManager::getNbOpen() {
 	return nbOpen;
 }
 
+OpenFile* FileManager::getFile(OpenFileId id) {
+	return table[id];
+}
 
-#endif
+//#endif

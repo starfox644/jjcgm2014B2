@@ -21,6 +21,10 @@
 #include "disk.h"
 #include "stats.h"
 
+#ifdef CHANGED
+#include "filemanager.h"
+#endif
+
 #define TransferSize 	10 	// make it small, just to be difficult
 
 //----------------------------------------------------------------------
@@ -192,6 +196,7 @@ void moveTest()
 {
 	char cmd[20];
 	char path[20];
+	int returnVal, numFic;
 	bool exist;
 	do
 	{
@@ -253,6 +258,23 @@ void moveTest()
 			{
 				printf("impossible de creer le fichier\n");
 			}
+		}
+		else if (!strcmp(cmd, "o"))
+		{
+			scanf ("%s", path);
+			returnVal = do_Open (path);
+			if (returnVal != -1)
+				printf ("fichier ouvert en %d\n", returnVal);
+			else
+				printf ("erreur ouverture\n");
+		}
+		else if (!strcmp(cmd, "c")) {
+			scanf ("%d", &numFic);
+			returnVal = do_Close (numFic);
+			if (returnVal != -1)
+				printf ("fichier %d ferme\n", returnVal);
+			else
+				printf ("erreur fermeture\n");
 		}
 		else if (!strcmp(cmd, "q"))
 			printf("Quit !\n");

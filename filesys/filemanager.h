@@ -1,4 +1,4 @@
-#ifdef step5
+//#ifdef step5
 
 #include "openfile.h"
 #include "filesys.h"
@@ -14,7 +14,7 @@ void do_Write (char *buffer, int size, OpenFileId id);
 
 int do_Read (char *buffer, int size, OpenFileId id);
 
-void do_Close (OpenFileId id);
+int do_Close (OpenFileId id);
 
 
 class FileManager {
@@ -33,6 +33,7 @@ public :
 	void increaseNbOpen();
 	void decreaseNbOpen();
 	int getNbOpen();
+	OpenFile* getFile(OpenFileId id);
 };
 
-#endif
+//#endif
