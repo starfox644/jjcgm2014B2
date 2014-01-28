@@ -57,6 +57,13 @@ int Printf (char* messageVoulu, ...){
 				case 's': // un string
 					value = (char*) variable;
 					break;
+
+				default:
+					PutString("argument %");
+					PutChar(messageVoulu[i]);
+					PutString(" invalide\n");
+					return -1;
+					break;
 				}
 
 				k = 0;
@@ -136,6 +143,9 @@ int Scanf (char* typeVariable, ...) {
 					GetString ((char*) variable, MAX_LENGH);
 					break;
 				default:
+					PutString("argument %");
+					PutChar(typeVariable[i]);
+					PutString(" invalide\n");
 					return -1;
 					break;
 				}
