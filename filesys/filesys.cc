@@ -754,6 +754,10 @@ int FileSystem::isLegalPath(const char* path) {
 		if (c == '/' && prev == '/')
 			legal = 0;
 
+		// Only . and .. are alowed (... is not legal)
+		if (i >= 2 && c == '.' && prev == '.' && path[i-2] == '.')
+			legal = 0;
+
 		// if c is not a alphanum, or . / - _
 		if ((c < 'a' || 'z' < c) && (c < 'A' || 'Z' < c) && (c < '0' || '9' < c)
 				&& c != '/' && c != '.' && c != '-' && c != '_')
