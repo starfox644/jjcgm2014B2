@@ -209,11 +209,15 @@ void IndirectTable::Allocate(BitMap *bitMap, unsigned int nbSectors)
 {
 	ASSERT(nbSectors <= NumDirect);
 	ASSERT((unsigned int)bitMap->NumClear() >= nbSectors);
+	char* buf = new char[SectorSize];
+	bzero(buf, SectorSize);
 	numSectors = nbSectors;
 	for (int i = 0; i < numSectors ; i++)
 	{
 		dataSectors[i] = bitMap->Find();
+		synchDisk->WriteSector(dataSectors[i], buf);
 	}
+	delete buf;
 }
 
 void IndirectTable::Deallocate(BitMap *bitMap)

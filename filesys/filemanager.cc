@@ -24,13 +24,10 @@ OpenFileId do_Open (char *name) {
 
 	if(!fileSystem->pathExist(name))
 	{
-		if(!fileSystem->Create(name, SectorSize))
-		{
-			// if we just created the FileManager, we delete it to avoid memory leak
-			if (fm->getNbOpen() == 0)
-				delete fm;
-			return -1;
-		}
+		// if we just created the FileManager, we delete it to avoid memory leak
+		if (fm->getNbOpen() == 0)
+			delete fm;
+		return -1;
 	}
 	if(currentProcess->canAddFile())
 	{

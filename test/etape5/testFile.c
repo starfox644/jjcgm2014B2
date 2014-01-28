@@ -2,8 +2,6 @@
 
 int main()
 {
-
-	PutString("debut main\n");
 	OpenFileId id;
 	char c;
 	int n;

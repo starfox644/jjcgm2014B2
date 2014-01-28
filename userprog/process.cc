@@ -351,13 +351,13 @@ int Process::addOpenFile(int id)
 	ASSERT(nbOpenFiles < NB_FILES_PROCESS);
 	// recherche d'un emplacement de fichier
 	int i = 0;
-	while(i < NB_FILES_PROCESS && openFiles[i] == -1)
+	while(i < NB_FILES_PROCESS && openFiles[i] != -1)
 	{
 		i++;
 	}
 	openFiles[i] = id;
 	nbOpenFiles++;
-	return nbOpenFiles-1;
+	return i;
 }
 
 /**
