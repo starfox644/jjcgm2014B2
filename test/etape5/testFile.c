@@ -8,24 +8,24 @@ int main()
 	id = Open("test");
 	if(id == -1)
 	{
-		PutString("erreur open\n");
+		PutString("erreur open test\n");
 		Exit(0);
 	}
 	if(Write("coucou\n", 7, id) != 7)
 	{
-		PutString("Erreur write\n");
+		PutString("erreur write\n");
 		Exit(0);
 	}
 	if(Close(id) == -1)
 	{
-		PutString("erreur close\n");
+		PutString("erreur close test\n");
 		Exit(0);
 	}
 
 	id = Open("small");
 	if(id == -1)
 	{
-		PutString("erreur open\n");
+		PutString("erreur open small\n");
 		Exit(0);
 	}
 	while((n = Read(&c, sizeof(char), id)))
@@ -34,12 +34,12 @@ int main()
 	}
 	if(n == -1)
 	{
-		PutString("Erreur read\n");
+		PutString("erreur read\n");
 		Exit(0);
 	}
 	if(Close(id) == -1)
 	{
-		PutString("erreur close\n");
+		PutString("erreur close small\n");
 		Exit(0);
 	}
     return 0;

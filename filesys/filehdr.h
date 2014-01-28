@@ -90,7 +90,7 @@ public:
 
 private:
     int numSectors;			// Number of sectors in the file
-    int dataSectors[NumIndirect];		// Disk sector numbers for each data
+    int dataSectors[NumDirect];		// Disk sector numbers for each data
 					// block in the file
 };
 #endif // CHANGED
