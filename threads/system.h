@@ -33,6 +33,7 @@ extern void Cleanup ();		// Cleanup, called when
 #ifdef CHANGED
 extern Process* currentProcess;
 extern Semaphore *s_createProcess;
+
 //extern Semaphore *semRead;
 //extern Semaphore *semWrite;
 #endif
@@ -73,6 +74,9 @@ extern FileSystem *fileSystem;
 #ifdef FILESYS
 #include "synchdisk.h"
 extern SynchDisk *synchDisk;
+#ifdef CHANGED
+extern Semaphore* semFileSys;
+#endif
 #endif
 
 #ifdef NETWORK

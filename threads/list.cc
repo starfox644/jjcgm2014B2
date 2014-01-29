@@ -17,6 +17,9 @@
 
 #include "copyright.h"
 #include "list.h"
+#ifdef CHANGED
+#include "thread.h"
+#endif
 /*#ifdef CHANGED
 class Thread;
 #endif*/

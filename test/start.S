@@ -88,8 +88,8 @@ Join:
 	j	$31
 	.end Join
 
-	.globl create
-	.ent	create
+	.globl Create
+	.ent	Create
 Create:
 	addiu $2,$0,SC_Create
 	syscall

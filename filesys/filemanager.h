@@ -35,6 +35,8 @@ public :
 	void increaseNbOpen();
 	void decreaseNbOpen();
 	int getNbOpen();
+	bool isSectorOpen(int sector);
+	bool hasProcessSector(int sector);
 	OpenFile* getFile(OpenFileId id);
 };
 

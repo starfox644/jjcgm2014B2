@@ -322,9 +322,11 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					n = do_Open(buffer);
 					// writes the number of characters written in return register
 					machine->WriteRegister(2, n);
+					semFileSys->V();
 				}
 				else
 				{
@@ -337,7 +339,9 @@ ExceptionHandler (ExceptionType which)
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				n = machine->ReadRegister(6);
+				semFileSys->P();
 				n = do_Read(adr, maxSize, n);
+				semFileSys->V();
 				machine->WriteRegister(2, n);
 				break;
 
@@ -345,13 +349,17 @@ ExceptionHandler (ExceptionType which)
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				n = machine->ReadRegister(6);
+				semFileSys->P();
 				n = do_Write(adr, maxSize, n);
+				semFileSys->V();
 				machine->WriteRegister(2, n);
 				break;
 
 			case SC_Close:
 				n = machine->ReadRegister(4);
+				semFileSys->P();
 				n = do_Close(n);
+				semFileSys->V();
 				machine->WriteRegister(2, n);
 				break;
 
@@ -361,7 +369,9 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					n = fileSystem->cd(buffer);
+					semFileSys->V();
 					// writes the number of characters written in return register
 					if (n) // if return is true
 						machine->WriteRegister(2, 0);
@@ -376,7 +386,9 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Pwd:
+				semFileSys->P();
 				strcpy(buffer, fileSystem->pwd());
+				semFileSys->V();
 				if (copyStringToMachine(buffer, n))
 				{
 					if (n) // if return is true
@@ -395,7 +407,9 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					n = fileSystem->CreateDir(buffer);
+					semFileSys->V();
 					// writes the number of characters written in return register
 					if (n) // if return is true
 						machine->WriteRegister(2, 0);
@@ -410,7 +424,9 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Ls:
+				semFileSys->P();
 				fileSystem->List();
+				semFileSys->V();
 				break;
 
 			case SC_Rmdir:
@@ -418,7 +434,9 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					n = fileSystem->RemoveDirEmpty(buffer);
+					semFileSys->V();
 					// writes the number of characters written in return register
 					if (n) // if return is true
 						machine->WriteRegister(2, 0);
@@ -437,7 +455,9 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					n = fileSystem->pathExist(buffer);
+					semFileSys->V();
 					// writes the number of characters written in return register
 					if (n) // if return is true
 						machine->WriteRegister(2, 1);
@@ -456,7 +476,9 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					n = fileSystem->RemoveFile(buffer);
+					semFileSys->V();
 					// writes the number of characters written in return register
 					if (n) // if return is true
 						machine->WriteRegister(2, 0);
@@ -476,7 +498,9 @@ ExceptionHandler (ExceptionType which)
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
+					semFileSys->P();
 					isSuccess = fileSystem->Create(buffer, n);
+					semFileSys->V();
 				}
 				else
 				{
@@ -501,7 +525,11 @@ ExceptionHandler (ExceptionType which)
 				{
 					adr = machine->ReadRegister(5);
 					if (copyStringFromMachine(adr, buffer2, MAX_STRING_SIZE-1))
+					{
+						semFileSys->P();
 						Copy(buffer, buffer2);
+						semFileSys->V();
+					}
 				}
 				break;
 
@@ -533,8 +561,10 @@ ExceptionHandler (ExceptionType which)
 				OpenFile *openfile;
 				if (fm != NULL)
 				{
+					semFileSys->P();
 					openfile = fm->getFile(adr);
 					openfile->Seek(n);
+					semFileSys->V();
 				}
 				break;
 

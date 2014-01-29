@@ -1,7 +1,3 @@
-/*#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>*/
 #include "syscall.h"
 #include "../nachos_libc/Printf.h"
 
@@ -109,7 +105,6 @@ int lettreExiste(char l, char* motSecret, int* tabLettres)
             tabLettres[i] = 1;
         }
     }
-
     return trouve;
 }
 
@@ -126,9 +121,6 @@ int choisirMot(char *motChoisi)
     int n = 0;
     char c;
     int i = 0;
-   /* int numMotChoisi = 0;
-    int i = 0;
-    int caractereLu = 0;*/
 
     // ouverture du fichier contenant les mots
     idDico = Open("dico.txt");

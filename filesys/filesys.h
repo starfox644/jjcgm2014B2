@@ -65,6 +65,7 @@ class FileSystem {
 };
 
 #else // FILESYS
+
 class FileSystem {
   public:
     FileSystem(bool format);		// Initialize the file system.
