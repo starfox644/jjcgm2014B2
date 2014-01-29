@@ -58,7 +58,7 @@ class Process
 		int nbOpenFiles;
 		// id noyaux de fichiers ouverts par le processus
 		// l'indice de tableau correspond a l'id relatif au process
-		OpenFileId openFiles[NB_FILES_PROCESS];
+		int openFiles[NB_FILES_PROCESS];
 
 	public:
 	    /**
@@ -113,7 +113,7 @@ class Process
 	     *	Cette fonction ne doit etre appelee que si canAddFile renvoie true.
 	     *	Leve une assertion si le processus n'a plus de place disponible pour un nouveau fichier.
 	     */
-	    int addOpenFile(OpenFileId id);
+	    int addOpenFile(int id);
 
 	    /**
 	     * 	Retire le fichier ouvert id de la table du processus.
@@ -123,7 +123,8 @@ class Process
 	    /**
 	     * 	Renvoie l'id de fichier du noyau a partir de l'id du processus.
 	     */
-	    OpenFileId getOpenFileId(int processFileId);
+	    int getOpenFileId(int processFileId);
+
 };
 
 #endif // CHANGED

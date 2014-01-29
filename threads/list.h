@@ -15,9 +15,6 @@
 
 #include "copyright.h"
 #include "utility.h"
-#ifdef CHANGED
-#include "thread.h"
-#endif
 // The following class defines a "list element" -- which is
 // used to keep track of one item on a list.  It is equivalent to a
 // LISP cell, with a "car" ("next") pointing to the next element on the list,

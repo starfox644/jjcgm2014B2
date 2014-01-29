@@ -361,6 +361,7 @@ bool FileSystem::cd(char* path)
 
 const char* FileSystem::pwd()
 {
+	char* buf;
 	std::string s = "";
 	std::string prev = "";
 	// recuperation du repertoire actuel
@@ -403,7 +404,8 @@ const char* FileSystem::pwd()
 		s = "/" + s;
 	}
 	delete directory;
-	return s.c_str();
+	buf = new char[strlen(s.c_str()) * sizeof(char)];
+	return buf;
 }
 
 /**
