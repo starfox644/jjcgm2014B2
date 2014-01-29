@@ -64,6 +64,7 @@
 #define SC_Random 41
 #define SC_Seek 42
 #define SC_Copy 43
+#define SC_Print 44
 
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
@@ -351,6 +352,13 @@ int Seek(int position, int idFile);
  * Copie le fichier UNIX from dans NachOS avec le nom to
  */
 void copy(const char *from, const char *to);
+
+
+/*
+ * Affiche le contenu d'un fichier
+ * Renvoie 0 en cas de succes, -1 sinon
+ */
+int Cat(char *name);
 
 #endif // CHANGED
 

@@ -52,6 +52,8 @@ int commandIntegre(char **argv){
 	int retour;
 
 	if(StrCmp(argv[0],"quit") == 1){ //commande pour arreter le shell
+		Printf("\n\tMerci d'avoir utilisé NachOS_Shell!\n");
+		Printf("\tA bientôt.\n\n");
 		Exit(0);
 	}
 	if(StrCmp(argv[0],"&") == 1){ //on ignore le & tout seul
@@ -71,6 +73,7 @@ int commandIntegre(char **argv){
 		Printf("- afficher les processus système en cours : ps\n");
 		Printf("- afficher le contenu du répertoire courant : ls\n");
 		Printf("- afficher le chemin du répertoire courant : pwd\n");
+		Printf("- afficher le contenu d'un fichier : cat <fichier>\n");
 		Printf("- copier un fichier Unix vers un fichier NachOS : cp <source> <destination>\n");
 		Printf("- supprimer un fichier NachOS : rm <fichier>\n");
 		Printf("- afficher le système de fichier dans son ensemble : dir\n");
@@ -81,8 +84,6 @@ int commandIntegre(char **argv){
 		Printf("- creer un fichier : create <fichier>\n");
 		Printf("- savoir si un chemin existe : exist <chemin>\n");
 		Printf("- quitter NachOS : quit\n\n");
-		Printf("Merci d'utiliser NachOS_Shell!\n");
-		Printf("\t\tA bientôt.\n");
 		return 0;
 
 
@@ -150,6 +151,12 @@ int commandIntegre(char **argv){
 			PutString("Echec de creation\n");
 		return 0;
 	}
+	if(StrCmp(argv[0],"cat") == 1){//affiche des pages d'aide
+			retour = Cat(argv[1]);
+			if (retour)
+				PutString("Erreur\n");
+			return 0;
+		}
 	//ce n'est pas une ligne intégré donc on retourne 1
 	return 1;
 }

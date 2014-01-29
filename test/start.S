@@ -386,6 +386,14 @@ copy:
 	j	$31
 	.end copy
 
+	.globl Cat
+	.ent	Cat
+Cat:
+	addiu $2,$0,SC_Print
+	syscall
+	j	$31
+	.end Cat
+
 	.globl Random
 	.ent	Random
 Random:

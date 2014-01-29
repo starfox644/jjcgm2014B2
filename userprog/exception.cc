@@ -43,7 +43,8 @@ extern FileManager* fm;
 extern int do_UserThreadCreate(int f, int arg);
 extern int do_UserThreadJoin(int tid, int addrUser);
 extern void do_UserThreadExit(int status);
-void Copy(const char *from, const char *to);
+extern void Copy(const char *from, const char *to);
+extern void Print(char *name);
 //extern bool isInStack(int addr);
 #endif
 
@@ -501,6 +502,20 @@ ExceptionHandler (ExceptionType which)
 					adr = machine->ReadRegister(5);
 					if (copyStringFromMachine(adr, buffer2, MAX_STRING_SIZE-1))
 						Copy(buffer, buffer2);
+				}
+				break;
+
+			case SC_Print:
+				adr = machine->ReadRegister(4);
+				// MAX_STRING_SIZE-1 to let space for the ‘\0’
+				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
+				{
+					Print(buffer);
+					machine->WriteRegister(2, 0);
+				}
+				else
+				{
+					machine->WriteRegister(2, -1);
 				}
 				break;
 
