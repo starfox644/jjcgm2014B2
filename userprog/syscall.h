@@ -282,6 +282,7 @@ typedef int arg_list;
 
 arg_list arg_start();
 int arg_arg(arg_list arg);
+int arg_end(arg_list arg);
 
 /*
  * renvoi le nombre de processus système en cours

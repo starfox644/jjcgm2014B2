@@ -22,6 +22,7 @@ typedef int arg_list;
 
 arg_list do_arg_start(int a, int b, int c);
 int do_arg_arg(arg_list arg);
+int do_arg_end(arg_list arg);
 
 #endif
 

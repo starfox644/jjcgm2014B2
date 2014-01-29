@@ -40,17 +40,39 @@ int do_arg_arg(arg_list arg) {
 	while (it != listeArg.end() && it->nb != arg)
 		it++;
 
+	// if not found
 	if(it == listeArg.end())
-		return 0;
+		return -1;
 
-	// If semaphore not found, return -1 : error
+	// If arg not found, return -1 : error
 	if (it->nb != arg)
-		return 0;
+		return -1;
 	// Else, return it
 	else {
 		nb = it->next;
 		it->next++;
 		return (int)it->args[nb];
+	}
+
+	return 0;
+}
+
+int do_arg_end(arg_list arg) {
+	std::list<arg_list_t>::iterator it=listeArg.begin();
+
+	while (it != listeArg.end() && it->nb != arg)
+		it++;
+
+	// if not found
+	if(it == listeArg.end())
+		return -1;
+
+	// If arg not found, return -1 : error
+	if (it->nb != arg)
+		return -1;
+	// Else, return it
+	else {
+		listeArg.erase(it);
 	}
 
 	return 0;

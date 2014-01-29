@@ -77,6 +77,7 @@ int Printf (char* messageVoulu, ...){
 			{
 				if(alloue)
 					free(value);
+				arg_end(alist);
 				return -1;
 			}
 		}
@@ -89,12 +90,13 @@ int Printf (char* messageVoulu, ...){
 	}
 	PutString(buffer);
 
-	// on vide le buffer (sinon, il y a des affichages en trop
+	// on vide le buffer (sinon, il y a des affichages en trop)
 	for (i = 0; i < MAX_LENGH; i++) {
 		buffer[i] = '\0';
 	}
 	if(alloue)
 		free(value);
+	arg_end(alist);
 
 	return 0;
 }
@@ -146,17 +148,20 @@ int Scanf (char* typeVariable, ...) {
 					PutString("argument %");
 					PutChar(typeVariable[i]);
 					PutString(" invalide\n");
+					arg_end(alist);
 					return -1;
 					break;
 				}
 			}
 			else {// si on a plus de 3 arguments a lire, on a une erreur
+				arg_end(alist);
 				return -1;
 			}
 		}
 
 		i++;
 	}
+	arg_end(alist);
 
 	return 0;
 }

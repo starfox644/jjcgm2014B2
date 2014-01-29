@@ -314,6 +314,17 @@ arg_arg:
 	j	$31
 	.end arg_arg
 
+	.globl arg_end
+	.ent	arg_end
+arg_end:
+	addiu $2,$0,SC_ArgEnd
+	syscall
+	j	$31
+	.end arg_end
+
+
+
+
 	.globl GetNbProcessTotal
 	.ent	GetNbProcessTotal
 GetNbProcessTotal:
