@@ -11,7 +11,7 @@
 #include "../nachos_libc/Printf.h"
 //variable
 
-//fonctioner
+//fonctions
 /*
  * Fonction permettant d'initialiser la socket
  * Retourne l'identifiant de la socket

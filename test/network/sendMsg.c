@@ -41,10 +41,7 @@ int main(){
 	Printf("Message reçu : %s\n",reception);
 
 
-	//on a fini on se déconnecte
-//	fermerSocket(Socket);
 	free(reception);
 	free(message);
-	Printf("Fin du main\n");
 	return 0;
 }
