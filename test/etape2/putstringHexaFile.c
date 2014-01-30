@@ -1,11 +1,6 @@
 /*
- * putStringHexa0xFF.c
- *
- *  Created on: 8 janv. 2014
- *      Author: galdween
- *
- * Permet de tester des entrees de caracteres speciales, avec les fichiers putstringHexa0xFF
- * et putstringHexa0x01
+ * Permet de tester des entrees de caracteres speciales,
+ * avec les fichiers putstringHexa0xFF et putstringHexa0x01
  */
 #include "syscall.h"
 
