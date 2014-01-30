@@ -1,11 +1,11 @@
 /*
  * userThreadMulti.c
- *	Programme qui crée 12 threads et qui attend qu'il ce termine
+ *	Programme qui crée 10 threads et qui attend qu'ils se terminent
  *  Created on: 10 janv. 2014
  *      Author: galdween
  */
 #include "syscall.h"
-#define MAX_THREAD 120
+#define MAX_THREAD 10
 
 sem_t sem;
 

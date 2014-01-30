@@ -571,8 +571,20 @@ ExceptionHandler (ExceptionType which)
 				{
 					semFileSys->P();
 					openfile = fm->getFile(adr);
-					openfile->Seek(n);
+					if(openfile != NULL)
+					{
+						openfile->Seek(n);
+						machine->WriteRegister(2, 0);
+					}
+					else
+					{
+						machine->WriteRegister(2, -1);
+					}
 					semFileSys->V();
+				}
+				else
+				{
+					machine->WriteRegister(2, -1);
 				}
 				break;
 

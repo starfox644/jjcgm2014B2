@@ -404,8 +404,8 @@ char* FileSystem::pwd()
 		s = "/" + s;
 	}
 	delete directory;
-	buf = new char[strlen(s.c_str()) * sizeof(char)];
-	strcpy(buf, s.c_str());
+	buf = new char[SectorSize];
+	strncpy(buf, s.c_str(), SectorSize);
 	return buf;
 }
 

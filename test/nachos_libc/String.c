@@ -37,6 +37,7 @@ int StrCpy(char *source, char *destination){
 		destination[i] = source[i];
 		i++;
 	}
+	destination[i] = '\0';
 	return i;
 }
 
