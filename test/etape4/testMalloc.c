@@ -8,6 +8,8 @@ int main()
 	PutString("Lancement du test testMalloc : \n");
 	PutString("Demande une chaine a l'utilisateur qu'il affiche ensuite\nvia un buffer alloue au debut.\n");
 	PutString("-----------------------------------------\n");
+
+	PutString("Entrer une chaine de caracteres :\n");
 	char* buffer = (char*)malloc(SIZE * sizeof(char));
 	if(buffer == 0)
 	{

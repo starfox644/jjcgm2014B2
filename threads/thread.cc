@@ -382,24 +382,28 @@ SetupThreadState ()
 
 	// This is definitely the case as soon as several *processes* are
 	// running together.
-#ifndef NETWORK
+#ifndef FILESYS
 #ifdef CHANGED
-	AddrSpace* space = currentProcess->getAddrSpace();
+	AddrSpace* space = NULL;
+	if (currentProcess != NULL)
+	{
+		space = currentProcess->getAddrSpace();
+	}
 	if (space != NULL)
-    {				// if there is an address space
+    {	// if there is an address space
 	  currentThread->RestoreUserState ();	// to restore, do it.
 	  space->RestoreState ();
     }
 #else
 	if (currentThread->space != NULL)
-	{				// if there is an address space
+	{	// if there is an address space
 		// LB: Actually, the user state is void at that time. Keep this
 		// action for consistency with the Scheduler::Run function
 		currentThread->RestoreUserState ();	// to restore, do it.
 		currentThread->space->RestoreState ();
 	}
 #endif // changed
-#endif // NETWORK
+#endif // FILESYS
 #endif // USER_PROGRAM
 
 	// LB: The default level for interrupts is IntOn.

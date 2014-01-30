@@ -20,7 +20,9 @@
 #include "copyright.h"
 #include "thread.h"
 #include "list.h"
-
+#ifdef NETWORK
+#include <list>
+#endif
 // The following class defines a "semaphore" whose value is a non-negative
 // integer.  The semaphore has only two operations P() and V():
 //
@@ -56,7 +58,6 @@ public:
 #endif // CHANGED
 	void P ();			// these are the only operations on a semaphore
 	void V ();			// they are both *atomic*
-
 private:
 	const char *name;		// useful for debugging
 	int value;			// semaphore value, always >= 0
@@ -92,12 +93,12 @@ public:
 	// holds this lock.  Useful for
 	// checking in Release, and in
 	// Condition variable ops below.
-
+#ifdef CHANGED
+	Semaphore* sem; // sem initalisee a 1 (mutex) pour le verrouillage
+	Thread *holder; // permet de retenir le thread qui tient le loc
+#endif // CHANGED
 private:
 	const char *name;		// for debugging
-#ifdef CHANGED
-	Semaphore* sem;
-#endif
 };
 
 // The following class defines a "condition variable".  A condition
@@ -150,9 +151,13 @@ public:
 	void Signal (Lock * conditionLock);	// conditionLock must be held by
 	void Broadcast (Lock * conditionLock);	// the currentThread for all of
 	// these operations
+#ifdef NETWORK
+	List *l_semCond; //liste de semaphore en attente
+#endif //network
 
 private:
 	const char *name;
+
 	// plus some other stuff you'll need to define
 };
 #endif // SYNCH_H

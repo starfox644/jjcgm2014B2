@@ -53,7 +53,7 @@
 #define SC_ArgArg 30
 #define SC_ArgEnd 31
 #define SC_GetListProcess 32
-#define SC_GetNbProcessTotal 33
+#define SC_GetNbProcessRunning 33
 #define SC_Cd 34
 #define SC_Pwd 35
 #define SC_Mkdir 36
@@ -65,7 +65,12 @@
 #define SC_Seek 42
 #define SC_Copy 43
 #define SC_Print 44
-
+#define SC_InitSocket 50
+#define SC_Send 51
+#define SC_Receive 52
+#define SC_CloseSocket 53
+#define SC_Sleep 54
+#define SC_GetHostname 55
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -186,6 +191,7 @@ void Yield ();
  * User semaphore
  */
 typedef int sem_t;
+typedef int sock_t;
 
 /*
  * PutChar writes in console the given character
@@ -250,6 +256,11 @@ int SemWait(sem_t *adrSem);
 int SemPost(sem_t *adrSem);
 
 /**
+ * Delete the semaphore.
+ **/
+int SemDestroy(sem_t *adrSem);
+
+/**
  * Create a thread and execute the program given in parameter
  */
 int ForkExec(char *executable);
@@ -287,7 +298,7 @@ int arg_end(arg_list arg);
 /*
  * renvoi le nombre de processus système en cours
  */
-int GetNbProcess();
+int GetNbProcessRunning();
 
 /*
  * renvoi la liste des processus créé
@@ -360,6 +371,39 @@ void copy(const char *from, const char *to);
  * Renvoie 0 en cas de succes, -1 sinon
  */
 int Cat(char *name);
+
+/*
+ * reseau
+ */
+sock_t InitSocket(int);
+
+/*
+ * permet de fermer la socket
+ * retourne -1 si cela echoue
+ */
+int CloseSocket(sock_t);
+
+/*
+ * permet d'envoyer un message
+ * retourne -1 si cela echoue
+ */
+int Send(sock_t,char*);
+
+/*
+ * permet de recevoir un message
+ * retourne -1 si cela echoue
+ */
+int Receive(sock_t,char*);
+
+/*
+ * Fonction qui permet de faire une pause du temps voulu
+ */
+void Sleep(int);
+
+/*
+ * fonction permettant de recuperer le nom de la machine
+ */
+int GetHostname();
 
 #endif // CHANGED
 

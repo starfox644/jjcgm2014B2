@@ -42,7 +42,7 @@ int Atoi(char* chaine){
 
 char* Itoa(int variable){
 	 	 int i,sign;
-	 	 char *s = malloc(MAX_LENGH * sizeof(char));
+	 	 char *s = malloc(MAX_LENGTH * sizeof(char));
 	 	 if(s == 0){
 	 		 PutString("Erreur Malloc\n");
 	 		 Exit(0);

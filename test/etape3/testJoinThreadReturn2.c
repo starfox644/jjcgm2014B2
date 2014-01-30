@@ -25,17 +25,10 @@ int main()
 	PutString("La valeur a l'adresse 0 ne doit pas etre modifee.\n");
 	PutString("-----------------------------------------\n");
 	int tidf;
-	int* ad0 = (int*)0;
 	tidf = UserThreadCreate(f, 0);
-	PutString("Adr 0 avant join : ");
-	PutInt(*ad0);
-	PutString("\n");
 	if(UserThreadJoin(tidf, 0) == -1)
 		PutString("Erreur join du main sur f\n");
 
-	PutString("\nAdr 0 apres join : ");
-	PutInt(*ad0);
-	PutString("\n");
 	PutString("Fin du main\n");
     return 0;
 }

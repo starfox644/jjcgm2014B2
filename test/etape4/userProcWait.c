@@ -30,8 +30,7 @@ int main(){
 		return -1;
 	}
 
-	PutString("Le processus fils est arrété donc je peux m'arréter aussi.\n");
-	PutString("Au revoir!");
+	PutString("Le processus fils est arrete.\n");
 	return 0;
 
 }

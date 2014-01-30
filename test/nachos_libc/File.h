@@ -1,6 +1,7 @@
 /*
  * File.h
  *	fichier librairies pour utilisateur concernant la gestion des fichiers sous NachOS
+ *	inspiré du fichier file.h concernant le nom des modes d'ouverture et de positionnement.
  *  Created on: 17 janv. 2014
  *      Author: galdween
  */

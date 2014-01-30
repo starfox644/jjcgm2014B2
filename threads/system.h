@@ -19,6 +19,9 @@
 #include "frameProvider.h"
 #include "processManager.h"
 #endif
+#ifdef NETWORK
+#include "socketManager.h"
+#endif
 
 #ifdef CHANGED
 #include "syscall.h"
@@ -82,6 +85,7 @@ extern Semaphore* semFileSys;
 #ifdef NETWORK
 #include "../network/post.h"
 extern PostOffice *postOffice;
+extern SocketManager *socketManager;
 #endif
 
 #endif // SYSTEM_H
