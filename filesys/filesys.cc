@@ -359,7 +359,7 @@ bool FileSystem::cd(char* path)
 	return false;
 }
 
-const char* FileSystem::pwd()
+char* FileSystem::pwd()
 {
 	char* buf;
 	std::string s = "";
@@ -405,6 +405,7 @@ const char* FileSystem::pwd()
 	}
 	delete directory;
 	buf = new char[strlen(s.c_str()) * sizeof(char)];
+	strcpy(buf, s.c_str());
 	return buf;
 }
 

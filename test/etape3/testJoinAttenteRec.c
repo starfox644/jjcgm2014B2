@@ -9,7 +9,7 @@ void h(void* arg)
 	int i;
 	if(PutString("thread h\n") == -1)
 		PutString("Erreur putstring\n");
-	for (i = 0 ; i < 5000000 ; i++)
+	for (i = 0 ; i < 500000 ; i++)
 	{
 	}
 	PutString("Thread h fini\n");
@@ -22,7 +22,7 @@ void g(void* arg)
 	int* tidh = (int*)arg;
 	if(PutString("thread g\n") == -1)
 		PutString("Erreur putstring\n");
-	for (i = 0 ; i < 500000 ; i++)
+	for (i = 0 ; i < 50000 ; i++)
 	{
 	}
 	if(UserThreadJoin(*tidh, 0) == -1)

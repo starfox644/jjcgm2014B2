@@ -48,7 +48,6 @@ void evalLine(char* cmdLine){
 }
 
 int commandIntegre(char **argv){
-	char chaine[100];
 	int retour;
 
 	if(StrCmp(argv[0],"quit") == 1){ //commande pour arreter le shell
@@ -94,9 +93,11 @@ int commandIntegre(char **argv){
 		return 0;
 	}
 	if(StrCmp(argv[0],"pwd") == 1){//affiche le chemin du répertoire courant
-		StrCpy (chaine, pwd());
-		PutString(chaine);
+		char* buf = malloc(MAX_CHAR * sizeof(char));
+		pwd(buf);
+		PutString(buf);
 		PutString("\n");
+		free(buf);
 		return 0;
 	}
 	if(StrCmp(argv[0],"cp") == 1){//copie un fichier unix vers un fichier nachOS

@@ -51,7 +51,7 @@ int ProcessManager::getNbProcessRunning(){
 }
 
 int ProcessManager::getNbProcessTotal(){
-	return nbProcessRunning;
+	return nbProcessTotal;
 }
 
 /*
@@ -132,11 +132,16 @@ int ProcessManager::getListProcess(int ListeProc){
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
 
-	while (it != l_process.end()){
-		machine->WriteMem(ListeProc + i + ecart,sizeof(int),(*it)->getPid());
-		ecart = ecart + sizeof(int);
-		machine->WriteMem(ListeProc + i + ecart ,sizeof(int), (*it)->processRunning);
-		 ecart = ecart + sizeof(int);
+	while (it != l_process.end())
+	{
+		if((*it)->processRunning)
+		{
+			machine->WriteMem(ListeProc + i + ecart,sizeof(int),(*it)->getPid());
+			ecart = ecart + sizeof(int);
+			machine->WriteMem(ListeProc + i + ecart ,sizeof(int), (*it)->processRunning);
+			ecart = ecart + sizeof(int);
+			i++;
+		}
 		it++;
 	}
 	ecart = ecart + sizeof(int);

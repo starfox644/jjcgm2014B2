@@ -7,7 +7,7 @@ void relacher_verrou()
     error = SemPost(&sem);
     if(error != 0)
     {
-        PutString("erreur semaphore post\n");
+        PutString("[mem.c] erreur semaphore post\n");
         Exit(1);
     }
 }
@@ -19,7 +19,7 @@ void prendre_verrou()
     error = SemWait(&sem);
     if(error != 0)
     {
-        PutString("erreur semaphore wait\n");
+        PutString("[mem.c] erreur semaphore wait\n");
         Exit(1);
     }
 }
@@ -31,14 +31,14 @@ void mem_init(size_t taille)
 {
 	if(SemInit(&sem, 1) == -1)
 	{
-		PutString("erreur sem init\n");
+		PutString("[mem.c] erreur sem init\n");
 		Exit(0);
 	}
 	taille_memoire = taille;
 	char* mem = (char*)Mmap(taille);
 	if(mem == NULL)
 	{
-		PutString("erreur de recuperation de memoire\n");
+		PutString("[mem.c] erreur de recuperation de memoire\n");
 		Exit(1);
 	}
 	// stockage du pointeur du tableau memoire afin de placer la premiere structure

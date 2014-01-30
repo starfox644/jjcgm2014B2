@@ -49,6 +49,7 @@ void *my_mem_alloc(size_t s) {
     PutInt((unsigned long) s);
     PutString("octets en ");
     PutInt((unsigned long) result);
+    PutChar('\n');
     mem_align |= (unsigned int)result;
     return result;
 }
@@ -238,67 +239,6 @@ int main()
     }
     my_mem_free(i+1);
   }
- /* struct_fb_size=i;
-    printf("Apparemment la taille de votre entete de bloc libre est de %lu "
-         "octets\n", (unsigned long) struct_fb_size);
-  printf("\n");*/
-
- // printf("Test d'allocation/libération avec utilisation de la mémoire :\n");
- // gettimeofday(&tv, NULL);
- // srand(tv.tv_usec);
- /* my_mem_init(memoire, TAILLE_MEMOIRE);
-  my_mem_alloc(16);
-  my_mem_alloc(4);
-  my_mem_alloc(30);
-  my_mem_alloc(1);
-  my_mem_alloc(64);
-  my_mem_alloc(24);
-  my_mem_alloc(23);
-  for (i=0; i<position; i++)
-      for (j=0; j<sizes[i]; j++)
-          ((char *) allocs[i])[j] = (char) rand();
-  my_mem_free(1);
-  my_mem_free(3);
-  my_mem_free(5);
-  my_mem_alloc(4);
-  for (i=0; i<position; i++)
-      if ((i > 5) || (i & 1) == 0)
-          for (j=0; j<sizes[i]; j++)
-              ((char *) allocs[i])[j] = (char) rand();
- // printf("Etat de la memoire :\n");
-  my_mem_show(afficher_zone);
-  */
-  /* Dans le cas de la politique worst_fit, nb_free est à 4
-   * il est à 3 dans les autres cas*/
- /* if( (nb_free != 3 && nb_free != 4) || nb_busy != 5)
-  {
-  	PutString("assert failed ! 263\n");
-	  Exit(0);
-  }
-  PutString("TEST OK\n\n");*/
-  
-  
- /* printf("Test final, serie aléatoire d'allocations/libérations aléatoires "
-         "avec utilisation de la mémoire :\n");*/
- /* my_mem_init(memoire, TAILLE_MEMOIRE);
-  for (i=0; i<1000; i++) {
-      if (nb_alloc && (rand() & 1)) {
-          for (j=0; !allocs[j]; j++) {
-          }
-          my_mem_free(j);
-          allocs[j] = NULL;
-          nb_alloc--;
-      } else {
-          size = rand() & 511;
-          result = my_mem_alloc(size);
-          if (result) {
-              for (j=0; j<size; j++)
-                  result[j] = (char) rand();
-              nb_alloc++;
-          }
-      }
-  }
-  printf("TEST OK\n\n");*/
   
   return 0;
 }

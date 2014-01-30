@@ -287,12 +287,12 @@ int arg_end(arg_list arg);
 /*
  * renvoi le nombre de processus système en cours
  */
-int GetNbProcessTotal();
+int GetNbProcess();
 
 /*
  * renvoi la liste des processus créé
  */
-int* GetListProcess(int*);
+int* GetListProcess(int* list);
 
 /*
  * Permet de changer de repertoire courant
@@ -303,7 +303,7 @@ int cd(char* path);
 /*
  * renvoie le path du repertoire courant
  */
-char* pwd();
+void pwd(char* buf);
 
 /*
  * Cree un nouveau dossier vide dans le repertoire courant

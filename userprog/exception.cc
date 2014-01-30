@@ -311,7 +311,7 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 			case SC_GetNbProcessTotal:
-				machine->WriteRegister(2,processManager->getNbProcessTotal());
+				machine->WriteRegister(2,processManager->getNbProcessRunning());
 				break;
 
 			case SC_GetListProcess:
@@ -323,6 +323,7 @@ ExceptionHandler (ExceptionType which)
 
 #ifdef FILESYS
 			case SC_Open:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -341,6 +342,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Read:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				n = machine->ReadRegister(6);
@@ -351,6 +353,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Write:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				maxSize = machine->ReadRegister(5);
 				n = machine->ReadRegister(6);
@@ -370,6 +373,7 @@ ExceptionHandler (ExceptionType which)
 
 
 			case SC_Cd:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -391,23 +395,17 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Pwd:
+				currentThread->setIsSyscall(true);
+				adr = machine->ReadRegister(4);
 				semFileSys->P();
-				strcpy(buffer, fileSystem->pwd());
+				dynBuffer = fileSystem->pwd();
 				semFileSys->V();
-				if (copyStringToMachine(buffer, n))
-				{
-					if (n) // if return is true
-						machine->WriteRegister(2, 0);
-					else
-						machine->WriteRegister(2, -1);
-				}
-				else
-				{
-					machine->WriteRegister(2, -1);
-				}
+				copyStringToMachine(dynBuffer, adr);
+				delete dynBuffer;
 				break;
 
 			case SC_Mkdir:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -435,6 +433,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Rmdir:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -477,6 +476,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Rm:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
@@ -498,6 +498,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Create:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				n = machine->ReadRegister(5);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
@@ -525,6 +526,7 @@ ExceptionHandler (ExceptionType which)
 
 			case SC_Copy:
 				char buffer2[MAX_STRING_SIZE];
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
 				{
@@ -539,6 +541,7 @@ ExceptionHandler (ExceptionType which)
 				break;
 
 			case SC_Print:
+				currentThread->setIsSyscall(true);
 				adr = machine->ReadRegister(4);
 				// MAX_STRING_SIZE-1 to let space for the ‘\0’
 				if (copyStringFromMachine(adr, buffer, MAX_STRING_SIZE-1))
