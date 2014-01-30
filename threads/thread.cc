@@ -168,7 +168,7 @@ Thread::Fork (VoidFunctionPtr func, int arg)
 	// an already running program, as in the "fork" Unix system call.
 
 	// LB: Observe that currentThread->space may be NULL at that time.
-/*#ifndef step4
+	/*#ifndef step4
 	this->space = currentThread->space;
 #endif*/
 
@@ -231,25 +231,22 @@ Thread::Finish ()
 	DEBUG ('t', "Finishing thread \"%s\"\n", getName ());
 #ifdef CHANGED
 
-	if (currentProcess == NULL)
+	if (currentProcess != NULL)
 	{
-		Printf("currentProcess == NULL, exit\n");
-		Exit(0);
-	}
-
-	AddrSpace* space = currentProcess->getAddrSpace();
-	if(space != NULL)
-	{
-		// free the stack of the thread
-#ifdef step4
-		if(!currentThread->isMainThread())
+		AddrSpace* space = currentProcess->getAddrSpace();
+		if(space != NULL)
 		{
-			space->freeThreadStack(userStackAddr);
-		}
+			// free the stack of the thread
+#ifdef step4
+			if(!currentThread->isMainThread())
+			{
+				space->freeThreadStack(userStackAddr);
+			}
 #else
-		if(!currentThread->isMainThread())
-			space->addAvailableStackAddress(userStackAddr);
+			if(!currentThread->isMainThread())
+				space->addAvailableStackAddress(userStackAddr);
 #endif
+		}
 	}
 #endif
 #ifndef CHANGED
@@ -390,10 +387,10 @@ SetupThreadState ()
 		space = currentProcess->getAddrSpace();
 	}
 	if (space != NULL)
-    {	// if there is an address space
-	  currentThread->RestoreUserState ();	// to restore, do it.
-	  space->RestoreState ();
-    }
+	{	// if there is an address space
+		currentThread->RestoreUserState ();	// to restore, do it.
+		space->RestoreState ();
+	}
 #else
 	if (currentThread->space != NULL)
 	{	// if there is an address space

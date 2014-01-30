@@ -25,8 +25,9 @@ int main(){
 	//connexion de notre machine
 	SocketEnvoi = creerSocket(to);
 
-	//si on est la premiere machine on envoi le message
-	message = Itoa(GetHostname()); //on donne le numero de la machine de depart
+	// On demande le message a envoyer
+	Printf("Entrer une chaine de caracteres a envoyer :\n");
+	Scanf("%s", message);
 
 	if(envoyerMessage(SocketEnvoi,message) ==-1){
 		Printf("Erreur d'envoi de Message depuis la machine %d\n",GetHostname());

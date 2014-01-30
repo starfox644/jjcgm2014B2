@@ -15,7 +15,7 @@ int main(){
 
 	Printf("\n-----------------------------------------\n");
 	Printf(" Lancement du test inetReception : \n");
-	Printf(" Reçoit un message d'une machine distante\n");
+	Printf(" Reçoit trois messages de machines distantes\n");
 	Printf("-----------------------------------------\n");
 	int to, compteur = 0, nbChar = 0;
 	char* reception = (char*) malloc(2 * sizeof(char));
@@ -24,16 +24,16 @@ int main(){
 	Scanf("%d",&to);
 	//connexion de notre machine
 	SocketReception = creerSocket(to);
-	while(compteur < 1){
+	while(compteur < 3){
 		nbChar = recevoirMessage(SocketReception,reception);
 		if(nbChar == -1){
 			Printf("Erreur de réception de message avec la machine %d\n",to);
 			return -1;
 		}
 		compteur++;
+		Printf("Message reçu : %s\n",reception);
 		Printf("Compteur : %d\n",compteur);
 	}
-	Printf("Message reçu : %d\n",reception);
 
 	//on a finis on ce déconnecte
 	free(reception);
