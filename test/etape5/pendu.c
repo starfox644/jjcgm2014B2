@@ -123,7 +123,7 @@ int choisirMot(char *motChoisi)
     int i = 0;
 
     // ouverture du fichier contenant les mots
-    idDico = Open("dico.txt");
+    idDico = Open("pendu/dico.txt");
 
     if (idDico == -1)
     {

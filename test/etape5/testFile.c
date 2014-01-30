@@ -27,7 +27,7 @@ int main()
 		Exit(0);
 	}
 
-	id = Open("small");
+	id = Open("files/small");
 	if(id == -1)
 	{
 		PutString("erreur open small\n");
