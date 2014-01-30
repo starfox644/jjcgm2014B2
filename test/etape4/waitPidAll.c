@@ -75,7 +75,7 @@ int main(){
 		PutString("[Test1] Echec\n");
 		PutString("********************************************\n");
 	}
-	PutString("[Test1] Les processus fils sont arretes donc je peux m'arreter aussi.\n");
+	PutString("[Test1] Les processus fils sont arretes, arret.\n");
 	return 0;
 }
 

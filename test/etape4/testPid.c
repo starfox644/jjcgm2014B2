@@ -1,4 +1,5 @@
 #include "syscall.h"
+#include "../nachos_libc/Printf.h"
 #define NB_PROC 5
 
 int main()
@@ -14,12 +15,7 @@ int main()
 		pid = ForkExec("etape4/prog/progPid");
 		if(pid == -1)
 		{
-			PutString("erreur de creation de processus\n");
-		}
-		else
-		{
-			PutString("pid du processus :\n");
-			PutInt(pid);
+			PutString("Erreur de creation de processus\n");
 		}
 	}
     return 0;

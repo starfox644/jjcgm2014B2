@@ -44,7 +44,6 @@ Socket::~Socket()
  */
 int Socket::do_SendSocket(char *message)
 {
-//	printf("do_SendSocket, %s\n", message);
 	PacketHeader outPktHdr;
 	MailHeader outMailHdr;
 	// construct packet, mail header for original message

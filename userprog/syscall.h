@@ -53,14 +53,13 @@
 #define SC_ArgArg 30
 #define SC_ArgEnd 31
 #define SC_GetListProcess 32
-#define SC_GetNbProcessTotal 33
+#define SC_GetNbProcessRunning 33
 #define SC_InitSocket 50
 #define SC_Send 51
 #define SC_Receive 52
 #define SC_CloseSocket 53
 #define SC_Sleep 54
-#define SC_SetHostname 55
-#define SC_GetHostname 56
+#define SC_GetHostname 55
 #define MAX_STRING_SIZE 1024
 #endif //CHANGED
 
@@ -233,6 +232,11 @@ int SemWait(sem_t *adrSem);
 int SemPost(sem_t *adrSem);
 
 /**
+ * Delete the semaphore.
+ **/
+int SemDestroy(sem_t *adrSem);
+
+/**
  * Create a thread and execute the program given in parameter
  */
 int ForkExec(char *executable);
@@ -269,7 +273,7 @@ int arg_arg(arg_list arg);
 /*
  * renvoi le nombre de processus système en cours
  */
-int GetNbProcessTotal();
+int GetNbProcessRunning();
 
 /*
  * renvoi la liste des processus créé

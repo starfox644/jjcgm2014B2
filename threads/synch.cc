@@ -133,6 +133,9 @@ Lock::~Lock ()
 #endif
 }
 
+/**
+ * Verrouille le lock et attribue le lock au thread courant
+ */
 void Lock::Acquire ()
 {
 #ifdef CHANGED
@@ -141,6 +144,9 @@ void Lock::Acquire ()
 #endif
 }
 
+/**
+ * Deverrouille le lock et met holder a NULL
+ */
 void Lock::Release ()
 {
 #ifdef CHANGED
@@ -150,11 +156,14 @@ void Lock::Release ()
 		sem->V(); // Deverouille le lock
 	}
 	else
-		printf("[Lock::Release] Erreur - Ce lock n'est pas pris par le thread courant.\n");
+		Exit(-1);
 #endif
 }
 
 #ifdef CHANGED
+/**
+ * Renvoie true si le lock est pris par le thread courant, false sinon
+ */
 bool Lock::isHeldByCurrentThread ()
 {
 	return holder == (currentThread);
@@ -176,7 +185,11 @@ Condition::~Condition ()
 #endif
 }
 
-
+/**
+ * Cree une semaphore pour le thread appelant, l'ajoute dans la liste et
+ * le verrouille pour endormir le thread.
+ * Quitte si le lock n'est pas pris par le thread appelant
+ */
 void Condition::Wait (Lock * conditionLock)
 {
 #ifdef CHANGED
@@ -191,14 +204,15 @@ void Condition::Wait (Lock * conditionLock)
 		conditionLock->Acquire(); // On recupere notre lock a la sortie de l'attente
 	}
 	else
-	{
-		printf("[Condition::Wait] Erreur - Ce lock n'est pas pris par le thread courant.\n");
 		Exit(-1);
-	}
 #endif//network
 #endif //changed
 }
 
+/**
+ * Retire un semaphore de la liste pour reveiller le thread correspondant
+ * Quitte si le lock n'est pas pris par le thread appelant
+ */
 void Condition::Signal (Lock * conditionLock)
 {
 #ifdef CHANGED
@@ -216,14 +230,16 @@ void Condition::Signal (Lock * conditionLock)
 		}
 	}
 	else
-	{
-		printf("[Condition::Signal] Erreur - Ce lock n'est pas pris par le thread courant.\n");
 		Exit(-1);
-	}
 #endif //network
 #endif //changed
 }
 
+/**
+ * Retire tous les semaphores de la liste pour reveiller tous les threads endormis
+ * par cette condition
+ * Quitte si le lock n'est pas pris par le thread appelant
+ */
 void Condition::Broadcast (Lock * conditionLock)
 {
 #ifdef CHANGED
@@ -241,10 +257,7 @@ void Condition::Broadcast (Lock * conditionLock)
 		}
 	}
 	else
-	{
-		printf("[Condition::Signal] Erreur - Ce lock n'est pas pris par le thread courant.\n");
 		Exit(-1);
-	}
 #endif//network
 #endif//changed
 }

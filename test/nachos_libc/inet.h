@@ -22,12 +22,6 @@
 sock_t creerSocket(int adr);
 
 /*
- * permet de fermer la socket
- * retourne -1 si cela echoue
- */
-int fermerSocket(sock_t socket); // TODO voir pourquoi ca plante
-
-/*
  * permet d'envoyer un message
  * retourne -1 si cela echoue
  */

@@ -305,8 +305,8 @@ ExceptionHandler (ExceptionType which)
 				machine->WriteRegister(2, n);
 				break;
 
-			case SC_GetNbProcessTotal:
-				machine->WriteRegister(2,processManager->getNbProcessTotal());
+			case SC_GetNbProcessRunning:
+				machine->WriteRegister(2,processManager->getNbProcessRunning());
 				break;
 
 			case SC_GetListProcess:
@@ -335,11 +335,6 @@ ExceptionHandler (ExceptionType which)
 				adrBuffer=machine->ReadRegister(5); // Adresse du message
 				// Renvoie le nombre de caractere recuperes ou -1
 				machine->WriteRegister(2, currentProcess->socketManager->do_Receive(n, adrBuffer));
-				break;
-
-			case SC_CloseSocket:
-				n = machine->ReadRegister(4);		// Id de la socket
-				currentProcess->socketManager->removeSocket(n);
 				break;
 
 			case SC_Sleep:

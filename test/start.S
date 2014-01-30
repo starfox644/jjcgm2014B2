@@ -314,13 +314,13 @@ arg_arg:
 	j	$31
 	.end arg_arg
 /* ********************************* */
-	.globl GetNbProcessTotal
-	.ent	GetNbProcessTotal
-GetNbProcessTotal:
-	addiu $2,$0,SC_GetNbProcessTotal
+	.globl GetNbProcessRunning
+	.ent	GetNbProcessRunning
+GetNbProcessRunning:
+	addiu $2,$0,SC_GetNbProcessRunning
 	syscall
 	j	$31
-	.end GetNbProcessTotal
+	.end GetNbProcessRunning
 /* ********************************* */
 	.globl InitSocket
 	.ent	InitSocket
@@ -345,14 +345,6 @@ Receive:
 	syscall
 	j	$31
 	.end Receive
-/* ********************************* */
-	.globl CloseSocket
-	.ent	CloseSocket
-CloseSocket:
-	addiu $2,$0,SC_CloseSocket
-	syscall
-	j	$31
-	.end CloseSocket
 /* ********************************* */
 .globl Sleep
 	.ent	Sleep

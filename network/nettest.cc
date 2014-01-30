@@ -23,7 +23,7 @@
 #include "interrupt.h"
 
 #ifdef CHANGED
-#include "process.h" //TODO
+#include "process.h"
 #include "synch.h"
 #endif
 
@@ -64,8 +64,6 @@ MailTest(int farAddr)
 
 		// Send acknowledgement to the other machine (using "reply to" mailbox
 		// in the message that just arrived
-//		printf("[Nettest] outPktHdr.to : %i | outMailHdr.to : %i\n", outPktHdr.to, outMailHdr.to);
-//		printf("[Nettest] inPktHdr.from : %i | inMailHdr.from : %i\n", inPktHdr.from, inMailHdr.from);
 		outPktHdr.to = inPktHdr.from;
 		outMailHdr.to = inMailHdr.from;
 		outMailHdr.length = strlen(ack) + 1;

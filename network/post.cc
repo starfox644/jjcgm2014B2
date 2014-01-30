@@ -100,7 +100,6 @@ PrintHeader(PacketHeader pktHdr, MailHeader mailHdr)
 void 
 MailBox::Put(PacketHeader pktHdr, MailHeader mailHdr, char *data)
 { 
-//	printf("[MailBox::Put] recu \"%s\" de machine %i a la boite %i de la machine %i\n", data, pktHdr.from, mailHdr.to, pktHdr.to);
 	Mail *mail = new Mail(pktHdr, mailHdr, data);
 
 	messages->Append((void *)mail);	// put on the end of the list of
@@ -123,20 +122,16 @@ MailBox::Put(PacketHeader pktHdr, MailHeader mailHdr, char *data)
 void 
 MailBox::Get(PacketHeader *pktHdr, MailHeader *mailHdr, char *data) 
 { 
-//	printf("[MailBox::Get] Debut fonction\n");
 	DEBUG('n', "Waiting for mail in mailbox\n");
 	Mail *mail = (Mail *) messages->Remove();	// remove message from list;
 	// will wait if list is empty
-//	printf("[MailBox::Get] apres remove\n");
 	*pktHdr = mail->pktHdr;
 	*mailHdr = mail->mailHdr;
 	if (DebugIsEnabled('n')) {
 		printf("Got mail from mailbox: ");
 		PrintHeader(*pktHdr, *mailHdr);
 	}
-//	printf("[MailBox::Get] avant copy\n");
 	bcopy(mail->data, data, mail->mailHdr.length);
-//	printf("[MailBox::Get] apres copy\n");
 	// copy the message data into
 	// the caller's buffer
 	delete mail;			// we've copied out the stuff we
@@ -180,7 +175,6 @@ static void WriteDone(int arg)
 
 PostOffice::PostOffice(NetworkAddress addr, double reliability, int nBoxes)
 {
-	//	printf("[PostOffice::PostOffice] Constructeur. addr : %i | rely : %f | nBoxes : %i\n", addr, reliability, nBoxes);
 	// First, initialize the synchronization with the interrupt handlers
 	messageAvailable = new Semaphore("message available", 0);
 	messageSent = new Semaphore("message sent", 0);
@@ -232,7 +226,6 @@ PostOffice::PostalDelivery()
 
 	for (;;) {
 		// first, wait for a message
-		//    	printf("[Post] prise semaphore messageAvailable\n"); // TODO
 		messageAvailable->P();
 		pktHdr = network->Receive(buffer);
 
@@ -270,8 +263,6 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	char* buffer = new char[MaxPacketSize];	// space to hold concatenated
 	// mailHdr + data
 
-	//    printf("[PostOffice::Send] cible(-o) : %i | mailHdr.from : %i | mailHdr.to : %i\n", pktHdr.to, mailHdr.from, mailHdr.to);
-
 	if (DebugIsEnabled('n')) {
 		printf("Post send: ");
 		PrintHeader(pktHdr, mailHdr);
@@ -286,28 +277,14 @@ PostOffice::Send(PacketHeader pktHdr, MailHeader mailHdr, const char* data)
 	// concatenate MailHeader and data
 	bcopy(&mailHdr, buffer, sizeof(MailHeader));
 	bcopy(data, buffer + sizeof(MailHeader), mailHdr.length);
-#ifdef CHANGED
-//	long long depart,fin;
-//	depart = stats->totalTicks;
-//	printf("\nDepart : %lli\n",depart);
-#endif
 	sendLock->Acquire();   		// only one message can be sent
 	// to the network at any one time
 	network->Send(pktHdr, buffer);
-	//	printf("[Post] prise semaphore messageSent\n"); // TODO
+
 	messageSent->P();			// wait for interrupt to tell us
 	// ok to send the next message
 	sendLock->Release();
-#ifdef CHANGED
-//	fin = stats->totalTicks;
-//	printf("\nFin : %lli\n",fin);
-	/*
-	 * permet de connaitre le nombre de tick que met l'envoi d'un message.
-	 * Par contre pour la conversion c'est plus compliqué, car suivant si l'on est en mode user ou kernel l'avancement en nombre de tick
-	 * n'est pas le meme, il est soit de 1 soit de 10.
-	 */
-//	printf("\ndurée de l'envoi : %lli\n",fin - depart);
-#endif
+
 	delete [] buffer;			// we've sent the message, so
 	// we can delete our buffer
 }
@@ -331,11 +308,9 @@ void
 PostOffice::Receive(int box, PacketHeader *pktHdr, 
 		MailHeader *mailHdr, char* data)
 {
-	//	printf("[PostOffice::Receive] Debut fonction\n");
 	ASSERT((box >= 0) && (box < numBoxes));
 
 	boxes[box].Get(pktHdr, mailHdr, data);
-//	printf("[PostOffice:Recep] farAddr : %i | from : %i | to : %i | box : %i\n", pktHdr->to, mailHdr->from, mailHdr->to, box);
 	ASSERT(mailHdr->length <= MaxMailSize);
 }
 
@@ -349,7 +324,6 @@ PostOffice::Receive(int box, PacketHeader *pktHdr,
 void
 PostOffice::IncomingPacket()
 { 
-	//	printf("[Post] relache semaphore messageAvailable\n"); // TODO
 	messageAvailable->V();
 }
 
@@ -366,7 +340,6 @@ PostOffice::IncomingPacket()
 void 
 PostOffice::PacketSent()
 { 
-	//	printf("[Post] relache semaphore messageSent\n"); // TODO
 	messageSent->V();
 }
 

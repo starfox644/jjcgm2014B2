@@ -15,7 +15,7 @@ int Printf (char* messageVoulu, ...){
 	int i = 0, j = 0, k;
 	int variable, nbArg;
 	char *value;
-	char buffer[MAX_LENGH];
+	char buffer[MAX_LENGTH];
 	int alloue = 0;
 	arg_list alist;
 
@@ -83,7 +83,7 @@ int Printf (char* messageVoulu, ...){
 	PutString(buffer);
 
 	// on vide le buffer (sinon, il y a des affichages en trop
-	for (i = 0; i < MAX_LENGH; i++) {
+	for (i = 0; i < MAX_LENGTH; i++) {
 		buffer[i] = '\0';
 	}
 	if(alloue)
@@ -133,7 +133,7 @@ int Scanf (char* typeVariable, ...) {
 					((char*) variable)[1] = '\0';*/
 					break;
 				case 's': //cas de récupération d'un string
-					GetString ((char*) variable, MAX_LENGH);
+					GetString ((char*) variable, MAX_LENGTH);
 					break;
 				default:
 					return -1;
