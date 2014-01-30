@@ -25,7 +25,7 @@ SemaphoreManager::~SemaphoreManager (){
 }
 
 /**
- * Add newSem to semList, give it a unique modifier and return the id
+ * Add a new semaphore with initValue and give it an unique id.
  * Return -1 if nextSemId has reached MAX_INT
  */
 int SemaphoreManager::addSemaphore(int initValue)

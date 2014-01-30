@@ -35,9 +35,9 @@
 
 Semaphore::Semaphore (const char *debugName, int initialValue)
 {
-    name = debugName;
-    value = initialValue;
-    queue = new List;
+	name = debugName;
+	value = initialValue;
+	queue = new List;
 }
 
 //----------------------------------------------------------------------
@@ -48,7 +48,7 @@ Semaphore::Semaphore (const char *debugName, int initialValue)
 
 Semaphore::~Semaphore ()
 {
-    delete queue;
+	delete queue;
 }
 
 #ifdef CHANGED
@@ -79,20 +79,19 @@ void Semaphore::setId(int idSem)
 //      when it is called.
 //----------------------------------------------------------------------
 
-void
-Semaphore::P ()
+void Semaphore::P ()
 {
-    IntStatus oldLevel = interrupt->SetLevel (IntOff);	// disable interrupts
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);	// disable interrupts
 
-    while (value == 0)
-      {				// semaphore not available
-	  queue->Append ((void *) currentThread);	// so go to sleep
-	  currentThread->Sleep ();
-      }
-    value--;			// semaphore available, 
-    // consume its value
+	while (value == 0)
+	{				// semaphore not available
+		queue->Append ((void *) currentThread);	// so go to sleep
+		currentThread->Sleep ();
+	}
+	value--;			// semaphore available,
+	// consume its value
 
-    (void) interrupt->SetLevel (oldLevel);	// re-enable interrupts
+	(void) interrupt->SetLevel (oldLevel);	// re-enable interrupts
 }
 
 //----------------------------------------------------------------------
@@ -106,16 +105,16 @@ Semaphore::P ()
 void
 Semaphore::V ()
 {
-    Thread *thread;
-    IntStatus oldLevel = interrupt->SetLevel (IntOff);
+	Thread *thread;
+	IntStatus oldLevel = interrupt->SetLevel (IntOff);
 
-    thread = (Thread *) queue->Remove ();
-    if (thread != NULL)		// make thread ready, consuming the V immediately
-	scheduler->ReadyToRun (thread);
-    value++;
-    (void) interrupt->SetLevel (oldLevel);
+	thread = (Thread *) queue->Remove ();
+	if (thread != NULL)		// make thread ready, consuming the V immediately
+		scheduler->ReadyToRun (thread);
+	value++;
+
+	(void) interrupt->SetLevel (oldLevel);
 }
-
 // Dummy functions -- so we can compile our later assignments 
 // Note -- without a correct implementation of Condition::Wait(), 
 // the test case in the network assignment won't work!
@@ -123,6 +122,7 @@ Lock::Lock (const char *debugName)
 {
 #ifdef CHANGED
 	sem = new Semaphore(debugName, 1);
+	holder = NULL;
 #endif
 }
 
@@ -132,40 +132,132 @@ Lock::~Lock ()
 	delete sem;
 #endif
 }
-void
-Lock::Acquire ()
+
+/**
+ * Verrouille le lock et attribue le lock au thread courant
+ */
+void Lock::Acquire ()
 {
 #ifdef CHANGED
-	sem->P();
+	sem->P(); // Verrouille le lock
+	holder = currentThread; // Attribue le lock au Thread courant
 #endif
 }
-void
-Lock::Release ()
+
+/**
+ * Deverrouille le lock et met holder a NULL
+ */
+void Lock::Release ()
 {
 #ifdef CHANGED
-	sem->V();
+	if (isHeldByCurrentThread())
+	{
+		holder = NULL; // Retire le lock au thread courant
+		sem->V(); // Deverouille le lock
+	}
+	else
+		Exit(-1);
 #endif
 }
+
+#ifdef CHANGED
+/**
+ * Renvoie true si le lock est pris par le thread courant, false sinon
+ */
+bool Lock::isHeldByCurrentThread ()
+{
+	return holder == (currentThread);
+}
+#endif
 
 Condition::Condition (const char *debugName)
 {
 	name = debugName;
+#ifdef NETWORK
+	l_semCond = new List();
+#endif
 }
 
 Condition::~Condition ()
 {
-}
-void
-Condition::Wait (Lock * conditionLock)
-{
-
+#ifdef NETWORK
+	delete l_semCond;
+#endif
 }
 
-void
-Condition::Signal (Lock * conditionLock)
+/**
+ * Cree une semaphore pour le thread appelant, l'ajoute dans la liste et
+ * le verrouille pour endormir le thread.
+ * Quitte si le lock n'est pas pris par le thread appelant
+ */
+void Condition::Wait (Lock * conditionLock)
 {
+#ifdef CHANGED
+#ifdef NETWORK
+	// Si le thread courant est le proprietaire du lock
+	if (conditionLock->isHeldByCurrentThread())
+	{
+		Semaphore *semCond = new Semaphore("condWait", 0);
+		l_semCond->Append(semCond); // On ajoute le semaphore a la liste
+		conditionLock->Release(); // On libere le lock
+		semCond->P(); // On prend le semaphore pour attendre
+		conditionLock->Acquire(); // On recupere notre lock a la sortie de l'attente
+	}
+	else
+		Exit(-1);
+#endif//network
+#endif //changed
 }
-void
-Condition::Broadcast (Lock * conditionLock)
+
+/**
+ * Retire un semaphore de la liste pour reveiller le thread correspondant
+ * Quitte si le lock n'est pas pris par le thread appelant
+ */
+void Condition::Signal (Lock * conditionLock)
 {
+#ifdef CHANGED
+#ifdef NETWORK
+	// Si le thread courant est le proprietaire du lock
+	if (conditionLock->isHeldByCurrentThread())
+	{
+		Semaphore *semCond;
+		// On choisit un thread a reveiller
+		semCond = (Semaphore*) l_semCond->Remove();
+		if (semCond != NULL)
+		{
+			// On relache le semaphore du thread pour qu'il se reveille
+			semCond->V();
+		}
+	}
+	else
+		Exit(-1);
+#endif //network
+#endif //changed
+}
+
+/**
+ * Retire tous les semaphores de la liste pour reveiller tous les threads endormis
+ * par cette condition
+ * Quitte si le lock n'est pas pris par le thread appelant
+ */
+void Condition::Broadcast (Lock * conditionLock)
+{
+#ifdef CHANGED
+#ifdef NETWORK
+	// Si le thread courant est le proprietaire du lock
+	if (conditionLock->isHeldByCurrentThread())
+	{
+		Semaphore *semCond;
+		// Tant qu'il y a des semaphores dans la liste
+		while (!l_semCond->IsEmpty())
+		{
+			semCond = (Semaphore*) l_semCond->Remove();
+			// On libere les threads
+			semCond->V();
+		}
+	}
+	else
+		Exit(-1);
+#endif//network
+#endif//changed
 }

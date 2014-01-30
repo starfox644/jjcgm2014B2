@@ -8,6 +8,7 @@ int main()
 {
 	char s[50];
 	int nbLus;
+	PutString("Ecrire une chaine de caractere : \n");
 	if((nbLus = GetString(s, 50)) == -1){ // verification si on a une erreur
 		PutString("\n");
 		PutString("Erreur lors du PutString");

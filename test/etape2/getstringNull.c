@@ -4,7 +4,7 @@
 int main()
 {
 	if(GetString(0,10) == -1)
-		PutString("Erreur de GetString");
+		PutString("Erreur de GetString\n");
 
 	return 0;
 }

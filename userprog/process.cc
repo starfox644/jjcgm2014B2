@@ -4,6 +4,9 @@
 #include "system.h"
 #include "semaphoreManager.h"
 #include "threadManager.h"
+#ifdef NETWORK
+#include "socketManager.h"
+#endif // NETWORK
 #include <list>
 
 extern void do_exit(int returnCode);
@@ -221,6 +224,9 @@ Process::Process()
 	estAttendu = false;
 	threadManager = new ThreadManager();
 	semManager = new SemaphoreManager();
+#ifdef NETWORK
+	socketManager = new SocketManager();
+#endif // NETWORK
 	semProc = new Semaphore("semaphore processus", 0);
 	nbOpenFiles = 0;
 	for(int i = 0 ; i < NB_FILES_PROCESS ; i++)
@@ -242,7 +248,6 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 #ifdef step4
 	addrSpace = NULL;
 	addrSpace = new AddrSpace();
-#ifndef NETWORK
 	if(addrSpace != NULL)
 	{
 		// load code and initial data
@@ -252,7 +257,6 @@ bool Process::allocateAddrSpace(OpenFile * executable)
 	{
 		return_value = false;
 	}
-#endif
 #else
 	// les etapes precedentes chargent directement le code dans le constructeur
 	addrSpace = new AddrSpace(executable);
@@ -271,6 +275,9 @@ void Process::freeAddrSpace()
 	threadManager->deleteThreads();
 	delete threadManager;
 	delete semManager;
+#ifdef NETWORK
+	delete socketManager;
+#endif // NETWORK
 	addrSpace = NULL;
 }
 

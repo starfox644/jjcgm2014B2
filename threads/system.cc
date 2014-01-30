@@ -166,7 +166,7 @@ Initialize (int argc, char **argv)
 			netname = atoi (*(argv + 1));
 			argCount = 2;
 		}
-#endif
+#endif // NETWORK
 	}
 
 	DebugInit (debugArgs);	// initialize DEBUG messages
@@ -221,7 +221,7 @@ Initialize (int argc, char **argv)
 
 #ifdef NETWORK
 	postOffice = new PostOffice (netname, rely, 10);
-#endif
+#endif // NETWORK
 }
 
 //----------------------------------------------------------------------

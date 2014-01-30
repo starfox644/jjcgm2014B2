@@ -34,6 +34,8 @@
 #include "addrSpaceAllocator.h"
 #include "arguments.h"
 #include "synchconsole.h"
+#include "socket.h"
+#include "socketManager.h"
 
 #ifdef FILESYS
 #include "filemanager.h"
@@ -100,6 +102,9 @@ ExceptionHandler (ExceptionType which)
 #ifdef step3
 	bool isSuccess;
 #endif //step3
+#ifdef NETWORK
+	int adrBuffer;
+#endif // NETWORK
 
 	if (which == SyscallException)
 	{
@@ -300,17 +305,20 @@ ExceptionHandler (ExceptionType which)
 				n = do_arg_start(m, n, o);
 				machine->WriteRegister(2, n);
 				break;
+
 			case SC_ArgArg:
 				n = machine->ReadRegister(4);
 				n = do_arg_arg(n);
 				machine->WriteRegister(2, n);
 				break;
+
 			case SC_ArgEnd:
 				n = machine->ReadRegister(4);
 				n = do_arg_arg(n);
 				machine->WriteRegister(2, n);
 				break;
-			case SC_GetNbProcessTotal:
+
+			case SC_GetNbProcessRunning:
 				machine->WriteRegister(2,processManager->getNbProcessRunning());
 				break;
 
@@ -590,6 +598,36 @@ ExceptionHandler (ExceptionType which)
 
 #endif //FILESYS
 
+#ifdef NETWORK
+			case SC_InitSocket:
+				n = machine->ReadRegister(4);		// Numero de la box
+				// Renvoie l'ID de la socket creee ou -1
+				machine->WriteRegister(2, do_SockInit(n));
+				break;
+
+			case SC_Send:
+				n = machine->ReadRegister(4);		// Id de la socket
+				adrBuffer=machine->ReadRegister(5); // Adresse du message
+				// Renvoie le nombre de caractere envoyes ou -1
+				machine->WriteRegister(2, currentProcess->socketManager->do_Send(n, adrBuffer));
+				break;
+
+			case SC_Receive:
+				n = machine->ReadRegister(4);		// Id de la socket
+				adrBuffer=machine->ReadRegister(5); // Adresse du message
+				// Renvoie le nombre de caractere recuperes ou -1
+				machine->WriteRegister(2, currentProcess->socketManager->do_Receive(n, adrBuffer));
+				break;
+
+			case SC_Sleep:
+				n = machine->ReadRegister(4);
+				Delay(n);
+				break;
+
+			case SC_GetHostname:
+				machine->WriteRegister(2,postOffice->getNetAddr());
+				break;
+#endif // NETWORK
 			case SC_Exit:
 				// read return code in r4 register
 				codeErreur = machine->ReadRegister(4);

@@ -72,21 +72,18 @@ int ProcessManager::waitPid(int processPid){
 	// si le pid du process n'est pas trouve, return -1 : error
 	if (it == l_process.end())
 	{
-//		Printf("[WaitPid - Process #%i] Erreur - Processus #%i introuvable dans la liste\n", currentProcess->getPid(), processPid);
 		sem_Wait->V();
 		return -1;
 	}
 	// si le process a attendre est le process courant : -1
 	else if ((*it)->getPid() == currentProcess->getPid())
 	{
-//		Printf("[WaitPid] Erreur - Un processus ne peut s'attendre lui-meme\n");
 		sem_Wait->V();
 		return -1;
 	}
 	// Si le process est deja attendu
 	else if ((*it)->getEstAttendu())
 	{
-//		Printf("[WaitPid] Erreur - Ce processus est deja attendu par un autre processus\n");
 		sem_Wait->V();
 		return -1;
 	}
@@ -126,26 +123,17 @@ int ProcessManager::getNextPid()
  */
 int ProcessManager::getListProcess(int ListeProc){
 
-	int i = 0;
 	int ecart = 0;
 	sem_Wait->P();
 	// iterator pour trouver l'adresse dans la liste
 	std::list<Process*>::iterator it=l_process.begin();
 
-	while (it != l_process.end())
-	{
-		if((*it)->processRunning)
-		{
-			machine->WriteMem(ListeProc + i + ecart,sizeof(int),(*it)->getPid());
-			ecart = ecart + sizeof(int);
-			machine->WriteMem(ListeProc + i + ecart ,sizeof(int), (*it)->processRunning);
-			ecart = ecart + sizeof(int);
-			i++;
-		}
+	while (it != l_process.end()){
+		machine->WriteMem(ListeProc + ecart,sizeof(int),(*it)->getPid());
+		ecart = ecart + sizeof(int);
 		it++;
 	}
 	ecart = ecart + sizeof(int);
-	machine->WriteMem(ListeProc + i + ecart,sizeof(int), -1);
 	sem_Wait->V();
 	return ListeProc;
 }

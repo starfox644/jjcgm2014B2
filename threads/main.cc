@@ -76,7 +76,10 @@ extern void ConsoleTest (char *in, char *out);
 #endif
 #ifdef NETWORK
 	extern void MailTest (int networkID);
-#endif
+#ifdef CHANGED
+	extern void testCond();
+#endif //CHANGED
+#endif//NETWORK
 //----------------------------------------------------------------------
 // main
 //      Bootstrap the operating system kernel.  
@@ -155,6 +158,7 @@ main (int argc, char **argv)
 
 #endif	//changed
 #ifdef step4
+
 		else if(!strcmp (*argv, "-ta"))
 		{
 			ASSERT (argc > 1);
@@ -259,15 +263,22 @@ main (int argc, char **argv)
 #endif
 #endif // FILESYS
 #ifdef NETWORK
+#ifndef CHANGED
 		if (!strcmp (*argv, "-o"))
 		{
 			ASSERT (argc > 1);
-			Delay (2);	// delay for 2 seconds
+			Delay (5);	// delay for 2 seconds
 			// to give the user time to
 			// start up another nachos
 			MailTest (atoi (*(argv + 1)));
 			argCount = 2;
 		}
+#endif // CHANGED
+#ifdef CHANGED
+		if(!strcmp(*argv,"-co")){
+			testCond();
+		}
+#endif// CHANGED
 #endif // NETWORK
 	}
 
@@ -275,7 +286,7 @@ main (int argc, char **argv)
 	Exit(0);
 #else
 	currentThread->Finish ();	// NOTE: if the procedure "main"
-#endif
+#endif // CHANGED
 	// returns, then the program "nachos"
 	// will exit (as any other normal program
 	// would).  But there may be other

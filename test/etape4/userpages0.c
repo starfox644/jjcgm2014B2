@@ -26,9 +26,9 @@ int main()
 	tidf = UserThreadCreate(f, 0);
 	tidg = UserThreadCreate(g, 0);
 	if(UserThreadJoin(tidf, 0) == -1)
-			PutString("Erreur join du main sur f\n");
+		PutString("Erreur join du main sur f\n");
 	if(UserThreadJoin(tidg, 0) == -1)
-				PutString("Erreur join du main sur g\n");
+		PutString("Erreur join du main sur g\n");
 	PutString("\n");
-    return 0;
+	return 0;
 }
