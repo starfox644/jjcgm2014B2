@@ -11,8 +11,9 @@ int main(){
 	PutString("\n-----------------------------------------\n");
 	PutString("Lancement du test waitPidMulti : \n");
 	PutString("Lance plusieurs processus et attend leur terminaison.\n");
+	PutString("La creation d'un processus peut echouer si memoire insuffisante.\n");
 	PutString("-----------------------------------------\n");
-	int pid[NB_PROCESS], error, i;
+	int pid[NB_PROCESS], error, i, retour = 0;
 
 	for(i = 0; i < NB_PROCESS; i++)
 	{
@@ -21,20 +22,24 @@ int main(){
 			PutString("Erreur de création du processus #");
 			PutInt(i+1);
 			PutChar('\n');
+			retour = -1;
 		}
 	}
 	for(i = 0; i < NB_PROCESS; i++)
 	{
-		error = WaitPid(pid[i]);
-		if(error == -1){
-			PutString("Erreur d'attente du processus #");
-			PutInt(i);
-			PutChar('\n');
+		if (pid[i] != -1)
+		{
+			error = WaitPid(pid[i]);
+			if(error == -1){
+				PutString("Erreur d'attente du processus #");
+				PutInt(i);
+				PutChar('\n');
+				retour = -1;
+			}
 		}
 	}
-	PutString("Les processus fils sont arretes donc je peux m'arreter aussi.\n");
-	PutString("Au revoir!\n");
-	return 0;
+	PutString("Les processus fils sont arretes, arret.\n");
+	return retour;
 
 }
 

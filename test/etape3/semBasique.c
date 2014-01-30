@@ -16,15 +16,15 @@ void producteur ()
 	char s[16];
 	PutString("Debut Producteur\n");
 	SemWait(&mutex);
-	PutString("Producteur :");
+	PutString("Producteur :\nEntrer une chaine de caracteres : ");
 	GetString(s, 16);
+	PutString("\n");
 	PutString(s);
 	SemPost(&mutex);
 }
 
 void consommateur ()
 {
-//	char s[16];
 	PutString("Debut Consommateur\n");
 	SemWait(&mutex);
 	PutString("Mutex pris\n");
@@ -36,7 +36,7 @@ int main ()
 	PutString("\n-----------------------------------------\n");
 	PutString("Lancement du test semBasique : \n");
 	PutString("Cree des threads prod/conso et demande une chaine dans le prod.\n");
-	PutString("Le conso prend le meme semaphore et attend donc qu'un chaine soit rentree.\n");
+	PutString("Le conso prend le meme semaphore et attend donc que la chaine du prod soit rentree.\n");
 	PutString("-----------------------------------------\n");
 	int error;
 	PutString("Initialisation des semaphores\n");

@@ -6,6 +6,7 @@ int main()
 	PutString("A lancer avec -rs\n");
 	PutString("Lancement du test forkMultiProc : \n");
 	PutString("Lance 5 processus executant un programme different.\n");
+	PutString("La creation d'un processus peut echouer si memoire insuffisante.\n");
 	PutString("-----------------------------------------\n");
 	if (ForkExec("./etape2/putstring")==-1)
 		PutString("Erreur creation processus\n");
